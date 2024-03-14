@@ -1,0 +1,6 @@
+FROM postgres:16-bullseye
+
+ARG POSTGRES_USER=postgres
+ARG POSTGRES_PASSWORD=password
+ARG POSTGRES_DB=pillar
+ARG POSTGRES_PORT=5432

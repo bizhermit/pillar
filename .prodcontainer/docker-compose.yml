@@ -4,10 +4,30 @@ services:
     container_name: 'pillar'
     build:
       context: '../'
-      dockerfile: '.prodcontainer/Dockerfile'
+      dockerfile: '.prodcontainer/docker/node/Dockerfile'
     image: 'pillar_image'
     tty: true
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
       - '${PORT:-3000}:3000'
+    depends_on:
+      - postgres
+  postgres:
+    container_name: 'pillar_db'
+    build:
+      context: '../'
+      dockerfile: '.prodcontainer/docker/postgres/Dockerfile'
+    restart: always
+    volumes:
+      - 'pillar_db:/var/lib/postgresql/data'
+      - '../database/init:/docker-entrypoint-initdb.d'
+    environment:
+      - 'POSTGRES_USER=${POSTGRES_USER:-postgres}'
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}'
+      - 'POSTGRES_DB=${POSTGRES_DB:-pillar}'
+      - 'POSTGRES_PORT=${POSTGRES_PORT:-5432}'
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+volumes:
+  pillar_db: {}
