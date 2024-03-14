@@ -1,11 +1,11 @@
 version: '3'
 services:
   node:
-    container_name: 'node_dev'
+    container_name: 'pillar_dev'
     build:
       context: '../'
       dockerfile: '.devcontainer/Dockerfile'
-    image: 'node_dev_image'
+    image: 'pillar_dev_image'
     tty: true
     volumes:
       - '../:/workspace'

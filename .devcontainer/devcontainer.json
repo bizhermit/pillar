@@ -1,5 +1,5 @@
 {
-  "name": "node_dev",
+  "name": "pillar",
   "dockerComposeFile": "docker-compose.yml",
   "service": "node",
   "workspaceFolder": "/workspace",
