@@ -1,11 +1,11 @@
 {
-  "name": "node-app-template",
+  "name": "pillar",
   "version": "0.0.0",
-  "description": "Node.js app templates",
+  "description": "project / task management tools",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/bizhermit/node-app-template.git"
+    "url": "https://github.com/bizhermit/pillar.git"
   },
   "author": "Senda Ryoichi <rsenda@bizhermit.com> (https://bizhermit.com)",
   "homepage": "https://bizhermit.com",
@@ -35,8 +35,7 @@
     "dist:mac": "npm run dist -- --mac & npm run clean:nextron",
     "pack": "npm run dist -- --dir --win & npm run clean:nextron",
     "exec": "npm run dist:win && .\\dist\\pack\\win-unpacked\\node-app-template.exe",
-    "analyze": "npx cross-env ANALYZE=\"true\" npx next build",
-    "export:utils": "npx rimraf dist/libs/utils && npx tsc -p scripts/export-utils/tsconfig.json && npx minifier dist/libs/utils && node scripts/export-utils"
+    "analyze": "npx cross-env ANALYZE=\"true\" npx next build"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
