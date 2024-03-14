@@ -1,0 +1,19 @@
+@layer base {
+
+  .main {
+    padding-top: var(--pt-t);
+
+    &[data-iblock="true"] {
+      display: inline-block;
+    }
+
+    &[data-block="true"] {
+      display: block;
+    }
+
+    &[data-bold="true"] {
+      font-weight: bold;
+    }
+  }
+
+}

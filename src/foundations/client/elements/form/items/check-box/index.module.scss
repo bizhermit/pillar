@@ -1,0 +1,144 @@
+@use "../../../../styles/var" as var;
+@use "../../../../styles/mixins" as mixins;
+
+$checkTransitionTime: 0.1s;
+
+@layer base {
+
+  .main {
+    &[data-disabled="false"] {
+      &:focus {
+        @include mixins.focusOutline(var(--s-color, var(--c-border)));
+      }
+    }
+
+    &[data-editable="true"] {
+      >.body {
+        &::before {
+          background: var(--c-input);
+        }
+      }
+
+      @include mixins.crossHover {
+        >.body {
+          &::before {
+            @include mixins.buttonHoverAnimation(var(--s-color, var(--c-border)));
+          }
+        }
+
+        &:active {
+          >.body {
+            &::before {
+              @include mixins.buttonHoverActive;
+            }
+          }
+        }
+      }
+
+      &[data-error="true"] {
+        >.body {
+          &::before {
+            background: var(--c-error);
+          }
+        }
+      }
+    }
+
+    &[data-outline="true"] {
+      border: #{var.$inputBorderWidth} solid var(--s-color, var(--c-border));
+      border-radius: 9999px;
+
+      >.body {
+        &:not([data-circle="true"]) {
+          &:not(:only-child) {
+            margin-left: #{var.$textPadding};
+          }
+        }
+      }
+    }
+  }
+
+  .body {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    height: var(--cs-m);
+    width: var(--cs-m);
+
+    &::before {
+      box-sizing: border-box;
+      position: absolute;
+      content: "";
+      top: 15%;
+      left: 15%;
+      width: 70%;
+      height: 70%;
+      border-radius: var(--radius);
+      border: #{var.$inputBorderWidth} solid var(--s-color, var(--c-border));
+      transition: background-color #{$checkTransitionTime};
+    }
+
+    &::after {
+      box-sizing: border-box;
+      position: absolute;
+      content: "";
+      top: 22%;
+      left: 37%;
+      width: 28%;
+      height: 45%;
+      border-bottom: 0.25rem solid var(--s-color, var(--c-input_));
+      border-right: 0.25rem solid var(--s-color, var(--c-input_));
+      transform: rotate(45deg);
+      background: transparent;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity #{$checkTransitionTime};
+    }
+
+    &[data-fill="true"] {
+      &::after {
+        border-color: var(--s-color_, var(--c-main_));
+      }
+    }
+
+    &[data-checked="true"] {
+      &::after {
+        opacity: 1;
+      }
+
+      &[data-fill="true"] {
+        &::before {
+          background-color: var(--s-color, var(--c-main));
+        }
+      }
+    }
+
+    &[data-circle="true"] {
+      &::before {
+        border-radius: 9999px;
+      }
+    }
+
+  }
+
+  .content {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    flex: 1;
+    color: var(--s-color, inherit);
+    transition: background-color #{var.$transitionTime},
+    color #{var.$transitionTime};
+    padding-right: #{var.$textPadding};
+  }
+
+  .label {
+    display: inline-block;
+    padding-left: #{var.$textPaddingThin};
+    padding-right: #{var.$textPaddingThin};
+  }
+
+}

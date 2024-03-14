@@ -1,0 +1,232 @@
+@use "../../styles/mixins" as mixins;
+
+$hTransitionTime: 0.8s;
+$vTransitionTime: 0.5s;
+$breadcrumbGap: 3rem;
+
+@layer base {
+
+  .wrap {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    min-height: 0;
+    min-width: 0;
+    --slide-trans-time: 0.8s;
+
+    &:is([data-pos="top"], [data-pos="bottom"]) {
+      flex-direction: column;
+
+      >.breadcrumbs {
+        >.breadcrumb {
+          margin-left: -#{$breadcrumbGap / 2};
+          transition: opacity var(--slide-trans-time),
+            margin-left var(--slide-trans-time);
+
+          &:is([data-state="before"], [data-state="prev"], [data-state="current"]) {
+            margin-left: 0;
+            opacity: 1;
+          }
+
+          &:not(:first-child) {
+            &::before {
+              box-sizing: border-box;
+              position: absolute;
+              content: ">";
+              display: flex;
+              flex-flow: row nowrap;
+              justify-content: center;
+              align-items: center;
+              left: -#{$breadcrumbGap * 0.66};
+            }
+          }
+        }
+      }
+    }
+
+    &:is([data-pos="left"], [data-pos="right"]) {
+      flex-direction: row;
+
+      >.breadcrumbs {
+        writing-mode: vertical-rl;
+
+        >.breadcrumb {
+          margin-top: -#{$breadcrumbGap / 2};
+          transition: opacity var(--slide-trans-time),
+            margin-top var(--slide-trans-time);
+
+          &:is([data-state="before"], [data-state="prev"], [data-state="current"]) {
+            margin-top: 0;
+            opacity: 1;
+          }
+
+          &:not(:first-child) {
+            &::before {
+              box-sizing: border-box;
+              position: absolute;
+              content: ">";
+              display: flex;
+              flex-flow: row nowrap;
+              justify-content: center;
+              align-items: center;
+              top: -#{$breadcrumbGap * 0.66};
+              left: 0;
+            }
+          }
+        }
+      }
+
+      >.body {
+        flex: 1 1 0rem;
+      }
+    }
+
+    &:is([data-pos="bottom"], [data-pos="right"]) {
+      >.breadcrumbs {
+        order: 2;
+      }
+
+      >.body {
+        order: 1;
+      }
+    }
+
+    &[data-direction="horizontal"] {
+      >.body {
+        >.content {
+          top: 0;
+          left: 0;
+          transition: left var(--slide-trans-time);
+
+          &:is([data-state="before"], [data-state="prev"]) {
+            &:not([data-overlap="true"]) {
+              left: -100%;
+            }
+          }
+
+          &:is([data-state="next"], [data-state="after"]) {
+            left: 100%;
+          }
+        }
+      }
+    }
+
+    &[data-direction="horizontal-reverse"] {
+      >.body {
+        >.content {
+          top: 0;
+          right: 0;
+          transition: right var(--slide-trans-time);
+
+          &:is([data-state="before"], [data-state="prev"]) {
+            &:not([data-overlap="true"]) {
+              right: -100%;
+            }
+          }
+
+          &:is([data-state="next"], [data-state="after"]) {
+            right: 100%;
+          }
+        }
+      }
+    }
+
+    &[data-direction="vertical"] {
+      >.body {
+        >.content {
+          top: 0;
+          left: 0;
+          transition: top var(--slide-trans-time);
+
+          &:is([data-state="before"], [data-state="prev"]) {
+            &:not([data-overlap="true"]) {
+              top: -100%;
+            }
+          }
+
+          &:is([data-state="next"], [data-state="after"]) {
+            top: 100%;
+          }
+        }
+      }
+    }
+
+    &[data-direction="vertical-reverse"] {
+      >.body {
+        >.content {
+          bottom: 0;
+          left: 0;
+          transition: bottom var(--slide-trans-time);
+
+          &:is([data-state="before"], [data-state="prev"]) {
+            &:not([data-overlap="true"]) {
+              bottom: -100%;
+            }
+          }
+
+          &:is([data-state="next"], [data-state="after"]) {
+            bottom: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  .breadcrumbs {
+    box-sizing: border-box;
+    flex: none;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: flex-start;
+    flex: none;
+    gap: $breadcrumbGap;
+
+    @include mixins.scrollOverlay;
+  }
+
+  .breadcrumb {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+  }
+
+  .body {
+    box-sizing: border-box;
+    position: relative;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .content {
+    box-sizing: border-box;
+    position: absolute;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    flex: none;
+    overflow: auto;
+    background: var(--c-base);
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    &[data-state="current"] {
+      position: relative;
+    }
+
+    &:not([data-state="current"]) {
+      pointer-events: none;
+    }
+  }
+
+}

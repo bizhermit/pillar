@@ -1,0 +1,350 @@
+@use "../../styles/var" as var;
+@use "../../styles/mixins" as mixins;
+
+@layer base {
+
+  .wrap {
+    box-sizing: border-box;
+    position: relative;
+    padding: 0;
+    flex: none;
+    overflow: visible;
+    font-family: inherit;
+    background: none;
+    border: none;
+    border-radius: var(--radius);
+    outline: none;
+    max-width: 100%;
+    max-height: 100%;
+    user-select: none;
+    text-decoration: none;
+    --c: var(--s-color, var(--c-main));
+    --c_: var(--s-color_, var(--c-main_));
+
+    &:not(:is(:disabled, [aria-disabled="true"])) {
+      cursor: pointer;
+
+      &:focus {
+        @include mixins.focusOutline(var(--c));
+        outline-offset: 0.1rem;
+      }
+
+      @include mixins.crossHover {
+        @include mixins.buttonHoverAnimation(var(--c));
+
+        &:active {
+          @include mixins.buttonHoverActive;
+        }
+
+        >.main {
+          &::after {
+            opacity: 0.8;
+          }
+
+          &:is([data-outline="true"], [data-text="true"]) {
+            &::after {
+              opacity: 0.15;
+            }
+          }
+        }
+      }
+    }
+
+    &:is(:disabled, [aria-disabled="true"]) {
+      opacity: #{var.$disabledOpacity};
+    }
+
+    &[data-round="true"] {
+      border-radius: 9999px;
+
+      >.main {
+        border-radius: 9999px;
+      }
+    }
+
+    @each $size in var.$sizes {
+      &[data-size="#{$size}"] {
+        --is: var(--is-#{$size});
+        font-size: var(--fs-#{$size});
+        min-width: var(--cs-#{$size});
+
+        &[data-wide="true"] {
+          min-width: calc(var(--cs-#{$size}) * 4);
+        }
+
+        >.main {
+          min-height: var(--cs-#{$size});
+
+          >.label {
+            &[data-pad="true"] {
+              padding-left: calc(var(--cs-#{$size}) / 2);
+              padding-right: calc(var(--cs-#{$size}) / 2);
+            }
+          }
+
+          >.icon {
+            min-width: min(100%, var(--cs-#{$size}));
+          }
+        }
+
+        +.pull {
+          width: var(--cs-#{$size});
+        }
+      }
+    }
+
+    &[data-wide="false"] {
+      width: fit-content;
+    }
+  }
+
+  .main {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: var(--radius);
+    height: 100%;
+    width: 100%;
+    color: var(--c_);
+    border: 0.15rem solid var(--c);
+
+    &::after {
+      box-sizing: border-box;
+      position: absolute;
+      content: "";
+      background: var(--c);
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      transition: opacity 0.2s;
+      border-radius: inherit;
+      z-index: 0;
+    }
+
+    &:is([data-outline="true"], [data-text="true"]) {
+      color: var(--c);
+
+      &::after {
+        opacity: 0;
+      }
+    }
+
+    &[data-text="true"] {
+      border-color: transparent;
+    }
+
+    &[data-icon="left"] {
+      >.icon {
+        order: 1;
+      }
+
+      >.label {
+        padding-left: 0 !important;
+        order: 2;
+      }
+    }
+
+    &[data-icon="right"] {
+      >.icon {
+        order: 2;
+      }
+
+      >.label {
+        padding-right: 0 !important;
+        order: 1;
+      }
+    }
+  }
+
+  .label {
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    z-index: 1;
+
+    &[data-fill="true"] {
+      flex: 1 0 0rem;
+    }
+
+    &[data-pad="true"] {
+      &[data-pt="true"] {
+        padding-top: var(--pt-t);
+      }
+    }
+
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .icon {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    z-index: 1;
+
+    &:only-child {
+      width: 100%;
+    }
+  }
+
+  .select {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+
+    >.wrap {
+      flex: 1 1 0rem;
+
+      >.main {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+  }
+
+  .pull {
+    --c: var(--s-color, var(--c-main));
+    --c_: var(--s-color_, var(--c-main_));
+    box-sizing: border-box;
+    position: relative;
+    flex: none;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    color: var(--c_);
+    border-top-right-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+    margin-left: -0.15rem;
+
+    &::before {
+      box-sizing: border-box;
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: var(--c);
+      z-index: 0;
+    }
+
+    &:not(:is([data-outline="true"], [data-text="true"])) {
+      border: 0.15rem solid var(--c);
+
+      &::after {
+        box-sizing: border-box;
+        position: absolute;
+        content: "";
+        top: 0;
+        left: -0.1rem;
+        height: 100%;
+        width: 0.1rem;
+        background: var(--c_);
+        opacity: 0.6;
+        z-index: 10;
+      }
+    }
+
+    &[data-outline="true"] {
+      color: var(--c);
+      border: 0.15rem solid var(--c);
+
+      &::before {
+        opacity: 0;
+      }
+    }
+
+    &[data-text="true"] {
+      color: var(--c);
+
+      &::before {
+        opacity: 0;
+      }
+    }
+
+    &:not([data-disabled="true"]) {
+      cursor: pointer;
+
+      &:focus {
+        @include mixins.focusOutline(var(--c));
+        outline-offset: 0.1rem;
+      }
+
+      @include mixins.crossHover {
+        &::before {
+          opacity: 0.8;
+        }
+
+        &:is([data-outline="true"], [data-text="true"]) {
+          &::before {
+            opacity: 0.15;
+          }
+        }
+      }
+    }
+
+    &[data-disabled="true"] {
+      opacity: #{var.$disabledOpacity};
+    }
+  }
+
+  .down {
+    z-index: 2;
+  }
+
+  .list {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: auto;
+    outline: none;
+    border-radius: var(--radius);
+    z-index: 0;
+  }
+
+  .item {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    padding: var(--pt-t) #{var.$textPadding} 0 #{var.$textPadding};
+    min-height: var(--cs-m);
+    flex: none;
+    background: var(--c-input);
+    color: var(--c-input_);
+    z-index: 0;
+    outline: none;
+    @include mixins.listHover;
+    cursor: pointer;
+
+    &:focus {
+      background: var(--c-hover);
+      color: var(--c-hover_);
+    }
+
+    &[data-current="true"] {
+      background: var(--c-selected);
+      color: var(--c-selected_);
+    }
+
+    &[data-empty="true"] {
+      color: var(--c-dull_);
+    }
+  }
+
+}

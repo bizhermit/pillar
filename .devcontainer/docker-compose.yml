@@ -1,0 +1,19 @@
+version: '3'
+services:
+  node:
+    container_name: 'node_dev'
+    build:
+      context: '../'
+      dockerfile: '.devcontainer/Dockerfile'
+    image: 'node_dev_image'
+    tty: true
+    volumes:
+      - '../:/workspace'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      - WATCHPACK_POLLING=true
+    ports:
+      - '${PORT:-3000}:${PORT:-3000}'
+    command:
+      /bin/bash -c "npm i && npm run dev"

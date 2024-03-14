@@ -1,0 +1,188 @@
+@use "../../styles/var" as var;
+@use "../../styles/mixins" as mixins;
+
+$lineWidth: 0.15rem;
+$arrowMargin: 0.15rem;
+
+@layer base {
+
+  .wrap {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: flex-end;
+
+    @include mixins.scrollOverlay;
+    overflow-y: visible;
+
+    &[data-appearance="line"] {
+      >.step {
+        flex-flow: column nowrap;
+        justify-content: flex-end;
+
+        &:is([data-state="done"], [data-state="prev"]) {
+          .point {
+            background: var(--s-color, var(--c-border));
+          }
+        }
+
+        &[data-state="current"] {
+          .point {
+            background: var(--s-color, var(--c-main));
+          }
+        }
+
+        &:is([data-state="next"], [data-state="future"]) {
+          .point {
+            background: var(--s-color, transparent);
+          }
+        }
+
+        &:first-child {
+          >.line {
+            &::before {
+              display: none;
+            }
+          }
+        }
+
+        &:last-child {
+          >.line {
+            &::after {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+
+    &[data-appearance="arrow"] {
+      padding: 0 calc(var(--point-size) / 4);
+
+      >.step {
+        flex-flow: row nowrap;
+        justify-content: center;
+        height: var(--point-size);
+        overflow: visible;
+
+        &:is([data-state="done"], [data-state="prev"]) {
+          color: var(--s-color_, var(--c-border_));
+
+          >.arrow {
+            background: var(--s-color, var(--c-border));
+          }
+        }
+
+        &[data-state="current"] {
+          color: var(--s-color_, var(--c-main_));
+
+          >.arrow {
+            background: var(--s-color, var(--c-main));
+          }
+        }
+
+        &:is([data-state="next"], [data-state="future"]) {
+          color: var(--s-color_, --c-input_);
+
+          >.arrow {
+            background: var(--s-color, var(--c-input));
+          }
+        }
+
+        &:first-child {
+          >.arrow {
+            clip-path: polygon(0% 0%, calc(100% - var(--point-size) * 0.5) 0%, 100% 50%, calc(100% - var(--point-size) * 0.5) 100%, 0% 100%);
+          }
+        }
+      }
+    }
+
+    @each $size in var.$sizes {
+      &[data-size="#{$size}"] {
+        --point-size: var(--cs-#{$size});
+      }
+    }
+  }
+
+  .step {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 0 0rem;
+    min-width: calc(var(--point-size) * 1.5);
+    cursor: default;
+    overflow: visible;
+  }
+
+  .label {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    flex: none;
+    z-index: 1;
+    overflow: hidden;
+    max-width: 100%;
+    text-align: center;
+    transition: color #{var.$transitionTime};
+  }
+
+  .line {
+    box-sizing: border-box;
+    position: relative;
+    height: var(--point-size);
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+
+    &::before,
+    &::after {
+      box-sizing: border-box;
+      position: absolute;
+      content: "";
+      height: #{$lineWidth * 2};
+      width: calc(50% - var(--point-size) / 2 + 0.1rem);
+      background: var(--c-border);
+      top: calc(50% - #{$lineWidth});
+      z-index: 0;
+    }
+
+    &::before {
+      left: 0;
+    }
+
+    &::after {
+      right: 0;
+    }
+  }
+
+  .point {
+    box-sizing: border-box;
+    height: var(--point-size);
+    width: var(--point-size);
+    border-radius: 9999px;
+    z-index: 1;
+    border: 0.2rem solid var(--c-border);
+    transition: background-color #{var.$transitionTime};
+  }
+
+  .arrow {
+    box-sizing: border-box;
+    position: absolute;
+    height: 100%;
+    width: calc(100% + var(--point-size) * 0.5 - #{$arrowMargin * 2});
+    top: 0;
+    z-index: 0;
+    overflow: visible;
+    clip-path: polygon(0% 0%, calc(100% - var(--point-size) * 0.5) 0%, 100% 50%, calc(100% - var(--point-size) * 0.5) 100%, 0% 100%, calc(var(--point-size) * 0.5) 50%);
+    transition: background-color #{var.$transitionTime};
+  }
+
+}

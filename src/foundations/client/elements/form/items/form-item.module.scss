@@ -1,0 +1,200 @@
+@use "../../../styles/var" as var;
+@use "../../../styles/mixins" as mixins;
+
+$tagHeight: calc(var(--fs-m) * 1.5);
+$tagMoveTransitionTime: 0.5s;
+
+@layer base {
+
+  .wrap {
+    box-sizing: border-box;
+    position: relative;
+    display: inline-flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: visible;
+    max-width: 100%;
+
+    &[data-hidden="true"] {
+      display: none;
+    }
+
+    &[data-tagpad="true"] {
+      padding-top: $tagHeight;
+    }
+
+    &:is(:focus-within, [data-has="true"]) {
+      >.tag {
+        &[data-pos="placeholder"] {
+          top: 0;
+          left: 0;
+          padding-top: 0;
+          height: $tagHeight;
+          opacity: 1;
+          color: inherit;
+        }
+      }
+    }
+
+    &[data-round="true"] {
+      border-radius: 9999px !important;
+
+      >.main {
+        border-radius: 9999px !important;
+
+        &::before {
+          border-radius: 9999px !important;
+        }
+      }
+    }
+
+    @include mixins.crossHover {}
+  }
+
+  .tag {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 100%;
+    text-overflow: clip;
+    height: $tagHeight;
+    width: 0;
+    white-space: nowrap;
+    overflow: visible;
+    color: var(--s-color, inherit);
+
+    &[data-pos="placeholder"] {
+      position: absolute;
+      top: $tagHeight;
+      padding-top: calc(var(--pt-t) + 0.1rem);
+      height: var(--cs-m);
+      left: #{var.$textPadding};
+      color: var(--c-placeholder_);
+      z-index: 1;
+      transition: left #{$tagMoveTransitionTime},
+      top #{$tagMoveTransitionTime},
+      height #{$tagMoveTransitionTime},
+      padding-top #{$tagMoveTransitionTime},
+      color #{$tagMoveTransitionTime},
+      opacity #{$tagMoveTransitionTime};
+      opacity: #{var.$placeholderOpacity};
+    }
+  }
+
+  .main {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: center;
+    flex: 1 1 auto;
+    max-width: 100%;
+    min-height: 0;
+    min-width: 0;
+    border-radius: var(--radius);
+    transition: color #{var.$transitionTime};
+
+    &[data-field="true"] {
+      &::before {
+        box-sizing: border-box;
+        position: absolute;
+        content: "";
+        height: 100%;
+        width: 100%;
+        border-width: #{var.$inputBorderWidth};
+        border-style: solid;
+        border-color: var(--s-color, var(--c-border));
+        border-radius: var(--radius);
+        z-index: 0;
+        transition: background-color #{var.$transitionTime},
+        border-color #{var.$transitionTime};
+      }
+    }
+
+    &[data-disabled="false"] {
+      &[data-field="true"] {
+        &:focus-within {
+          @include mixins.focusOutline(var(--s-color, var(--c-border)));
+        }
+      }
+    }
+
+    &[data-editable="true"] {
+      &[data-field="true"] {
+        color: var(--c-input_);
+
+        &::before {
+          background: var(--c-input);
+        }
+
+        &[data-error="true"] {
+          color: var(--c-error_);
+
+          &::before {
+            background: var(--c-error);
+          }
+        }
+      }
+
+      &[data-clickable="true"] {
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+
+    &[data-disabled="true"] {
+      opacity: #{var.$disabledOpacity};
+    }
+  }
+
+  .error {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: calc(var(--fs-s) * 1.5);
+    font-size: var(--fs-s);
+
+    &[data-mode="tooltip"] {
+      padding: .5rem 1.5rem .5rem 1.5rem;
+      white-space: nowrap;
+      background: var(--c-error);
+      color: var(--c-error_);
+      opacity: 0.9;
+      width: fit-content;
+      border-radius: var(--radius);
+      box-shadow: 0 .1rem .8rem 0 var(--c-shadow);
+    }
+
+    &:is([data-mode="bottom"], [data-mode="bottom-hide"]) {
+      padding: 0 .5rem;
+      max-width: fit-content;
+      color: var(--c-danger);
+
+      >.text {
+        &[data-nowrap="true"] {
+          width: 0;
+          white-space: nowrap;
+          overflow: visible;
+        }
+      }
+    }
+  }
+
+  .tooltip {
+    overflow: visible;
+  }
+
+  .text {
+    padding-top: var(padding-top-text);
+    white-space: pre-wrap;
+  }
+
+}

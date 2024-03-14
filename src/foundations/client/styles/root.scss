@@ -1,0 +1,95 @@
+@use "./var" as var;
+@use "./mixins.scss" as mixins;
+
+$base: 0.4rem;
+$size: 3.6rem;
+$fontSize: 1.6rem;
+$iconSize: 1.6rem;
+
+@layer base, feat, util;
+
+@layer base {
+
+  :root {
+    outline: var(--c-base_) !important;
+    --pt-t: 0.1rem; // padding top text
+    --nav-size: #{$size};
+    --radius: #{$base * 0.5};
+    // base size
+    --base: #{$base};
+    --b-xs: #{$base * 1};
+    --b-s: #{$base * 2};
+    --b-m: #{$base * 4};
+    --b-l: #{$base * 6};
+    --b-xl: #{$base * 8};
+    // component size
+    --cs-xs: #{$size * 0.7};
+    --cs-s: #{$size * 0.85};
+    --cs-m: #{$size};
+    --cs-l: #{$size * 1.15};
+    --cs-xl: #{$size * 1.3};
+    // font size
+    --fs-xs: #{$fontSize * 0.7};
+    --fs-s: #{$fontSize * 0.85};
+    --fs-m: #{$fontSize};
+    --fs-l: #{$fontSize * 1.2};
+    --fs-xl: #{$fontSize * 1.4};
+    // icon size
+    --is-xs: #{$iconSize * 0.7};
+    --is-s: #{$iconSize * 0.85};
+    --is-m: #{$iconSize};
+    --is-l: #{$iconSize * 1.2};
+    --is-xl: #{$iconSize * 1.4};
+  }
+
+  html {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-size: 62.5%;
+    background: var(--c-base);
+    color: var(--c-base_);
+
+    &:is([data-dialog], :has(dialog[open])){
+      overflow: hidden;
+    }
+  }
+
+  body {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-size: var(--fs-m);
+    --is: var(--is-m);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-block: unset;
+  }
+
+  a {
+    &[aria-disabled="true"] {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
+  ::placeholder {
+    color: var(--c-placeholder_);
+    opacity: #{var.$placeholderOpacity};
+  }
+
+  .plain-text {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  @include mixins.buttonHoverAnimationKeyframes;
+  @include mixins.inputButtonHoverAnimationKeyframes;
+
+}
