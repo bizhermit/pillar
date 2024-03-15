@@ -9,6 +9,7 @@ services:
     tty: true
     volumes:
       - '../:/workspace'
+      - 'pillar_dev_node_modules:/workspace/node_modules'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     environment:
@@ -45,4 +46,5 @@ services:
     ports:
       - '${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}'
 volumes:
-  pillar_dev_db: {}
+  pillar_dev_node_modules:
+  pillar_dev_db:
