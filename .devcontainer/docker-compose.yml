@@ -26,7 +26,7 @@ services:
     ports:
       - '${NEXT_PORT:-3000}:${NEXT_PORT:-3000}'
     command:
-      /bin/bash -c "npm i && npm run dev -p $NEXT_PORT"
+      bash -c 'sh /workspace/.devcontainer/postCreatedCommand.sh && npm i && npm run dev && bash'
     depends_on:
       - postgres
   postgres:
