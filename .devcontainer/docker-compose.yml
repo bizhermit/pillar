@@ -45,6 +45,13 @@ services:
       - 'POSTGRES_PORT=${POSTGRES_PORT:-5432}'
     ports:
       - '${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}'
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command:
+      'postgres -c log_destination=stderr -c log_statement=all -c log_connections=on -c log_disconnections=on'
 volumes:
   pillar_dev_node_modules:
   pillar_dev_db:
