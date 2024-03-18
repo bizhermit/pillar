@@ -1,15 +1,17 @@
 {
-  "name": "node_dev",
+  "name": "pillar",
   "dockerComposeFile": "docker-compose.yml",
   "service": "node",
   "workspaceFolder": "/workspace",
-  "postStartCommand": "npm install",
+  "postCreateCommand": "sh ./.devcontainer/postCreatedCommand.sh",
+  "postStartCommand": "npm i",
   "remoteUser": "node",
   "overrideCommand": true,
   "customizations": {
     "vscode": {
       "extensions": [
         "MS-CEINTL.vscode-language-pack-ja",
+        "ms-azuretools.vscode-docker",
         "eamodio.gitlens",
         "mhutchie.git-graph",
         "dbaeumer.vscode-eslint",

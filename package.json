@@ -1,11 +1,11 @@
 {
-  "name": "node-app-template",
+  "name": "pillar",
   "version": "0.0.0",
-  "description": "Node.js app templates",
+  "description": "project / task management tools",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/bizhermit/node-app-template.git"
+    "url": "https://github.com/bizhermit/pillar.git"
   },
   "author": "Senda Ryoichi <rsenda@bizhermit.com> (https://bizhermit.com)",
   "homepage": "https://bizhermit.com",
@@ -13,14 +13,14 @@
     "clean": "npx rimraf .next",
     "clean:libs": "npx rimraf dist/libs",
     "clean:all": "npx rimraf .next .renderer .main .server dist",
-    "cleanup": "npx rimraf .next .main .renderer .server dist out node_modules",
+    "cleanup": "npx rimraf .next .main .renderer .server dist out node_modules/*",
     "route": "node scripts/generate-route-types",
     "lint": "npx next lint",
     "predev": "npm run route",
-    "dev": "npm run clean && npx next dev -p 3333",
+    "dev": "npm run clean && npx next dev -p $NEXT_PORT",
     "prebuild": "npm run route",
     "build": "npx next build",
-    "next": "npm run clean && npm run build && npx next start",
+    "next": "npm run clean && npm run build && npx next start -p $NEXT_PORT",
     "export": "npm run clean && npx rimraf dist/out && npx cross-env NEXT_OUTPUT=\"dist\" npm run build",
     "prenexpress": "npm run clean && npx rimraf .server && npx tsc -p src/nexpress/tsconfig.json && npx tsc-alias -p src/nexpress/tsconfig.json",
     "dev:nexpress": "npm run prenexpress && npm run route && npx cross-env NODE_ENV=\"development\" node .server/nexpress/main.js",
@@ -35,8 +35,7 @@
     "dist:mac": "npm run dist -- --mac & npm run clean:nextron",
     "pack": "npm run dist -- --dir --win & npm run clean:nextron",
     "exec": "npm run dist:win && .\\dist\\pack\\win-unpacked\\node-app-template.exe",
-    "analyze": "npx cross-env ANALYZE=\"true\" npx next build",
-    "export:utils": "npx rimraf dist/libs/utils && npx tsc -p scripts/export-utils/tsconfig.json && npx minifier dist/libs/utils && node scripts/export-utils"
+    "analyze": "npx cross-env ANALYZE=\"true\" npx next build"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
@@ -48,7 +47,7 @@
     "formidable": "^2.1.1",
     "fs-extra": "^10.1.0",
     "helmet": "^7.0.0",
-    "next": "13",
+    "next": "14",
     "next-auth": "^4.24.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
