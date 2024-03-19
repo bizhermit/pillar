@@ -5,7 +5,7 @@ services:
     build:
       context: '../'
       dockerfile: '.prodcontainer/docker/node/Dockerfile'
-    image: 'pillar_image'
+    image: 'pillar'
     tty: true
     extra_hosts:
       - 'host.docker.internal:host-gateway'

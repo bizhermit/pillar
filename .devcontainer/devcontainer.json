@@ -5,8 +5,8 @@
   "workspaceFolder": "/workspace",
   "postCreateCommand": "sh ./.devcontainer/postCreatedCommand.sh",
   "postStartCommand": "npm i",
-  "remoteUser": "node",
   "overrideCommand": true,
+  "remoteUser": "node",
   "customizations": {
     "vscode": {
       "extensions": [

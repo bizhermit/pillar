@@ -10,10 +10,10 @@
   "author": "Senda Ryoichi <rsenda@bizhermit.com> (https://bizhermit.com)",
   "homepage": "https://bizhermit.com",
   "scripts": {
-    "clean": "npx rimraf .next",
+    "clean": "npx rimraf .next/*",
     "clean:libs": "npx rimraf dist/libs",
-    "clean:all": "npx rimraf .next .renderer .main .server dist",
-    "cleanup": "npx rimraf .next .main .renderer .server dist out node_modules/*",
+    "clean:all": "npx rimraf .next/* .renderer .main .server/* dist",
+    "cleanup": "npx rimraf .next/* .main .renderer .server/* dist out node_modules/*",
     "route": "node scripts/generate-route-types",
     "lint": "npx next lint",
     "predev": "npm run route",
@@ -22,7 +22,7 @@
     "build": "npx next build",
     "next": "npm run clean && npm run build && npx next start -p $NEXT_PORT",
     "export": "npm run clean && npx rimraf dist/out && npx cross-env NEXT_OUTPUT=\"dist\" npm run build",
-    "prenexpress": "npm run clean && npx rimraf .server && npx tsc -p src/nexpress/tsconfig.json && npx tsc-alias -p src/nexpress/tsconfig.json",
+    "prenexpress": "npm run clean && npx rimraf .server/* && npx tsc -p src/nexpress/tsconfig.json && npx tsc-alias -p src/nexpress/tsconfig.json",
     "dev:nexpress": "npm run prenexpress && npm run route && npx cross-env NODE_ENV=\"development\" node .server/nexpress/main.js",
     "build:nexpress": "npm run prenexpress && npm run build",
     "nexpress": "npm run build && node .server/nexpress/main.js",
@@ -34,7 +34,7 @@
     "dist:win": "npm run dist -- --win & npm run clean:nextron",
     "dist:mac": "npm run dist -- --mac & npm run clean:nextron",
     "pack": "npm run dist -- --dir --win & npm run clean:nextron",
-    "exec": "npm run dist:win && .\\dist\\pack\\win-unpacked\\node-app-template.exe",
+    "exec": "npm run dist:win && .\\dist\\pack\\win-unpacked\\pillar.exe",
     "analyze": "npx cross-env ANALYZE=\"true\" npx next build"
   },
   "dependencies": {
@@ -79,8 +79,8 @@
     "typescript": "^5.0.4"
   },
   "build": {
-    "appId": "com.bizhermit.template",
-    "productName": "node-app-template",
+    "appId": "com.bizhermit.pillar",
+    "productName": "pillar",
     "asar": true,
     "extends": null,
     "extraMetadata": {
