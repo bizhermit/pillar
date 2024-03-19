@@ -9,7 +9,7 @@ import "#/client/styles/root.scss";
 import "$/client/styles/global.scss";
 
 export const metadata = {
-  title: "NodeAppTemplate",
+  title: "Pillar",
   description: "@bizhermit/pillar",
   viewport: "width=device-width,initial-scale=1",
   robots: "none",
