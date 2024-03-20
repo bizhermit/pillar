@@ -1,34 +1,24 @@
 // generate by script
 // do not edit
 
-type AppRoutePath = "/[uid]"
- | "/"
- | "/sign-in";
+type AppRoutePath = "/"
+  | "/[uid]"
+  | "/sign-in";
 
-type AppApiPath = "/api/auth/[...nextauth]"
- | "/api/fetch"
- | "/api";
+type AppApiPath = "/api"
+  | "/api/auth/[...nextauth]";
 
 type TypeofAppApi = {
-  "/api/auth/[...nextauth]": typeof import("app/api/auth/[...nextauth]/route");
-  "/api/fetch": typeof import("app/api/fetch/route");
-  "/api": typeof import("app/api/route");
+  "/api": typeof import("app/api/route.ts");
+  "/api/auth/[...nextauth]": typeof import("app/api/auth/[...nextauth]/route.ts");
 };
 
-type PagesRoutePath = "/404"
- | "/pages"
- | "/root"
- | "/sandbox/nest/[id]"
- | "/sandbox/pages"
- | "/sandbox/post/recipient"
- | "/sandbox/route";
+type PagesRoutePath = "/404";
 
-type PagesApiPath = "/api/form"
- | "/api/hello";
+type PagesApiPath = "";
 
 type TypeofPagesApi = {
-  "/api/form": typeof import("pages/api/form");
-  "/api/hello": typeof import("pages/api/hello");
+
 };
 
 type PagePath = AppRoutePath | PagesRoutePath;
