@@ -5,6 +5,12 @@
       "label": "fetch & merge node-app-template/main",
       "group": "none",
       "type": "shell",
+      "command": "git fetch node-app-template && git merge node-app-template/main"
+    },
+    {
+      "label": "fetch & merge node-app-template/main (allow unrelated histories)",
+      "group": "none",
+      "type": "shell",
       "command": "git fetch node-app-template && git merge --allow-unrelated-histories node-app-template/main"
     },
     {
