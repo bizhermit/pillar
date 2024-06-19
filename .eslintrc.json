@@ -1,5 +1,25 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": [
+    "next/core-web-vitals"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./src/tsconfig.json",
+    "sourceType": "module"
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.mts",
+        "*.cts"
+      ],
+      "parserOptions": {
+        "project": "./src/tsconfig.json",
+        "sourceType": "module"
+      }
+    }
+  ],
+  "root": true,
   "settings": {
     "import/resolver": {
       "alias": {

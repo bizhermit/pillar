@@ -14,7 +14,7 @@ type ObjectType =
 
 export const getObjectType = (o: any) => toString.call(o).slice(8, -1) as ObjectType;
 
-export const clone = <T = any,>(o: T): T => {
+export const clone = <T = any, >(o: T): T => {
   if (o == null || typeof o !== "object") return o;
   switch (getObjectType(o)) {
     case "Array":
@@ -39,7 +39,7 @@ export const isNull = (o: any | null | undefined): o is null | undefined => {
   return o == null;
 };
 
-export const isNotNull = <T = any,>(o: T | null | undefined): o is Exclude<T, null | undefined> => {
+export const isNotNull = <T = any, >(o: T | null | undefined): o is Exclude<T, null | undefined> => {
   return o != null;
 };
 
@@ -61,7 +61,7 @@ export const isEmpty = (o: any | null | undefined) => {
   }
 };
 
-export const isNotEmpty = <T = any,>(o: T | null | undefined): o is Exclude<T, null | undefined> => {
+export const isNotEmpty = <T = any, >(o: T | null | undefined): o is Exclude<T, null | undefined> => {
   return !isEmpty(o);
 };
 

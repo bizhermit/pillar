@@ -1,4 +1,4 @@
-export const generateArray = <T = any,>(len: number, init?: T | ((index: number) => T)) => {
+export const generateArray = <T = any, >(len: number, init?: T | ((index: number) => T)) => {
   const arr: Array<T> = [];
   const iterator = (func: (i: number) => T) => {
     for (let i = 0; i < len; i++) arr.push(func(i));
