@@ -1,6 +1,6 @@
-const fse = (await import("fs-extra")).default;
-const path = await import("path");
-const nextConfig = await import("../next.config.mjs");
+import fs from "fs";
+import path from "path";
+import nextConfig from "../next.config.mjs";
 
 const quiet = true;
 
@@ -10,7 +10,7 @@ const appRoot = path.join(srcRoot, appAlias);
 const pageAlias = "pages";
 const pageRoot = path.join(srcRoot, pageAlias);
 
-const extensions = (nextConfig.default.pageExtensions ?? ["ts", "tsx", "mts", "cts"]).sort((a, b) => b.length - a.length);
+const extensions = (nextConfig.pageExtensions ?? ["ts", "tsx", "mts", "cts"]).sort((a, b) => b.length - a.length);
 
 const pagesRoutes = [];
 const pagesApiRoutes = [];
@@ -26,10 +26,10 @@ const findNextPathName = (fileName, findPathname) => {
 };
 
 const mainForApp = (dirName, nestLevel = 0, underApi = false) => {
-  const items = fse.readdirSync(dirName);
+  const items = fs.readdirSync(dirName);
   items.sort((a, b) => {
-    if (fse.statSync(path.join(dirName, a)).isDirectory()) return 1;
-    if (fse.statSync(path.join(dirName, b)).isDirectory()) return -1;
+    if (fs.statSync(path.join(dirName, a)).isDirectory()) return 1;
+    if (fs.statSync(path.join(dirName, b)).isDirectory()) return -1;
     if (findNextPathName(a, "index")) return -1;
     if (findNextPathName(b, "index")) return 1;
     return 0;
@@ -39,7 +39,7 @@ const mainForApp = (dirName, nestLevel = 0, underApi = false) => {
     if (name === "api") api = true;
 
     const fullName = path.join(dirName, name);
-    if (fse.statSync(fullName).isDirectory()) {
+    if (fs.statSync(fullName).isDirectory()) {
       mainForApp(fullName, nestLevel + 1, api);
       return;
     }
@@ -57,13 +57,13 @@ const mainForApp = (dirName, nestLevel = 0, underApi = false) => {
     }
   });
 };
-if (fse.existsSync(appRoot)) mainForApp(appRoot);
+if (fs.existsSync(appRoot)) mainForApp(appRoot);
 
 const mainForPages = (dirName, nestLevel = 0, isApi = false) => {
-  const items = fse.readdirSync(dirName);
+  const items = fs.readdirSync(dirName);
   items.sort((a, b) => {
-    if (fse.statSync(path.join(dirName, a)).isDirectory()) return 1;
-    if (fse.statSync(path.join(dirName, b)).isDirectory()) return -1;
+    if (fs.statSync(path.join(dirName, a)).isDirectory()) return 1;
+    if (fs.statSync(path.join(dirName, b)).isDirectory()) return -1;
     if (findNextPathName(a, "index")) return -1;
     if (findNextPathName(b, "index")) return 1;
     return 0;
@@ -74,7 +74,7 @@ const mainForPages = (dirName, nestLevel = 0, isApi = false) => {
       if (name === "api") api = true;
     }
     const fullName = path.join(dirName, name);
-    if (fse.statSync(fullName).isDirectory()) {
+    if (fs.statSync(fullName).isDirectory()) {
       mainForPages(fullName, nestLevel + 1, api);
       return;
     }
@@ -89,7 +89,7 @@ const mainForPages = (dirName, nestLevel = 0, isApi = false) => {
     return;
   });
 }
-if (fse.existsSync(pageRoot)) mainForPages(pageRoot);
+if (fs.existsSync(pageRoot)) mainForPages(pageRoot);
 
 const pickNextPathName = (fileName) => {
   const ex = isNextPathName(fileName);
@@ -167,7 +167,7 @@ type PagePath = AppRoutePath | PagesRoutePath;
 
 type TypeofApi = TypeofAppApi & TypeofPagesApi;
 `;
-fse.writeFileSync(path.join(srcRoot, "route.d.mts"), contents);
+fs.writeFileSync(path.join(srcRoot, "route.d.mts"), contents);
 
 const duplicatedRoutes = [];
 appRoutes.forEach(appRoute => {
