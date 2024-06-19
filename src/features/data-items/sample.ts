@@ -1,11 +1,11 @@
-import $array from "@/data-items/array";
-import $bool from "@/data-items/bool";
-import $boolNum from "@/data-items/bool/number";
-import $boolStr from "@/data-items/bool/string";
-import $date from "@/data-items/date";
-import $num from "@/data-items/number";
-import $str from "@/data-items/string";
-import $struct from "@/data-items/struct";
+import $array from "@/data-items/array.mjs";
+import $boolNum from "@/data-items/bool-number.mjs";
+import $boolStr from "@/data-items/bool-string.mjs";
+import $bool from "@/data-items/bool.mjs";
+import $date from "@/data-items/date.mjs";
+import $num from "@/data-items/number.mjs";
+import $str from "@/data-items/string.mjs";
+import $struct from "@/data-items/struct.mjs";
 
 export const sample_str = $str({
   name: "sample_str",
