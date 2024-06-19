@@ -26,16 +26,10 @@
       "command": "bash ./.devcontainer/deleteVolumes.sh",
     },
     {
-      "label": "format",
-      "group": "none",
-      "type": "shell",
-      "command": "npx eslint --fix ./src/"
-    },
-    {
       "label": "build next route",
       "group": "none",
       "type": "shell",
-      "command": "npm run route"
+      "command": "npm run generate-pathnames"
     },
   ]
 }
