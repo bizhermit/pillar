@@ -1,0 +1,45 @@
+{
+  "name": "next-app-template",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "node",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "bash ./.devcontainer/postCreatedCommand.sh",
+  "postStartCommand": "npm i",
+  "overrideCommand": true,
+  "remoteUser": "node",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "MS-CEINTL.vscode-language-pack-ja",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "dbaeumer.vscode-eslint",
+        "dsznajder.es7-react-js-snippets",
+        "foxundermoon.next-js",
+        "PulkitGangwar.nextjs-snippets",
+        "clinyong.vscode-css-modules",
+        "Divlo.vscode-styled-jsx-languageserver",
+        "Divlo.vscode-styled-jsx-syntax",
+        "Pivotal.vscode-manifest-yaml",
+        "jock.svg",
+        "yzhang.markdown-all-in-one",
+        "shd101wyy.markdown-preview-enhanced",
+        "GrapeCity.gc-excelviewer",
+        "hediet.vscode-drawio",
+        "ritwickdey.LiveServer"
+      ],
+      "settings": {
+        "liveServer.settings.root": "/dist/out",
+        "typescript.preferences.importModuleSpecifier": "non-relative",
+        "files.associations": {
+          ".env.*": "properties"
+        },
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",
+          "source.organizeImports": "explicit"
+        }
+      }
+    }
+  }
+}

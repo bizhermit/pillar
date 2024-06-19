@@ -1,0 +1,32 @@
+version: '3'
+services:
+  node:
+    container_name: 'next-app-template_dev'
+    env_file:
+      - path: '../.env'
+        required: true
+      - path: '../.env.local'
+        required: false
+    build:
+      context: '../'
+      dockerfile: '.devcontainer/docker/node/Dockerfile'
+    image: 'next-app-template_dev'
+    tty: true
+    volumes:
+      - '../:/workspace:delegated'
+      - 'next-app-template_dev_node_modules:/workspace/node_modules'
+      - 'next-app-template_dev_next:/workspace/.next'
+      - 'next-app-template_dev_server:/workspace/.server'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      - 'WATCHPACK_POLLING=true'
+      - 'LOCALHOST=${LOCALHOST:-host.docker.internal}'
+    ports:
+      - '${NEXT_PORT:-3000}:${NEXT_PORT:-3000}'
+    command:
+      bash -c 'sh /workspace/.devcontainer/postCreatedCommand.sh && npm i && npm run dev && bash'
+volumes:
+  next-app-template_dev_node_modules:
+  next-app-template_dev_next:
+  next-app-template_dev_server:
