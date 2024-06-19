@@ -4,7 +4,7 @@
   "description": "next-app templates",
   "private": true,
   "scripts": {
-    "clean": "npx rimraf .next/*",
+    "clean": "node scripts/clean.mjs",
     "predev": "npm run route",
     "dev": "bash scripts/next-dev.sh",
     "prebuild": "npm run route",
@@ -31,7 +31,6 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "15.0.0-rc.0",
     "fs-extra": "^11.2.0",
-    "rimraf": "^5.0.7",
     "typescript": "^5"
   }
 }
