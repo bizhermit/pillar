@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // {
+    //   "label": "fetch & merge next-app-template/main (allow unrelated histories)",
+    //   "group": "none",
+    //   "type": "shell",
+    //   "command": "git fetch next-app-template && git merge --allow-unrelated-histories next-app-template/main"
+    // },
+    // {
+    //   "label": "fetch & merge next-app-template/main",
+    //   "group": "none",
+    //   "type": "shell",
+    //   "command": "git fetch next-app-template && git merge next-app-template/main"
+    // },
+    {
+      "label": "cleanup branch",
+      "group": "none",
+      "type": "shell",
+      "command": "bash ./scripts/git/cleanup.sh"
+    },
+    {
+      "label": "delete devcontainer docker",
+      "group": "none",
+      "type": "shell",
+      "command": "bash ./.devcontainer/deleteVolumes.sh",
+    },
+    {
+      "label": "format",
+      "group": "none",
+      "type": "shell",
+      "command": "npx eslint --fix ./src/"
+    },
+    {
+      "label": "build next route",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run route"
+    },
+  ]
+}
