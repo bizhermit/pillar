@@ -29,7 +29,7 @@
       "label": "build next route",
       "group": "none",
       "type": "shell",
-      "command": "npm run generate-pathnames"
+      "command": "npm run route"
     },
   ]
 }

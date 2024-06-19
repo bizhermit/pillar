@@ -1,2 +1,2 @@
 next.config.mjs
-scripts/generate-pathnames.mjs
+scripts/*

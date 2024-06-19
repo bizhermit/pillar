@@ -1,15 +1,19 @@
 {
   "name": "next-app-template",
-  "version": "0.1.0",
+  "version": "0.0.0",
+  "description": "next-app templates",
   "private": true,
   "scripts": {
-    "predev": "npm run generate-pathnames",
-    "dev": "next dev --turbo",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "format": "next lint --fix",
-    "generate-pathnames": "node scripts/generate-pathnames.mjs"
+    "clean": "npx rimraf .next/*",
+    "predev": "npm run route",
+    "dev": "bash scripts/next-dev.sh",
+    "prebuild": "npm run route",
+    "build": "npx next build",
+    "next": "bash scripts/next-start.sh",
+    "export": "npm run clean && npx rimraf dist/out && npx cross-env NEXT_OUTPUT=\"dist\" npm run build",
+    "lint": "npx next lint",
+    "format": "npx next lint --fix",
+    "route": "node scripts/next-route.mjs"
   },
   "dependencies": {
     "next": "15.0.0-rc.0",
@@ -23,9 +27,11 @@
     "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-next": "15.0.0-rc.0",
     "fs-extra": "^11.2.0",
+    "rimraf": "^5.0.7",
     "typescript": "^5"
   }
 }
