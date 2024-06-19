@@ -3,10 +3,10 @@
 
 type AppRoutePath = "/";
 
-type AppApiPath = "";
+type AppApiPath = "/api";
 
 type TypeofAppApi = {
-
+  "/api": typeof import("app/api/route.ts");
 };
 
 type PagesRoutePath = "";

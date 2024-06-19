@@ -167,7 +167,7 @@ type PagePath = AppRoutePath | PagesRoutePath;
 
 type TypeofApi = TypeofAppApi & TypeofPagesApi;
 `;
-fse.writeFileSync(path.join(srcRoot, "route.d.ts"), contents);
+fse.writeFileSync(path.join(srcRoot, "route.d.mts"), contents);
 
 const duplicatedRoutes = [];
 appRoutes.forEach(appRoute => {
