@@ -1,8 +1,13 @@
-const $date = <P extends Omit<DataItem.$date, "type">>(props: Readonly<P>) => {
+export const $date = <P extends Omit<DataItem.$date, "type">>(props: Readonly<P>) => {
   return {
     ...props,
     type: "date",
   } as const;
 };
 
-export default $date;
+export const $month = <P extends Omit<DataItem.$month, "type">>(props: Readonly<P>) => {
+  return {
+    ...props,
+    type: "month",
+  } as const;
+};
