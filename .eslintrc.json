@@ -13,8 +13,12 @@
           ".json",
           ".js",
           ".jsx",
+          ".mjs",
+          ".cjs",
           ".ts",
-          ".tsx"
+          ".tsx",
+          ".mts",
+          ".cts"
         ]
       }
     }
