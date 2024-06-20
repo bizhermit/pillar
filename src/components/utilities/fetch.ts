@@ -1,6 +1,6 @@
 import type { RequestInit } from "next/dist/server/web/spec-extension/request";
-import { convertFormDataToStruct, convertStructToFormData } from "../objects/form-data.mjs";
-import { getDynamicPathnameContext } from "../objects/url.mjs";
+import { convertFormDataToStruct, convertStructToFormData } from "../objects/form-data";
+import { getDynamicPathnameContext } from "../objects/url";
 
 export type FetchOptions = {
   contentType?: "json" | "formData";

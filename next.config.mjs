@@ -16,8 +16,8 @@ const nextConfig = {
     distDir: '.renderer',
   } : {}),
   pageExtensions: [
-    'tsx', 'ts', 'mts', 'cts',
-    ...(appMode === 'dev' ? ['dev.tsx', 'dev.ts', 'dev.mts', 'dev.cts'] : [])
+    'tsx', 'ts',
+    ...(appMode === 'dev' ? ['dev.tsx', 'dev.ts'] : [])
   ],
 };
 

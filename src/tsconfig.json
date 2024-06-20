@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ESNext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -17,6 +17,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": "..",
     "plugins": [
       {
         "name": "next"
@@ -24,16 +25,16 @@
     ],
     "paths": {
       "@/*": [
-        "./src/components/*"
+        "src/components/*"
       ]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
+    "**/*.tsx",
     "**/*.mts",
     "**/*.cts",
-    "**/*.tsx",
     ".next/types/**/*.ts"
   ],
   "exclude": [

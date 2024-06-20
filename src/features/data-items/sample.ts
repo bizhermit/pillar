@@ -1,9 +1,9 @@
-import { $array } from "@/data-items/array.mjs";
-import { $bool, $boolNum, $boolStr } from "@/data-items/bool.mjs";
-import { $date } from "@/data-items/date.mjs";
-import { $num } from "@/data-items/number.mjs";
-import { $str } from "@/data-items/string.mjs";
-import { $struct } from "@/data-items/struct.mjs";
+import { $array } from "@/data-items/array";
+import { $bool, $boolNum, $boolStr } from "@/data-items/bool";
+import { $date } from "@/data-items/date";
+import { $num } from "@/data-items/number";
+import { $str } from "@/data-items/string";
+import { $struct } from "@/data-items/struct";
 
 export const sample_str = $str({
   name: "sample_str",

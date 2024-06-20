@@ -1,6 +1,6 @@
 import queryString from "querystring";
-import { convertFormDataToStruct } from "./form-data.mjs";
-import { getValue } from "./struct.mjs";
+import { convertFormDataToStruct } from "./form-data";
+import { getValue } from "./struct";
 
 type UrlPath = `http://${string}` | `https://${string}` | `tel:${string}` | `mailto:${string}` | PagePath | ApiPath;
 

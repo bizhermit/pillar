@@ -6,7 +6,7 @@ type AppRoutePath = "/";
 type AppApiPath = "/api";
 
 type TypeofAppApi = {
-  "/api": typeof import("app/api/route.ts");
+  "/api": typeof import("app/api/route.mts");
 };
 
 type PagesRoutePath = "";
