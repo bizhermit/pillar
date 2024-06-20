@@ -46,7 +46,8 @@ export const apiMethodHandler = <
             ...bodyParams,
           };
 
-          // TODO: validation & parse data
+          // TODO: parse data
+          // TODO: validation
 
           return p as DataItem.Props<Req>;
         },
