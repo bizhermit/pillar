@@ -18,21 +18,42 @@ export const getValue = <U = any, >(data: { [v: string | number | symbol]: any }
 export const setValue = <U = any, >(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
   const names = name.split(".");
-  let v: any = data;
+  let o = data;
   for (const n of names.slice(0, names.length - 1)) {
     try {
-      if (v[n] == null) v[n] = {};
-      v = v[n];
+      if (o[n] == null) o[n] = {};
+      o = o[n];
     } catch {
       return value;
     }
   }
   try {
-    v[names[names.length - 1]] = value;
+    o[names[names.length - 1]] = value;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
   }
+  return value;
+};
+
+export const appendValue = <U = any, >(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
+  if (data == null) return value;
+  const names = name.split(".");
+  let o = data;
+  for (const n of names.slice(0, names.length - 1)) {
+    if (o[n] == null) o[n] = {};
+    o = o[n];
+  }
+  const ov = o[names[names.length - 1]];
+  if (ov == null) {
+    o[names[names.length - 1]] = value;
+    return value;
+  }
+  if (Array.isArray(ov)) {
+    ov.push(value);
+    return value;
+  }
+  o[names[names.length - 1]] = [ov, value];
   return value;
 };
 
