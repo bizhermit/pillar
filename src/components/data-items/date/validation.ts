@@ -10,7 +10,7 @@ export const $dateValidations = (dataItem: DataItem.$date | DataItem.$month): Ar
 
   if (dataItem.required) {
     validations.push(({ value }) => {
-      if (value == null) return undefined;
+      if (value != null) return undefined;
       return { type: "e", code: "required", msg: `${label}を入力してください。` };
     });
   }

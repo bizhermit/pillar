@@ -1,13 +1,20 @@
+import { getObjectType } from "../../objects";
+
 const defaultLabel = "値";
 
-const $arrayValidations = (dataItem: DataItem.$array<any>): Array<DataItem.Validation<DataItem.$array<any>>> => {
+export const $arrayValidations = (dataItem: DataItem.$array<any>): Array<DataItem.Validation<DataItem.$array<any>>> => {
   const validations: Array<DataItem.Validation<DataItem.$array<any>>> = [];
 
   const label = dataItem.label || defaultLabel;
 
+  validations.push(({ value }) => {
+    if (value == null || getObjectType(value) === "Array") return undefined;
+    return { type: "e", code: "type", msg: `${label}は配列型を設定してください。` };
+  });
+
   if (dataItem.required) {
     validations.push(({ value }) => {
-      if (value == null) return undefined;
+      if (value != null) return undefined;
       return { type: "e", code: "required", msg: `${label}を設定してください。` };
     });
   }
