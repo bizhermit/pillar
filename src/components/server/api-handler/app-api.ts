@@ -1,6 +1,17 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { appendValue } from "../../objects/struct";
 
+export class ApiError extends Error {
+
+  public apiErrorMessage: Api.Message | undefined;
+
+  constructor(public status: number, message?: Api.Message) {
+    super(message?.title || message?.body);
+    this.apiErrorMessage = message;
+  }
+
+}
+
 export const apiMethodHandler = <
   Req extends Array<DataItem.$object> = Array<DataItem.$object>,
   Res extends { [v: string]: any } | void = void
@@ -57,6 +68,10 @@ export const apiMethodHandler = <
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error(err);
+      if (err instanceof ApiError) {
+        status = err.status;
+        message = err.apiErrorMessage;
+      }
       return NextResponse.json({
         message: message ?? {
           type: "e",
