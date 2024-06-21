@@ -4,6 +4,7 @@ const defaultLabel = "値";
 
 export const $numParse = <V extends number>(value: any, dataItem: DataItem.$num<V> | DataItem.$boolNum<V, V>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
   const label = dataItem.label || defaultLabel;
+
   try {
     let v: V | DataItem.NullValue, change = false;
     if (value == null || typeof value === "number") {
@@ -17,6 +18,7 @@ export const $numParse = <V extends number>(value: any, dataItem: DataItem.$num<
       }
       change = true;
     }
+
     if (dataItem.source && !skipRefSource && !dataItem.source.find(s => s.id === v)) {
       return [v, { type: "e", code: "source", msg: `${change ? `${label}を数値型に変換しました。[${value}]->[${v}]\n` : ""}${label}は有効な値を設定してください。` }];
     }
