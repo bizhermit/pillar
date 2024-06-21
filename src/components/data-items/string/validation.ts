@@ -34,7 +34,7 @@ export const $strValidations = (dataItem: DataItem.$str): Array<DataItem.Validat
           if (isEmpty(value)) return undefined;
           const len = strLength(value);
           if (dataItem.minLength! <= len) return undefined;
-          return { type: "e", code: "minLength", msg: `${label}は${dataItem.minLength}文字以上で入力してください。（現在：${len}）` };
+          return { type: "e", code: "minLength", msg: `${label}は${dataItem.minLength}文字以上で入力してください。[${len}]` };
         });
       }
       if (dataItem.maxLength != null) {
@@ -42,7 +42,7 @@ export const $strValidations = (dataItem: DataItem.$str): Array<DataItem.Validat
           if (isEmpty(value)) return undefined;
           const len = strLength(value);
           if (len <= dataItem.maxLength!) return undefined;
-          return { type: "e", code: "range", msg: `${label}は${dataItem.maxLength}文字以下で入力してください。（現在：${len}）` };
+          return { type: "e", code: "range", msg: `${label}は${dataItem.maxLength}文字以下で入力してください。[${len}]` };
         });
       }
     }
