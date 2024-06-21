@@ -46,6 +46,8 @@ declare namespace DataItem {
     self: D;
   }) => (ValidationResult | null | undefined);
 
+  type ParseResult<V> = [parsedValue: V, result?: ValidationResult];
+
   type $ = {
     name: string;
     label?: string;
@@ -60,25 +62,25 @@ declare namespace DataItem {
     minLength?: number;
     maxLength?: number;
     charType?:
-      | "int"
-      | "h-num"
-      | "f-num"
-      | "num"
-      | "h-alpha"
-      | "f-alpha"
-      | "alpha"
-      | "h-alpha-num"
-      | "h-alpha-num-syn"
-      | "h-katanaka"
-      | "f-katakana"
-      | "katakana"
-      | "hiragana"
-      | "half"
-      | "full"
-      | "email"
-      | "tel"
-      | "url"
-      ;
+    | "int"
+    | "h-num"
+    | "f-num"
+    | "num"
+    | "h-alpha"
+    | "f-alpha"
+    | "alpha"
+    | "h-alpha-num"
+    | "h-alpha-num-syn"
+    | "h-katanaka"
+    | "f-katakana"
+    | "katakana"
+    | "hiragana"
+    | "half"
+    | "full"
+    | "email"
+    | "tel"
+    | "url"
+    ;
   };
 
   type $num<V extends number = number> = $ & {
