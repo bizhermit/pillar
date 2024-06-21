@@ -42,7 +42,7 @@ export const $strValidations = (dataItem: DataItem.$str): Array<DataItem.Validat
           if (isEmpty(value)) return undefined;
           const len = strLength(value);
           if (len <= dataItem.maxLength!) return undefined;
-          return { type: "e", code: "range", msg: `${label}は${dataItem.maxLength}文字以下で入力してください。[${len}]` };
+          return { type: "e", code: "maxLength", msg: `${label}は${dataItem.maxLength}文字以下で入力してください。[${len}]` };
         });
       }
     }

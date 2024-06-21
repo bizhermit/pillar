@@ -25,14 +25,14 @@ export const $numValidations = (dataItem: DataItem.$num): Array<DataItem.Validat
       validations.push(({ value }) => {
         if (value == null) return undefined;
         if (dataItem.min! <= value) return undefined;
-        return { type: "e", code: "range", msg: `${label}は${dataItem.min}以上で入力してください。` };
+        return { type: "e", code: "min", msg: `${label}は${dataItem.min}以上で入力してください。` };
       });
     }
     if (dataItem.max != null) {
       validations.push(({ value }) => {
         if (value == null) return undefined;
         if (value <= dataItem.max!) return undefined;
-        return { type: "e", code: "range", msg: `${label}は${dataItem.max}以下で入力してください。` };
+        return { type: "e", code: "max", msg: `${label}は${dataItem.max}以下で入力してください。` };
       });
     }
   }
