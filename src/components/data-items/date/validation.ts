@@ -1,4 +1,4 @@
-import { formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate } from "../../objects/date";
+import { equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate } from "../../objects/date";
 
 const defaultLabel = "値";
 
@@ -42,7 +42,7 @@ export const $dateValidations = (dataItem: DataItem.$date | DataItem.$month): Ar
       validations.push(({ value }) => {
         if (value == null) return undefined;
         if (value.getTime() <= max.getTime()) return undefined;
-        return { type: "e", code: "range", msg: `${label}は${maxStr}以前を入力してください。` };
+        return { type: "e", code: "max", msg: `${label}は${maxStr}以前を入力してください。` };
       });
     }
   }
@@ -54,12 +54,23 @@ export const $dateValidations = (dataItem: DataItem.$date | DataItem.$month): Ar
       if (!pairDataItem || (pairDataItem.type !== "date" && pairDataItem.type !== "month")) return undefined;
       const pairDate = parseDate(data?.[pairDataItem.name]);
       if (pairDate == null) return undefined;
+      if (dataItem.pair?.same) {
+        if (equalDate(pairDate, value)) return undefined;
+      }
       if (dataItem.pair?.position === "before") {
         if (isAfterDate(pairDate, value)) return undefined;
-        return { type: "e", code: "pair-before", msg: `日付の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(value, dateFormatPattern)} - ${pairDataItem.label ? `[${pairDataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)}` };
+        return {
+          type: "e",
+          code: "pair-before",
+          msg: `日付の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(value, dateFormatPattern)} - ${pairDataItem.label ? `[${pairDataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)}`,
+        };
       }
       if (isBeforeDate(pairDate, value)) return undefined;
-      return { type: "e", code: "pair-after", msg: pairDataItem.pair ? "" : `日付の前後関係が不適切です。${pairDataItem.label ? `[${pairDataItem.label}]` : ""}${formatDate(value, dateFormatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)}` };
+      return {
+        type: "e",
+        code: "pair-after",
+        msg: pairDataItem.pair ? "" : `日付の前後関係が不適切です。${pairDataItem.label ? `[${pairDataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(value, dateFormatPattern)}`,
+      };
     });
   }
 

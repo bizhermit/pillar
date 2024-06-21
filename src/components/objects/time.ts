@@ -31,6 +31,11 @@ export class Time {
       return this;
     }
     if (typeof time === "string") {
+      if (/^\d$/.test(time)) {
+        this.time = Number(time);
+        if (isNaN(this.time)) this.time = 0;
+        return this;
+      }
       let ctx = time.match(/^(\+|\-|)(\d{2}|$)(\d{2}|$)(\d{2}|$)(\d{3}|$)/);
       if (!ctx) ctx = time.match(/^(\+|\-|)(\d+)?(?::|時|$)(\d+)?(?::|分|$)(\d+)?(?:.|秒|$)(\d+)?(?:.*|$)/);
       if (ctx) {
