@@ -46,7 +46,7 @@ declare namespace DataItem {
     self: D;
   }) => (ValidationResult | null | undefined);
 
-  type ParseResult<V> = [parsedValue: V, result?: ValidationResult];
+  type ParseResult<V> = [parsedValue: V | NullValue, result?: ValidationResult];
 
   type $ = {
     name: string;

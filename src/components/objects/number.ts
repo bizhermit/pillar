@@ -27,6 +27,7 @@ export const parseNum = <
   const t = typeof num;
   if (t === "number") return num as number as ParsedNumber<T>;
   if (t === "string") {
+    if ((num as string).trim() === "") return undefined as ParsedNumber<T>;
     const n = Number((num as string).replace(tdsReg, ""));
     if (!isNaN(n)) return n as ParsedNumber<T>;
   }

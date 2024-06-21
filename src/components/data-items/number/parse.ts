@@ -2,7 +2,7 @@ import { parseNum } from "../../objects/number";
 
 const defaultLabel = "値";
 
-export const $numParse = <V extends number>(value: any, dataItem: DataItem.$num<V>, skipRefSource?: boolean): DataItem.ParseResult<V | DataItem.NullValue> => {
+export const $numParse = <V extends number>(value: any, dataItem: DataItem.$num<V> | DataItem.$boolNum<V, V>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
   const label = dataItem.label || defaultLabel;
   try {
     let v: V | DataItem.NullValue, change = false;
