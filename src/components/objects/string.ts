@@ -106,8 +106,12 @@ export const isHiragana = (str: string | null | undefined) => {
   return str != null && /^[ぁ-ゞー]+$/.test(str);
 };
 
+export const isHalfWidth = (str: string | null | undefined) => {
+  return str != null && /^[\x20-\x7E]*$/.test(str);
+};
+
 export const isFullWidth = (str: string | null | undefined) => {
-  return str != null && str != null && /^[^\x01-\x7E\uFF61-\uFF9F]*$/.test(str);
+  return str != null && /^[^\x01-\x7E\uFF61-\uFF9F]*$/.test(str);
 };
 
 export const isInteger = (str: string | null | undefined) => {
