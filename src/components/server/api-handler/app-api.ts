@@ -20,19 +20,19 @@ export class ApiError extends Error {
 }
 
 const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Array<DataItem.$object> | Readonly<Array<DataItem.$object>>) => {
-  const parseResults: Array<DataItem.ValidationResult> = [];
+  const results: Array<DataItem.ValidationResult> = [];
 
-  const hasError = () => parseResults.some(r => r.type === "e");
+  const hasError = () => results.some(r => r.type === "e");
 
   const getDataName = (dataItem: DataItem.$object, index?: number) => {
     return index == null ? dataItem.name : `${dataItem.name}.${index}`;
   };
 
-  const replace = <D extends DataItem.$object>(dataItem: D, parse: (value: any) => DataItem.ParseResult<any>, index?: number): (DataItem.ValueType<D> | null | undefined) => {
+  const replace = <D extends DataItem.$object>(dataItem: D, parse: (value: any) => DataItem.ParseResult<any>, index: number | undefined): (DataItem.ValueType<D> | null | undefined) => {
     const name = getDataName(dataItem, index);
     const [v, r] = parse(getValue(params, name));
     setValue(params, name, v);
-    if (r) parseResults.push(r);
+    if (r) results.push(r);
     return v;
   };
 
@@ -44,11 +44,94 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
 
     switch (dataItem.type) {
       case "str":
+        replace(dataItem, v => $strParse(v, dataItem), index);
+        return;
+      case "num":
+        replace(dataItem, v => $numParse(v, dataItem), index);
+        return;
+      case "date":
+      case "month":
+        replace(dataItem, v => $dateParse(v, dataItem), index);
+        return;
+      case "time":
+        replace(dataItem, v => $timeParse(v, dataItem), index);
+        break;
+      case "file":
+        replace(dataItem, v => $fileParse(v, dataItem), index);
+        return;
+      case "array":
+        const value = replace(dataItem, v => {
+          if (v == null || getObjectType(v) === "Array") return [v];
+          return [undefined, { type: "e", code: "parse", msg: `${dataItem.label}に配列を設定してください。` }];
+        }, index);
+        if (!hasError() && value) {
+          const item = dataItem.item;
+          if (Array.isArray(item)) {
+            const r = convertParams(value, item);
+            results.push(...r);
+          } else {
+            switch (item.type) {
+              case "struct":
+                const results = convertParams(value, item);
+                results.push(...results);
+                break;
+              default:
+                value.forEach((_, i) => {
+                  impl(dataItem, i);
+                });
+                break;
+            }
+          }
+        }
+        break;
+      case "struct":
+        replace(dataItem, v => {
+          if (v == null || getObjectType(v) === "Object") return [v];
+          return [undefined, { type: "e", code: "parse", msg: `${dataItem.label}に連想配列を設定してください。` }];
+        }, index);
+        if (!hasError()) {
+          convertParams(getValue(params, dataItem.name) as { [v: string]: any }, dataItem.item);
+        }
+        break;
+      default:
+        return;
+    }
+  };
+
+  dataItems.forEach(dataItem => {
+    impl(dataItem);
+  });
+
+  return results;
+};
+
+const validation = (params: { [v: string]: any } | Array<any>, dataItems: Array<DataItem.$object> | Readonly<Array<DataItem.$object>>) => {
+  const results: Array<DataItem.ValidationResult> = [];
+
+  const hasError = () => results.some(r => r.type === "e");
+
+  const getDataName = (dataItem: DataItem.$object, index?: number) => {
+    return index == null ? dataItem.name : `${dataItem.name}.${index}`;
+  };
+
+  const replace = <D extends DataItem.$object>(dataItem: D, parse: (value: any) => DataItem.ParseResult<any>, index?: number): (DataItem.ValueType<D> | null | undefined) => {
+    const name = getDataName(dataItem, index);
+    const [v, r] = parse(getValue(params, name));
+    setValue(params, name, v);
+    if (r) results.push(r);
+    return v;
+  };
+
+  const impl = (dataItem: DataItem.$object, index?: number) => {
+    switch (dataItem.type) {
+      case "str":
         replace(dataItem, v => $strParse(v, dataItem));
         return;
       case "num":
         replace(dataItem, v => $numParse(v, dataItem));
         return;
+      case "bool":
+        break;
       case "date":
       case "month":
         replace(dataItem, v => $dateParse(v, dataItem));
@@ -67,13 +150,13 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
         if (!hasError() && value) {
           const item = dataItem.item;
           if (Array.isArray(item)) {
-            const results = convertParams(value, item);
-            parseResults.push(...results);
+            const r = convertParams(value, item);
+            results.push(...r);
           } else {
             switch (item.type) {
               case "struct":
                 const results = convertParams(value, item);
-                parseResults.push(...results);
+                results.push(...results);
                 break;
               default:
                 value.forEach((_, i) => {
@@ -102,7 +185,7 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
     impl(dataItem);
   });
 
-  return parseResults;
+  return results;
 };
 
 export const apiMethodHandler = <
@@ -150,8 +233,8 @@ export const apiMethodHandler = <
             ...bodyParams,
           };
 
-          convertParams(p, dataItems);
-          // TODO: validation
+          const parseResults = convertParams(p, dataItems);
+          const validationResults = validation(p, dataItems);
 
           return p as DataItem.Props<Req>;
         },
