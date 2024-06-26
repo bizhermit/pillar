@@ -3,7 +3,7 @@ import { parseNum } from "../../objects/number";
 
 const defaultLabel = "値";
 
-export const $boolParse = <V extends boolean | number | string>(value: any, dataItem: V extends boolean ? DataItem.$bool<V, V> : V extends number ? DataItem.$boolNum<V, V> : V extends string ? DataItem.$boolStr<V, V> : DataItem.$bool<any, any>): DataItem.ParseResult<V> => {
+export const $boolParse = <V extends boolean | number | string>(value: any, dataItem: DataItem.$bool<boolean, boolean> | DataItem.$boolNum<number, number> | DataItem.$boolStr<string, string>): DataItem.ParseResult<V> => {
   if (value == null || equals(value, dataItem.trueValue) || equals(value, dataItem.falseValue)) return [value];
 
   const label = dataItem.label || defaultLabel;

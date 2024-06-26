@@ -160,6 +160,7 @@ declare namespace DataItem {
     validations?: Array<Validation<$file>>;
     accept?: string;
     fileSize?: number;
+    fileName?: string;
   };
 
   type $array<T extends $atoms | $array<any> | Array<$object>> = $ & {
@@ -189,6 +190,6 @@ declare namespace DataItem {
     | $file
     ;
 
-  type $object = $atoms | $array<any> | $struct<any>;
+  type $object = $atoms | $array<$atoms | $array<any> | Array<$object>> | $struct<Array<$object>>;
 
 }
