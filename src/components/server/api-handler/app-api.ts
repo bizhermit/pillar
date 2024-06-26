@@ -281,18 +281,18 @@ export const apiMethodHandler = <
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error(err);
-      let responseData: { [v: string]: any } | null | undefined;
+      let data: { [v: string]: any } | null | undefined;
       if (err instanceof ApiError) {
         status = err.status;
         message = err.apiErrorMessage;
-        responseData = err.responseData;
+        data = err.responseData;
       }
       return NextResponse.json({
         message: message ?? {
           type: "e",
           title: "Server Error",
         } as const satisfies Api.Message,
-        data: responseData,
+        data,
       }, { status: status ?? 500 });
     }
   };
