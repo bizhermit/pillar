@@ -68,7 +68,7 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
         return;
       case "time":
         replace(dataItem, p => $timeParse(p), index);
-        break;
+        return;
       case "file":
         replace(dataItem, p => $fileParse(p), index);
         return;
@@ -94,7 +94,7 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
             }
           }
         }
-        break;
+        return;
       }
       case "struct": {
         const { value, name } = replace(dataItem, ({ value, fullName }) => {
@@ -102,7 +102,7 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
           return [undefined, { type: "e", code: "parse", fullName, msg: `${dataItem.label}に連想配列を設定してください。` }];
         }, index);
         if (!hasError() && value) results.push(...convertParams(value, dataItem.item, name));
-        break;
+        return;
       }
       default:
         return;
@@ -163,7 +163,7 @@ const validationParams = (params: { [v: string]: any } | Array<any>, dataItems: 
         return;
       case "time":
         isValid(dataItem, $timeValidations(dataItem), index);
-        break;
+        return;
       case "file":
         isValid(dataItem, $fileValidation(dataItem), index);
         return;
@@ -186,12 +186,12 @@ const validationParams = (params: { [v: string]: any } | Array<any>, dataItems: 
             }
           }
         }
-        break;
+        return;
       }
       case "struct": {
         const { value, name } = isValid(dataItem, $structValidations(dataItem), index);
         if (value) results.push(...validationParams(value, dataItem.item, name));
-        break;
+        return;
       }
       default:
         return;
