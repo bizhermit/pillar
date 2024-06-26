@@ -2,7 +2,7 @@ import { parseNum } from "../../objects/number";
 
 const defaultLabel = "値";
 
-export const $numParse = <V extends number>(value: any, dataItem: DataItem.$num<V> | DataItem.$boolNum<V, V>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
+export const $numParse = <V extends number>({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$num<V> | DataItem.$boolNum<V, V>>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
   const label = dataItem.label || defaultLabel;
 
   try {
@@ -20,10 +20,10 @@ export const $numParse = <V extends number>(value: any, dataItem: DataItem.$num<
     }
 
     if (dataItem.source && !skipRefSource && !dataItem.source.find(s => s.id === v)) {
-      return [v, { type: "e", code: "source", msg: `${change ? `${label}を数値型に変換しました。[${value}]->[${v}]\n` : ""}${label}は有効な値を設定してください。` }];
+      return [v, { type: "e", code: "source", fullName, msg: `${change ? `${label}を数値型に変換しました。[${value}]->[${v}]\n` : ""}${label}は有効な値を設定してください。` }];
     }
-    return change ? [v, { type: "i", code: "parse", msg: `${label}を数値型に変換しました。[${value}]->[${v}]` }] : [v];
+    return change ? [v, { type: "i", code: "parse", fullName, msg: `${label}を数値型に変換しました。[${value}]->[${v}]` }] : [v];
   } catch {
-    return [undefined, { type: "e", code: "parse", msg: `${label}を数値型に変換できません。[${value}]` }];
+    return [undefined, { type: "e", code: "parse", fullName, msg: `${label}を数値型に変換できません。[${value}]` }];
   }
 };

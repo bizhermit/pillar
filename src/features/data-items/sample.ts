@@ -18,7 +18,7 @@ export const sample_str = $str({
   validations: [
     (props) => {
       const _v = props.value;
-      props.self.name;
+      props.dataItem.name;
       return undefined;
     },
   ],

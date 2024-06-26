@@ -7,10 +7,10 @@ export const $boolValidations = (dataItem: DataItem.$bool<boolean, boolean> | Da
 
   const label = dataItem.label || defaultLabel;
 
-  validations.push(({ value, self }) => {
+  validations.push(({ value, dataItem, fullName }) => {
     if (equals(value, dataItem.trueValue) || equals(value, dataItem.falseValue)) return undefined;
-    if (self.required && value == null) return { type: "e", code: "required", msg: `${label}を入力してください。` };
-    return { type: "e", code: "required", msg: `${label}は有効な値を設定してください。` };
+    if (dataItem.required && value == null) return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
+    return { type: "e", code: "required", fullName, msg: `${label}は有効な値を設定してください。` };
   });
 
   if (dataItem.validations) {

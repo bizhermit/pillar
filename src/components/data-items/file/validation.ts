@@ -7,15 +7,15 @@ export const $fileValidation = (dataItem: DataItem.$file): Array<DataItem.Valida
 
   const label = dataItem.label || defaultLabel;
 
-  validations.push(({ value }) => {
+  validations.push(({ value, fullName }) => {
     if (value == null || value instanceof File) return undefined;
-    return { type: "e", code: "type", msg: `${label}はファイル型を設定してください。` };
+    return { type: "e", code: "type", fullName, msg: `${label}はファイル型を設定してください。` };
   });
 
   if (dataItem.required) {
-    validations.push(({ value }) => {
+    validations.push(({ value, fullName }) => {
       if (value != null) return undefined;
-      return { type: "e", code: "required", msg: `${label}を選択してください。` };
+      return { type: "e", code: "required", fullName, msg: `${label}を選択してください。` };
     });
   }
 
@@ -34,19 +34,19 @@ export const $fileValidation = (dataItem: DataItem.$file): Array<DataItem.Valida
       });
     };
 
-    validations.push(({ value }) => {
+    validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
       if (validAccept(value)) return undefined;
-      return { type: "e", code: "accept", msg: `${label}のファイルタイプが不適切です` };
+      return { type: "e", code: "accept", fullName, msg: `${label}のファイルタイプが不適切です` };
     });
   }
 
   if (dataItem.fileSize != null) {
     const sizeText = getSizeText(dataItem.fileSize);
-    validations.push(({ value }) => {
+    validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
       if (value.size >= dataItem.fileSize!) return undefined;
-      return { type: "e", code: "size", msg: `${label}のファイルサイズは${sizeText}以内をアップロードしてください。` };
+      return { type: "e", code: "size", fullName, msg: `${label}のファイルサイズは${sizeText}以内をアップロードしてください。` };
     });
   }
 

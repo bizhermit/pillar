@@ -37,14 +37,22 @@ declare namespace DataItem {
     type: "e" | "w" | "i";
     code: string;
     msg: string;
+    fullName: string;
   };
 
   type Validation<D extends $object> = (props: {
     value: ValueType<D>;
     data: { [v: string | number]: any } | null | undefined;
-    siblings: Array<$object> | null | undefined;
-    self: D;
+    siblings: Array<$object> | Readonly<Array<$object>> | null | undefined;
+    dataItem: D;
+    fullName: string;
   }) => (ValidationResult | null | undefined);
+
+  type ParseProps<D> = {
+    value: any;
+    dataItem: D;
+    fullName: string;
+  };
 
   type ParseResult<V> = [parsedValue: V | NullValue, result?: ValidationResult];
 
