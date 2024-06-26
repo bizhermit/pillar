@@ -267,7 +267,13 @@ export const apiMethodHandler = <
           return validationResults.some(item => item.type === "e");
         },
         throwIfHasValidationError: () => {
-          const validationError = validationResults.filter(item => item.type === "e");
+          const nameBuf = new Set<string>([]);
+          const validationError = validationResults.filter(item => {
+            if (nameBuf.has(item.fullName)) return false;
+            if (item.type !== "e") return false;
+            nameBuf.add(item.fullName);
+            return true;
+          });
           if (validationError.length === 0) return;
           throw new ApiError(422, {
             type: "e",
