@@ -6,6 +6,10 @@ export const $numParse = <V extends number>({ value, dataItem, fullName }: DataI
   const label = dataItem.label || defaultLabel;
 
   try {
+    if (Array.isArray(value) && value.length > 1) {
+      return [undefined, { type: "e", code: "multiple", fullName, msg: `${dataItem.label || defaultLabel}が複数設定されています。` }];
+    }
+
     let v: V | DataItem.NullValue, change = false;
     if (value == null || typeof value === "number") {
       v = value;

@@ -4,6 +4,9 @@ import { Time } from "../../objects/time";
 const defaultLabel = "値";
 
 export const $timeParse = ({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$time>): DataItem.ParseResult<number> => {
+  if (Array.isArray(value) && value.length > 1) {
+    return [undefined, { type: "e", code: "multiple", fullName, msg: `${dataItem.label || defaultLabel}が複数設定されています。` }];
+  }
   if (value == null || value === "") return [undefined];
   if (typeof value === "number") return [value];
 
