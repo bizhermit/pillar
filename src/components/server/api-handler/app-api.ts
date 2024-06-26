@@ -22,6 +22,8 @@ export class ApiError extends Error {
 const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Array<DataItem.$object> | Readonly<Array<DataItem.$object>>) => {
   const parseResults: Array<DataItem.ValidationResult> = [];
 
+  const hasError = () => parseResults.some(r => r.type === "e");
+
   const getDataName = (dataItem: DataItem.$object, index?: number) => {
     return index == null ? dataItem.name : `${dataItem.name}.${index}`;
   };
@@ -65,11 +67,13 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
         if (!hasError() && value) {
           const item = dataItem.item;
           if (Array.isArray(item)) {
-            convertParams(value, item);
+            const results = convertParams(value, item);
+            parseResults.push(...results);
           } else {
             switch (item.type) {
               case "struct":
-                convertParams(value, item);
+                const results = convertParams(value, item);
+                parseResults.push(...results);
                 break;
               default:
                 value.forEach((_, i) => {
@@ -93,8 +97,6 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
         return;
     }
   };
-
-  const hasError = () => parseResults.some(r => r.type === "e");
 
   dataItems.forEach(dataItem => {
     impl(dataItem);
@@ -148,7 +150,7 @@ export const apiMethodHandler = <
             ...bodyParams,
           };
 
-          // TODO: parse data
+          convertParams(p, dataItems);
           // TODO: validation
 
           return p as DataItem.Props<Req>;
