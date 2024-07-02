@@ -1,1 +1,3 @@
-type OverwriteAttrs<T extends React.HTMLAttributes<any>, U> = Omit<T, keyof U> & U;
+type OverwriteAttrs<E, T extends React.HTMLAttributes<E>, U> = Omit<T, keyof U> & U & {
+  ref?: React.MutableRefObject<E | null>;
+};

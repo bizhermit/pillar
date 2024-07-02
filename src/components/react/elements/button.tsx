@@ -10,7 +10,7 @@ type ButtonOptions = {
   }) => (void | boolean | Promise<void | boolean>);
 };
 
-type ButtonProps = OverwriteAttrs<ButtonHTMLAttributes<HTMLButtonElement>, ButtonOptions>;
+type ButtonProps = OverwriteAttrs<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>, ButtonOptions>;
 
 export const ButtonIcon = (props: { children: ReactNode }) => {
   return <div className="btn-icon">{props.children}</div>;

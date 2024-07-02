@@ -2,9 +2,11 @@
 
 import { Button, ButtonIcon } from "@/react/elements/button";
 import { sleep } from "@/utilities/sleep";
+import { useRef } from "react";
 import s from "./page.module.css";
 
 export default function Home() {
+  const ref = useRef<HTMLButtonElement>(null);
   return (
     <div className={s.page}>
       root page
@@ -26,7 +28,12 @@ export default function Home() {
       >
         リンク
       </a>
-      <Button onClick={console.log}>
+      <Button
+        ref={ref}
+        onClick={() => {
+          console.log(ref.current);
+        }}
+      >
         Reactボタン
       </Button>
       <Button
