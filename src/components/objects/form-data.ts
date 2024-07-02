@@ -7,8 +7,7 @@ export const convertFormDataToStruct = <
 >(formData: FormData | null | undefined, options?: Options) => {
   const ret: { [v: string]: any } = {} as T;
   if (formData == null) return ret;
-  Array.from(formData.keys()).forEach(key => {
-    const v = formData.get(key);
+  formData.forEach((v, key) => {
     if (options?.removeItem) {
       switch (options.removeItem) {
         case "un":

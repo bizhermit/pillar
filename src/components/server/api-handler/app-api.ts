@@ -243,8 +243,8 @@ export const apiMethodHandler = <
               bodyParams = await req.json();
             } else {
               const formData = await req.formData();
-              Array.from(formData.keys()).forEach(key => {
-                appendValue(bodyParams, key, formData.get(key));
+              formData.forEach((value, key) => {
+                appendValue(bodyParams, key, value);
               });
             }
           }
