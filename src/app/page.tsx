@@ -7,7 +7,7 @@ export default function Home() {
 
       <button>button</button>
       <button>ボタン</button>
-      <a href="https://bizhermit.com">リンク</a>
+      <a href="https://bizhermit.com" aria-disabled>リンク</a>
     </div>
   );
 }

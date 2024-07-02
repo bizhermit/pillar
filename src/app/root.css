@@ -1,0 +1,59 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --bgc: #ffffff;
+  --fgc: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bgc: #0a0a0a;
+    --fgc: #ededed;
+  }
+}
+
+html {
+  font-size: 62.5%;
+  background: var(--bgc);
+  color: var(--fgc);
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+
+  &:has(dialog[open]) {
+    overflow: hidden;
+  }
+}
+
+body {
+  font-family: "Yu Gothic", sans-serif;
+  font-size: 1.6rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-block: unset;
+}
+
+a {
+  &[aria-disabled="true"] {
+    text-decoration: none;
+    color: inherit;
+    pointer-events: none;
+  }
+}
+
+button,
+input[type="button"] {
+  font-size: inherit;
+  font-family: inherit;
+}
