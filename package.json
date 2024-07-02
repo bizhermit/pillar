@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "description": "next-app templates",
   "private": true,
-  "type": "module",
   "scripts": {
     "clean": "node scripts/clean.mjs",
     "predev": "npm run route",
