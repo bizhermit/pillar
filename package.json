@@ -30,6 +30,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-next": "15.0.0-rc.0",
+    "sass": "^1.77.6",
     "typescript": "^5"
   }
 }
