@@ -232,8 +232,8 @@ export const apiMethodHandler = <
         getParams: async (dataItems) => {
           const { searchParams } = new URL(req.url);
           const queryParams: { [v: string]: any } = {};
-          Array.from(searchParams.keys()).forEach(key => {
-            appendValue(queryParams, key, searchParams.get(key));
+          searchParams.forEach((value, key) => {
+            appendValue(queryParams, key, value);
           });
 
           let bodyParams: { [v: string]: any } = {};
