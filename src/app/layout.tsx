@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "../components/styles/elements/button.css";
 import "./root.css";
 
 export const metadata: Metadata = {

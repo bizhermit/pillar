@@ -5,14 +5,24 @@
 }
 
 :root {
-  --bgc: #ffffff;
+  /* size */
+  --btn-size: 3.2rem;
+
+  /* color */
+  --bgc: #f8f8f8;
   --fgc: #171717;
+  --sdw: rgba(0, 0, 0, 0.4);
+  --btn-bgc: #7fbfff;
+  --btn-fgc: #f8f8f8;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --bgc: #0a0a0a;
-    --fgc: #ededed;
+    --fgc: #f8f8f8;
+    /* --sdw: rgba(0, 0, 0, 0.4); */
+    --btn-bgc: #5f9fdf;
+    --btn-fgc: #f8f8f8;
   }
 }
 
@@ -48,16 +58,5 @@ a {
   &[aria-disabled="true"] {
     text-decoration: none;
     color: inherit;
-    pointer-events: none;
-  }
-}
-
-button,
-input[type="button"] {
-  font-size: inherit;
-  font-family: inherit;
-
-  &:enabled {
-    cursor: pointer;
   }
 }

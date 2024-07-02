@@ -1,0 +1,52 @@
+.btn-icon {
+  width: var(--btn-size);
+
+  &:only-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+button,
+a[role="button"],
+.btn {
+  position: relative;
+  font-size: inherit;
+  font-family: inherit;
+  border: none;
+  height: var(--btn-size);
+  padding: 0 calc(var(--btn-size) / 2);
+  border-radius: 0.2rem;
+  background: var(--btn-bgc);
+  color: var(--btn-fgc);
+  border-top: 0.3rem solid transparent;
+  border-bottom: 0.3rem solid var(--sdw);
+  user-select: none;
+  text-decoration: none;
+  transition: opacity 0.2s, border-bottom-color 0.2s;
+}
+
+button:disabled,
+:is(a[role="button"], .btn)[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.6;
+  border-bottom-color: transparent;
+  color: var(--btn-fgc);
+}
+
+button:enabled,
+:is(a[role="button"], .btn):not([aria-disabled="true"]) {
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+
+    &:active {
+      opacity: 1;
+    }
+  }
+}
