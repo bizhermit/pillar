@@ -5,7 +5,7 @@ export default function Home() {
     <div className={s.page}>
       root page
 
-      <button>button</button>
+      <button disabled>button</button>
       <button>ボタン</button>
       <a href="https://bizhermit.com" aria-disabled>リンク</a>
     </div>

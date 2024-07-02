@@ -56,4 +56,8 @@ button,
 input[type="button"] {
   font-size: inherit;
   font-family: inherit;
+
+  &:enabled {
+    cursor: pointer;
+  }
 }
