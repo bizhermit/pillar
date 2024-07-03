@@ -2,6 +2,7 @@
 
 import { type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from "react";
 import { useRefState } from "../hooks/ref-state";
+import { joinClassNames } from "./form/utilities";
 
 type ButtonOptions = {
   onClick?: (props: {
@@ -38,8 +39,10 @@ export const Button = ({
   return (
     <button
       {...props}
+      className={joinClassNames("btn", props.className)}
       disabled={props.disabled || ing}
       onClick={click}
+      data-processing={ing}
     />
   );
 };

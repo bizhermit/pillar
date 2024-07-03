@@ -11,9 +11,7 @@
   }
 }
 
-button,
-a[role="button"],
-.btn {
+:is(.btn, a[role="button"]) {
   position: relative;
   font-size: inherit;
   font-family: inherit;
@@ -21,32 +19,34 @@ a[role="button"],
   height: var(--btn-size);
   padding: 0 calc(var(--btn-size) / 2);
   border-radius: 0.2rem;
-  background: var(--btn-bgc);
-  color: var(--btn-fgc);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
   border-top: 0.3rem solid transparent;
   border-bottom: 0.3rem solid var(--sdw);
   user-select: none;
   text-decoration: none;
   transition: opacity 0.2s, border-bottom-color 0.2s;
-}
 
-button:disabled,
-:is(a[role="button"], .btn)[aria-disabled="true"] {
-  cursor: not-allowed;
-  opacity: 0.6;
-  border-bottom-color: transparent;
-  color: var(--btn-fgc);
-}
+  &:is(:disabled, [aria-disabled="true"]) {
+    cursor: not-allowed;
+    opacity: 0.6;
+    border-bottom-color: transparent;
+    color: var(--btn-fg);
 
-button:enabled,
-:is(a[role="button"], .btn):not([aria-disabled="true"]) {
-  cursor: pointer;
+    &[data-processing="true"] {
+      cursor: wait;
+    }
+  }
 
-  &:hover {
-    opacity: 0.8;
+  &:not(:is(:disabled, [aria-disabled="true"])) {
+    cursor: pointer;
 
-    &:active {
-      opacity: 1;
+    &:hover {
+      opacity: 0.8;
+
+      &:active {
+        opacity: 1;
+      }
     }
   }
 }
