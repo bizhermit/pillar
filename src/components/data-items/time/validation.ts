@@ -2,7 +2,7 @@ import { Time, TimeUtils } from "../../objects/time";
 
 const defaultLabel = "値";
 
-export const $timeValidations = (dataItem: DataItem.$time): Array<DataItem.Validation<DataItem.$time>> => {
+export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): Array<DataItem.Validation<DataItem.$time>> => {
   const validations: Array<DataItem.Validation<DataItem.$time>> = [];
 
   const label = dataItem.label || defaultLabel;

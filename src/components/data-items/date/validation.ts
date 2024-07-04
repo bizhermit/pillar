@@ -2,7 +2,7 @@ import { equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfter
 
 const defaultLabel = "値";
 
-export const $dateValidations = (dataItem: DataItem.$date | DataItem.$month): Array<DataItem.Validation<DataItem.$date | DataItem.$month>> => {
+export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | DataItem.$month>): Array<DataItem.Validation<DataItem.$date | DataItem.$month>> => {
   const validations: Array<DataItem.Validation<DataItem.$date | DataItem.$month>> = [];
 
   const label = dataItem.label || defaultLabel;

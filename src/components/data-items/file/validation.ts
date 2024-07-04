@@ -2,7 +2,7 @@ import { getAccept, getSizeText } from "../../objects/file";
 
 const defaultLabel = "ファイル";
 
-export const $fileValidation = (dataItem: DataItem.$file): Array<DataItem.Validation<DataItem.$file>> => {
+export const $fileValidation = (dataItem: DataItem.ArgObject<DataItem.$file>): Array<DataItem.Validation<DataItem.$file>> => {
   const validations: Array<DataItem.Validation<DataItem.$file>> = [];
 
   const label = dataItem.label || defaultLabel;

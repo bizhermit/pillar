@@ -40,17 +40,21 @@ declare namespace DataItem {
     fullName: string;
   };
 
+  type OmitableProps = "name";
+
+  type ArgObject<D extends $object> = PickPartial<D, OmitableProps>;
+
   type Validation<D extends $object> = (props: {
-    value: ValueType<D>;
+    value: ValueType<D> | null | undefined;
     data: { [v: string | number]: any } | null | undefined;
-    siblings: Array<$object> | Readonly<Array<$object>> | null | undefined;
-    dataItem: D;
+    siblings: Array<ArgObject<$object>> | Readonly<Array<ArgObject<$object>>> | null | undefined;
+    dataItem: ArgObject<D>;
     fullName: string;
   }) => (ValidationResult | null | undefined);
 
   type ParseProps<D> = {
     value: any;
-    dataItem: D;
+    dataItem: ArgObject<D>;
     fullName: string;
   };
 
@@ -89,6 +93,7 @@ declare namespace DataItem {
     | "tel"
     | "url"
     ;
+    inputMode?: React.HTMLAttributes<React.HTMLInputElement>["inputMode"];
   };
 
   type $num<V extends number = number> = $ & {

@@ -2,7 +2,7 @@ import { getObjectType } from "../../objects";
 
 const defaultLabel = "値";
 
-export const $structValidations = (dataItem: DataItem.$struct<Array<DataItem.$object>>): Array<DataItem.Validation<DataItem.$struct<Array<DataItem.$object>>>> => {
+export const $structValidations = (dataItem: DataItem.ArgObject<DataItem.$struct<Array<DataItem.$object>>>): Array<DataItem.Validation<DataItem.$struct<Array<DataItem.$object>>>> => {
   const validations: Array<DataItem.Validation<DataItem.$struct<Array<DataItem.$object>>>> = [];
 
   const label = dataItem.label || defaultLabel;

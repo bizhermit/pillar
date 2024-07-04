@@ -2,7 +2,7 @@ import { getObjectType } from "../../objects";
 
 const defaultLabel = "値";
 
-export const $arrayValidations = (dataItem: DataItem.$array<any>): Array<DataItem.Validation<DataItem.$array<any>>> => {
+export const $arrayValidations = (dataItem: DataItem.ArgObject<DataItem.$array<any>>): Array<DataItem.Validation<DataItem.$array<any>>> => {
   const validations: Array<DataItem.Validation<DataItem.$array<any>>> = [];
 
   const label = dataItem.label || defaultLabel;

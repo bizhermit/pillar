@@ -2,7 +2,7 @@ import { getFloatPosition } from "../../objects/number";
 
 const defaultLabel = "値";
 
-export const $numValidations = (dataItem: DataItem.$num): Array<DataItem.Validation<DataItem.$num>> => {
+export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>): Array<DataItem.Validation<DataItem.$num>> => {
   const validations: Array<DataItem.Validation<DataItem.$num>> = [];
 
   const label = dataItem.label || defaultLabel;

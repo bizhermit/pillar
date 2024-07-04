@@ -2,7 +2,7 @@ import { isAlphabet, isEmpty, isFullWidth, isFWAlphabet, isFWKatakana, isFWNumer
 
 const defaultLabel = "値";
 
-export const $strValidations = (dataItem: DataItem.$str): Array<DataItem.Validation<DataItem.$str>> => {
+export const $strValidations = (dataItem: DataItem.ArgObject<DataItem.$str>): Array<DataItem.Validation<DataItem.$str>> => {
   const validations: Array<DataItem.Validation<DataItem.$str>> = [];
 
   const label = dataItem.label || defaultLabel;
