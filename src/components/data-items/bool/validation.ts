@@ -2,8 +2,8 @@ import { equals } from "../../objects";
 
 const defaultLabel = "値";
 
-export const $boolValidations = (dataItem: DataItem.ArgObject<DataItem.$bool<boolean, boolean> | DataItem.$boolNum<number, number> | DataItem.$boolStr<string, string>>) => {
-  const validations: Array<DataItem.Validation<DataItem.$bool<boolean, boolean> | DataItem.$boolNum<number, number> | DataItem.$boolStr<string, string>>> = [];
+export const $boolValidations = (dataItem: DataItem.ArgObject<DataItem.$bool<any, any> | DataItem.$boolNum<any, any> | DataItem.$boolStr<any, any>>) => {
+  const validations: Array<DataItem.Validation<DataItem.$bool<any, any> | DataItem.$boolNum<any, any> | DataItem.$boolStr<any, any>>> = [];
 
   const label = dataItem.label || defaultLabel;
 

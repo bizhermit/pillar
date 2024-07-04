@@ -3,23 +3,23 @@ import { FormContext } from ".";
 import { getValue, setValue } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 
-type FormItemCoreProps<D extends DataItem.$object> = {
+type FormItemCoreProps<A extends DataItem.$object, D extends A> = {
   getDataItem: (props: {
     name: string | undefined;
     label: string | undefined;
     required: boolean | undefined;
     dataItem: D | null | undefined;
-  }) => DataItem.ArgObject<D>;
+  }) => DataItem.ArgObject<A>;
   dataItemDeps: Array<any>;
-  parse: (props: DataItem.ParseProps<D>) => DataItem.ParseResult<DataItem.ValueType<D>>;
-  effect: (props: FormItemSetArg<D> & { origin: any | null | undefined }) => void;
+  parse: (props: DataItem.ParseProps<A>) => DataItem.ParseResult<any>;
+  effect: (props: FormItemSetArg<A> & { origin: any | null | undefined }) => void;
   validations: (props: {
-    dataItem: DataItem.ArgObject<D>;
-  }) => Array<DataItem.Validation<D>>;
+    dataItem: DataItem.ArgObject<A>;
+  }) => Array<DataItem.Validation<A>>;
   focus: () => void;
 };
 
-export const useFormItemCore = <D extends DataItem.$object>({
+export const useFormItemCore = <A extends DataItem.$object, D extends A>({
   hook,
   name,
   label,
@@ -35,7 +35,7 @@ export const useFormItemCore = <D extends DataItem.$object>({
   onChange,
   onEdit,
   ...props
-}: FormItemOptions<D>, cp: FormItemCoreProps<D>) => {
+}: FormItemOptions<D>, cp: FormItemCoreProps<A, D>) => {
   const id = useRef(crypto.randomUUID());
   const form = use(FormContext);
   const hookSetter = useRef<((v: DataItem.ValueType<D> | DataItem.NullValue) => void) | null>(null);

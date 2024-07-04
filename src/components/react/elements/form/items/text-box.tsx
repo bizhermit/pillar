@@ -5,7 +5,7 @@ import { isEmpty } from "../../../../objects/string";
 import { useFormItemCore } from "../hooks";
 import { joinClassNames } from "../utilities";
 
-type TextBoxOptions = FormItemOptions<DataItem.$str> & {
+type TextBoxOptions<D extends DataItem.$str> = FormItemOptions<D> & {
   length?: number;
   minLength?: number;
   maxLength?: number;
@@ -14,9 +14,9 @@ type TextBoxOptions = FormItemOptions<DataItem.$str> & {
   autoComplete?: string;
 };
 
-type TextBoxProps = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TextBoxOptions>;
+type TextBoxProps<D extends DataItem.$str> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TextBoxOptions<D>>;
 
-export const TextBox = ({
+export const TextBox = <D extends DataItem.$str>({
   length,
   minLength,
   maxLength,
@@ -24,10 +24,10 @@ export const TextBox = ({
   inputMode,
   autoComplete,
   ...props
-}: TextBoxProps) => {
+}: TextBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
 
-  const fi = useFormItemCore(props, {
+  const fi = useFormItemCore<DataItem.$str, D>(props, {
     getDataItem: ({ dataItem }) => {
       return {
         type: "str",

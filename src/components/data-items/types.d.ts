@@ -194,9 +194,9 @@ declare namespace DataItem {
   type $atoms =
     | $str
     | $num
-    | $bool<boolean, boolean>
-    | $boolNum<number, number>
-    | $boolStr<string, string>
+    | $bool<any, any>
+    | $boolNum<any, any>
+    | $boolStr<any, any>
     | $date
     | $month
     | $time

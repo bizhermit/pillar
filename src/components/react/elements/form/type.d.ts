@@ -1,3 +1,6 @@
+type FormItemValue<V extends any = any, D extends DataItem.$objec | undefined> =
+  D extends DataItem.$object ? DataItem.ValueType<D> : V;
+
 type FormItemHookConnectionParams<T extends any> = {
   get: () => (T | DataItem.NullValue);
   set: (value: T | DataItem.NullValue) => void;
@@ -35,6 +38,6 @@ type FormItemOptions<D extends DataItem.$object> = {
 };
 
 type FormItemSetArg<D extends DataItem.$object> = {
-  value: DataItem.ValueType<D> | DataItem.NullValue;
+  value: any;
   edit: boolean;
 };
