@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 "use client";
 
 import { Button, ButtonIcon } from "@/react/elements/button";
 import { Form } from "@/react/elements/form";
+import { useFormItem } from "@/react/elements/form/hooks";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { FormItemWrap } from "@/react/elements/form/wrap";
 import { sleep } from "@/utilities/sleep";
@@ -13,6 +15,7 @@ export default function Home() {
   const [bind, setBind] = useState({
     text: "123",
   });
+  const formItem = useFormItem();
 
   const [disabled, setDisabled] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
@@ -70,6 +73,13 @@ export default function Home() {
         >
           readOnly: {String(readOnly)}
         </Button>
+        <Button
+          onClick={() => {
+            formItem.setValue("hogehoge");
+          }}
+        >
+          set hogehoge
+        </Button>
       </div>
       <Form
         bind={bind}
@@ -91,10 +101,12 @@ export default function Home() {
               required
               disabled={disabled}
               readOnly={readOnly}
+              hook={formItem.hook}
             />
           </FormItemWrap>
           {/* </div> */}
           <button type="submit">submit</button>
+          <span>{formItem.value}</span>
         </div>
       </Form>
       {/* <div className={s.row}>

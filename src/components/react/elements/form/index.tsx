@@ -3,9 +3,9 @@ import { clone } from "../../../objects";
 import { getValue, setValue } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 
-type FormError = {
+type FormItemState = {
   id: string;
-  content: DataItem.ValidationResult | null | undefined;
+  state: DataItem.ValidationResult | null | undefined;
 };
 
 type FormItemMountProps = {
@@ -26,7 +26,7 @@ type FormContextProps = {
   pending: boolean;
   method?: string;
   hasError: boolean;
-  setItemState: Dispatch<FormError>;
+  setItemState: Dispatch<FormItemState>;
   getMountedItems: () => { [id: string]: FormItemMountProps };
   mount: (props: FormItemMountProps) => {
     unmount: () => void;
@@ -87,7 +87,7 @@ type FormOptions<T extends { [v: string]: any } = { [v: string]: any }> = {
   }) => (void | boolean | Promise<void | boolean>)) | boolean;
 };
 
-type FormProps<T extends { [v: string]: any } = { [v: string]: any }> = OverwriteAttrs<HTMLFormElement, FormHTMLAttributes<HTMLFormElement>, FormOptions<T>>;
+type FormProps<T extends { [v: string]: any } = { [v: string]: any }> = OverwriteAttrs<FormHTMLAttributes<HTMLFormElement>, FormOptions<T>>;
 
 export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   ref,
@@ -113,24 +113,24 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     return items.current[id];
   };
 
-  const [itemState, setItemState] = useReducer((state: { [id: string]: Exclude<FormError["content"], null | undefined> }, { id, content }: FormError) => {
-    const buf = state[id];
-    if (content == null) {
-      if (buf == null) return state;
-      const ret = { ...state };
+  const [itemState, setItemState] = useReducer((cur: { [id: string]: Exclude<FormItemState["state"], null | undefined> }, { id, state }: FormItemState) => {
+    const buf = cur[id];
+    if (state == null) {
+      if (buf == null) return cur;
+      const ret = { ...cur };
       delete ret[id];
       return ret;
     }
     if (buf == null) {
       return {
-        ...state,
-        [id]: content,
+        ...cur,
+        [id]: state,
       };
     }
-    if (buf.type === content.type && buf.msg === content.msg) return state;
+    if (buf.type === state.type && buf.msg === state.msg) return cur;
     return {
-      ...state,
-      [id]: content,
+      ...cur,
+      [id]: state,
     };
   }, {});
 
@@ -279,7 +279,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
         return {
           unmount: () => {
             delete items.current[p.id];
-            setItemState({ id: p.id, content: null });
+            setItemState({ id: p.id, state: null });
           },
         };
       },

@@ -2,7 +2,7 @@ import { useRef, type HTMLAttributes } from "react";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { isEmpty } from "../../../../objects/string";
-import { useFormItem } from "../hooks";
+import { useFormItemCore } from "../hooks";
 import { joinClassNames } from "../utilities";
 
 type TextBoxOptions = FormItemOptions<DataItem.$str> & {
@@ -14,7 +14,7 @@ type TextBoxOptions = FormItemOptions<DataItem.$str> & {
   autoComplete?: string;
 };
 
-type TextBoxProps = OverwriteAttrs<HTMLDivElement, HTMLAttributes<HTMLDivElement>, TextBoxOptions>;
+type TextBoxProps = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TextBoxOptions>;
 
 export const TextBox = ({
   length,
@@ -27,7 +27,7 @@ export const TextBox = ({
 }: TextBoxProps) => {
   const iref = useRef<HTMLInputElement>(null!);
 
-  const fi = useFormItem(props, {
+  const fi = useFormItemCore(props, {
     getDataItem: ({ dataItem }) => {
       return {
         type: "str",
@@ -43,10 +43,11 @@ export const TextBox = ({
       if (!edit) iref.current.value = value ?? "";
     },
     validations: ({ dataItem }) => $strValidations(dataItem),
+    focus: () => iref.current?.focus(),
   });
 
   const clear = () => {
-    fi.clear(false);
+    fi.clear();
     iref.current?.focus();
   };
 

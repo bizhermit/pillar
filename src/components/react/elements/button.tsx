@@ -1,17 +1,18 @@
 "use client";
 
-import { type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from "react";
+import { type ButtonHTMLAttributes, type MouseEvent, type MutableRefObject, type ReactNode } from "react";
 import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./form/utilities";
 
 type ButtonOptions = {
+  ref?: MutableRefObject<HTMLButtonElement | null>;
   onClick?: (props: {
     event: MouseEvent<HTMLButtonElement>;
     unlock: (focus?: boolean) => void;
   }) => (void | boolean | Promise<void | boolean>);
 };
 
-type ButtonProps = OverwriteAttrs<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>, ButtonOptions>;
+type ButtonProps = OverwriteAttrs<ButtonHTMLAttributes<HTMLButtonElement>, ButtonOptions>;
 
 export const ButtonIcon = (props: { children: ReactNode }) => {
   return <div className="btn-icon">{props.children}</div>;

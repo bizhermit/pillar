@@ -1,9 +1,9 @@
-import { use, useEffect, useMemo, useRef, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
 import { getValue, setValue } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 
-type Options<D extends DataItem.$object> = {
+type FormItemCoreProps<D extends DataItem.$object> = {
   getDataItem: (props: {
     name: string | undefined;
     label: string | undefined;
@@ -16,9 +16,11 @@ type Options<D extends DataItem.$object> = {
   validations: (props: {
     dataItem: DataItem.ArgObject<D>;
   }) => Array<DataItem.Validation<D>>;
+  focus: () => void;
 };
 
-export const useFormItem = <D extends DataItem.$object>({
+export const useFormItemCore = <D extends DataItem.$object>({
+  hook,
   name,
   label,
   placeholder,
@@ -33,8 +35,10 @@ export const useFormItem = <D extends DataItem.$object>({
   onChange,
   onEdit,
   ...props
-}: FormItemOptions<D>, options: Options<D>) => {
+}: FormItemOptions<D>, cp: FormItemCoreProps<D>) => {
   const id = useRef(crypto.randomUUID());
+  const form = use(FormContext);
+  const hookSetter = useRef<((v: DataItem.ValueType<D> | DataItem.NullValue) => void) | null>(null);
 
   const $dataItem = useMemo(() => {
     const $name = name || dataItem?.name;
@@ -44,23 +48,22 @@ export const useFormItem = <D extends DataItem.$object>({
       name: $name,
       required: $required,
       label: $label,
-      ...options.getDataItem({
+      ...cp.getDataItem({
         name,
         label,
         required,
         dataItem,
       }),
     };
-  }, [name, required, ...options.dataItemDeps]);
-
-  const form = use(FormContext);
+  }, [name, required, ...cp.dataItemDeps]);
 
   const parseAndValidation = useMemo(() => {
-    const validations = options.validations({ dataItem: $dataItem });
-    return (v: DataItem.ValueType<D> | null | undefined, preventSetMessage?: boolean) => {
-      const [value, parseResult] = options.parse({ value: v, dataItem: $dataItem, fullName: $dataItem.name || "" });
+    const validations = cp.validations({ dataItem: $dataItem });
+
+    return (v: DataItem.ValueType<D> | DataItem.NullValue, preventSetState?: boolean) => {
+      const [value, parseResult] = cp.parse({ value: v, dataItem: $dataItem, fullName: $dataItem.name || "" });
       const parseError = parseResult?.type === "e" ? parseResult : undefined;
-      let validationResult: DataItem.ValidationResult | null | undefined;
+      let validationResult: DataItem.ValidationResult | DataItem.NullValue;
       if (!parseError) {
         const mountedItems = form.getMountedItems();
         const siblings = Object.keys(mountedItems).map(id => mountedItems[id].dataItem);
@@ -77,7 +80,7 @@ export const useFormItem = <D extends DataItem.$object>({
       }
 
       const result = parseError ?? validationResult;
-      if (!preventSetMessage) setMsg(result);
+      if (!preventSetState) setState(result);
       return [value, result] as const;
     };
   }, [$dataItem]);
@@ -96,14 +99,14 @@ export const useFormItem = <D extends DataItem.$object>({
 
   const [message, setMessage] = useState<DataItem.ValidationResult | null | undefined>(init.message);
 
-  const setMsg = (msg: DataItem.ValidationResult | null | undefined) => {
+  const setState = (state: DataItem.ValidationResult | null | undefined) => {
     form.setItemState({
       id: id.current,
-      content: msg,
+      state,
     });
     setMessage(cur => {
-      if (cur?.type === msg?.type && cur?.msg === msg?.msg) return cur;
-      return msg;
+      if (cur?.type === state?.type && cur?.msg === state?.msg) return cur;
+      return state;
     });
   };
 
@@ -120,13 +123,22 @@ export const useFormItem = <D extends DataItem.$object>({
     setVal(v);
     onChange?.(v, { before });
     if (edit) onEdit?.(v, { before });
-    options.effect({ value: v, edit, origin: value });
+    cp.effect({ value: v, edit, origin: value });
+    hookSetter.current?.(v);
     return v;
   };
 
-  const reset = (edit: boolean) => set({ value: defaultValue, edit });
+  const reset = () => set({ value: defaultValue, edit: false });
 
-  const clear = (edit: boolean) => set({ value: undefined, edit });
+  const clear = () => set({ value: undefined, edit: false });
+
+  hookSetter.current = hook ? hook({
+    get,
+    set: (v) => set({ value: v, edit: false }),
+    clear,
+    reset,
+    focus: cp.focus,
+  }) : null;
 
   useEffect(() => {
     const { unmount } = form.mount({
@@ -196,5 +208,20 @@ export const useFormItem = <D extends DataItem.$object>({
         {message.msg}
       </span>
     ),
+  } as const;
+};
+
+export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
+  const [value, setV] = useState<T | DataItem.NullValue>(undefined);
+  const con = useRef<FormItemHookConnectionParams<T> | null>(null);
+  const set = useCallback((v: T | DataItem.NullValue) => con.current?.set(v), []);
+
+  return {
+    value,
+    setValue: set,
+    hook: (c) => {
+      con.current = c;
+      return setV;
+    },
   } as const;
 };
