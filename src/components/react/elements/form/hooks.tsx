@@ -4,13 +4,13 @@ import { getValue, setValue } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 
 type FormItemCoreProps<A extends DataItem.$object, D extends A> = {
+  dataItemDeps: Array<any>;
   getDataItem: (props: {
     name: string | undefined;
     label: string | undefined;
     required: boolean | undefined;
     dataItem: D | null | undefined;
   }) => DataItem.ArgObject<A>;
-  dataItemDeps: Array<any>;
   parse: (props: DataItem.ParseProps<A>) => DataItem.ParseResult<any>;
   effect: (props: FormItemSetArg<A> & { origin: any | null | undefined }) => void;
   validations: (props: {

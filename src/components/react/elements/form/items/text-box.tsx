@@ -28,6 +28,7 @@ export const TextBox = <D extends DataItem.$str>({
   const iref = useRef<HTMLInputElement>(null!);
 
   const fi = useFormItemCore<DataItem.$str, D>(props, {
+    dataItemDeps: [length, minLength, maxLength, charType],
     getDataItem: ({ dataItem }) => {
       return {
         type: "str",
@@ -37,7 +38,6 @@ export const TextBox = <D extends DataItem.$str>({
         charType: charType ?? dataItem?.charType,
       };
     },
-    dataItemDeps: [length, minLength, maxLength, charType],
     parse: (p) => $strParse(p),
     effect: ({ edit, value }) => {
       if (!edit) iref.current.value = value ?? "";
@@ -62,7 +62,9 @@ export const TextBox = <D extends DataItem.$str>({
       >
         <input
           ref={iref}
+          className="ipt-txt"
           type="text"
+          name={fi.name}
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly || fi.form.pending}
