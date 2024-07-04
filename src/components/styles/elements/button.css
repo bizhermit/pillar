@@ -25,6 +25,7 @@
   border-bottom: 0.3rem solid var(--sdw);
   user-select: none;
   text-decoration: none;
+  min-width: 0;
   transition: opacity 0.2s, border-bottom-color 0.2s;
 
   &:is(:disabled, [aria-disabled="true"]) {
