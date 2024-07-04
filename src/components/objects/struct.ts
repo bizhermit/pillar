@@ -1,21 +1,23 @@
 // base
 
-export const getValue = <U = any, >(data: { [v: string | number | symbol]: any } | null | undefined, name: string): U | null | undefined => {
-  if (data == null) return undefined;
+export const getValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string): [value: U | null | undefined, has: boolean] => {
+  let has = false;
+  if (data == null) return [undefined, false];
   const names = name.split(".");
   let v: any = data;
   for (const n of names) {
-    if (v == null) return undefined;
+    if (v == null) return [undefined, false];
     try {
+      has = n in v;
       v = v[n];
     } catch {
-      return undefined;
+      return [undefined, false];
     }
   }
-  return v as U;
+  return [v as U, has];
 };
 
-export const setValue = <U = any, >(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
+export const setValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
   const names = name.split(".");
   let o = data;
@@ -36,7 +38,7 @@ export const setValue = <U = any, >(data: { [v: string | number | symbol]: any }
   return value;
 };
 
-export const appendValue = <U = any, >(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
+export const appendValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
   const names = name.split(".");
   let o = data;

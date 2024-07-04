@@ -10,21 +10,24 @@ type FormError = {
 
 type FormItemMountProps = {
   id: string;
-  name: string;
+  name?: string;
   get: <T>() => T;
-  set: (value: any) => void;
-  reset: () => void;
+  set: (arg: FormItemSetArg<any>) => void;
+  reset: (edit: boolean) => void;
+  dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
 };
 
-type FormState = "init" | "submit" | "reset" | null | "nothing";
+type FormState = "init" | "submit" | "reset" | "" | "nothing";
 
 type FormContextProps = {
   bind: { [v: string]: any };
   disabled?: boolean;
   state: FormState;
+  pending: boolean;
   method?: string;
   hasError: boolean;
   setItemState: Dispatch<FormError>;
+  getMountedItems: () => { [id: string]: FormItemMountProps };
   mount: (props: FormItemMountProps) => {
     unmount: () => void;
   };
@@ -36,13 +39,19 @@ export const FormContext = createContext<FormContextProps>({
   bind: {},
   disabled: false,
   state: "nothing",
+  pending: false,
   hasError: false,
   setItemState: () => { },
+  getMountedItems: () => {
+    return {};
+  },
   mount: () => {
-    throw new Error("no form");
+    return {
+      unmount: () => { },
+    };
   },
   getValue: () => undefined as any,
-  setValue: () => {},
+  setValue: () => { },
 });
 
 type GetBindDataOptions = {
@@ -137,14 +146,14 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     Object.keys(items.current).forEach(id => {
       const { name } = items.current[id];
       if (!name) return;
-      setValue(ret, name, clone(getValue($bind, name)));
+      setValue(ret, name, clone(getValue($bind, name)[0]));
     });
     return ret as any;
   };
 
-  const $get = (name: string) => findItem(name)?.get<any>();
+  const get = (name: string) => findItem(name)?.get<any>();
 
-  const $set = (name: string, value: any) => findItem(name)?.set(value);
+  const set = (name: string, value: any) => findItem(name)?.set({ value, edit: false });
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.stopPropagation();
@@ -155,7 +164,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     setFormState("submit");
     if (onSubmit === false) {
       e.preventDefault();
-      setFormState(null);
+      setFormState("");
       return;
     }
     if (onSubmit == null || onSubmit === true) return;
@@ -166,32 +175,32 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
         event: e,
         keepLock: () => {
           keepLock = true;
-          return () => setFormState(null);
+          return () => setFormState("");
         },
         getFormData,
         getBindData,
       });
       if (ret == null || ret === false) {
         e.preventDefault();
-        if (!keepLock) setFormState(null);
+        if (!keepLock) setFormState("");
         return;
       }
       if (ret === true) return;
       e.preventDefault();
       if (ret instanceof Promise) {
         ret.finally(() => {
-          if (!keepLock) setFormState(null);
+          if (!keepLock) setFormState("");
         });
       }
     } catch {
       e.preventDefault();
-      setFormState(null);
+      setFormState("");
     }
   };
 
   const resetItems = (callback?: () => void) => {
     Object.keys(items.current).forEach(id => {
-      items.current[id].reset();
+      items.current[id].reset(false);
     });
     callback?.();
   };
@@ -202,11 +211,11 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     if (disabled || formStateRef.current) return;
     setFormState("reset");
     if (onReset == null || onReset === true) {
-      resetItems(() => setFormState(null));
+      resetItems(() => setFormState(""));
       return;
     }
     if (onReset === false) {
-      setFormState(null);
+      setFormState("");
       return;
     }
 
@@ -217,27 +226,27 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
         getBindData,
       });
       if (ret == null || ret === true) {
-        resetItems(() => setFormState(null));
+        resetItems(() => setFormState(""));
         return;
       }
       if (ret === false) {
-        setFormState(null);
+        setFormState("");
         return;
       }
       if (ret instanceof Promise) {
         ret
           .then((r) => {
             if (r === false) {
-              setFormState(null);
+              setFormState("");
               return;
             }
-            resetItems(() => setFormState(null));
+            resetItems(() => setFormState(""));
           }).catch(() => {
-            setFormState(null);
+            setFormState("");
           });
       }
     } catch {
-      setFormState(null);
+      setFormState("");
     }
   };
 
@@ -248,13 +257,13 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       reset: () => $ref.current?.reset(),
       getFormData,
       getBindData,
-      getValue: $get,
-      setValue: $set,
+      getValue: get,
+      setValue: set,
     };
   }
 
   useEffect(() => {
-    setFormState(null);
+    setFormState("");
   }, []);
 
   return (
@@ -263,6 +272,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       bind: $bind,
       disabled,
       state: formState,
+      pending: ["submit", "reset", "init"].includes(formState),
       hasError,
       mount: (p) => {
         items.current[p.id] = p;
@@ -274,8 +284,9 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
         };
       },
       setItemState,
-      getValue: $get,
-      setValue: $set,
+      getMountedItems: () => items.current,
+      getValue: get,
+      setValue: set,
     }}>
       <form
         {...props}

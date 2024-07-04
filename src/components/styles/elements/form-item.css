@@ -1,0 +1,77 @@
+.ipt-wrap {
+}
+
+.ipt-main {
+  position: relative;
+  background: var(--ipt-bg);
+  color: var(--ipt-fg);
+  border: 1px solid var(--sdw);
+  border-radius: 0.2rem;
+  min-height: var(--ipt-size);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: stretch;
+  align-items: stretch;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+
+  &:focus-within {
+    outline-style: solid;
+  }
+
+  &[aria-disabled="true"] {
+    opacity: 0.6;
+  }
+
+  &[aria-invalid="true"] {
+    border-color: var(--sdw-err);
+    background: var(--ipt-bg-err);
+    color: var(--ipt-fg-err);
+  }
+
+}
+
+.ipt-btn {
+  display: grid;
+  place-items: center;
+  width: var(--ipt-size);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  transition: opacity 0.2s;
+  
+  &:disabled {
+    opacity: 0.6;
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+.ipt-msg {
+  font-size: 1.3rem;
+
+  &[data-state="e"] {
+    color: var(--fg-err);
+  }
+
+  &[data-state="w"] {
+    color: var(--fg-warn);
+  }
+
+  &[data-state="i"] {
+    color: var(--fg-info);
+  }
+}
+
+input:is([type="text"], [type="textarea"]) {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0 0.8rem;
+  min-width: 0;
+  flex: 1 1 0;
+}

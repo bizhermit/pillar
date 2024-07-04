@@ -19,7 +19,7 @@ const replace = <T extends UrlPath>(href: T, getValue: (key: string) => any): T 
 
 export const replaceDynamicPathname = <T extends UrlPath>(href: T, params: { [v: string | number | symbol]: any } | null | undefined): T => {
   if (href == null) return href;
-  return replace(href, key => getValue(params, key));
+  return replace(href, key => getValue(params, key)[0]);
 };
 
 export type DynamicUrlOptions = {
@@ -49,7 +49,7 @@ export const getDynamicPathnameContext = <
       if (opts?.leaveDynamicKey !== true) data.delete(key);
       return v;
     }
-    const v = getValue(data, key);
+    const v = getValue(data, key)[0];
     if (opts?.leaveDynamicKey !== true) delete data[key];
     return v;
   };

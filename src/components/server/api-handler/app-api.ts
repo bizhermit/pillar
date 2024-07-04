@@ -41,7 +41,7 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
 
   const replace = <D extends DataItem.$object>(dataItem: D, parse: (parseProps: DataItem.ParseProps<D>) => DataItem.ParseResult<any>, index: number | undefined): { value: (DataItem.ValueType<D> | null | undefined); name: string; } => {
     const name = getDataName(dataItem, index);
-    const value = getValue(params, name);
+    const value = getValue(params, name)[0];
     const props = { value, dataItem, fullName: parentName ? `${parentName}.${name}` : name } as const satisfies DataItem.ParseProps<D>;
     const [v, r] = parse(props);
     setValue(params, name, v);
@@ -125,7 +125,7 @@ const validationParams = (params: { [v: string]: any } | Array<any>, dataItems: 
 
   const isValid = <D extends DataItem.$object>(dataItem: D, validations: Array<DataItem.Validation<any>>, index: number | undefined): { ok: boolean; value: DataItem.ValueType<D>; name: string; } => {
     const name = getDataName(dataItem, index);
-    const value = getValue(params, name);
+    const value = getValue(params, name)[0];
 
     let r: DataItem.ValidationResult | null | undefined;
     for (const func of validations) {

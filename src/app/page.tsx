@@ -1,49 +1,98 @@
 "use client";
 
 import { Button, ButtonIcon } from "@/react/elements/button";
+import { Form } from "@/react/elements/form";
+import { TextBox } from "@/react/elements/form/items/text-box";
 import { sleep } from "@/utilities/sleep";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import s from "./page.module.css";
 
 export default function Home() {
   const ref = useRef<HTMLButtonElement>(null);
-  return (
-    <div className={s.page}>
-      root page
+  const [bind, setBind] = useState({
+    text: "123",
+  });
 
-      <button disabled>button</button>
-      <button>ボタン</button>
-      <a
-        // href="https://bizhermit.com"
-        aria-disabled
-        target="_blank"
-      >
-        リンク
-      </a>
-      <a
-        href="https://bizhermit.com"
-        role="button"
-        target="_blank"
-        aria-disabled
-      >
-        リンク
-      </a>
-      <Button
-        ref={ref}
-        onClick={() => {
-          console.log(ref.current);
-        }}
-      >
-        Reactボタン
-      </Button>
-      <Button
-        onClick={async ({ unlock }) => {
+  const [disabled, setDisabled] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
+
+  return (
+    <div>
+      <div className={s.row}>
+        root page
+
+        <button disabled>button</button>
+        <button>ボタン</button>
+        <a
+          // href="https://bizhermit.com"
+          aria-disabled
+          target="_blank"
+        >
+          リンク
+        </a>
+        <a
+          href="https://bizhermit.com"
+          role="button"
+          target="_blank"
+          aria-disabled
+        >
+          リンク
+        </a>
+        <Button
+          ref={ref}
+          onClick={() => {
+            console.log(ref.current);
+          }}
+        >
+          Reactボタン
+        </Button>
+        <Button
+          onClick={async ({ unlock }) => {
+            console.log(bind);
+            await sleep(3000);
+            unlock();
+          }}
+        >
+          <ButtonIcon>a</ButtonIcon>
+        </Button>
+        <Button
+          onClick={() => {
+            setDisabled(c => !c);
+          }}
+        >
+          disabled: {String(disabled)}
+        </Button>
+        <Button
+          onClick={() => {
+            setReadOnly(c => !c);
+          }}
+        >
+          readOnly: {String(readOnly)}
+        </Button>
+      </div>
+      <Form
+        bind={bind}
+        onSubmit={async () => {
           await sleep(3000);
-          unlock();
         }}
       >
-        <ButtonIcon>a</ButtonIcon>
-      </Button>
+        <div className={s.row}>
+          {/* <div style={{ width: 300 }}> */}
+          <TextBox
+            style={{ width: "200px" }}
+            name="text"
+            defaultValue="hoge"
+            required
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+          {/* </div> */}
+          <button type="submit">submit</button>
+        </div>
+      </Form>
+      {/* <div className={s.row}>
+        <TextBox />
+      </div> */}
     </div>
   );
 }
