@@ -3,6 +3,7 @@
 import { Button, ButtonIcon } from "@/react/elements/button";
 import { Form } from "@/react/elements/form";
 import { TextBox } from "@/react/elements/form/items/text-box";
+import { FormItemWrap } from "@/react/elements/form/wrap";
 import { sleep } from "@/utilities/sleep";
 import { useRef, useState } from "react";
 import s from "./page.module.css";
@@ -77,16 +78,21 @@ export default function Home() {
         }}
       >
         <div className={s.row}>
-          {/* <div style={{ width: 300 }}> */}
-          <TextBox
-            style={{ width: "200px" }}
-            name="text"
-            defaultValue="hoge"
-            required
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-          {/* </div> */}
+          <div style={{ width: 150 }}>
+            <FormItemWrap
+            // style={{ width: 100 }}
+            >
+              <TextBox
+                style={{ width: "100px" }}
+                name="text"
+                label="テキスト"
+                defaultValue="hoge"
+                required
+                disabled={disabled}
+                readOnly={readOnly}
+              />
+            </FormItemWrap>
+          </div>
           <button type="submit">submit</button>
         </div>
       </Form>

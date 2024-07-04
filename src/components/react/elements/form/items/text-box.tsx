@@ -1,5 +1,5 @@
-import { $strParse } from "@/data-items/string/parse";
 import { useRef, type HTMLAttributes } from "react";
+import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { isEmpty } from "../../../../objects/string";
 import { useFormItem } from "../hooks";

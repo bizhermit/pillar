@@ -1,4 +1,13 @@
 .ipt-wrap {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0.2rem;
+
+  >.ipt-msg {
+    padding: 0 0.4rem;
+  }
 }
 
 .ipt-main {
@@ -12,6 +21,8 @@
   flex-flow: row nowrap;
   justify-content: stretch;
   align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 
   &:focus-within {
@@ -38,8 +49,9 @@
   border: none;
   font-family: inherit;
   font-size: inherit;
+  min-width: 0;
   transition: opacity 0.2s;
-  
+
   &:disabled {
     opacity: 0.6;
   }
@@ -51,6 +63,10 @@
 
 .ipt-msg {
   font-size: 1.3rem;
+  min-width: 0;
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
 
   &[data-state="e"] {
     color: var(--fg-err);
