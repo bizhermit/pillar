@@ -131,6 +131,12 @@ declare namespace DataItem {
     validations?: Array<Validation<$boolStr<True, False>>>;
   };
 
+  type $boolAny<True extends any = any, False extends any = any> =
+    True extends boolean ? $bool<True, False> :
+    True extends number ? $boolNum<True, False> :
+    True extends string ? $boolStr<True, False> :
+    $bool<True, False>;
+
   type $date = $ & {
     type: "date";
     validations?: Array<Validation<$date>>;
@@ -194,9 +200,7 @@ declare namespace DataItem {
   type $atoms =
     | $str
     | $num
-    | $bool<any, any>
-    | $boolNum<any, any>
-    | $boolStr<any, any>
+    | $boolAny
     | $date
     | $month
     | $time
