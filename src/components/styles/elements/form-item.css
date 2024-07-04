@@ -39,6 +39,12 @@
     color: var(--ipt-fg-err);
   }
 
+  /* &::before {
+    position: absolute;
+    content: attr(aria-label);
+    bottom: 100%;
+    font-size: 1rem;
+  } */
 }
 
 .ipt-btn {

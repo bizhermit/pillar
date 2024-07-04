@@ -78,21 +78,22 @@ export default function Home() {
         }}
       >
         <div className={s.row}>
-          <div style={{ width: 150 }}>
-            <FormItemWrap
+          {/* <div style={{ width: 150 }}> */}
+          <FormItemWrap
             // style={{ width: 100 }}
-            >
-              <TextBox
-                style={{ width: "100px" }}
-                name="text"
-                label="テキスト"
-                defaultValue="hoge"
-                required
-                disabled={disabled}
-                readOnly={readOnly}
-              />
-            </FormItemWrap>
-          </div>
+          >
+            <TextBox
+              // style={{ width: "100px" }}
+              placeholder="テキスト"
+              name="text"
+              label="テキスト"
+              defaultValue="hoge"
+              required
+              disabled={disabled}
+              readOnly={readOnly}
+            />
+          </FormItemWrap>
+          {/* </div> */}
           <button type="submit">submit</button>
         </div>
       </Form>

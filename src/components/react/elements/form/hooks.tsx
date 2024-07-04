@@ -184,6 +184,8 @@ export const useFormItem = <D extends DataItem.$object>({
       "aria-disabled": disabled,
       "aria-readonly": readOnly || form.pending,
       "aria-invalid": message?.type === "e",
+      "aria-label": $dataItem?.label,
+      "aria-placeholder": placeholder,
     },
     message,
     messageComponent: (!hideMessage && message &&
