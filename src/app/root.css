@@ -24,6 +24,8 @@
   --ipt-fg: #171717;
   --ipt-bg-err: #ffcccc;
   --ipt-fg-err: #171717;
+  --ipt-bg-clr: #4fbfff;
+  --ipt-fg-clr: #f8f8f8;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,6 +43,8 @@
     --ipt-fg: #f8f8f8;
     --ipt-bg-err: #422;
     --ipt-fg-err: #f8f8f8;
+    --ipt-bg-clr: #5f9fdf;
+    --ipt-fg-clr: #f8f8f8;
   }
 }
 

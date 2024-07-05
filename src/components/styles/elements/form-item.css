@@ -233,7 +233,7 @@
     left: calc(var(--ipt-size) * 0.1);
     width: calc(var(--ipt-size) * 0.8);
     height: calc(var(--ipt-size) * 0.8);
-    background: var(--ipt-fg);
+    background: var(--ipt-bg-clr);
     border: 1px solid var(--sdw);
     border-radius: 9999px;
     transition: left 0.3s;
@@ -297,7 +297,7 @@
 
   &:checked {
     &::before {
-      background: var(--ipt-fg);
+      background: var(--ipt-bg-clr);
     }
 
     &::after {
