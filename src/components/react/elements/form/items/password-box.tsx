@@ -89,28 +89,25 @@ export const PasswordBox = <D extends DataItem.$str>({
           autoComplete={autoComplete ?? "off"}
           inputMode={fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
+          aria-invalid={fi.message?.type === "e"}
         />
         {!hideToggleButton && fi.editable &&
-          <button
+          <div
             className="ipt-btn"
-            type="button"
-            tabIndex={-1}
-            disabled={fi.form.pending || empty}
+            aria-disabled={fi.form.pending || empty}
             onClick={toggle}
           >
             {type === "text" ? "●" : "○"}
-          </button>
+          </div>
         }
         {!fi.hideClearButton && fi.editable &&
-          <button
+          <div
             className="ipt-btn"
-            type="button"
-            tabIndex={-1}
-            disabled={fi.form.pending || empty}
+            aria-disabled={fi.form.pending || empty}
             onClick={clear}
           >
             ×
-          </button>
+          </div>
         }
       </div>
       {fi.messageComponent}

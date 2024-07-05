@@ -56,13 +56,14 @@
   font-family: inherit;
   font-size: inherit;
   min-width: 0;
+  user-select: none;
   transition: opacity 0.1s, background-color 0.1s;
 
-  &:disabled {
+  &[aria-disabled="true"] {
     opacity: 0.6;
   }
 
-  &:not(:disabled) {
+  &:not([aria-disabled="true"]) {
     cursor: pointer;
   }
 }

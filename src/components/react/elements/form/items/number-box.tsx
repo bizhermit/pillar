@@ -184,6 +184,7 @@ export const NumberBox = <D extends DataItem.$num>({
           onKeyDown={keydown}
           onFocus={focus}
           onBlur={blur}
+          aria-invalid={fi.message?.type === "e"}
         />
         {!empty &&
           <input
@@ -195,33 +196,27 @@ export const NumberBox = <D extends DataItem.$num>({
         {!hideSpinButtons && fi.editable &&
           <>
             <div className="ipt-num-spins">
-              <button
+              <div
                 className="ipt-btn ipt-num-spin-inc"
-                type="button"
-                tabIndex={-1}
-                disabled={fi.form.pending}
+                aria-disabled={fi.form.pending}
                 onMouseDown={() => mousedown("up")}
               />
               <button
                 className="ipt-btn ipt-num-spin-dec"
-                type="button"
-                tabIndex={-1}
-                disabled={fi.form.pending}
+                aria-disabled={fi.form.pending}
                 onMouseDown={() => mousedown("down")}
               />
             </div>
           </>
         }
         {!fi.hideClearButton && fi.editable &&
-          <button
+          <div
             className="ipt-btn"
-            type="button"
-            tabIndex={-1}
-            disabled={fi.form.pending || empty}
+            aria-disabled={fi.form.pending || empty}
             onClick={clear}
           >
             ×
-          </button>
+          </div>
         }
       </div>
       {fi.messageComponent}

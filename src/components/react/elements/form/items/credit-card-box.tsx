@@ -98,8 +98,9 @@ export const CreditCardNumberBox = <D extends DataItem.$str>({
           defaultValue={fi.value ?? ""}
           maxLength={19}
           autoComplete={autoComplete ?? "off"}
-          inputMode="tel"
+          inputMode="numeric"
           onChange={change}
+          aria-invalid={fi.message?.type === "e"}
         />
         {!empty &&
           <input
@@ -109,15 +110,13 @@ export const CreditCardNumberBox = <D extends DataItem.$str>({
           />
         }
         {!fi.hideClearButton && fi.editable &&
-          <button
+          <div
             className="ipt-btn"
-            type="button"
-            tabIndex={-1}
-            disabled={fi.form.pending || empty}
+            aria-disabled={fi.form.pending || empty}
             onClick={clear}
           >
             ×
-          </button>
+          </div>
         }
       </div>
       {fi.messageComponent}
