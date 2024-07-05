@@ -9,7 +9,7 @@ import { TextBoxProps } from "./text-box";
 type PasswordBoxProps<D extends DataItem.$str> = TextBoxProps<D> & {
   minimumValidation?: boolean;
   hideToggleButton?: boolean;
-}
+};
 
 export const PasswordBox = <D extends DataItem.$str>({
   length,
@@ -85,6 +85,7 @@ export const PasswordBox = <D extends DataItem.$str>({
           readOnly={fi.readOnly || fi.form.pending}
           tabIndex={fi.tabIndex}
           defaultValue={fi.value ?? ""}
+          maxLength={minimumValidation ? undefined : (fi.dataItem.length ?? fi.dataItem.maxLength)}
           autoComplete={autoComplete ?? "off"}
           inputMode={fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
