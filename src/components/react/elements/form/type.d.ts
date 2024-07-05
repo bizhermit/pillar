@@ -16,7 +16,6 @@ type FormItemHook<T extends any> = {
 };
 
 type FormItemOptions<D extends DataItem.$object> = {
-  ref?: React.MutableRefObject<HTMLDivElement>;
   name?: string;
   label?: string;
   placeholder?: string;

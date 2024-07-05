@@ -10,7 +10,7 @@
   }
 }
 
-.ipt-main {
+.ipt-field {
   position: relative;
   background: var(--ipt-bg);
   color: var(--ipt-fg);
@@ -87,7 +87,8 @@
   }
 }
 
-input:is([type="text"], [type="textarea"]) {
+.ipt-txt {
+  appearance: none;
   border: none;
   background: transparent;
   outline: none;
@@ -96,4 +97,58 @@ input:is([type="text"], [type="textarea"]) {
   padding: 0 0.8rem;
   min-width: 0;
   flex: 1 1 0;
+}
+
+.ipt-lbl {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: var(--ipt-size);
+  border-radius: 0.2rem;
+
+  &[aria-disabled="true"] {
+    opacity: 0.6;
+  }
+
+  &:not(:is([aria-disabled="true"], [aria-readonly="true"])) {
+    user-select: none;
+    cursor: pointer;
+  }
+
+  &:focus-within {
+    outline-style: solid;
+  }
+}
+
+.ipt-tgl {
+  appearance: none;
+  position: relative;
+  height: var(--ipt-size);
+  width: calc(var(--ipt-size) * 2);
+  border-radius: 9999px;
+  border: 1px solid var(--sdw);
+  background: var(--ipt-bg);
+  cursor: inherit;
+  outline: none;
+
+  &::before {
+    position: absolute;
+    content: "";
+    top: calc(50% - var(--ipt-size) * 0.4);
+    left: calc(var(--ipt-size) * 0.1);
+    height: calc(var(--ipt-size) * 0.8 - 2px);
+    width: calc(var(--ipt-size) * 0.8 - 2px);
+    background: var(--ipt-fg);
+    border: 1px solid var(--sdw);
+    border-radius: 9999px;
+    transition: left 0.3s;
+  }
+
+  &:checked {
+    &::before {
+      left: calc(var(--ipt-size) * 1.1);
+    }
+  }
 }

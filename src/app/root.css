@@ -34,7 +34,7 @@
     --fg-warn: #ff0;
     --fg-info: #3d3;
     --sdw: rgba(255, 255, 255, 0.4);
-    /* --sdw-err: rgba(255, 0, 0, 0.4); */
+    --sdw-err: rgba(255, 0, 0, 0.4);
     --btn-bg: #5f9fdf;
     --btn-fg: #f8f8f8;
     --ipt-bg: #333;

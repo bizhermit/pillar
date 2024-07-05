@@ -58,7 +58,7 @@ export const TextBox = <D extends DataItem.$str>({
       <div
         {...fi.props}
         {...fi.airaProps}
-        className={joinClassNames("ipt-main", props.className)}
+        className={joinClassNames("ipt-field", props.className)}
       >
         <input
           ref={iref}
@@ -71,7 +71,7 @@ export const TextBox = <D extends DataItem.$str>({
           maxLength={fi.dataItem.length ?? fi.dataItem.maxLength}
           tabIndex={fi.tabIndex}
           defaultValue={fi.value ?? ""}
-          autoComplete={autoComplete}
+          autoComplete={autoComplete ?? "off"}
           inputMode={inputMode ?? fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
         />

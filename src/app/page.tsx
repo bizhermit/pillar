@@ -5,6 +5,7 @@ import { Button, ButtonIcon } from "@/react/elements/button";
 import { Form } from "@/react/elements/form";
 import { useFormItem } from "@/react/elements/form/hooks";
 import { TextBox } from "@/react/elements/form/items/text-box";
+import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemWrap } from "@/react/elements/form/wrap";
 import { sleep } from "@/utilities/sleep";
 import { useRef, useState } from "react";
@@ -17,6 +18,7 @@ export default function Home() {
   });
   const formItem = useFormItem();
 
+  const [formDisabled, setFormDisabled] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
 
@@ -48,7 +50,7 @@ export default function Home() {
             console.log(ref.current);
           }}
         >
-          Reactボタン
+          console
         </Button>
         <Button
           onClick={async ({ unlock }) => {
@@ -58,6 +60,13 @@ export default function Home() {
           }}
         >
           <ButtonIcon>a</ButtonIcon>
+        </Button>
+        <Button
+          onClick={() => {
+            setFormDisabled(c => !c);
+          }}
+        >
+          Form disabled: {String(formDisabled)}
         </Button>
         <Button
           onClick={() => {
@@ -83,8 +92,12 @@ export default function Home() {
       </div>
       <Form
         bind={bind}
-        onSubmit={async () => {
+        disabled={formDisabled}
+        onSubmit={async ({ getFormData }) => {
           await sleep(3000);
+          const fd = getFormData();
+          console.log("------");
+          fd.forEach((v, k) => console.log(k, v));
         }}
       >
         <div className={s.row}>
@@ -104,6 +117,18 @@ export default function Home() {
               hook={formItem.hook}
             />
           </FormItemWrap>
+          <label>
+            Fuga:
+            <FormItemWrap>
+              <ToggleSwitch
+                label="トグル"
+                name="toggle"
+                defaultValue={true}
+              >
+                トグル
+              </ToggleSwitch>
+            </FormItemWrap>
+          </label>
           {/* </div> */}
           <button type="submit">submit</button>
           <span>{formItem.value}</span>

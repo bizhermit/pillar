@@ -12,7 +12,10 @@ type FormItemCoreProps<A extends DataItem.$object, D extends A> = {
     dataItem: D | null | undefined;
   }) => DataItem.ArgObject<A>;
   parse: (props: DataItem.ParseProps<A>) => DataItem.ParseResult<any>;
-  effect: (props: FormItemSetArg<A> & { origin: any | null | undefined }) => void;
+  effect: (props: FormItemSetArg<A> & {
+    origin: any | null | undefined;
+    dataItem: DataItem.ArgObject<A>;
+  }) => void;
   validations: (props: {
     dataItem: DataItem.ArgObject<A>;
   }) => Array<DataItem.Validation<A>>;
@@ -123,7 +126,7 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
     setVal(v);
     onChange?.(v, { before });
     if (edit) onEdit?.(v, { before });
-    cp.effect({ value: v, edit, origin: value });
+    cp.effect({ value: v, edit, origin: value, dataItem: $dataItem });
     hookSetter.current?.(v);
     return v;
   };
@@ -193,7 +196,7 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
     props,
     airaProps: {
       "aria-required": required,
-      "aria-disabled": disabled,
+      "aria-disabled": disabled || form.disabled,
       "aria-readonly": readOnly || form.pending,
       "aria-invalid": message?.type === "e",
       "aria-label": $dataItem?.label,
