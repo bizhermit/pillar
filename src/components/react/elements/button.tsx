@@ -6,13 +6,14 @@ import { joinClassNames } from "./utilities";
 
 type ButtonOptions = {
   ref?: MutableRefObject<HTMLButtonElement | null>;
+  processing?: boolean;
   onClick?: (props: {
     event: MouseEvent<HTMLButtonElement>;
     unlock: (focus?: boolean) => void;
   }) => (void | boolean | Promise<void | boolean>);
 };
 
-type ButtonProps = OverwriteAttrs<ButtonHTMLAttributes<HTMLButtonElement>, ButtonOptions>;
+export type ButtonProps = OverwriteAttrs<ButtonHTMLAttributes<HTMLButtonElement>, ButtonOptions>;
 
 export const ButtonIcon = (props: { children: ReactNode }) => {
   return <div className="btn-icon">{props.children}</div>;
@@ -20,12 +21,13 @@ export const ButtonIcon = (props: { children: ReactNode }) => {
 
 export const Button = ({
   onClick,
+  processing,
   ...props
 }: ButtonProps) => {
   const [ing, setState, ingRef] = useRefState(false);
 
   const click = (event: MouseEvent<HTMLButtonElement>) => {
-    if (props.disabled || ingRef.current) {
+    if (props.disabled || ingRef.current || processing) {
       event.preventDefault();
       return;
     }
@@ -41,17 +43,9 @@ export const Button = ({
     <button
       {...props}
       className={joinClassNames("btn", props.className)}
-      disabled={props.disabled || ing}
+      disabled={props.disabled || ing || processing}
       onClick={click}
-      data-processing={ing}
+      data-processing={ing || processing}
     />
   );
 };
-
-// export const FormButton = (props: ButtonProps) => {
-//   return (
-//     <button {...props} onClick={() => {
-//       console.log("form button click", props);
-//     }} />
-//   );
-// };

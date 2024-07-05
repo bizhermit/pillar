@@ -3,6 +3,7 @@
 
 import { Button, ButtonIcon } from "@/react/elements/button";
 import { Form } from "@/react/elements/form";
+import { FormButton } from "@/react/elements/form/form-button";
 import { useFormItem } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
 import { NumberBox } from "@/react/elements/form/items/number-box";
@@ -150,12 +151,17 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
-              // float={1}
-              // requiredIsNotZero
+            // float={1}
+            // requiredIsNotZero
             />
           </FormItemWrap>
           {/* </div> */}
-          <button type="submit">submit</button>
+          <FormButton type="submit">
+            submit
+          </FormButton>
+          <FormButton type="reset">
+            reset
+          </FormButton>
           <span>{formItem.value}</span>
         </div>
       </Form>
