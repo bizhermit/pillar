@@ -9,7 +9,7 @@ export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>): Ar
 
   if (dataItem.required) {
     validations.push(({ value, fullName }) => {
-      if (value == null) return undefined;
+      if (value != null) return undefined;
       return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
     });
   }

@@ -46,19 +46,20 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
   if (dataItem.pair) {
     validations.push(({ value, siblings, data, fullName }) => {
       if (value == null) return undefined;
-      const pairDataItem = siblings?.find(time => time.name === dataItem.pair!.name);
-      if (!pairDataItem || pairDataItem.type !== "time") return undefined;
-      const pairTime = data?.[pairDataItem.name];
+      const pairName = dataItem.pair!.name;
+      const pairDataItem = siblings?.find(time => time.name === pairName) as DataItem.ArgObject<DataItem.$time> | null | undefined;
+      if (pairDataItem != null && pairDataItem.type !== "time") return undefined;
+      const pairTime = data?.[pairName];
       if (pairTime == null) return undefined;
       if (dataItem.pair?.same) {
         if (pairTime === value) return undefined;
       }
       if (dataItem.pair?.position === "before") {
         if (value < pairTime) return undefined;
-        return { type: "e", code: "pair-before", fullName, msg: `時間の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)} - ${pairDataItem.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)}` };
+        return { type: "e", code: "pair-before", fullName, msg: `時間の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)}` };
       }
       if (value > pairTime) return undefined;
-      return { type: "e", code: "pair-after", fullName, msg: pairDataItem.pair ? "" : `時間の前後関係が不適切です。${pairDataItem.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)}` };
+      return { type: "e", code: "pair-after", fullName, msg: pairDataItem?.pair ? "" : `時間の前後関係が不適切です。${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)}` };
     });
   }
 
