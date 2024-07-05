@@ -8,7 +8,11 @@ export const $boolValidations = (dataItem: DataItem.ArgObject<DataItem.$boolAny>
   const label = dataItem.label || defaultLabel;
 
   validations.push(({ value, dataItem, fullName }) => {
-    if (equals(value, dataItem.trueValue) || equals(value, dataItem.falseValue)) return undefined;
+    if (equals(value, dataItem.trueValue)) return undefined;
+    if (equals(value, dataItem.falseValue)) {
+      if (dataItem.requiredIsTrue) return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
+      return undefined;
+    }
     if (value == null) {
       if (dataItem.required) return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
       return undefined;

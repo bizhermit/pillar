@@ -18,9 +18,9 @@ export default function Home() {
   });
   const formItem = useFormItem();
 
-  const [formDisabled, setFormDisabled] = useState(false);
-  const [disabled, setDisabled] = useState(false);
-  const [readOnly, setReadOnly] = useState(false);
+  const formDisabled = useFormItem();
+  const disabled = useFormItem();
+  const readOnly = useFormItem();
 
   return (
     <div>
@@ -61,27 +61,21 @@ export default function Home() {
         >
           <ButtonIcon>a</ButtonIcon>
         </Button>
-        <Button
-          onClick={() => {
-            setFormDisabled(c => !c);
-          }}
+        <ToggleSwitch
+          hook={formDisabled.hook}
         >
-          Form disabled: {String(formDisabled)}
-        </Button>
-        <Button
-          onClick={() => {
-            setDisabled(c => !c);
-          }}
+          form disabled
+        </ToggleSwitch>
+        <ToggleSwitch
+          hook={disabled.hook}
         >
-          disabled: {String(disabled)}
-        </Button>
-        <Button
-          onClick={() => {
-            setReadOnly(c => !c);
-          }}
+          textbox disabled
+        </ToggleSwitch>
+        <ToggleSwitch
+          hook={readOnly.hook}
         >
-          readOnly: {String(readOnly)}
-        </Button>
+          textbox readonly
+        </ToggleSwitch>
         <Button
           onClick={() => {
             formItem.setValue("hogehoge");
@@ -92,7 +86,7 @@ export default function Home() {
       </div>
       <Form
         bind={bind}
-        disabled={formDisabled}
+        disabled={formDisabled.value}
         onSubmit={async ({ getFormData }) => {
           await sleep(3000);
           const fd = getFormData();
@@ -112,18 +106,19 @@ export default function Home() {
               label="テキスト"
               defaultValue="hoge"
               required
-              disabled={disabled}
-              readOnly={readOnly}
+              disabled={disabled.value}
+              readOnly={readOnly.value}
               hook={formItem.hook}
             />
           </FormItemWrap>
           <label>
-            Fuga:
+            Label:
             <FormItemWrap>
               <ToggleSwitch
                 label="トグル"
                 name="toggle"
-                defaultValue={true}
+                required
+                requiredIsTrue
               >
                 トグル
               </ToggleSwitch>

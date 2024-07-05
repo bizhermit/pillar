@@ -8,6 +8,7 @@ import { joinClassNames } from "../utilities";
 type ToggleSwitchOptions<True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False>> = FormItemOptions<D> & {
   trueValue?: True;
   falseValue?: False;
+  requiredIsTrue?: boolean;
 };
 
 type ToggleSwitchProps<True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False>> =
@@ -16,6 +17,7 @@ type ToggleSwitchProps<True extends boolean | number | string, False extends boo
 export const ToggleSwitch = <True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False>>({
   trueValue,
   falseValue,
+  requiredIsTrue,
   ...props
 }: ToggleSwitchProps<True, False, D>) => {
   const iref = useRef<HTMLInputElement>(null!);
@@ -30,6 +32,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
           type: dataItem.type,
           trueValue: tv,
           falseValue: fv,
+          requiredIsTrue: requiredIsTrue ?? dataItem.requiredIsTrue,
         } as D;
       }
       switch (typeof (tv ?? fv)) {
@@ -38,18 +41,21 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
             type: "num",
             trueValue: tv ?? 1,
             falseValue: fv ?? 0,
+            requiredIsTrue,
           } as D;
         case "string":
           return {
             type: "str",
             trueValue: tv ?? "1",
             falseValue: fv ?? "0",
+            requiredIsTrue,
           } as D;
         default:
           return {
             type: "bool",
             trueValue: tv ?? true,
             falseValue: fv ?? false,
+            requiredIsTrue,
           } as D;
       }
     },

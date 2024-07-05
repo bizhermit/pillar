@@ -113,6 +113,7 @@ declare namespace DataItem {
     falseValue: False;
     source?: Source<True | False>;
     validations?: Array<Validation<$bool<True, False>>>;
+    requiredIsTrue?: boolean;
   };
 
   type $boolNum<True extends number = 1, False extends number = 0> = $ & {
@@ -121,6 +122,7 @@ declare namespace DataItem {
     falseValue: False;
     source?: Source<True | False>;
     validations?: Array<Validation<$boolNum<True, False>>>;
+    requiredIsTrue?: boolean;
   };
 
   type $boolStr<True extends string = "1", False extends string = "0"> = $ & {
@@ -129,6 +131,7 @@ declare namespace DataItem {
     falseValue: False;
     source?: Source<True | False>;
     validations?: Array<Validation<$boolStr<True, False>>>;
+    requiredIsTrue?: boolean;
   };
 
   type $boolAny<True extends any = any, False extends any = any> =
