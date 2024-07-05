@@ -282,8 +282,8 @@
     height: 25%;
     top: 30%;
     left: 25%;
-    border-left: 0.2rem solid var(--ipt-bg);
-    border-bottom: 0.2rem solid var(--ipt-bg);
+    border-left: 0.2rem solid var(--ipt-fg-clr);
+    border-bottom: 0.2rem solid var(--ipt-fg-clr);
     transform: rotate(-45deg);
     opacity: 0;
     transition: opacity 0.1s;
