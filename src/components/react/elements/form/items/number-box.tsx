@@ -1,7 +1,7 @@
-import { $numParse } from "@/data-items/number/parse";
-import { $numValidations } from "@/data-items/number/validation";
-import { formatNum, parseNum } from "@/objects/number";
-import { ChangeEvent, HTMLAttributes, KeyboardEvent, useRef } from "react";
+import { type ChangeEvent, type HTMLAttributes, type KeyboardEvent, useRef } from "react";
+import { $numParse } from "../../../../data-items/number/parse";
+import { $numValidations } from "../../../../data-items/number/validation";
+import { formatNum, parseNum } from "../../../../objects/number";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 

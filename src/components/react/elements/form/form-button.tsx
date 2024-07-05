@@ -1,6 +1,6 @@
 import { use } from "react";
 import { FormContext } from ".";
-import { Button, ButtonProps } from "../button";
+import { Button, type ButtonProps } from "../button";
 
 type FormButtonOptions = { type: "submit" | "reset" };
 
