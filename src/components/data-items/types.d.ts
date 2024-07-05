@@ -102,9 +102,9 @@ declare namespace DataItem {
     validations?: Array<Validation<$num<V>>>;
     min?: number;
     max?: number;
-    minLength?: number;
     maxLength?: number;
     float?: number;
+    requiredIsNotZero?: boolean;
   };
 
   type $bool<True extends boolean = true, False extends boolean = false> = $ & {

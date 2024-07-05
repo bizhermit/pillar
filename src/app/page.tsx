@@ -5,6 +5,7 @@ import { Button, ButtonIcon } from "@/react/elements/button";
 import { Form } from "@/react/elements/form";
 import { useFormItem } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
+import { NumberBox } from "@/react/elements/form/items/number-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemWrap } from "@/react/elements/form/wrap";
@@ -89,16 +90,16 @@ export default function Home() {
         bind={bind}
         disabled={formDisabled.value}
         onSubmit={async ({ hasError, getFormData }) => {
-          // await sleep(3000);
           console.log("--- submit ---", hasError);
           const fd = getFormData();
           fd.forEach((v, k) => console.log(k, v));
+          await sleep(3000);
         }}
       >
         <div className={s.row}>
           {/* <div style={{ width: 150 }}> */}
           <FormItemWrap
-            // style={{ width: 100 }}
+          // style={{ width: 100 }}
           >
             <TextBox
               // style={{ width: "100px" }}
@@ -142,6 +143,17 @@ export default function Home() {
               </CheckBox>
             </FormItemWrap>
           </label>
+          <FormItemWrap style={{ width: 150 }}>
+            <NumberBox
+              label="数値"
+              name="num"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+              // float={1}
+              // requiredIsNotZero
+            />
+          </FormItemWrap>
           {/* </div> */}
           <button type="submit">submit</button>
           <span>{formItem.value}</span>

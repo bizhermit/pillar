@@ -13,13 +13,13 @@ export const $fileParse = ({ value, dataItem, fullName }: DataItem.ParseProps<Da
     if (value instanceof File) return [value];
     if (value instanceof Blob) {
       return [
-        convertBlobToFile(value, dataItem.fileName || dataItem.name),
+        convertBlobToFile(value, dataItem.fileName || dataItem.name || ""),
         { type: "i", code: "parse", fullName, msg: `${label}をファイル型に変換しました。[blob]` },
       ];
     }
     if (typeof value === "string") {
       return [
-        convertBase64ToFile(value, dataItem.fileName || dataItem.name, { type: dataItem.type }),
+        convertBase64ToFile(value, dataItem.fileName || dataItem.name || "", { type: dataItem.type }),
         { type: "i", code: "parse", fullName, msg: `${label}をファイル型に変換しました。[base64]` },
       ];
     }

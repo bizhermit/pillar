@@ -186,6 +186,7 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
     // defaultValue,
     dataItem: $dataItem,
     value: val,
+    valueRef: valRef,
     // onChange,
     // onEdit,
     form,

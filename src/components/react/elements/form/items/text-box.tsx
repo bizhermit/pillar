@@ -40,7 +40,7 @@ export const TextBox = <D extends DataItem.$str>({
     },
     parse: (p) => $strParse(p),
     effect: ({ edit, value }) => {
-      if (!edit) iref.current.value = value ?? "";
+      if (!edit && iref.current) iref.current.value = value ?? "";
     },
     validations: ({ dataItem }) => $strValidations(dataItem),
     focus: () => iref.current?.focus(),
@@ -64,13 +64,13 @@ export const TextBox = <D extends DataItem.$str>({
           ref={iref}
           className="ipt-txt"
           type="text"
-          name={fi.name}
+          name={empty ? undefined : fi.name}
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly || fi.form.pending}
-          maxLength={fi.dataItem.length ?? fi.dataItem.maxLength}
           tabIndex={fi.tabIndex}
           defaultValue={fi.value ?? ""}
+          maxLength={fi.dataItem.length ?? fi.dataItem.maxLength}
           autoComplete={autoComplete ?? "off"}
           inputMode={inputMode ?? fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
@@ -78,6 +78,7 @@ export const TextBox = <D extends DataItem.$str>({
         {!fi.hideClearButton && fi.editable &&
           <button
             className="ipt-btn"
+            type="button"
             tabIndex={-1}
             disabled={fi.form.pending || empty}
             onClick={clear}

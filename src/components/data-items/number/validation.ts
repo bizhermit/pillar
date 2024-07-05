@@ -9,7 +9,10 @@ export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>): Ar
 
   if (dataItem.required) {
     validations.push(({ value, fullName }) => {
-      if (value != null) return undefined;
+      if (value != null) {
+        if (value === 0 && dataItem.requiredIsNotZero) return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
+        return undefined;
+      }
       return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
     });
   }
@@ -42,7 +45,7 @@ export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>): Ar
       if (value == null) return undefined;
       const fp = getFloatPosition(value);
       if (fp <= dataItem.float!) return undefined;
-      return { type: "e", code: "float", fullName, msg: `${label}は少数第${dataItem.float}位までで入力してください。[${fp}]`};
+      return { type: "e", code: "float", fullName, msg: `${label}は少数第${dataItem.float}位までで入力してください。[${fp}]` };
     });
   }
 
