@@ -6,16 +6,16 @@ import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 import { TextBoxProps } from "./text-box";
 
-type CreditCardBoxProps<D extends DataItem.$str> = Omit<TextBoxProps<D>, "inputMode">;
+type CreditCardNumberBoxProps<D extends DataItem.$str> = Omit<TextBoxProps<D>, "inputMode">;
 
-export const CreditCardBox = <D extends DataItem.$str>({
+export const CreditCardNumberBox = <D extends DataItem.$str>({
   length,
   minLength,
   maxLength,
   charType,
   autoComplete,
   ...props
-}: CreditCardBoxProps<D>) => {
+}: CreditCardNumberBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
 
   const fi = useFormItemCore<DataItem.$str, D>(props, {

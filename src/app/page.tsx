@@ -6,7 +6,7 @@ import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { useFormItem } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
-import { CreditCardBox } from "@/react/elements/form/items/credit-card-box";
+import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
@@ -164,8 +164,8 @@ export default function Home() {
             />
           </FormItemWrap>
           <FormItemWrap>
-            <CreditCardBox
-              label="クレジットカード"
+            <CreditCardNumberBox
+              label="クレジットカード番号"
               name="credit-card"
               required
             />
