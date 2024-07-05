@@ -4,6 +4,7 @@
 import { Button, ButtonIcon } from "@/react/elements/button";
 import { Form } from "@/react/elements/form";
 import { useFormItem } from "@/react/elements/form/hooks";
+import { CheckBox } from "@/react/elements/form/items/check-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemWrap } from "@/react/elements/form/wrap";
@@ -124,6 +125,21 @@ export default function Home() {
               >
                 トグル
               </ToggleSwitch>
+            </FormItemWrap>
+          </label>
+          <label>
+            <span>Label:</span>
+            <FormItemWrap>
+              <CheckBox
+                label="チェックボックス"
+                name="check"
+                required
+                // requiredIsTrue
+                disabled={disabled.value}
+                readOnly={readOnly.value}
+              >
+                チェック
+              </CheckBox>
             </FormItemWrap>
           </label>
           {/* </div> */}

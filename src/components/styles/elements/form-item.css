@@ -15,7 +15,7 @@
   background: var(--ipt-bg);
   color: var(--ipt-fg);
   border: 1px solid var(--sdw);
-  border-radius: 0.2rem;
+  border-radius: 2px;
   min-height: var(--ipt-size);
   display: flex;
   flex-flow: row nowrap;
@@ -106,7 +106,9 @@
   align-items: center;
   gap: 0.4rem;
   min-height: var(--ipt-size);
-  border-radius: 0.2rem;
+  border-radius: 2px;
+  opacity: 1;
+  transition: opacity 0.2s;
 
   &[aria-disabled="true"] {
     opacity: 0.6;
@@ -125,21 +127,32 @@
 .ipt-tgl {
   appearance: none;
   position: relative;
-  height: var(--ipt-size);
   width: calc(var(--ipt-size) * 2);
-  border-radius: 9999px;
-  border: 1px solid var(--sdw);
-  background: var(--ipt-bg);
+  height: var(--ipt-size);
   cursor: inherit;
   outline: none;
 
   &::before {
     position: absolute;
     content: "";
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 9999px;
+    border: 1px solid var(--sdw);
+    background: var(--ipt-bg);
+  }
+
+  &::after {
+    position: absolute;
+    content: "";
+    box-sizing: border-box;
     top: calc(50% - var(--ipt-size) * 0.4);
     left: calc(var(--ipt-size) * 0.1);
-    height: calc(var(--ipt-size) * 0.8 - 2px);
-    width: calc(var(--ipt-size) * 0.8 - 2px);
+    width: calc(var(--ipt-size) * 0.8);
+    height: calc(var(--ipt-size) * 0.8);
     background: var(--ipt-fg);
     border: 1px solid var(--sdw);
     border-radius: 9999px;
@@ -147,8 +160,52 @@
   }
 
   &:checked {
-    &::before {
+    &::after {
       left: calc(var(--ipt-size) * 1.1);
     }
   }
+}
+
+.ipt-chk {
+  appearance: none;
+  position: relative;
+  width: var(--ipt-size);
+  height: var(--ipt-size);
+  cursor: inherit;
+  outline: none;
+
+  &::before {
+    position: absolute;
+    content: "";
+    box-sizing: border-box;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    border: 1px solid var(--sdw);
+    border-radius: 2px;
+    background: var(--ipt-bg);
+  }
+
+  &::after {
+    position: absolute;
+    content: "";
+    box-sizing: border-box;
+    width: 50%;
+    height: 25%;
+    top: 30%;
+    left: 25%;
+    border-left: 0.2rem solid var(--ipt-fg);
+    border-bottom: 0.2rem solid var(--ipt-fg);
+    transform: rotate(-45deg);
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  &:checked {
+    &::after {
+      opacity: 1;
+    }
+  }
+
 }
