@@ -154,6 +154,7 @@ export const NumberBox = <D extends DataItem.$num>({
   };
 
   const clear = () => {
+    if (!fi.editable) return;
     fi.clear();
     setTimeout(() => iref.current?.focus(), 0);
   };
