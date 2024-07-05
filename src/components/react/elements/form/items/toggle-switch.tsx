@@ -87,6 +87,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
             if (fi.disabled || fi.readOnly || fi.form.pending) return;
             fi.set({ value: e.target.checked ? fi.dataItem.trueValue : fi.dataItem.falseValue, edit: true });
           }}
+          aria-invalid={fi.message?.type === "e"}
         />
         {fi.name && fi.value != null &&
           <input
