@@ -172,6 +172,8 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
     parseAndValidation(valRef.current);
   }, [parseAndValidation, form.bind]);
 
+  const editable = !readOnly && !(disabled || form.disabled);
+
   return {
     name: $dataItem.name,
     label,
@@ -179,7 +181,7 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
     tabIndex,
     disabled: disabled || form.disabled,
     readOnly,
-    editable: !readOnly && !(disabled || form.disabled),
+    editable,
     required: $dataItem.required,
     hideClearButton,
     hideMessage,
@@ -199,12 +201,12 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
       "aria-required": required,
       "aria-disabled": disabled || form.disabled,
       "aria-readonly": readOnly || form.pending,
-      "aria-invalid": message?.type === "e",
+      "aria-invalid": editable && message?.type === "e",
       "aria-label": $dataItem?.label,
       "aria-placeholder": placeholder,
     },
     message,
-    messageComponent: (!hideMessage && message &&
+    messageComponent: (!hideMessage && message && editable &&
       <span
         className="ipt-msg"
         data-state={message.type}

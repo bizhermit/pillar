@@ -161,6 +161,8 @@ export default function Home() {
             <PasswordBox
               label="パスワード"
               name="password"
+              disabled={disabled.value}
+              readOnly={readOnly.value}
             />
           </FormItemWrap>
           <FormItemWrap>
@@ -168,6 +170,8 @@ export default function Home() {
               label="クレジットカード番号"
               name="credit-card"
               required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
             />
           </FormItemWrap>
           {/* </div> */}
