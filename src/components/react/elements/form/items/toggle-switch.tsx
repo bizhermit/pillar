@@ -23,7 +23,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
   const iref = useRef<HTMLInputElement>(null!);
 
   const fi = useFormItemCore<DataItem.$boolAny<True, False>, D>(props, {
-    dataItemDeps: [trueValue, falseValue],
+    dataItemDeps: [trueValue, falseValue, requiredIsTrue],
     getDataItem: ({ dataItem }) => {
       const tv = trueValue ?? dataItem?.trueValue;
       const fv = falseValue ?? dataItem?.falseValue;

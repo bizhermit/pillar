@@ -32,7 +32,7 @@ export const NumberBox = <D extends DataItem.$num>({
   const iref = useRef<HTMLInputElement>(null!);
 
   const fi = useFormItemCore<DataItem.$num, D>(props, {
-    dataItemDeps: [],
+    dataItemDeps: [min, max, maxLength, float, requiredIsNotZero],
     getDataItem: ({ dataItem }) => {
       return {
         type: "num",
