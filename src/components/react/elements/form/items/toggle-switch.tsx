@@ -2,8 +2,8 @@ import { useRef, type HTMLAttributes } from "react";
 import { $boolParse } from "../../../../data-items/bool/parse";
 import { $boolValidations } from "../../../../data-items/bool/validation";
 import { equals } from "../../../../objects";
+import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
-import { joinClassNames } from "../utilities";
 
 type ToggleSwitchOptions<True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False>> = FormItemOptions<D> & {
   trueValue?: True;

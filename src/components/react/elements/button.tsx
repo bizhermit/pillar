@@ -2,7 +2,7 @@
 
 import { type ButtonHTMLAttributes, type MouseEvent, type MutableRefObject, type ReactNode } from "react";
 import { useRefState } from "../hooks/ref-state";
-import { joinClassNames } from "./form/utilities";
+import { joinClassNames } from "./utilities";
 
 type ButtonOptions = {
   ref?: MutableRefObject<HTMLButtonElement | null>;

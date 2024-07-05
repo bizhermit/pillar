@@ -1,5 +1,5 @@
 import { type HTMLAttributes } from "react";
-import { joinClassNames } from "./utilities";
+import { joinClassNames } from "../utilities";
 
 type Props = HTMLAttributes<HTMLDivElement>;
 

@@ -2,8 +2,8 @@ import { useRef, type HTMLAttributes } from "react";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { isEmpty } from "../../../../objects/string";
+import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
-import { joinClassNames } from "../utilities";
 
 type TextBoxOptions<D extends DataItem.$str> = FormItemOptions<D> & {
   length?: number;
