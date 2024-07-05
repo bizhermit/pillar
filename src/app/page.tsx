@@ -69,12 +69,12 @@ export default function Home() {
         <ToggleSwitch
           hook={disabled.hook}
         >
-          textbox disabled
+          item disabled
         </ToggleSwitch>
         <ToggleSwitch
           hook={readOnly.hook}
         >
-          textbox readonly
+          item readonly
         </ToggleSwitch>
         <Button
           onClick={() => {
@@ -87,10 +87,10 @@ export default function Home() {
       <Form
         bind={bind}
         disabled={formDisabled.value}
-        onSubmit={async ({ getFormData }) => {
-          await sleep(3000);
+        onSubmit={async ({ hasError, getFormData }) => {
+          // await sleep(3000);
+          console.log("--- submit ---", hasError);
           const fd = getFormData();
-          console.log("------");
           fd.forEach((v, k) => console.log(k, v));
         }}
       >
@@ -112,13 +112,15 @@ export default function Home() {
             />
           </FormItemWrap>
           <label>
-            Label:
+            <span>Label:</span>
             <FormItemWrap>
               <ToggleSwitch
                 label="トグル"
                 name="toggle"
                 required
                 requiredIsTrue
+                disabled={disabled.value}
+                readOnly={readOnly.value}
               >
                 トグル
               </ToggleSwitch>

@@ -76,6 +76,7 @@ type FormOptions<T extends { [v: string]: any } = { [v: string]: any }> = {
   preventEnterSubmit?: boolean;
   onSubmit?: ((props: {
     event: FormEvent<HTMLFormElement>;
+    hasError: boolean;
     getFormData: () => FormData;
     getBindData: (options?: GetBindDataOptions) => T;
     keepLock: () => () => void;
@@ -157,7 +158,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.stopPropagation();
-    if (disabled || formStateRef.current || hasError) {
+    if (disabled || formStateRef.current) {
       e.preventDefault();
       return;
     }
@@ -173,6 +174,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       let keepLock = false;
       const ret = onSubmit({
         event: e,
+        hasError,
         keepLock: () => {
           keepLock = true;
           return () => setFormState("");
