@@ -41,6 +41,7 @@ export const Button = ({
 
   return (
     <button
+      type="button"
       {...props}
       className={joinClassNames("btn", props.className)}
       disabled={props.disabled || ing || processing}

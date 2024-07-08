@@ -41,7 +41,7 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
 }: FormItemOptions<D>, cp: FormItemCoreProps<A, D>) => {
   const id = useRef(crypto.randomUUID());
   const form = use(FormContext);
-  const hookSetter = useRef<((v: DataItem.ValueType<D> | DataItem.NullValue) => void) | null>(null);
+  const hookRef = useRef<((v: DataItem.ValueType<D> | DataItem.NullValue) => void) | null>(null);
 
   const $dataItem = useMemo(() => {
     const $name = name || dataItem?.name;
@@ -127,7 +127,7 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
     onChange?.(v, { before });
     if (edit) onEdit?.(v, { before });
     cp.effect({ value: v, edit, origin: value, dataItem: $dataItem });
-    hookSetter.current?.(v);
+    hookRef.current?.(v);
     return v;
   };
 
@@ -135,7 +135,7 @@ export const useFormItemCore = <A extends DataItem.$object, D extends A>({
 
   const clear = () => set({ value: undefined, edit: false });
 
-  hookSetter.current = hook ? hook({
+  hookRef.current = hook ? hook({
     get,
     set: (v) => set({ value: v, edit: false }),
     clear,

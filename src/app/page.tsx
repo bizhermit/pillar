@@ -2,6 +2,7 @@
 "use client";
 
 import { Button, ButtonIcon } from "@/react/elements/button";
+import { Dialog, useDialog } from "@/react/elements/dialog";
 import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { useFormItem } from "@/react/elements/form/hooks";
@@ -26,6 +27,8 @@ export default function Home() {
   const formDisabled = useFormItem();
   const disabled = useFormItem();
   const readOnly = useFormItem();
+
+  const dialog = useDialog();
 
   return (
     <div>
@@ -184,9 +187,47 @@ export default function Home() {
           <span>{formItem.value}</span>
         </div>
       </Form>
-      {/* <div className={s.row}>
-        <TextBox />
-      </div> */}
+      <div className={s.row}>
+        <Button
+          onClick={() => {
+            dialog.open();
+          }}
+        >
+          show modal dialog
+        </Button>
+        <Button
+          onClick={() => {
+            dialog.open(false);
+          }}
+        >
+          show modaless dialog
+        </Button>
+        <Dialog
+          hook={dialog.hook}
+          backdropClose
+          style={{
+            width: 100,
+            height: 100,
+          }}
+        >
+          <div
+            style={{
+              width: 200,
+              height: 200,
+            }}
+          >
+            dialog
+          </div>
+          <Button
+            onClick={() => {
+              dialog.close();
+            }}
+          >
+            close
+          </Button>
+        </Dialog>
+        <span>{dialog.state}</span>
+      </div>
     </div>
   );
 }
