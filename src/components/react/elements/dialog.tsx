@@ -100,6 +100,8 @@ export const Dialog = ({
         props.onClick?.(e);
       }}
       data-pos={customPosition}
+      data-modal={state === "modal" ? "" : undefined}
+      data-modeless={state === "modeless" ? "" : undefined}
     >
       {mount && props.children}
     </dialog>
