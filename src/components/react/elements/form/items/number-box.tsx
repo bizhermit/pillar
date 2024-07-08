@@ -201,7 +201,7 @@ export const NumberBox = <D extends DataItem.$num>({
                 aria-disabled={fi.form.pending}
                 onMouseDown={() => mousedown("up")}
               />
-              <button
+              <div
                 className="ipt-btn ipt-num-spin-dec"
                 aria-disabled={fi.form.pending}
                 onMouseDown={() => mousedown("down")}
