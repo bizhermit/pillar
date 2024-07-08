@@ -204,10 +204,13 @@ export default function Home() {
         </Button>
         <Dialog
           hook={dialog.hook}
-          backdropClose
+          // preventBackdropClose
+          customPosition
           style={{
             width: 100,
             height: 100,
+            top: 30,
+            left: 30,
           }}
         >
           <div

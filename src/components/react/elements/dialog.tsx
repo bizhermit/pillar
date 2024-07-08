@@ -17,14 +17,16 @@ type DialogHook = {
 
 type DialogOptions = {
   hook?: DialogHook["hook"];
-  backdropClose?: boolean;
+  preventBackdropClose?: boolean;
+  customPosition?: boolean;
 };
 
 type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptions>;
 
 export const Dialog = ({
   hook,
-  backdropClose,
+  preventBackdropClose,
+  customPosition,
   ...props
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
@@ -41,7 +43,6 @@ export const Dialog = ({
       dref.current.close();
       return;
     }
-    // TODO: 表示座標計算
     if (order === "modeless") {
       hookRef.current?.("modeless");
       dref.current.show();
@@ -62,15 +63,15 @@ export const Dialog = ({
       {...props}
       className={joinClassNames("dialog", props.className)}
       ref={dref}
-      onClick={backdropClose ? (e) => {
+      onClick={preventBackdropClose ? props.onClick : (e) => {
         const { offsetX, offsetY } = e.nativeEvent;
         const { offsetWidth, offsetHeight } = e.currentTarget;
         if (offsetX < 0 || offsetY < 0 || offsetX - offsetWidth > 0 || offsetY - offsetHeight > 0) {
           toggle("close");
         }
         props.onClick?.(e);
-      } : props.onClick}
-      data-pos="center"
+      }}
+      data-pos={customPosition}
     />
   );
 };
