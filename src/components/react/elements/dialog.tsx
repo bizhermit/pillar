@@ -52,9 +52,7 @@ export const Dialog = ({
     setState(order);
   };
 
-  hookRef.current = hook ? hook({
-    toggle,
-  }) : null;
+  hookRef.current = hook ? hook({ toggle }) : null;
 
   useEffect(() => {
     if (state === "closed") return;
