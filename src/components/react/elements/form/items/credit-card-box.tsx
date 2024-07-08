@@ -100,7 +100,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str>({
           autoComplete={autoComplete ?? "off"}
           inputMode="numeric"
           onChange={change}
-          aria-invalid={fi.message?.type === "e"}
+          aria-invalid={fi.airaProps["aria-invalid"]}
         />
         {!empty &&
           <input

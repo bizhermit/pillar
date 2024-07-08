@@ -184,7 +184,7 @@ export const NumberBox = <D extends DataItem.$num>({
           onKeyDown={keydown}
           onFocus={focus}
           onBlur={blur}
-          aria-invalid={fi.message?.type === "e"}
+          aria-invalid={fi.airaProps["aria-invalid"]}
         />
         {!empty &&
           <input

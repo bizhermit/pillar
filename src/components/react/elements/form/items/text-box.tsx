@@ -75,7 +75,7 @@ export const TextBox = <D extends DataItem.$str>({
           autoComplete={autoComplete ?? "off"}
           inputMode={inputMode ?? fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
-          aria-invalid={fi.message?.type === "e"}
+          aria-invalid={fi.airaProps["aria-invalid"]}
         />
         {!fi.hideClearButton && fi.editable &&
           <div

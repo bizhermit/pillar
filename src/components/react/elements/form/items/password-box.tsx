@@ -89,7 +89,7 @@ export const PasswordBox = <D extends DataItem.$str>({
           autoComplete={autoComplete ?? "off"}
           inputMode={fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
-          aria-invalid={fi.message?.type === "e"}
+          aria-invalid={fi.airaProps["aria-invalid"]}
         />
         {!hideToggleButton && fi.editable &&
           <div
