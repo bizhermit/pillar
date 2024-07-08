@@ -1,0 +1,90 @@
+@layer default, base, feat;
+
+@layer default {
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    flex: none;
+  }
+
+  :root {
+    /* size */
+    --btn-size: 3.2rem;
+    --ipt-size: 3.2rem;
+
+    /* color */
+    --bg: #f8f8f8;
+    --fg: #171717;
+    --fg-err: #f00;
+    --fg-warn: #f92;
+    --fg-info: #393;
+    --sdw: rgba(0, 0, 0, 0.4);
+    --sdw-err: rgba(255, 0, 0, 0.4);
+    --btn-bg: #7fbfff;
+    --btn-fg: #f8f8f8;
+    --ipt-bg: #fff;
+    --ipt-fg: #171717;
+    --ipt-bg-err: #ffcccc;
+    --ipt-fg-err: #171717;
+    --ipt-bg-clr: #4fbfff;
+    --ipt-fg-clr: #f8f8f8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0a0a;
+      --fg: #f8f8f8;
+      --fg-err: #f40;
+      --fg-warn: #ff0;
+      --fg-info: #3d3;
+      --sdw: rgba(255, 255, 255, 0.4);
+      --sdw-err: rgba(255, 0, 0, 0.4);
+      --btn-bg: #5f9fdf;
+      --btn-fg: #f8f8f8;
+      --ipt-bg: #333;
+      --ipt-fg: #f8f8f8;
+      --ipt-bg-err: #422;
+      --ipt-fg-err: #f8f8f8;
+      --ipt-bg-clr: #5f9fdf;
+      --ipt-fg-clr: #f8f8f8;
+    }
+  }
+
+  html {
+    font-size: 62.5%;
+    background: var(--bg);
+    color: var(--fg);
+
+    @media (prefers-color-scheme: dark) {
+      color-scheme: dark;
+    }
+
+    &:has(dialog[open]) {
+      overflow: hidden;
+    }
+  }
+
+  body {
+    font-family: "Yu Gothic", sans-serif;
+    font-size: 1.6rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-block: unset;
+  }
+
+  a {
+    &[aria-disabled="true"] {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
+}

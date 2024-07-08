@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "../components/styles/elements/button.css";
 import "../components/styles/elements/dialog.css";
 import "../components/styles/elements/form-item.css";
-import "./root.css";
+import "../components/styles/elements/root.css";
 
 export const metadata: Metadata = {
   title: "Next App Template",
