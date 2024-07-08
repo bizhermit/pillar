@@ -21,6 +21,8 @@
   background: var(--bg);
   overflow: auto;
   filter: drop-shadow(0 0 3px var(--sdw));
+  max-width: 100svh;
+  max-height: 100svh;
 
   &:not([data-pos="true"]) {
     margin: auto;
