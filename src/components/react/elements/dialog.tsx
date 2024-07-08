@@ -1,4 +1,4 @@
-import { type HTMLAttributes, useRef, useState } from "react";
+import { type HTMLAttributes, useEffect, useRef, useState } from "react";
 import { joinClassNames } from "./utilities";
 
 type DailogOrder = "close" | "modal" | "modeless";
@@ -19,6 +19,7 @@ type DialogOptions = {
   hook?: DialogHook["hook"];
   preventBackdropClose?: boolean;
   customPosition?: boolean;
+  immediatelyMount?: boolean;
 };
 
 type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptions>;
@@ -27,10 +28,13 @@ export const Dialog = ({
   hook,
   preventBackdropClose,
   customPosition,
+  immediatelyMount,
   ...props
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
+  const [state, setState] = useState<DialogState>("closed");
   const hookRef = useRef<((state: DialogState) => void) | null>(null);
+  const [mount, setMount] = useState(immediatelyMount === true);
 
   const toggle = (order: DailogOrder) => {
     if (!dref.current) {
@@ -39,24 +43,34 @@ export const Dialog = ({
       return;
     }
     if (order === "close") {
+      setState("closed");
       hookRef.current?.("closed");
       dref.current.close();
       return;
     }
-    if (order === "modeless") {
-      hookRef.current?.("modeless");
-      dref.current.show();
-    } else {
-      hookRef.current?.("modal");
-      dref.current.showModal();
-    }
-    dref.current.scrollTop = 0;
-    dref.current.scrollLeft = 0;
+    setMount(true);
+    setState(order);
   };
 
   hookRef.current = hook ? hook({
     toggle,
   }) : null;
+
+  useEffect(() => {
+    if (state === "closed") return;
+    switch (state) {
+      case "modal":
+        dref.current.showModal();
+        break;
+      case "modeless":
+        dref.current.show();
+        break;
+      default: break;
+    }
+    dref.current.scrollTop = 0;
+    dref.current.scrollLeft = 0;
+    hookRef.current?.(state);
+  }, [state]);
 
   return (
     <dialog
@@ -72,7 +86,9 @@ export const Dialog = ({
         props.onClick?.(e);
       }}
       data-pos={customPosition}
-    />
+    >
+      {mount && props.children}
+    </dialog>
   );
 };
 
