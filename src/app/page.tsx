@@ -206,8 +206,8 @@ export default function Home() {
           hook={dialog.hook}
           // preventBackdropClose
           // customPosition
-          // immediatelyMount
-          // closedUnmount
+          immediatelyMount
+          keepMount
           style={{
             // width: 100,
             // height: 100,

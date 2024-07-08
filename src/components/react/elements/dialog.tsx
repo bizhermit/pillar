@@ -1,4 +1,5 @@
 import { type HTMLAttributes, useEffect, useRef, useState } from "react";
+import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./utilities";
 
 type DailogOrder = "close" | "modal" | "modeless";
@@ -20,6 +21,7 @@ type DialogOptions = {
   preventBackdropClose?: boolean;
   customPosition?: boolean;
   immediatelyMount?: boolean;
+  keepMount?: boolean;
 };
 
 type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptions>;
@@ -29,10 +31,11 @@ export const Dialog = ({
   preventBackdropClose,
   customPosition,
   immediatelyMount,
+  keepMount,
   ...props
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
-  const [state, setState] = useState<DialogState>("closed");
+  const [state, setState, stateRef] = useRefState<DialogState>("closed");
   const hookRef = useRef<((state: DialogState) => void) | null>(null);
   const [mount, setMount] = useState(immediatelyMount === true);
 
@@ -43,6 +46,19 @@ export const Dialog = ({
       return;
     }
     if (order === "close") {
+      if (!keepMount) {
+        const unmount = (e: TransitionEvent) => {
+          if (e.target !== e.currentTarget || !e.pseudoElement) return;
+          dref.current.removeEventListener("transitioncancel", unmount);
+          dref.current.removeEventListener("transitionend", unmount);
+          if (stateRef.current === "closed") setMount(false);
+        };
+        if (stateRef.current === "modal") {
+        } else {
+        }
+        dref.current.addEventListener("transitioncancel", unmount);
+        dref.current.addEventListener("transitionend", unmount);
+      }
       setState("closed");
       hookRef.current?.("closed");
       dref.current.close();
