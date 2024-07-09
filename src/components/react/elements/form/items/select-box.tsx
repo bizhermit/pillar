@@ -94,13 +94,15 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             return $boolValidations(dataItem as DataItem.$boolAny);
           case "str": return $strValidations(dataItem as DataItem.$str);
           case "num": return $numValidations(dataItem as DataItem.$num);
-          default: return [];
+          default: return [
+            ({ value, dataItem, fullName }) => {
+              if (value != null && value !== "") return undefined;
+              return { type: "e", code: "required", fullName, msg: `${dataItem.label || "値"}を選択してください。` };
+            }
+          ] as Array<DataItem.Validation<any>>;
         }
       })();
-      return (v, p) => iterator(funcs, {
-        ...p,
-        value: v?.[vdn],
-      });
+      return (v, p) => iterator(funcs, { ...p, value: v?.[vdn] });
     },
     focus: () => iref.current?.focus(),
   });
