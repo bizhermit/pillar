@@ -8,10 +8,15 @@ type DialogState = "closed" | "modal" | "modeless"
 
 type DialogShowOptions = {
   modal?: boolean;
-  anchor?: HTMLElement | null | undefined;
-  x?: "inner" | "outer" | "center" | "inner-left" | "inner-right" | "outer-left" | "outer-right";
-  y?: "inner" | "outer" | "center" | "inner-top" | "inner-bottom" | "outer-top" | "outer-bottom";
-  styles?: CSSProperties;
+  anchor?: {
+    element: HTMLElement;
+    x?: "inner" | "outer" | "center" | "inner-left" | "inner-right" | "outer-left" | "outer-right";
+    y?: "inner" | "outer" | "center" | "inner-top" | "inner-bottom" | "outer-top" | "outer-bottom";
+    flexible?: boolean;
+    styles?: CSSProperties;
+    width?: "fill";
+    height?: "fill";
+  }
 };
 
 type DialogHookConnectionParams = {
@@ -80,6 +85,154 @@ export const Dialog = ({
   };
 
   const resetPosition = () => {
+    const anchor = showOpts?.anchor;
+    if (anchor == null) return;
+
+    const winW = window.innerWidth;
+    const winH = window.innerHeight;
+    const wMax = dref.current.offsetWidth;
+    const hMax = dref.current.offsetHeight;
+    let posX = anchor.x || "center";
+    let posY = anchor.y || "center";
+    let rect = { top: 0, bottom: 0, left: 0, right: 0, width: winW, height: winH };
+
+    const parseStyleNum = (num: number) => `${num}px`;
+
+    rect = anchor.element.getBoundingClientRect();
+
+    switch (anchor.width) {
+      case "fill":
+        dref.current.style.width = parseStyleNum(rect.width);
+        break;
+      default:
+        break;
+    }
+
+    switch (anchor.height) {
+      case "fill":
+        dref.current.style.height = parseStyleNum(rect.height);
+        break;
+      default:
+        break;
+    }
+
+    const posAbs = anchor.flexible === false;
+
+    const scrollLeft = 0;
+    switch (posX) {
+      case "center":
+        dref.current.style.removeProperty("right");
+        dref.current.style.left = parseStyleNum(posAbs ?
+          rect.left + rect.width / 2 - wMax / 2 + scrollLeft :
+          Math.min(Math.max(0, rect.left + rect.width / 2 - wMax / 2 + scrollLeft), winW - wMax + scrollLeft)
+        );
+        break;
+      case "inner":
+        if (winW - rect.left < wMax && rect.left > winW - rect.right) {
+          dref.current.style.removeProperty("left");
+          dref.current.style.right = parseStyleNum(winW - Math.max(rect.right, wMax));
+        } else {
+          dref.current.style.removeProperty("right");
+          dref.current.style.left = parseStyleNum(rect.left);
+        }
+        break;
+      case "inner-left":
+        dref.current.style.removeProperty("right");
+        dref.current.style.left = parseStyleNum(posAbs ?
+          rect.left :
+          Math.min(rect.left, winW - wMax)
+        );
+        break;
+      case "inner-right":
+        dref.current.style.removeProperty("left");
+        dref.current.style.right = parseStyleNum(posAbs ?
+          winW - rect.right :
+          winW - Math.max(rect.right, wMax)
+        );
+        break;
+      case "outer":
+        if (winW - rect.right < wMax && rect.left > winW - rect.right) {
+          dref.current.style.removeProperty("left");
+          dref.current.style.right = parseStyleNum(winW - rect.left);
+        } else {
+          dref.current.style.removeProperty("right");
+          dref.current.style.left = parseStyleNum(rect.right);
+        }
+        break;
+      case "outer-left":
+        dref.current.style.removeProperty("left");
+        dref.current.style.right = parseStyleNum(posAbs ?
+          winW - rect.left :
+          Math.min(winW - rect.left, winW - wMax)
+        );
+        break;
+      case "outer-right":
+        dref.current.style.removeProperty("right");
+        dref.current.style.left = parseStyleNum(posAbs ?
+          rect.right :
+          Math.min(rect.right, winW - wMax)
+        );
+        break;
+      default: break;
+    }
+
+    const scrollTop = 0;
+    switch (posY) {
+      case "center":
+        dref.current.style.removeProperty("bottom");
+        dref.current.style.top = parseStyleNum(posAbs ?
+          rect.top + rect.height / 2 - hMax / 2 + scrollTop :
+          Math.min(Math.max(0, rect.top + rect.height / 2 - hMax / 2 + scrollTop), winH - hMax + scrollTop)
+        );
+        break;
+      case "inner":
+        if (winH - rect.top < hMax && rect.top > winH - rect.bottom) {
+          dref.current.style.removeProperty("top");
+          dref.current.style.bottom = parseStyleNum(winH - rect.bottom);
+        } else {
+          dref.current.style.removeProperty("bottom");
+          dref.current.style.top = parseStyleNum(rect.top);
+        }
+        break;
+      case "inner-top":
+        dref.current.style.removeProperty("bottom");
+        dref.current.style.top = parseStyleNum(posAbs ?
+          rect.top :
+          Math.min(rect.top, winH - hMax)
+        );
+        break;
+      case "inner-bottom":
+        dref.current.style.removeProperty("top");
+        dref.current.style.bottom = parseStyleNum(posAbs ?
+          winH - rect.bottom :
+          Math.min(winH - rect.bottom, winH - hMax)
+        );
+        break;
+      case "outer":
+        if (winH - rect.bottom < hMax && rect.top > winH - rect.bottom) {
+          dref.current.style.removeProperty("top");
+          dref.current.style.bottom = parseStyleNum(winH - rect.top);
+        } else {
+          dref.current.style.removeProperty("bottom");
+          dref.current.style.top = parseStyleNum(Math.min(rect.bottom, winH - hMax));
+        }
+        break;
+      case "outer-top":
+        dref.current.style.removeProperty("top");
+        dref.current.style.bottom = parseStyleNum(posAbs ?
+          winH - rect.top :
+          Math.min(winH - rect.top, winH - hMax)
+        );
+        break;
+      case "outer-bottom":
+        dref.current.style.removeProperty("bottom");
+        dref.current.style.top = parseStyleNum(posAbs ?
+          rect.bottom :
+          Math.min(rect.bottom, winH - hMax)
+        );
+        break;
+      default: break;
+    }
     console.log(showOpts);
   };
 
@@ -99,17 +252,11 @@ export const Dialog = ({
 
   useEffect(() => {
     if (state === "closed") return;
-    switch (state) {
-      case "modal":
-        dref.current.showModal();
-        break;
-      case "modeless":
-        dref.current.show();
-        break;
-      default: break;
-    }
+    if (state === "modal") dref.current.showModal();
+    else dref.current.show();
     dref.current.scrollTop = 0;
     dref.current.scrollLeft = 0;
+    resetPosition();
     hookRef.current?.(state);
   }, [state]);
 
@@ -149,3 +296,4 @@ export const useDialog = (): DialogHook => {
     },
   } as const;
 };
+

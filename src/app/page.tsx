@@ -212,7 +212,7 @@ export default function Home() {
         </Button>
         <Button
           onClick={() => {
-            dialog.open(false);
+            dialog.open({ modal: false });
           }}
         >
           show modaless dialog
@@ -247,6 +247,11 @@ export default function Home() {
           </Button>
         </Dialog>
         <span>{dialog.state}</span>
+        <select>
+          <option value={1}>item 1</option>
+          <option value={2}>item 2</option>
+          <option value={3}>item 3</option>
+        </select>
       </div>
     </div>
   );

@@ -340,7 +340,7 @@
   }
 
   .ipt-dialog {
-    width: 100%;
+    position: fixed;
   }
 
 }

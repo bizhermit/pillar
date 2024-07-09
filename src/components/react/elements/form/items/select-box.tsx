@@ -124,14 +124,16 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   });
 
   const showDialog = () => {
-    const anchor = iref.current?.parentElement;
+    const anchorElem = iref.current?.parentElement;
+    if (!anchorElem) return;
     dialog.open({
-      x: "inner",
-      y: "outer",
-      anchor,
-      styles: {
-        width: anchor?.offsetWidth,
-      },
+      modal: false,
+      anchor: {
+        element: anchorElem,
+        x: "inner",
+        y: "outer",
+        width: "fill",
+      }
     });
   };
 
