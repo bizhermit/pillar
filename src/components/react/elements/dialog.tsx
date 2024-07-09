@@ -231,7 +231,6 @@ export const Dialog = ({
         break;
       default: break;
     }
-    console.log(showOpts);
   };
 
   hookRef.current = hook ? hook({ toggle }) : null;
