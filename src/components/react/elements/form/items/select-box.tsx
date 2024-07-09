@@ -190,7 +190,6 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         <Dialog
           hook={dialog.hook}
           className="ipt-dialog"
-          customPosition
         >
           list
         </Dialog>

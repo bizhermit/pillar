@@ -33,7 +33,6 @@ type DialogHook = {
 type DialogOptions = {
   hook?: DialogHook["hook"];
   preventBackdropClose?: boolean;
-  customPosition?: boolean;
   immediatelyMount?: boolean;
   keepMount?: boolean;
 };
@@ -43,7 +42,6 @@ type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptio
 export const Dialog = ({
   hook,
   preventBackdropClose,
-  customPosition,
   immediatelyMount,
   keepMount,
   ...props
@@ -273,7 +271,7 @@ export const Dialog = ({
         }
         props.onClick?.(e);
       }}
-      data-pos={customPosition}
+      data-pos={showOpts?.anchor != null}
       data-modal={state === "modal" ? "" : undefined}
       data-modeless={state === "modeless" ? "" : undefined}
     >
