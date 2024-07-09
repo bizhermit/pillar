@@ -52,7 +52,7 @@ export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>): Ar
   if (dataItem.source) {
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
-      if (dataItem.source!.find(s => s.id === value)) return undefined;
+      if (dataItem.source!.find(s => s.value === value)) return undefined;
       return { type: "e", code: "source", fullName, msg: `${label}は有効な値を設定してください。` };
     });
   }

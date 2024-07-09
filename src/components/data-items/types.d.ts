@@ -29,9 +29,9 @@ declare namespace DataItem {
         any, D["required"]>
     ) : any;
 
-  type Source<T> = Array<{ id?: T | NullValue; label?: string; } & { [v: string]: any }>;
+  type Source<T> = Array<{ value?: T | NullValue; label?: string; } & { [v: string]: any }>;
 
-  type SourceValueType<D extends $object> = D extends { source: infer S } ? (S extends Array<infer V> ? V["id"] : any) : any;
+  type SourceValueType<D extends $object> = D extends { source: infer S } ? (S extends Array<infer V> ? V["value"] : any) : any;
 
   type ValidationResult = {
     type: "e" | "w" | "i";
@@ -117,7 +117,7 @@ declare namespace DataItem {
   };
 
   type $boolNum<True extends number = 1, False extends number = 0> = $ & {
-    type: "num";
+    type: "b-num";
     trueValue: True;
     falseValue: False;
     source?: Source<True | False>;
@@ -126,7 +126,7 @@ declare namespace DataItem {
   };
 
   type $boolStr<True extends string = "1", False extends string = "0"> = $ & {
-    type: "str";
+    type: "b-str";
     trueValue: True;
     falseValue: False;
     source?: Source<True | False>;

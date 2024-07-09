@@ -5,7 +5,7 @@ import { isEmpty } from "../../../../objects/string";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
-type TextBoxOptions<D extends DataItem.$str> = FormItemOptions<D> & {
+type TextBoxOptions<D extends DataItem.$str | undefined> = FormItemOptions<D, D extends DataItem.$str ? DataItem.ValueType<D> : string> & {
   length?: number;
   minLength?: number;
   maxLength?: number;
@@ -14,9 +14,9 @@ type TextBoxOptions<D extends DataItem.$str> = FormItemOptions<D> & {
   autoComplete?: string;
 };
 
-export type TextBoxProps<D extends DataItem.$str> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TextBoxOptions<D>>;
+export type TextBoxProps<D extends DataItem.$str | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TextBoxOptions<D>>;
 
-export const TextBox = <D extends DataItem.$str>({
+export const TextBox = <D extends DataItem.$str | undefined>({
   length,
   minLength,
   maxLength,
@@ -27,7 +27,7 @@ export const TextBox = <D extends DataItem.$str>({
 }: TextBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
 
-  const fi = useFormItemCore<DataItem.$str, D>(props, {
+  const fi = useFormItemCore<DataItem.$str, D, string, string>(props, {
     dataItemDeps: [length, minLength, maxLength, charType],
     getDataItem: ({ dataItem }) => {
       return {
@@ -38,11 +38,14 @@ export const TextBox = <D extends DataItem.$str>({
         charType: charType ?? dataItem?.charType,
       };
     },
-    parse: (p) => $strParse(p),
+    parse: () => $strParse,
     effect: ({ edit, value }) => {
       if (!edit && iref.current) iref.current.value = value ?? "";
     },
-    validations: ({ dataItem }) => $strValidations(dataItem),
+    validation: ({ dataItem, iterator }) => {
+      const funcs = $strValidations(dataItem);
+      return (_, p) => iterator(funcs, p);
+    },
     focus: () => iref.current?.focus(),
   });
 

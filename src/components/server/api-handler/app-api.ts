@@ -50,17 +50,17 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
   };
 
   const impl = (dataItem: DataItem.$object, index?: number) => {
-    if ("trueValue" in dataItem) {
-      replace(dataItem, p => $boolParse(p), index);
-      return;
-    }
-
     switch (dataItem.type) {
       case "str":
         replace(dataItem, p => $strParse(p), index);
         return;
       case "num":
         replace(dataItem, p => $numParse(p), index);
+        return;
+      case "bool":
+      case "b-num":
+      case "b-str":
+        replace(dataItem, p => $boolParse(p), index);
         return;
       case "date":
       case "month":
@@ -145,17 +145,17 @@ const validationParams = (params: { [v: string]: any } | Array<any>, dataItems: 
   };
 
   const impl = (dataItem: DataItem.$object, index?: number) => {
-    if ("trueValue" in dataItem) {
-      isValid(dataItem, $boolValidations(dataItem), index);
-      return;
-    }
-
     switch (dataItem.type) {
       case "str":
         isValid(dataItem, $strValidations(dataItem), index);
         return;
       case "num":
         isValid(dataItem, $numValidations(dataItem), index);
+        return;
+      case "bool":
+      case "b-num":
+      case "b-str":
+        isValid(dataItem, $boolValidations(dataItem), index);
         return;
       case "date":
       case "month":

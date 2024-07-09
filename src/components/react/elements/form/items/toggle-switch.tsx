@@ -5,24 +5,32 @@ import { equals } from "../../../../objects";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
-type ToggleSwitchOptions<True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False>> = FormItemOptions<D> & {
+type ToggleSwitchOptions<
+  True extends boolean | number | string,
+  False extends boolean | number | string,
+  D extends DataItem.$boolAny<True, False> | undefined
+> = FormItemOptions<D, D extends DataItem.$boolAny ? DataItem.ValueType<D> : True | False> & {
   trueValue?: True;
   falseValue?: False;
   requiredIsTrue?: boolean;
 };
 
-type ToggleSwitchProps<True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False>> =
+type ToggleSwitchProps<True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False> | undefined> =
   OverwriteAttrs<HTMLAttributes<HTMLLabelElement>, ToggleSwitchOptions<True, False, D>>
 
-export const ToggleSwitch = <True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False>>({
-  trueValue,
-  falseValue,
+export const ToggleSwitch = <True extends boolean | number | string, False extends boolean | number | string, D extends DataItem.$boolAny<True, False> | undefined>({
   requiredIsTrue,
   ...props
 }: ToggleSwitchProps<True, False, D>) => {
   const iref = useRef<HTMLInputElement>(null!);
 
-  const fi = useFormItemCore<DataItem.$boolAny<True, False>, D>(props, {
+  const {
+    trueValue,
+    falseValue,
+    ...$props
+  } = props;
+
+  const fi = useFormItemCore<DataItem.$boolAny<True, False>, D, True | False, True | False>($props, {
     dataItemDeps: [trueValue, falseValue, requiredIsTrue],
     getDataItem: ({ dataItem }) => {
       const tv = trueValue ?? dataItem?.trueValue;
@@ -30,40 +38,45 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
       if (dataItem?.type) {
         return {
           type: dataItem.type,
-          trueValue: tv,
-          falseValue: fv,
+          trueValue: tv as True,
+          falseValue: fv as False,
           requiredIsTrue: requiredIsTrue ?? dataItem.requiredIsTrue,
-        } as D;
+        } as DataItem.$boolAny<True, False>;
       }
+      const hasTrue = "trueValue" in props;
+      const hasFalse = "falseValue" in props;
       switch (typeof (tv ?? fv)) {
         case "number":
           return {
-            type: "num",
-            trueValue: tv ?? 1,
-            falseValue: fv ?? 0,
+            type: "b-num",
+            trueValue: hasTrue ? tv : (tv ?? 1),
+            falseValue: hasFalse ? fv : (fv ?? 0),
             requiredIsTrue,
-          } as D;
+          } as DataItem.$boolAny<True, False>;
         case "string":
           return {
-            type: "str",
-            trueValue: tv ?? "1",
-            falseValue: fv ?? "0",
+            type: "b-str",
+            trueValue: hasTrue ? tv : (tv ?? "1"),
+            falseValue: hasFalse ? fv : (fv ?? "0"),
             requiredIsTrue,
-          } as D;
+          } as DataItem.$boolAny<True, False>;
         default:
           return {
             type: "bool",
-            trueValue: tv ?? true,
-            falseValue: fv ?? false,
+            trueValue: hasTrue ? tv : (tv ?? true),
+            falseValue: hasFalse ? fv : (fv ?? false),
             requiredIsTrue,
-          } as D;
+          } as DataItem.$boolAny<True, False>;
       }
     },
-    parse: (p) => $boolParse(p),
+    parse: () => $boolParse,
     effect: ({ value, edit, dataItem }) => {
       if (!edit && iref.current) iref.current.checked = equals(dataItem.trueValue, value);
     },
-    validations: ({ dataItem }) => $boolValidations(dataItem),
+    validation: ({ dataItem, iterator }) => {
+      const funcs = $boolValidations(dataItem);
+      return (_, p) => iterator(funcs, p);
+    },
     focus: () => iref.current?.focus(),
   });
 
@@ -93,7 +106,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
           <input
             name={fi.name}
             type="hidden"
-            value={fi.value}
+            value={String(fi.value)}
           />
         }
         {props.children}

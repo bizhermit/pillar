@@ -1,21 +1,29 @@
 type FormItemValue<V extends any = any, D extends DataItem.$objec | undefined> =
   D extends DataItem.$object ? DataItem.ValueType<D> : V;
 
-type FormItemHookConnectionParams<T extends any> = {
-  get: () => (T | DataItem.NullValue);
-  set: (value: T | DataItem.NullValue) => void;
+type FormItemHookConnectionParams<IV extends any> = {
+  get: () => (IV | DataItem.NullValue);
+  set: (value: IV | DataItem.NullValue) => void;
   reset: () => void;
   clear: () => void;
   focus: () => void;
 };
 
-type FormItemHook<T extends any> = {
-  value: T | DataItem.NullValue;
-  setValue: (value: T | DataItem.NullValue) => void;
-  hook: (params: FormItemHookConnectionParams<T>) => ((value: T | DataItem.NullValue) => void);
+type FormItemHook<IV extends any> = {
+  value: IV | DataItem.NullValue;
+  setValue: (value: IV | DataItem.NullValue) => void;
+  message: DataItem.ValidationResult | null | undefined;
+  hook: (params: FormItemHookConnectionParams<IV>) => (params: [
+    value: IV | DataItem.NullValue,
+    result?: DataItem.ValidationResult | null | undefined,
+  ]) => void;
 };
 
-type FormItemOptions<D extends DataItem.$object> = {
+type FormItemOptions<
+  D extends DataItem.$object | undefined = undefined,
+  V extends any,
+  IV extends any = V,
+> = {
   name?: string;
   label?: string;
   placeholder?: string;
@@ -25,18 +33,18 @@ type FormItemOptions<D extends DataItem.$object> = {
   hideClearButton?: boolean;
   hideMessage?: boolean;
   tabIndex?: number;
-  defaultValue?: DataItem.ValueType<D> | DataItem.NullValue;
+  defaultValue?: V | DataItem.NullValue;
   dataItem?: D;
-  onChange?: (value: DataItem.ValueType<D> | DataItem.NullValue, params: {
-    before: DataItem.ValueType<D> | DataItem.NullValue;
+  onChange?: (value: IV | DataItem.NullValue, params: {
+    before: IV | DataItem.NullValue;
   }) => void;
-  onEdit?: (value: DataItem.ValueType<D> | DataItem.NullValue, params: {
-    before: DataItem.ValueType<D> | DataItem.NullValue;
+  onEdit?: (value: IV | DataItem.NullValue, params: {
+    before: IV | DataItem.NullValue;
   }) => void;
-  hook?: FormItemHook<DataItem.ValueType<D>>["hook"];
+  hook?: FormItemHook<IV>["hook"];
 };
 
-type FormItemSetArg<D extends DataItem.$object> = {
-  value: any;
+type FormItemSetArg<T extends any = any> = {
+  value: T | DataItem.NullValue;
   edit: boolean;
 };

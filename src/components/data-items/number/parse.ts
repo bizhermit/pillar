@@ -23,8 +23,11 @@ export const $numParse = <V extends number>({ value, dataItem, fullName }: DataI
       change = true;
     }
 
-    if (dataItem.source && !skipRefSource && !dataItem.source.find(s => s.id === v)) {
-      return [v, { type: "e", code: "source", fullName, msg: `${change ? `${label}を数値型に変換しました。[${value}]->[${v}]\n` : ""}${label}は有効な値を設定してください。` }];
+    if (!skipRefSource) {
+      const source = (dataItem as DataItem.$num)["source"];
+      if (source && !source.find(s => s.value === v)) {
+        return [v, { type: "e", code: "source", fullName, msg: `${change ? `${label}を数値型に変換しました。[${value}]->[${v}]\n` : ""}${label}は有効な値を設定してください。` }];
+      }
     }
     return change ? [v, { type: "i", code: "parse", fullName, msg: `${label}を数値型に変換しました。[${value}]->[${v}]` }] : [v];
   } catch {

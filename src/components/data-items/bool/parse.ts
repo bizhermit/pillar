@@ -22,7 +22,7 @@ export const $boolParse = <V extends boolean | number | string>({ value, dataIte
         }
       }
       break;
-    case "num":
+    case "b-num":
       if (typeof value === "string") {
         const num = parseNum(value);
         if (num === dataItem.trueValue) {

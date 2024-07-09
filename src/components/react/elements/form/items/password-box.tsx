@@ -6,12 +6,12 @@ import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 import { TextBoxProps } from "./text-box";
 
-type PasswordBoxProps<D extends DataItem.$str> = TextBoxProps<D> & {
+type PasswordBoxProps<D extends DataItem.$str | undefined> = TextBoxProps<D> & {
   minimumValidation?: boolean;
   hideToggleButton?: boolean;
 };
 
-export const PasswordBox = <D extends DataItem.$str>({
+export const PasswordBox = <D extends DataItem.$str | undefined>({
   length,
   minLength,
   maxLength,
@@ -24,7 +24,7 @@ export const PasswordBox = <D extends DataItem.$str>({
 }: PasswordBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
 
-  const fi = useFormItemCore<DataItem.$str, D>(props, {
+  const fi = useFormItemCore<DataItem.$str, D, string, string>(props, {
     dataItemDeps: [length, minLength, maxLength, charType, minimumValidation],
     getDataItem: ({ dataItem }) => {
       const ct = charType ?? dataItem?.charType;
@@ -45,11 +45,14 @@ export const PasswordBox = <D extends DataItem.$str>({
         })(),
       };
     },
-    parse: (p) => $strParse(p),
+    parse: () => $strParse,
     effect: ({ edit, value }) => {
       if (!edit && iref.current) iref.current.value = value ?? "";
     },
-    validations: ({ dataItem }) => $strValidations(minimumValidation ? { type: "str", required: dataItem.required } : dataItem),
+    validation: ({ dataItem, iterator }) => {
+      const funcs = $strValidations(minimumValidation ? { type: "str", required: dataItem.required } : dataItem);
+      return (_, p) => iterator(funcs, p);
+    },
     focus: () => iref.current?.focus(),
   });
 

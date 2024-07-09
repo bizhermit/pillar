@@ -11,9 +11,9 @@ export const sample_str = $str({
   maxLength: 10,
   // required: true,
   source: [
-    { id: "1", label: "item-1" },
-    { id: "2", label: "item-2" },
-    { id: "3", label: "item-3" },
+    { value: "1", label: "item-1" },
+    { value: "2", label: "item-2" },
+    { value: "3", label: "item-3" },
   ],
   validations: [
     (props) => {
@@ -24,7 +24,7 @@ export const sample_str = $str({
   ],
 });
 
-sample_str.source[0].id;
+sample_str.source[0].value;
 export type TYPE_STR = DataItem.ValueType<typeof sample_str>;
 export type TYPE_STR_S = DataItem.SourceValueType<typeof sample_str>;
 
@@ -34,9 +34,9 @@ export const sample_num = $num({
   required: true,
   max: 1980,
   source: [
-    { id: 1, label: "item-1" },
-    { id: 2, label: "item-2" },
-    { id: 3, label: "item-3" },
+    { value: 1, label: "item-1" },
+    { value: 2, label: "item-2" },
+    { value: 3, label: "item-3" },
   ],
 });
 
@@ -49,8 +49,8 @@ export const sample_bool = $bool({
   trueValue: false,
   falseValue: true,
   source: [
-    { id: true, label: "TRUE" },
-    { id: false, label: "FALSE" },
+    { value: true, label: "TRUE" },
+    { value: false, label: "FALSE" },
   ],
 });
 

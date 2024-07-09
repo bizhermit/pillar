@@ -6,9 +6,9 @@ import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 import { TextBoxProps } from "./text-box";
 
-type CreditCardNumberBoxProps<D extends DataItem.$str> = Omit<TextBoxProps<D>, "inputMode">;
+type CreditCardNumberBoxProps<D extends DataItem.$str | undefined> = Omit<TextBoxProps<D>, "inputMode">;
 
-export const CreditCardNumberBox = <D extends DataItem.$str>({
+export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
   length,
   minLength,
   maxLength,
@@ -18,7 +18,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str>({
 }: CreditCardNumberBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
 
-  const fi = useFormItemCore<DataItem.$str, D>(props, {
+  const fi = useFormItemCore<DataItem.$str, D, string, string>(props, {
     dataItemDeps: [length, minLength, maxLength, charType],
     getDataItem: ({ dataItem }) => {
       return {
@@ -29,11 +29,14 @@ export const CreditCardNumberBox = <D extends DataItem.$str>({
         charType: charType ?? dataItem?.charType ?? "h-num",
       };
     },
-    parse: (p) => $strParse(p),
+    parse: () => $strParse,
     effect: ({ edit, value }) => {
       if (!edit && iref.current) iref.current.value = parseFormattedValue(value) ?? "";
     },
-    validations: ({ dataItem }) => $strValidations(dataItem),
+    validation: ({ dataItem, iterator }) => {
+      const funcs = $strValidations(dataItem);
+      return (_, p) => iterator(funcs, p);
+    },
     focus: () => iref.current?.focus(),
   });
 
@@ -43,11 +46,6 @@ export const CreditCardNumberBox = <D extends DataItem.$str>({
       .reduce((ccnumStr, numStr, index) => {
         return ccnumStr + numStr + (0 < index && index < 15 && (index + 1) % 4 === 0 ? " " : "");
       }, "");
-  };
-
-  const renderFormattedValue = () => {
-    if (!iref.current) return;
-    iref.current.value = parseFormattedValue(fi.valueRef.current);
   };
 
   const change = (e: ChangeEvent<HTMLInputElement>) => {

@@ -10,6 +10,7 @@ import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
+import { SelectBox } from "@/react/elements/form/items/select-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemWrap } from "@/react/elements/form/wrap";
@@ -172,6 +173,20 @@ export default function Home() {
             <CreditCardNumberBox
               label="クレジットカード番号"
               name="credit-card"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <SelectBox
+              label="セレクトボックス"
+              name="select"
+              source={[
+                { value: 1, label: "item-1" },
+                { value: 2, label: "item-2" },
+                { value: 3, label: "item-3" },
+              ]}
               required
               disabled={disabled.value}
               readOnly={readOnly.value}

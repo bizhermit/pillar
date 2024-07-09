@@ -5,7 +5,7 @@ import { formatNum, parseNum } from "../../../../objects/number";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
-type NumberBoxOptions<D extends DataItem.$num> = FormItemOptions<D> & {
+type NumberBoxOptions<D extends DataItem.$num | undefined> = FormItemOptions<D, D extends DataItem.$num ? DataItem.ValueType<D> : number> & {
   min?: number;
   max?: number;
   maxLength?: number;
@@ -16,9 +16,9 @@ type NumberBoxOptions<D extends DataItem.$num> = FormItemOptions<D> & {
   hideSpinButtons?: boolean;
 };
 
-type NumberBoxProps<D extends DataItem.$num> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, NumberBoxOptions<D>>;
+type NumberBoxProps<D extends DataItem.$num | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, NumberBoxOptions<D>>;
 
-export const NumberBox = <D extends DataItem.$num>({
+export const NumberBox = <D extends DataItem.$num | undefined>({
   min,
   max,
   maxLength,
@@ -31,7 +31,7 @@ export const NumberBox = <D extends DataItem.$num>({
 }: NumberBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
 
-  const fi = useFormItemCore<DataItem.$num, D>(props, {
+  const fi = useFormItemCore<DataItem.$num, D, number, number>(props, {
     dataItemDeps: [min, max, maxLength, float, requiredIsNotZero],
     getDataItem: ({ dataItem }) => {
       return {
@@ -43,11 +43,14 @@ export const NumberBox = <D extends DataItem.$num>({
         requiredIsNotZero: requiredIsNotZero ?? dataItem?.requiredIsNotZero,
       };
     },
-    parse: (p) => $numParse(p),
+    parse: () => $numParse,
     effect: ({ edit, value }) => {
       if (!edit && iref.current) iref.current.value = parseFormattedValue(value);
     },
-    validations: ({ dataItem }) => $numValidations(dataItem),
+    validation: ({ dataItem, iterator }) => {
+      const funcs = $numValidations(dataItem);
+      return (_, p) => iterator(funcs, p);
+    },
     focus: () => iref.current?.focus(),
   });
 
