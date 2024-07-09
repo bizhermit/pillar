@@ -73,5 +73,5 @@ export const useLoadableArray = <T extends { [v: string | number | symbol]: any 
     load({ switchLoadingFlag: true });
   }, [array]);
 
-  return [] as const;
+  return [arr, loading, load] as const;
 };

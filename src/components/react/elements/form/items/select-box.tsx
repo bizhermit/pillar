@@ -4,25 +4,28 @@ import { $numParse } from "@/data-items/number/parse";
 import { $numValidations } from "@/data-items/number/validation";
 import { $strParse } from "@/data-items/string/parse";
 import { $strValidations } from "@/data-items/string/validation";
-import { LoadableArray } from "@/react/hooks/loadable-array";
-import { HTMLAttributes, useRef } from "react";
+import { equals } from "@/objects";
+import { type LoadableArray, useLoadableArray } from "@/react/hooks/loadable-array";
+import { type HTMLAttributes, useMemo, useRef } from "react";
+import { Dialog, useDialog } from "../../dialog";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
 type SourceData = { [v: string]: any };
 type SourceTempData<V = any> = { value: V; label: any; } & { [v: string]: any };
 
-type SelectBoxOptions<D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData = SourceTempData<D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean>> = FormItemOptions<D, D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean, S> &
-{
-  labelDataName?: string;
-  valueDataName?: string;
-  source?: LoadableArray<S>;
-  preventSourceMemorize?: boolean;
-  reloadSourceWhenOpen?: boolean;
-  initFocusValue?: D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean;
-  emptyItem?: boolean | string | { value: (D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean) | null | undefined; label: string; };
-  tieInNames?: Array<{ dataName: string; hiddenName?: string }>;
-};
+type SelectBoxOptions<D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData = SourceTempData<D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean>> =
+  FormItemOptions<D, D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean, S> &
+  {
+    labelDataName?: string;
+    valueDataName?: string;
+    source?: LoadableArray<S>;
+    preventSourceMemorize?: boolean;
+    reloadSourceWhenOpen?: boolean;
+    initFocusValue?: D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean;
+    emptyItem?: boolean | string | { value: (D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean) | null | undefined; label: string; };
+    tieInNames?: Array<{ dataName: string; hiddenName?: string }>;
+  };
 
 type SelectBoxProps<D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData> =
   OverwriteAttrs<HTMLAttributes<HTMLDivElement>, SelectBoxOptions<D, S>>;
@@ -39,38 +42,51 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   ...props
 }: SelectBoxProps<D, S>) => {
   const iref = useRef<HTMLInputElement>(null!);
+  const dialog = useDialog();
 
   const vdn = valueDataName ?? "value";
   const ldn = labelDataName ?? "label";
 
-  const fi = useFormItemCore<DataItem.$str | DataItem.$num | DataItem.$boolAny, D, string | number | boolean, { [P in typeof vdn]: string | number | boolean; } & { [P in typeof ldn]: any }>(props, {
-    dataItemDeps: [],
-    getDataItem: ({ dataItem }) => {
-      if (dataItem) {
-        return {
-          type: dataItem.type,
-          source: dataItem.source ?? (() => {
-            if ("trueValue" in dataItem) {
-              return [
-                { value: dataItem.trueValue, label: String(dataItem.trueValue) },
-                { value: dataItem.falseValue, label: String(dataItem.falseValue) },
-              ];
-            }
-            return undefined;
-          })(),
-        };
+  const $emptyItem = (() => {
+    if (emptyItem == null || emptyItem === false) return null;
+    switch (typeof emptyItem) {
+      case "boolean":
+        return { [vdn]: undefined, [ldn]: "" };
+      case "string":
+        return { [vdn]: undefined, [ldn]: emptyItem || "" };
+      default:
+        return { [vdn]: emptyItem.value, [ldn]: emptyItem.label };
+    }
+  })();
+
+  const $source = useMemo(() => {
+    if (source) return source;
+    if (props.dataItem) {
+      if (props.dataItem.source) return props.dataItem.source;
+      if ("trueValue" in props.dataItem) {
+        return [
+          { [vdn]: props.dataItem.trueValue, [ldn]: String(props.dataItem.trueValue) },
+          { [vdn]: props.dataItem.falseValue, [ldn]: String(props.dataItem.falseValue) },
+        ];
       }
+    }
+    return [];
+  }, [preventSourceMemorize ? source : ""]);
+
+  const [origin, loading, reload] = useLoadableArray($source, { preventMemorize: preventSourceMemorize });
+
+  const fi = useFormItemCore<DataItem.$str | DataItem.$num | DataItem.$boolAny, D, string | number | boolean, { [P in typeof vdn]: string | number | boolean; } & { [P in typeof ldn]: any }>(props, {
+    dataItemDeps: [vdn, ldn, origin],
+    getDataItem: ({ dataItem }) => {
       return {
-        type: null!,
+        type: dataItem?.type!,
+        source: origin as DataItem.Source<any>,
       };
     },
     parse: ({ dataItem }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>) => {
-        // TODO:
-        return [{
-          [vdn]: v,
-          [ldn]: String(v),
-        }, r] as DataItem.ParseResult<any>;
+        const item = origin.find(item => equals(item[vdn], v));
+        return [item == null ? emptyItem : item, r] as DataItem.ParseResult<any>;
       };
       switch (dataItem.type) {
         case "bool":
@@ -107,6 +123,24 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     focus: () => iref.current?.focus(),
   });
 
+  const showDialog = () => {
+    const anchor = iref.current?.parentElement;
+    dialog.open({
+      x: "inner",
+      y: "outer",
+      anchor,
+      styles: {
+        width: anchor?.offsetWidth,
+      },
+    });
+  };
+
+  const clear = () => {
+    if (!fi.editable) return;
+    fi.set({ value: $emptyItem?.[vdn], edit: false });
+    setTimeout(() => iref.current?.focus(), 0);
+  };
+
   const empty = fi.value == null || fi.value[vdn] == null || fi.value[vdn] === "";
 
   return (
@@ -134,6 +168,30 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             value={String(fi.value[vdn])}
           />
         }
+        {fi.editable &&
+          <div
+            className="ipt-btn ipt-pull"
+            aria-disabled={fi.form.pending}
+            onClick={showDialog}
+            data-showed={dialog.state === "modal"}
+          />
+        }
+        {!fi.hideClearButton && fi.editable &&
+          <div
+            className="ipt-btn"
+            aria-disabled={fi.form.pending || empty}
+            onClick={clear}
+          >
+            ×
+          </div>
+        }
+        <Dialog
+          hook={dialog.hook}
+          className="ipt-dialog"
+          customPosition
+        >
+          list
+        </Dialog>
       </div>
       {fi.messageComponent}
     </>

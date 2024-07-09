@@ -52,6 +52,7 @@
   }
 
   .ipt-btn {
+    position: relative;
     display: grid;
     place-items: center;
     width: var(--ipt-size);
@@ -61,7 +62,7 @@
     font-size: inherit;
     min-width: 0;
     user-select: none;
-    transition: opacity 0.1s, background-color 0.1s;
+    transition: opacity 0.1s, background-color 0.1s, color 0.1s;
 
     &[aria-disabled="true"] {
       opacity: 0.6;
@@ -69,6 +70,39 @@
 
     &:not([aria-disabled="true"]) {
       cursor: pointer;
+
+      &:hover {
+        background-color: var(--ipt-fg);
+        color: var(--ipt-bg);
+      }
+    }
+
+    &.ipt-pull {
+      &::before {
+        position: absolute;
+        content: "";
+        box-sizing: border-box;
+        width: calc(var(--ipt-size) / 4);
+        height: calc(var(--ipt-size) / 6);
+        top: calc(50% - var(--ipt-size) / 12);
+        left: calc(50% - var(--ipt-size) / 8);
+        background: var(--ipt-fg);
+        clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+        transform: rotateX(0deg);
+        transition: color 0.1s, transform 0.2s;
+      }
+
+      &[data-showed="true"] {
+        &::before {
+          transform: rotateX(180deg);
+        }
+      }
+
+      &:hover {
+        &::before {
+          background: var(--ipt-bg);
+        }
+      }
     }
   }
 
@@ -127,7 +161,7 @@
 
       >.ipt-num-spin-inc,
       >.ipt-num-spin-dec {
-        &:not(:disabled) {
+        &:not([aria-disabled="true"]) {
           &:hover {
             background: var(--ipt-fg);
 
@@ -159,7 +193,7 @@
       transition: background-color 0.1s;
     }
 
-    &:not(:disabled) {
+    &:not([aria-disabled="true"]) {
       &:active {
         background: var(--ipt-fg) !important;
 
@@ -303,6 +337,10 @@
       }
     }
 
+  }
+
+  .ipt-dialog {
+    width: 100%;
   }
 
 }

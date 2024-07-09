@@ -97,7 +97,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
         {!hideToggleButton && fi.editable &&
           <div
             className="ipt-btn"
-            aria-disabled={fi.form.pending || empty}
+            aria-disabled={fi.form.pending}
             onClick={toggle}
           >
             {type === "text" ? "●" : "○"}

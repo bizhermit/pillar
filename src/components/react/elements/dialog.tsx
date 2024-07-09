@@ -1,17 +1,26 @@
-import { type HTMLAttributes, useEffect, useRef, useState } from "react";
+import { throttle } from "@/utilities/throttle";
+import { type CSSProperties, type HTMLAttributes, useEffect, useRef, useState } from "react";
 import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./utilities";
 
 type DailogOrder = "close" | "modal" | "modeless";
 type DialogState = "closed" | "modal" | "modeless"
 
+type DialogShowOptions = {
+  modal?: boolean;
+  anchor?: HTMLElement | null | undefined;
+  x?: "inner" | "outer" | "center" | "inner-left" | "inner-right" | "outer-left" | "outer-right";
+  y?: "inner" | "outer" | "center" | "inner-top" | "inner-bottom" | "outer-top" | "outer-bottom";
+  styles?: CSSProperties;
+};
+
 type DialogHookConnectionParams = {
-  toggle: (order: DailogOrder) => void;
+  toggle: (order: DailogOrder, opts?: DialogShowOptions) => void;
 };
 
 type DialogHook = {
   state: DialogState;
-  open: (modal?: boolean) => void;
+  open: (options?: DialogShowOptions) => void;
   close: () => void;
   hook: (params: DialogHookConnectionParams) => ((state: DialogState) => void);
 };
@@ -38,8 +47,9 @@ export const Dialog = ({
   const [state, setState, stateRef] = useRefState<DialogState>("closed");
   const hookRef = useRef<((state: DialogState) => void) | null>(null);
   const [mount, setMount] = useState(immediatelyMount === true);
+  const [showOpts, setShowOpts] = useState<DialogShowOptions | null | undefined>();
 
-  const toggle = (order: DailogOrder) => {
+  const toggle = (order: DailogOrder, opts?: DialogShowOptions) => {
     if (!dref.current) {
       // eslint-disable-next-line no-console
       console.warn("not mounted dialog element");
@@ -66,9 +76,26 @@ export const Dialog = ({
     }
     setMount(true);
     setState(order);
+    setShowOpts(opts);
+  };
+
+  const resetPosition = () => {
+    console.log(showOpts);
   };
 
   hookRef.current = hook ? hook({ toggle }) : null;
+
+  useEffect(() => {
+    if (state === "closed") return;
+    const resizeListener = throttle(() => {
+      resetPosition();
+    }, 40);
+    resetPosition();
+    window.addEventListener("resize", resizeListener);
+    return () => {
+      window.removeEventListener("resize", resizeListener);
+    };
+  }, [showOpts]);
 
   useEffect(() => {
     if (state === "closed") return;
@@ -114,7 +141,7 @@ export const useDialog = (): DialogHook => {
 
   return {
     state,
-    open: (modal) => con.current?.toggle(modal === false ? "modeless" : "modal"),
+    open: (opts) => con.current?.toggle(opts?.modal === false ? "modeless" : "modal", opts),
     close: () => con.current?.toggle("close"),
     hook: (c) => {
       con.current = c;
