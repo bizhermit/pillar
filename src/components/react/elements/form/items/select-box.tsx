@@ -6,7 +6,7 @@ import { $strParse } from "@/data-items/string/parse";
 import { $strValidations } from "@/data-items/string/validation";
 import { equals } from "@/objects";
 import { type LoadableArray, useLoadableArray } from "@/react/hooks/loadable-array";
-import { FocusEvent, type HTMLAttributes, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, FocusEvent, type HTMLAttributes, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, useDialog } from "../../dialog";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -126,6 +126,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     focus: () => iref.current?.focus(),
   });
 
+  const empty = fi.value == null || fi.value[vdn] == null || fi.value[vdn] === "";
+
   const focusSelected = () => {
     const pElem = iref.current.parentElement;
     if (!pElem) return;
@@ -163,11 +165,15 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   const blur = (e: FocusEvent<HTMLDivElement>) => {
     let elem = e.relatedTarget;
     while (elem) {
-      if (elem === e.currentTarget) return;
+      if (elem === e.currentTarget) {
+        props.onBlur?.(e);
+        return;
+      }
       elem = elem.parentElement;
     }
     closeDialog();
     iref.current.value = fi.value?.[ldn] || "";
+    props.onBlur?.(e);
   };
 
   const keydown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -186,7 +192,9 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     }
   };
 
-  const empty = fi.value == null || fi.value[vdn] == null || fi.value[vdn] === "";
+  const change = (e: ChangeEvent<HTMLDivElement>) => {
+
+  };
 
   const clear = () => {
     if (!fi.editable || loading || empty) return;
@@ -220,6 +228,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           aria-invalid={fi.airaProps["aria-invalid"]}
           onFocus={focus}
           onKeyDown={keydown}
+          onChange={change}
         />
         {!empty &&
           <input
