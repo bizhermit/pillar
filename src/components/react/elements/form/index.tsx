@@ -57,6 +57,7 @@ export const FormContext = createContext<FormContextProps>({
 
 type GetBindDataOptions = {
   removeNotMounted?: boolean;
+  onlyUserInputted?: boolean;
 };
 
 type FormRef<T extends { [v: string]: any } = { [v: string]: any }> = {
@@ -147,7 +148,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     const ret = {};
     Object.keys(items.current).forEach(id => {
       const { name, getInputted } = items.current[id];
-      if (!name || !getInputted()) return;
+      if (!name) return;
+      if (opts?.onlyUserInputted && !getInputted()) return;
       setValue(ret, name, clone(getValue($bind, name)[0]));
     });
     return ret as any;

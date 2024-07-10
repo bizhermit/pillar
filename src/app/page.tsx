@@ -220,7 +220,7 @@ export default function Home() {
           <FormItemWrap>
             <Slider
               label="数値"
-              name="num-bar"
+              name="slider"
               required
               disabled={disabled.value}
               readOnly={readOnly.value}

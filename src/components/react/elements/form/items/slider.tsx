@@ -61,9 +61,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
         max={fi.dataItem.max}
         step={step ?? 1}
         aria-invalid={fi.airaProps["aria-invalid"]}
-        onChange={e => {
-          console.log(e.target.valueAsNumber);
-        }}
+        onChange={e => fi.set({ value: e.target.valueAsDate, edit: true })}
       />
     </div>
   );
