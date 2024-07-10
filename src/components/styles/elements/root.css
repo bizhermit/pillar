@@ -20,6 +20,7 @@
     --fg-err: #f00;
     --fg-warn: #f92;
     --fg-info: #393;
+    --mask: rgba(0, 0, 0, 0.2);
     --sdw: rgba(0, 0, 0, 0.4);
     --sdw-err: rgba(255, 0, 0, 0.4);
     --btn-bg: #7fbfff;
@@ -39,6 +40,7 @@
       --fg-err: #f40;
       --fg-warn: #ff0;
       --fg-info: #3d3;
+      --mask: rgba(255, 255, 255, 0.2);
       --sdw: rgba(255, 255, 255, 0.4);
       --sdw-err: rgba(255, 0, 0, 0.4);
       --btn-bg: #5f9fdf;
@@ -85,6 +87,10 @@
       text-decoration: none;
       color: inherit;
     }
+  }
+
+  ::backdrop {
+    background: var(--mask);
   }
 
 }

@@ -2,7 +2,7 @@ import { isAlphabet, isEmpty, isFullWidth, isFWAlphabet, isFWKatakana, isFWNumer
 
 const defaultLabel = "値";
 
-export const $strValidations = (dataItem: DataItem.ArgObject<DataItem.$str>): Array<DataItem.Validation<DataItem.$str>> => {
+export const $strValidations = (dataItem: DataItem.ArgObject<DataItem.$str>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$str>> => {
   const validations: Array<DataItem.Validation<DataItem.$str>> = [];
 
   const label = dataItem.label || defaultLabel;
@@ -10,7 +10,7 @@ export const $strValidations = (dataItem: DataItem.ArgObject<DataItem.$str>): Ar
   if (dataItem.required) {
     validations.push(({ value, fullName }) => {
       if (!isEmpty(value)) return undefined;
-      return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
+      return { type: "e", code: "required", fullName, msg: `${label}を${dataItem.source ? "選択" : "入力"}してください。` };
     });
   }
 
@@ -181,7 +181,7 @@ export const $strValidations = (dataItem: DataItem.ArgObject<DataItem.$str>): Ar
     }
   }
 
-  if (dataItem.source) {
+  if (!skipSourceCheck && dataItem.source) {
     validations.push(({ value, fullName }) => {
       if (isEmpty(value)) return undefined;
       if (dataItem.source!.find(s => s.value === value)) return undefined;

@@ -22,6 +22,7 @@ export default function Home() {
   const ref = useRef<HTMLButtonElement>(null);
   const [bind, setBind] = useState({
     text: "123",
+    select: 309,
   });
   const formItem = useFormItem();
 
@@ -182,14 +183,16 @@ export default function Home() {
             <SelectBox
               label="セレクトボックス"
               name="select"
-              source={(() => {
+              required
+              source={async () => {
+                await sleep(3000);
                 const arr = [];
                 for (let i = 0; i < 100; i++) {
                   arr.push({ value: i, label: `item-${i}`});
                 }
                 return arr;
-              })()}
-              required
+              }}
+              // reloadSourceWhenOpen
               disabled={disabled.value}
               readOnly={readOnly.value}
             />

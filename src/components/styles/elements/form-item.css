@@ -339,6 +339,20 @@
 
   }
 
+  .ipt-mask {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    z-index: 1;
+    pointer-events: none;
+    transition: background-color 0.1s;
+    
+    &[data-show="true"] {
+      background: var(--mask);
+      pointer-events: unset;
+    }
+  }
+
   .ipt-dialog-list {
     overflow: hidden;
     display: flex;
@@ -346,6 +360,7 @@
     justify-content: flex-start;
     align-items: stretch;
     max-height: calc(50svh - var(--ipt-size));
+    z-index: 0;
   }
 
   .ipt-dialog-list-item {

@@ -2,7 +2,7 @@ import { getFloatPosition } from "../../objects/number";
 
 const defaultLabel = "値";
 
-export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>): Array<DataItem.Validation<DataItem.$num>> => {
+export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$num>> => {
   const validations: Array<DataItem.Validation<DataItem.$num>> = [];
 
   const label = dataItem.label || defaultLabel;
@@ -13,7 +13,7 @@ export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>): Ar
         if (value === 0 && dataItem.requiredIsNotZero) return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
         return undefined;
       }
-      return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
+      return { type: "e", code: "required", fullName, msg: `${label}を${dataItem.source ? "選択" : "入力"}してください。` };
     });
   }
 
@@ -49,7 +49,7 @@ export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>): Ar
     });
   }
 
-  if (dataItem.source) {
+  if (!skipSourceCheck && dataItem.source) {
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
       if (dataItem.source!.find(s => s.value === value)) return undefined;

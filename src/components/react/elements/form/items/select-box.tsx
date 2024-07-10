@@ -101,19 +101,35 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
       };
     },
     parse: ({ dataItem }) => {
-      const parseData = ([v, r]: DataItem.ParseResult<any>) => {
+      const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
+        if (loading) {
+          if (equals($emptyItem?.[vdn], v)) return [$emptyItem, r];
+          return [{ [vdn]: v, [ldn]: v == null ? "" : String(v) }, r];
+        }
         const item = origin.find(item => equals(item[vdn], v));
-        return [item == null ? emptyItem : item, r] as DataItem.ParseResult<any>;
+        if (item == null) {
+          if (equals($emptyItem?.[vdn], v)) return [$emptyItem, r];
+          return [$emptyItem, {
+            type: "e",
+            code: "not-found",
+            fullName: p.fullName,
+            msg: `選択肢に値が存在しません。[${v}]`,
+          }];
+        }
+        return [item, r];
       };
       switch (dataItem.type) {
         case "bool":
         case "b-num":
         case "b-str":
-          return p => parseData($boolParse(p as DataItem.ParseProps<DataItem.$boolAny>));
-        case "str": return p => parseData($strParse(p as DataItem.ParseProps<DataItem.$str>));
-        case "num": return p => parseData($numParse(p as DataItem.ParseProps<DataItem.$num>));
-        default: return (p) => parseData([p.value]);
+          return p => parseData($boolParse(p as DataItem.ParseProps<DataItem.$boolAny>), p);
+        case "str": return p => parseData($strParse(p as DataItem.ParseProps<DataItem.$str>), p);
+        case "num": return p => parseData($numParse(p as DataItem.ParseProps<DataItem.$num>), p);
+        default: return (p) => parseData([p.value], p);
       }
+    },
+    revert: (v) => {
+      return v?.[vdn];
     },
     effect: ({ value }) => {
       iref.current.value = value?.[ldn] || "";
@@ -126,8 +142,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           case "b-num":
           case "b-str":
             return $boolValidations(dataItem as DataItem.$boolAny);
-          case "str": return $strValidations(dataItem as DataItem.$str);
-          case "num": return $numValidations(dataItem as DataItem.$num);
+          case "str": return $strValidations(dataItem as DataItem.$str, true);
+          case "num": return $numValidations(dataItem as DataItem.$num, true);
           default: return [
             ({ value, dataItem, fullName }) => {
               if (value != null && value !== "") return undefined;
@@ -168,6 +184,20 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     if (!opts?.preventClearFilter) clearFilter();
     const anchorElem = iref.current?.parentElement;
     if (!anchorElem) return;
+    if (reloadSourceWhenOpen) {
+      if (typeof source === "function") {
+        reload({
+          callback: ({ ok }) => {
+            if (ok) {
+              focusSelected({
+                preventFocus: opts?.preventFocus || iref.current === document.activeElement,
+                preventScroll: opts?.preventScroll,
+              });
+            }
+          },
+        });
+      }
+    }
     dialog.open({
       modal: false,
       anchor: {
@@ -214,17 +244,19 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   const keydown = (e: KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case "F2":
-        showDialog();
+        showDialog({ preventFocus: true });
         break;
       case "Escape":
         closeDialog();
         break;
       case "ArrowDown":
-        if (dialog.state === "closed") {
-          showDialog({ preventClearFilter: true });
-        } else {
-          focusSelected();
-          e.preventDefault();
+        if (!loading) {
+          if (dialog.state === "closed") {
+            showDialog({ preventClearFilter: true });
+          } else {
+            focusSelected();
+            e.preventDefault();
+          }
         }
         break;
       default:
@@ -251,7 +283,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   };
 
   useEffect(() => {
-    filterItems();
+    clearFilter();
   }, [origin]);
 
   useEffect(() => {
@@ -273,7 +305,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           type="text"
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
-          readOnly={fi.readOnly || fi.form.pending}
+          readOnly={fi.readOnly || fi.form.pending || loading}
           tabIndex={fi.tabIndex}
           autoComplete="off"
           aria-invalid={fi.airaProps["aria-invalid"]}
@@ -294,7 +326,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             aria-disabled={fi.form.pending || loading}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.state === "modal"}
+            data-showed={dialog.state !== "closed"}
           />
         }
         {!fi.hideClearButton && fi.editable &&
@@ -312,9 +344,11 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           mobile
           className="ipt-dialog"
         >
+          <div className="ipt-mask" data-show={loading} />
           <div className="ipt-dialog-list">
             {$emptyItem &&
               <ListItem
+                loading={loading}
                 currentValue={fi.value?.[vdn]}
                 empty={empty}
                 value={$emptyItem?.[vdn]}
@@ -331,11 +365,13 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             }
             {filtered.map(item => (
               <ListItem
+                loading={loading}
                 key={item[vdn]}
                 currentValue={fi.value?.[vdn]}
                 empty={empty}
                 value={item[vdn]}
                 onSelect={() => {
+                  if (loading) return;
                   fi.set({ value: item, edit: true });
                   closeDialog(true);
                 }}
@@ -360,6 +396,7 @@ type ListItemProps = {
   value: any;
   currentValue: any;
   empty: boolean;
+  loading: boolean;
   children: ReactNode;
 }
 
@@ -369,6 +406,7 @@ const ListItem = ({
   value,
   currentValue,
   empty,
+  loading,
   children,
 }: ListItemProps) => {
   const selected = !empty && equals(value, currentValue);
@@ -377,23 +415,27 @@ const ListItem = ({
     e.preventDefault();
     switch (e.key) {
       case "Enter":
-        onSelect();
+        if (!loading) onSelect();
         break;
       case "Escape":
         onEscape();
         break;
       case "ArrowUp":
-        const prevElem = e.currentTarget.previousElementSibling as HTMLElement;
-        if (prevElem) {
-          prevElem.focus();
-          prevElem.scrollIntoView({ block: "center" });
+        if (!loading) {
+          const prevElem = e.currentTarget.previousElementSibling as HTMLElement;
+          if (prevElem) {
+            prevElem.focus();
+            prevElem.scrollIntoView({ block: "center" });
+          }
         }
         break;
       case "ArrowDown":
-        const nextElem = e.currentTarget.nextElementSibling as HTMLElement;
-        if (nextElem) {
-          nextElem.focus();
-          nextElem.scrollIntoView({ block: "center" });
+        if (!loading) {
+          const nextElem = e.currentTarget.nextElementSibling as HTMLElement;
+          if (nextElem) {
+            nextElem.focus();
+            nextElem.scrollIntoView({ block: "center" });
+          }
         }
         break;
       default:

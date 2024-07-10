@@ -17,6 +17,7 @@ type FormItemCoreArgs<
     dataItem: D | undefined;
   }) => DataItem.ArgObject<SD>;
   parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
+  revert?: (v: IV | null | undefined) => (V | null | undefined);
   validation: (props: {
     dataItem: DataItem.ArgObject<SD>;
     iterator: (funcs: Array<DataItem.Validation<any>>, arg: Parameters<DataItem.Validation<any>>[0]) => (DataItem.ValidationResult | null | undefined);
@@ -213,8 +214,12 @@ export const useFormItemCore = <
   }, [form.bind]);
 
   useEffect(() => {
+    if (cp.revert) {
+      set({ value: cp.revert(valRef.current), edit: false });
+      return;
+    }
     set({ value: valRef.current, edit: true });
-  }, [validation]);
+  }, [validation, parse]);
 
   const editable = !readOnly && !(disabled || form.disabled);
 

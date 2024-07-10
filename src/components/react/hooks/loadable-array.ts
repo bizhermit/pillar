@@ -26,7 +26,7 @@ export const useLoadableArray = <T extends { [v: string | number | symbol]: any 
   const [loading, setLoading] = useState(initPromise.current != null);
 
   const load = (props?: {
-    switchLoadingFlag?: boolean;
+    preventSwitchLoading?: boolean;
     callback?: (res: { ok: boolean; interruptted?: boolean; }) => void;
   }) => {
     if (array == null || isArray(array)) {
@@ -41,14 +41,14 @@ export const useLoadableArray = <T extends { [v: string | number | symbol]: any 
       return;
     }
     const id = ++loadId.current;
-    if (props?.switchLoadingFlag) setLoading(true);
+    if (!props?.preventSwitchLoading) setLoading(true);
     ret.then(r => {
       if (id !== loadId.current) {
         props?.callback?.({ ok: false, interruptted: true });
         return;
       }
       setArr(r ?? []);
-      if (props?.switchLoadingFlag) setLoading(false);
+      if (!props?.preventSwitchLoading) setLoading(false);
       props?.callback?.({ ok: true });
     }).catch(() => {
       props?.callback?.({ ok: false });
@@ -70,7 +70,7 @@ export const useLoadableArray = <T extends { [v: string | number | symbol]: any 
     }
 
     if (options?.preventMemorize !== true) return;
-    load({ switchLoadingFlag: true });
+    load();
   }, [array]);
 
   return [arr, loading, load] as const;
