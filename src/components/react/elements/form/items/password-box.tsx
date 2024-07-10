@@ -57,6 +57,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
   });
 
   const [type, setType] = useState<"text" | "password">("password");
+  const empty = isEmpty(fi.value);
 
   const toggle = () => {
     if (!fi.editable) return;
@@ -64,12 +65,10 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
   };
 
   const clear = () => {
-    if (!fi.editable) return;
+    if (!fi.editable || empty) return;
     fi.clear();
     iref.current?.focus();
   };
-
-  const empty = isEmpty(fi.value);
 
   return (
     <>

@@ -54,6 +54,8 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
     focus: () => iref.current?.focus(),
   });
 
+  const empty = fi.value == null || Number.isNaN(fi.value);
+
   const minmax = (num: number | null | undefined) => {
     if (num == null) return num;
     let ret = num;
@@ -157,12 +159,10 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   };
 
   const clear = () => {
-    if (!fi.editable) return;
+    if (!fi.editable || empty) return;
     fi.clear();
     setTimeout(() => iref.current?.focus(), 0);
   };
-
-  const empty = fi.value == null || Number.isNaN(fi.value);
 
   return (
     <>

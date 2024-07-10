@@ -49,13 +49,13 @@ export const TextBox = <D extends DataItem.$str | undefined>({
     focus: () => iref.current?.focus(),
   });
 
+  const empty = isEmpty(fi.value);
+
   const clear = () => {
-    if (!fi.editable) return;
+    if (!fi.editable || empty) return;
     fi.clear();
     iref.current?.focus();
   };
-
-  const empty = isEmpty(fi.value);
 
   return (
     <>
