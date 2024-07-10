@@ -182,16 +182,23 @@ export default function Home() {
             <SelectBox
               label="セレクトボックス"
               name="select"
-              source={[
-                { value: 1, label: "item-1" },
-                { value: 2, label: "item-2" },
-                { value: 3, label: "item-3" },
-              ]}
+              source={(() => {
+                const arr = [];
+                for (let i = 0; i < 100; i++) {
+                  arr.push({ value: i, label: `item-${i}`});
+                }
+                return arr;
+              })()}
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
             />
           </FormItemWrap>
+          <select>
+            <option value={1}>item 1</option>
+            <option value={2}>item 2</option>
+            <option value={3}>item 3</option>
+          </select>
           {/* </div> */}
           <FormButton type="submit">
             submit
@@ -247,11 +254,6 @@ export default function Home() {
           </Button>
         </Dialog>
         <span>{dialog.state}</span>
-        <select>
-          <option value={1}>item 1</option>
-          <option value={2}>item 2</option>
-          <option value={3}>item 3</option>
-        </select>
       </div>
     </div>
   );

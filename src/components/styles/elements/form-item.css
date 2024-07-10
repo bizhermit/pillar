@@ -339,8 +339,60 @@
 
   }
 
+  .ipt-dialog-list {
+    overflow: hidden;
+    inset: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    max-height: calc(50svh - var(--ipt-size));
+  }
+
+  .ipt-dialog-list-item {
+    display: grid;
+    place-items: center start;
+    height: var(--ipt-size);
+    padding: 0 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.1s, color 0.1s;
+
+    &:hover {
+      background: var(--ipt-fg);
+      color: var(--ipt-bg);
+    }
+
+    &[data-selected="true"] {
+      color: var(--ipt-fg-clr);
+      background: var(--ipt-bg-clr);
+    }
+  }
+
+}
+
+@layer feat {
+
   .ipt-dialog {
-    position: fixed;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .3s, display .3s allow-discrete, overlay .3s allow-discrete;
+    opacity: 1;
+    overflow: hidden;
+    
+    &[open] {
+      grid-template-rows: 1fr;
+
+      >.ipt-dialog-list {
+        overflow: auto;
+      }
+    }
+  }
+
+  @starting-style {
+
+    .ipt-dialog[open] {
+      grid-template-rows: 0fr;
+    }
   }
 
 }

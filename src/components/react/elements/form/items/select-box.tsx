@@ -6,7 +6,7 @@ import { $strParse } from "@/data-items/string/parse";
 import { $strValidations } from "@/data-items/string/validation";
 import { equals } from "@/objects";
 import { type LoadableArray, useLoadableArray } from "@/react/hooks/loadable-array";
-import { type HTMLAttributes, useMemo, useRef } from "react";
+import { FocusEvent, type HTMLAttributes, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, useDialog } from "../../dialog";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -29,6 +29,8 @@ type SelectBoxOptions<D extends DataItem.$str | DataItem.$num | DataItem.$boolAn
 
 type SelectBoxProps<D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData> =
   OverwriteAttrs<HTMLAttributes<HTMLDivElement>, SelectBoxOptions<D, S>>;
+
+const listItemClassName = "ipt-dialog-list-item";
 
 export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData>({
   labelDataName,
@@ -74,6 +76,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   }, [preventSourceMemorize ? source : ""]);
 
   const [origin, loading, reload] = useLoadableArray($source, { preventMemorize: preventSourceMemorize });
+  const [filtered, setFiltered] = useState(origin);
 
   const fi = useFormItemCore<DataItem.$str | DataItem.$num | DataItem.$boolAny, D, string | number | boolean, { [P in typeof vdn]: string | number | boolean; } & { [P in typeof ldn]: any }>(props, {
     dataItemDeps: [vdn, ldn, origin],
@@ -98,8 +101,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         default: return (p) => parseData([p.value]);
       }
     },
-    effect: () => {
-
+    effect: ({ value }) => {
+      iref.current.value = value?.[ldn] || "";
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = (() => {
@@ -123,7 +126,17 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     focus: () => iref.current?.focus(),
   });
 
+  const focusSelected = () => {
+    const pElem = iref.current.parentElement;
+    if (!pElem) return;
+    const itemElem = (pElem.querySelector(`dialog .${listItemClassName}[data-selected="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`)) as HTMLElement;
+    if (!itemElem) return;
+    itemElem.focus();
+    itemElem.scrollIntoView({ block: "center", behavior: "smooth" });
+  };
+
   const showDialog = () => {
+    if (!fi.editable || loading) return;
     const anchorElem = iref.current?.parentElement;
     if (!anchorElem) return;
     dialog.open({
@@ -133,24 +146,67 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         x: "inner",
         y: "outer",
         width: "fill",
-      }
+      },
+      callback: focusSelected,
     });
   };
 
-  const clear = () => {
-    if (!fi.editable) return;
-    fi.set({ value: $emptyItem?.[vdn], edit: false });
-    setTimeout(() => iref.current?.focus(), 0);
+  const closeDialog = (focus?: boolean) => {
+    if (focus) iref.current?.focus();
+    dialog.close();
+  };
+
+  const focus = () => {
+    showDialog();
+  };
+
+  const blur = (e: FocusEvent<HTMLDivElement>) => {
+    let elem = e.relatedTarget;
+    while (elem) {
+      if (elem === e.currentTarget) return;
+      elem = elem.parentElement;
+    }
+    closeDialog();
+    iref.current.value = fi.value?.[ldn] || "";
+  };
+
+  const keydown = (e: KeyboardEvent<HTMLInputElement>) => {
+    switch (e.key) {
+      case "F2":
+        showDialog();
+        break;
+      case "Escape":
+        closeDialog();
+        break;
+      case "ArrowDown":
+        showDialog();
+        break;
+      default:
+        break;
+    }
   };
 
   const empty = fi.value == null || fi.value[vdn] == null || fi.value[vdn] === "";
+
+  const clear = () => {
+    if (!fi.editable || loading || empty) return;
+    fi.set({ value: $emptyItem?.[vdn], edit: false });
+    iref.current?.focus();
+    if (dialog.state === "closed") closeDialog();
+  };
+
+  useEffect(() => {
+    setFiltered(origin);
+  }, [origin]);
 
   return (
     <>
       <div
         {...fi.props}
         {...fi.airaProps}
+        aria-readonly={fi.airaProps["aria-readonly"] || loading}
         className={joinClassNames("ipt-field", props.className)}
+        onBlur={blur}
       >
         <input
           ref={iref}
@@ -162,6 +218,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           tabIndex={fi.tabIndex}
           autoComplete="off"
           aria-invalid={fi.airaProps["aria-invalid"]}
+          onFocus={focus}
+          onKeyDown={keydown}
         />
         {!empty &&
           <input
@@ -173,28 +231,124 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         {fi.editable &&
           <div
             className="ipt-btn ipt-pull"
-            aria-disabled={fi.form.pending}
+            aria-disabled={fi.form.pending || loading}
             onClick={showDialog}
+            tabIndex={-1}
             data-showed={dialog.state === "modal"}
           />
         }
         {!fi.hideClearButton && fi.editable &&
           <div
             className="ipt-btn"
-            aria-disabled={fi.form.pending || empty}
+            aria-disabled={fi.form.pending || empty || loading}
             onClick={clear}
+            tabIndex={-1}
           >
             ×
           </div>
         }
         <Dialog
           hook={dialog.hook}
+          mobile
           className="ipt-dialog"
         >
-          list
+          <div className="ipt-dialog-list">
+            {$emptyItem &&
+              <ListItem
+                currentValue={fi.value?.[vdn]}
+                empty={empty}
+                value={$emptyItem?.[vdn]}
+                onSelect={() => {
+                  fi.set({ value: $emptyItem, edit: true });
+                  closeDialog(true);
+                }}
+                onEscape={() => {
+                  closeDialog(true);
+                }}
+              >
+                {$emptyItem?.[ldn]}
+              </ListItem>
+            }
+            {filtered.map(item => (
+              <ListItem
+                key={item[vdn]}
+                currentValue={fi.value?.[vdn]}
+                empty={empty}
+                value={item[vdn]}
+                onSelect={() => {
+                  fi.set({ value: item, edit: true });
+                  closeDialog(true);
+                }}
+                onEscape={() => {
+                  closeDialog(true);
+                }}
+              >
+                {item[ldn]}
+              </ListItem>
+            ))}
+          </div>
         </Dialog>
       </div>
       {fi.messageComponent}
     </>
+  );
+};
+
+type ListItemProps = {
+  onSelect: () => void;
+  onEscape: () => void;
+  value: any;
+  currentValue: any;
+  empty: boolean;
+  children: ReactNode;
+}
+
+const ListItem = ({
+  onSelect,
+  onEscape,
+  value,
+  currentValue,
+  empty,
+  children,
+}: ListItemProps) => {
+  const selected = !empty && equals(value, currentValue);
+
+  const keydown = (e: KeyboardEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    switch (e.key) {
+      case "Enter":
+        onSelect();
+        break;
+      case "Escape":
+        onEscape();
+        break;
+      case "ArrowUp":
+        (e.currentTarget.previousElementSibling as HTMLElement)?.focus();
+        e.currentTarget.scrollIntoView({
+          block: "center",
+        });
+        break;
+      case "ArrowDown":
+        (e.currentTarget.nextElementSibling as HTMLElement)?.focus();
+        e.currentTarget.scrollIntoView({
+          block: "center",
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <div
+      className={listItemClassName}
+      tabIndex={-1}
+      autoFocus={selected}
+      data-selected={selected}
+      onClick={onSelect}
+      onKeyDown={keydown}
+    >
+      {children}
+    </div>
   );
 };
