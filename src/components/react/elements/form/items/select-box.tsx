@@ -318,6 +318,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             type="hidden"
             name={fi.name}
             value={String(fi.value[vdn])}
+            disabled={fi.disabled}
           />
         }
         {fi.editable &&

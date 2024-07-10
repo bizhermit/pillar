@@ -194,6 +194,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
             type="hidden"
             name={fi.name}
             value={fi.value}
+            disabled={fi.disabled}
           />
         }
         {!hideSpinButtons && fi.editable &&

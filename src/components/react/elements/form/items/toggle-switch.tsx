@@ -107,6 +107,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
             name={fi.name}
             type="hidden"
             value={String(fi.value)}
+            disabled={fi.disabled}
           />
         }
         {props.children}

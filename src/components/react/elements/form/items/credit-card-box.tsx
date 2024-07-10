@@ -105,6 +105,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
             name={fi.name}
             type="hidden"
             value={fi.value}
+            disabled={fi.disabled}
           />
         }
         {!fi.hideClearButton && fi.editable &&

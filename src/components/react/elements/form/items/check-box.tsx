@@ -107,6 +107,7 @@ export const CheckBox = <True extends boolean | number | string, False extends b
             name={fi.name}
             type="hidden"
             value={String(fi.value)}
+            disabled={fi.disabled}
           />
         }
         {props.children}
