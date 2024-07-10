@@ -183,11 +183,11 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           onBlur={blur}
           aria-invalid={fi.airaProps["aria-invalid"]}
         />
-        {!empty && !fi.inputted &&
+        {fi.inputted &&
           <input
             type="hidden"
             name={fi.name}
-            value={fi.value}
+            value={empty ? undefined : fi.value}
             disabled={fi.disabled}
           />
         }

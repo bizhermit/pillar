@@ -321,12 +321,12 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           onKeyDown={keydown}
           onChange={change}
         />
-        {!empty && !fi.inputted &&
+        {fi.inputted &&
           <>
             <input
               type="hidden"
               name={fi.name}
-              value={String(fi.value[vdn])}
+              value={empty ? undefined : fi.value[vdn]}
               disabled={fi.disabled}
             />
             {tieInNames?.map(({ dataName, hiddenName }) => {

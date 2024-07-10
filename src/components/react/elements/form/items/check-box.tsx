@@ -102,11 +102,11 @@ export const CheckBox = <True extends boolean | number | string, False extends b
           }}
           aria-invalid={fi.airaProps["aria-invalid"]}
         />
-        {fi.name && fi.value != null && !fi.inputted &&
+        {fi.name && fi.inputted &&
           <input
             name={fi.name}
             type="hidden"
-            value={String(fi.value)}
+            value={fi.value == null ? undefined : String(fi.value)}
             disabled={fi.disabled}
           />
         }

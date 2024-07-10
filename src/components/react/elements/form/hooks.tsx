@@ -62,7 +62,7 @@ export const useFormItemCore = <
   const id = useRef(crypto.randomUUID());
   const form = use(FormContext);
   const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
-  const [inputted, setInputted] = useState(false);
+  const [inputted, setInputted, inputtedRef] = useRefState(false);
 
   const dataItem = useMemo(() => {
     const $name = name || $dataItem?.name;
@@ -199,6 +199,7 @@ export const useFormItemCore = <
       get,
       set,
       reset,
+      getInputted: () => inputtedRef.current,
       dataItem,
     });
     return () => {

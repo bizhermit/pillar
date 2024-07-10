@@ -14,6 +14,7 @@ type FormItemMountProps = {
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
+  getInputted: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
 };
 
@@ -145,8 +146,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     if (!opts?.removeNotMounted) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
-      const { name } = items.current[id];
-      if (!name) return;
+      const { name, getInputted } = items.current[id];
+      if (!name || !getInputted()) return;
       setValue(ret, name, clone(getValue($bind, name)[0]));
     });
     return ret as any;

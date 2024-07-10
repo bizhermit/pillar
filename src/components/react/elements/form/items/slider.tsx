@@ -26,14 +26,14 @@ export const Slider = <D extends DataItem.$num | undefined>({
     getDataItem: ({ dataItem }) => {
       return {
         type: "num",
-        min: min ?? dataItem?.min,
-        max: max ?? dataItem?.max,
+        min: min ?? dataItem?.min ?? 0,
+        max: max ?? dataItem?.max ?? 100,
         requiredIsNotZero: requiredIsNotZero ?? dataItem?.requiredIsNotZero,
       };
     },
     parse: () => $numParse,
-    effect: ({ edit, value }) => {
-      // if (!edit && iref.current) iref.current.value = value;
+    effect: ({ edit, value, effect }) => {
+      if (iref.current && (!edit || effect)) iref.current.value = value == null ? "" : String(value);
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $numValidations(dataItem);
@@ -53,7 +53,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
         ref={iref}
         className="ipt-slider"
         type="range"
-        name={empty ? undefined : fi.name}
+        name={(empty && !fi.inputted) ? undefined : fi.name}
         disabled={fi.disabled}
         readOnly={fi.readOnly || fi.form.pending}
         tabIndex={fi.tabIndex}
@@ -61,6 +61,9 @@ export const Slider = <D extends DataItem.$num | undefined>({
         max={fi.dataItem.max}
         step={step ?? 1}
         aria-invalid={fi.airaProps["aria-invalid"]}
+        onChange={e => {
+          console.log(e.target.valueAsNumber);
+        }}
       />
     </div>
   );
