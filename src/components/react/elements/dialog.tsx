@@ -20,14 +20,18 @@ type DialogShowOptions = {
   callback?: () => void;
 };
 
+type DialogCloseOptions = {
+  callback?: () => void;
+};
+
 type DialogHookConnectionParams = {
-  toggle: (order: DailogOrder, opts?: DialogShowOptions) => void;
+  toggle: <Order extends DailogOrder>(order: Order, opts?: Order extends "close" ? DialogCloseOptions : DialogShowOptions) => void;
 };
 
 type DialogHook = {
   state: DialogState;
   open: (options?: DialogShowOptions) => void;
-  close: () => void;
+  close: (options?: DialogCloseOptions) => void;
   hook: (params: DialogHookConnectionParams) => ((state: DialogState) => void);
 };
 
@@ -55,7 +59,7 @@ export const Dialog = ({
   const [mount, setMount] = useState(immediatelyMount === true);
   const [showOpts, setShowOpts] = useState<DialogShowOptions | null | undefined>();
 
-  const toggle = (order: DailogOrder, opts?: DialogShowOptions) => {
+  const toggle = <Order extends DailogOrder>(order: Order, opts?: Order extends "close" ? DialogCloseOptions : DialogShowOptions) => {
     if (!dref.current) {
       // eslint-disable-next-line no-console
       console.warn("not mounted dialog element");
@@ -68,10 +72,8 @@ export const Dialog = ({
           dref.current.removeEventListener("transitioncancel", unmount);
           dref.current.removeEventListener("transitionend", unmount);
           if (stateRef.current === "closed") setMount(false);
+          opts?.callback?.();
         };
-        if (stateRef.current === "modal") {
-        } else {
-        }
         dref.current.addEventListener("transitioncancel", unmount);
         dref.current.addEventListener("transitionend", unmount);
       }
@@ -299,7 +301,7 @@ export const useDialog = (): DialogHook => {
   return {
     state,
     open: (opts) => con.current?.toggle(opts?.modal === false ? "modeless" : "modal", opts),
-    close: () => con.current?.toggle("close"),
+    close: (opts) => con.current?.toggle("close", opts),
     hook: (c) => {
       con.current = c;
       return setState;

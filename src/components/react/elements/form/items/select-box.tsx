@@ -5,8 +5,9 @@ import { $numValidations } from "@/data-items/number/validation";
 import { $strParse } from "@/data-items/string/parse";
 import { $strValidations } from "@/data-items/string/validation";
 import { equals } from "@/objects";
+import { isEmpty } from "@/objects/string";
 import { type LoadableArray, useLoadableArray } from "@/react/hooks/loadable-array";
-import { ChangeEvent, FocusEvent, type HTMLAttributes, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { FocusEvent, type HTMLAttributes, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, useDialog } from "../../dialog";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -78,6 +79,19 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   const [origin, loading, reload] = useLoadableArray($source, { preventMemorize: preventSourceMemorize });
   const [filtered, setFiltered] = useState(origin);
 
+  const clearFilter = () => {
+    setFiltered(origin);
+  };
+
+  const filterItems = () => {
+    const v = iref.current.value;
+    if (isEmpty(v)) {
+      clearFilter();
+      return;
+    }
+    setFiltered(origin.filter(item => String(item[ldn] ?? "").indexOf(v) > -1));
+  };
+
   const fi = useFormItemCore<DataItem.$str | DataItem.$num | DataItem.$boolAny, D, string | number | boolean, { [P in typeof vdn]: string | number | boolean; } & { [P in typeof ldn]: any }>(props, {
     dataItemDeps: [vdn, ldn, origin],
     getDataItem: ({ dataItem }) => {
@@ -103,6 +117,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     },
     effect: ({ value }) => {
       iref.current.value = value?.[ldn] || "";
+      clearFilter();
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = (() => {
@@ -128,17 +143,29 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
 
   const empty = fi.value == null || fi.value[vdn] == null || fi.value[vdn] === "";
 
-  const focusSelected = () => {
+  const findSelectedOrFirstItemElem = () => {
     const pElem = iref.current.parentElement;
     if (!pElem) return;
-    const itemElem = (pElem.querySelector(`dialog .${listItemClassName}[data-selected="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`)) as HTMLElement;
-    if (!itemElem) return;
-    itemElem.focus();
-    itemElem.scrollIntoView({ block: "center", behavior: "smooth" });
+    const elem = pElem.querySelector(`dialog .${listItemClassName}[data-selected="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`);
+    if (!elem) return;
+    return elem as HTMLDivElement;
   };
 
-  const showDialog = () => {
-    if (!fi.editable || loading) return;
+  const focusSelected = (opts?: { preventFocus?: boolean; preventScroll?: boolean; }) => {
+    const elem = findSelectedOrFirstItemElem();
+    if (elem == null) return;
+    if (!opts?.preventFocus) elem.focus();
+    if (!opts?.preventScroll) elem.scrollIntoView({ block: "center" });
+  };
+
+  const showDialog = (opts?: {
+    preventFocus?: boolean;
+    preventScroll?: boolean;
+    preventClearFilter?: boolean;
+  }) => {
+    if (!fi.editable || loading || dialog.state !== "closed") return;
+    iref.current.focus();
+    if (!opts?.preventClearFilter) clearFilter();
     const anchorElem = iref.current?.parentElement;
     if (!anchorElem) return;
     dialog.open({
@@ -149,17 +176,25 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         y: "outer",
         width: "fill",
       },
-      callback: focusSelected,
+      callback: () => {
+        focusSelected({
+          preventFocus: opts?.preventFocus,
+          preventScroll: opts?.preventScroll,
+        });
+        if (opts?.preventFocus) iref.current.focus();
+      },
     });
   };
 
   const closeDialog = (focus?: boolean) => {
     if (focus) iref.current?.focus();
-    dialog.close();
+    dialog.close({
+      callback: clearFilter,
+    });
   };
 
   const focus = () => {
-    showDialog();
+    showDialog({ preventFocus: true });
   };
 
   const blur = (e: FocusEvent<HTMLDivElement>) => {
@@ -185,15 +220,27 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         closeDialog();
         break;
       case "ArrowDown":
-        showDialog();
+        if (dialog.state === "closed") {
+          showDialog({ preventClearFilter: true });
+        } else {
+          focusSelected();
+          e.preventDefault();
+        }
         break;
       default:
         break;
     }
   };
 
-  const change = (e: ChangeEvent<HTMLDivElement>) => {
+  const change = () => {
+    filterItems();
+    if (dialog.state === "closed") {
+      showDialog({ preventClearFilter: true, preventFocus: true });
+    }
+  };
 
+  const clickPull = () => {
+    showDialog();
   };
 
   const clear = () => {
@@ -204,8 +251,12 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   };
 
   useEffect(() => {
-    setFiltered(origin);
+    filterItems();
   }, [origin]);
+
+  useEffect(() => {
+    focusSelected({ preventFocus: true });
+  }, [filtered]);
 
   return (
     <>
@@ -241,7 +292,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           <div
             className="ipt-btn ipt-pull"
             aria-disabled={fi.form.pending || loading}
-            onClick={showDialog}
+            onClick={clickPull}
             tabIndex={-1}
             data-showed={dialog.state === "modal"}
           />
@@ -332,16 +383,18 @@ const ListItem = ({
         onEscape();
         break;
       case "ArrowUp":
-        (e.currentTarget.previousElementSibling as HTMLElement)?.focus();
-        e.currentTarget.scrollIntoView({
-          block: "center",
-        });
+        const prevElem = e.currentTarget.previousElementSibling as HTMLElement;
+        if (prevElem) {
+          prevElem.focus();
+          prevElem.scrollIntoView({ block: "center" });
+        }
         break;
       case "ArrowDown":
-        (e.currentTarget.nextElementSibling as HTMLElement)?.focus();
-        e.currentTarget.scrollIntoView({
-          block: "center",
-        });
+        const nextElem = e.currentTarget.nextElementSibling as HTMLElement;
+        if (nextElem) {
+          nextElem.focus();
+          nextElem.scrollIntoView({ block: "center" });
+        }
         break;
       default:
         break;
