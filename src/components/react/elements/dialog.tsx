@@ -16,7 +16,8 @@ type DialogShowOptions = {
     styles?: CSSProperties;
     width?: "fill";
     height?: "fill";
-  }
+  };
+  callback?: () => void;
 };
 
 type DialogHookConnectionParams = {
@@ -35,6 +36,7 @@ type DialogOptions = {
   preventBackdropClose?: boolean;
   immediatelyMount?: boolean;
   keepMount?: boolean;
+  mobile?: boolean;
 };
 
 type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptions>;
@@ -44,6 +46,7 @@ export const Dialog = ({
   preventBackdropClose,
   immediatelyMount,
   keepMount,
+  mobile,
   ...props
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
@@ -237,13 +240,22 @@ export const Dialog = ({
 
   useEffect(() => {
     if (state === "closed") return;
+
     const resizeListener = throttle(() => {
       resetPosition();
     }, 40);
-    resetPosition();
     window.addEventListener("resize", resizeListener);
+
+    const transitionEndListener = () => {
+      dref.current?.removeEventListener("transitionend", transitionEndListener);
+      showOpts?.callback?.();
+    };
+    dref.current?.addEventListener("transitionend", transitionEndListener);
+
+    resetPosition();
     return () => {
       window.removeEventListener("resize", resizeListener);
+      dref.current?.removeEventListener("transitionend", transitionEndListener);
     };
   }, [showOpts]);
 
@@ -273,6 +285,7 @@ export const Dialog = ({
       data-pos={showOpts?.anchor != null}
       data-modal={state === "modal" ? "" : undefined}
       data-modeless={state === "modeless" ? "" : undefined}
+      data-mobile={mobile ? "" : undefined}
     >
       {mount && props.children}
     </dialog>
