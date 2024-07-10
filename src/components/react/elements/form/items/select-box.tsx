@@ -1,4 +1,4 @@
-import { FocusEvent, type HTMLAttributes, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { $boolParse } from "../../../../data-items/bool/parse";
 import { $boolValidations } from "../../../../data-items/bool/validation";
 import { $numParse } from "../../../../data-items/number/parse";
@@ -7,6 +7,7 @@ import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { equals } from "../../../../objects";
 import { isEmpty } from "../../../../objects/string";
+import { setValue } from "../../../../objects/struct";
 import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { Dialog, useDialog } from "../../dialog";
 import { joinClassNames } from "../../utilities";
@@ -153,6 +154,13 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         }
       })();
       return (v, p) => iterator(funcs, { ...p, value: v?.[vdn] });
+    },
+    setBind: ({ data, name, value }) => {
+      setValue(data, name, value?.[vdn]);
+      tieInNames?.forEach(({ dataName, hiddenName }) => {
+        const v = value?.[dataName];
+        setValue(data, hiddenName ?? dataName, v);
+      });
     },
     focus: () => iref.current?.focus(),
   });
@@ -314,12 +322,25 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           onChange={change}
         />
         {!empty &&
-          <input
-            type="hidden"
-            name={fi.name}
-            value={String(fi.value[vdn])}
-            disabled={fi.disabled}
-          />
+          <>
+            <input
+              type="hidden"
+              name={fi.name}
+              value={String(fi.value[vdn])}
+              disabled={fi.disabled}
+            />
+            {tieInNames?.map(({ dataName, hiddenName }) => {
+              const v = fi.value?.[dataName];
+              return (
+                <input
+                  key={dataName}
+                  type="hidden"
+                  name={hiddenName ?? dataName}
+                  value={String(v ?? "")}
+                />
+              );
+            })}
+          </>
         }
         {fi.editable &&
           <div
