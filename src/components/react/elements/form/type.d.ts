@@ -3,15 +3,15 @@ type FormItemValue<V extends any = any, D extends DataItem.$objec | undefined> =
 
 type FormItemHookConnectionParams<IV extends any> = {
   get: () => (IV | DataItem.NullValue);
-  set: (value: IV | DataItem.NullValue) => void;
-  reset: () => void;
-  clear: () => void;
+  set: (value: IV | DataItem.NullValue, edit?: boolean) => void;
+  reset: (edit?: boolean) => void;
+  clear: (edit?: boolean) => void;
   focus: () => void;
 };
 
 type FormItemHook<IV extends any> = {
   value: IV | DataItem.NullValue;
-  setValue: (value: IV | DataItem.NullValue) => void;
+  setValue: (value: IV | DataItem.NullValue, edit: boolean) => void;
   message: DataItem.ValidationResult | null | undefined;
   hook: (params: FormItemHookConnectionParams<IV>) => (params: [
     value: IV | DataItem.NullValue,
@@ -46,5 +46,7 @@ type FormItemOptions<
 
 type FormItemSetArg<T extends any = any> = {
   value: T | DataItem.NullValue;
-  edit: boolean;
+  edit?: boolean;
+  effect?: boolean;
+  parse?: boolean;
 };

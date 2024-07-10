@@ -216,6 +216,46 @@
     }
   }
 
+  .ipt-slider {
+    appearance: none;
+    width: 100%;
+    height: var(--ipt-size);
+    background: transparent;
+    
+    &:not(:disabled, [readonly]) {
+      cursor: pointer;
+    }
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      box-sizing: border-box;
+      margin-top: calc(var(--ipt-size) * -0.15);
+      width: calc(var(--ipt-size) * 0.6);
+      height: calc(var(--ipt-size) * 0.6);
+      background: var(--ipt-bg-clr);
+      border-radius: 50%;
+      border: 1px solid var(--sdw);
+    }
+
+    &::-webkit-slider-runnable-track {
+      appearance: none;
+      box-sizing: border-box;
+      width: 100%;
+      height: calc(var(--ipt-size) * 0.3);
+      background: var(--ipt-bg);
+      border-radius: 9999px;
+      border: 1px solid var(--sdw);
+      transition: background-color .1s, border-color .1s;
+    }
+
+    &[aria-invalid="true"] {
+      &::-webkit-slider-runnable-track {
+        background: var(--ipt-bg-err);
+        border-color: var(--ipt-fg-err);
+      }
+    }
+  }
+
   .ipt-lbl {
     display: flex;
     flex-flow: row nowrap;

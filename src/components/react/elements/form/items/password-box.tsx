@@ -46,8 +46,8 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
       };
     },
     parse: () => $strParse,
-    effect: ({ edit, value }) => {
-      if (!edit && iref.current) iref.current.value = value ?? "";
+    effect: ({ edit, value, effect }) => {
+      if (iref.current && (!edit || effect)) iref.current.value = value ?? "";
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $strValidations(minimumValidation ? { type: "str", required: dataItem.required } : dataItem);
@@ -66,7 +66,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
 
   const clear = () => {
     if (!fi.editable || empty) return;
-    fi.clear();
+    fi.clear(true);
     iref.current?.focus();
   };
 
@@ -81,7 +81,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           ref={iref}
           className="ipt-txt"
           type={type}
-          name={empty ? undefined : fi.name}
+          name={(empty && !fi.inputted) ? undefined : fi.name}
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly || fi.form.pending}

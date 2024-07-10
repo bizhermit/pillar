@@ -70,8 +70,8 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
       }
     },
     parse: () => $boolParse,
-    effect: ({ value, edit, dataItem }) => {
-      if (!edit && iref.current) iref.current.checked = equals(dataItem.trueValue, value);
+    effect: ({ value, edit, dataItem, effect }) => {
+      if (iref.current && (!edit || effect)) iref.current.checked = equals(dataItem.trueValue, value);
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $boolValidations(dataItem);
@@ -102,7 +102,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
           }}
           aria-invalid={fi.airaProps["aria-invalid"]}
         />
-        {fi.name && fi.value != null &&
+        {fi.name && fi.value != null && !fi.inputted &&
           <input
             name={fi.name}
             type="hidden"

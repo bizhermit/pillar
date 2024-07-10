@@ -62,6 +62,7 @@ export const useFormItemCore = <
   const id = useRef(crypto.randomUUID());
   const form = use(FormContext);
   const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
+  const [inputted, setInputted] = useState(false);
 
   const dataItem = useMemo(() => {
     const $name = name || $dataItem?.name;
@@ -80,9 +81,9 @@ export const useFormItemCore = <
     } as SD;
   }, [name, required, ...cp.dataItemDeps]);
 
-  const { parse, validation } = useMemo(() => {
+  const { parseVal, validation } = useMemo(() => {
     return {
-      parse: cp.parse({ dataItem }),
+      parseVal: cp.parse({ dataItem }),
       validation: cp.validation({
         dataItem,
         iterator: (funcs, arg) => {
@@ -120,7 +121,7 @@ export const useFormItemCore = <
       }
       return defaultValue;
     })();
-    const [val, parseRes] = parse({ value: v, dataItem, fullName: dataItem.name || "" });
+    const [val, parseRes] = parseVal({ value: v, dataItem, fullName: dataItem.name || "" });
     const validRes = parseRes?.type === "e" ? undefined : doValidation(val);
     return { val, msg: validRes ?? parseRes };
   }, []);
@@ -141,12 +142,12 @@ export const useFormItemCore = <
 
   const get = () => valRef.current as any;
 
-  const set = ({ value, edit }: FormItemSetArg) => {
+  const set = ({ value, edit, effect, parse }: FormItemSetArg) => {
     const before = valRef.current;
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
-    if (!edit) {
-      const [val, msg] = parse({ value, dataItem, fullName: dataItem.name || "" });
+    if (parse) {
+      const [val, msg] = parseVal({ value, dataItem, fullName: dataItem.name || "" });
       v = val;
       parseRes = msg;
     }
@@ -169,20 +170,23 @@ export const useFormItemCore = <
     setVal(v);
 
     onChange?.(v, { before });
-    if (edit) onEdit?.(v, { before });
-    cp.effect({ value: v, edit, origin: value, dataItem });
+    if (edit) {
+      onEdit?.(v, { before });
+      setInputted(true);
+    }
+    cp.effect({ value: v, edit, effect, parse, origin: value, dataItem });
     hookRef.current?.([v, res]);
 
     return [v, res];
   };
 
-  const reset = () => set({ value: defaultValue, edit: false });
+  const reset = (edit?: boolean) => set({ value: defaultValue, edit, parse: true, effect: true });
 
-  const clear = () => set({ value: undefined, edit: false });
+  const clear = (edit?: boolean) => set({ value: undefined, edit, parse: true, effect: true });
 
   hookRef.current = hook ? hook({
     get,
-    set: (value) => set({ value, edit: false }),
+    set: (value, edit) => set({ value, edit, parse: true }),
     clear,
     reset,
     focus: cp.focus,
@@ -203,23 +207,24 @@ export const useFormItemCore = <
   }, []);
 
   useEffect(() => {
+    setInputted(false);
     if (dataItem.name && form.state !== "nothing") {
       const [v, has] = getValue(form.bind, dataItem.name);
       if (has) {
-        set({ value: v, edit: false });
+        set({ value: v, edit: false, parse: true });
         return;
       }
     }
-    set({ value: defaultValue, edit: false });
+    set({ value: defaultValue, edit: false, parse: true });
   }, [form.bind]);
 
   useEffect(() => {
     if (cp.revert) {
-      set({ value: cp.revert(valRef.current), edit: false });
+      set({ value: cp.revert(valRef.current), edit: false, parse: false });
       return;
     }
-    set({ value: valRef.current, edit: true });
-  }, [validation, parse]);
+    set({ value: valRef.current, edit: false, parse: true });
+  }, [validation, parseVal]);
 
   const editable = !readOnly && !(disabled || form.disabled);
 
@@ -228,6 +233,7 @@ export const useFormItemCore = <
     label,
     placeholder,
     tabIndex,
+    inputted,
     disabled: disabled || form.disabled,
     readOnly,
     editable,
@@ -253,6 +259,7 @@ export const useFormItemCore = <
       "aria-invalid": editable && msg?.type === "e",
       "aria-label": $dataItem?.label,
       "aria-placeholder": placeholder,
+      "data-inputted": inputted,
     },
     message: msg,
     messageComponent: (!hideMessage && msg && editable &&
@@ -270,7 +277,7 @@ export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
   const [value, setVal] = useState<T | DataItem.NullValue>(undefined);
   const [message, setMsg] = useState<DataItem.ValidationResult | null | undefined>(undefined);
   const con = useRef<FormItemHookConnectionParams<T> | null>(null);
-  const set = useCallback((v: T | DataItem.NullValue) => con.current?.set(v), []);
+  const set = useCallback((v: T | DataItem.NullValue, edit: boolean) => con.current?.set(v, edit), []);
 
   return {
     value,

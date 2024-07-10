@@ -44,8 +44,8 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
       };
     },
     parse: () => $numParse,
-    effect: ({ edit, value }) => {
-      if (!edit && iref.current) iref.current.value = parseFormattedValue(value);
+    effect: ({ edit, value, effect }) => {
+      if (iref.current && (!edit || effect)) iref.current.value = parseFormattedValue(value);
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $numValidations(dataItem);
@@ -105,10 +105,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
       if (fi.valueRef.current == null) return fi.dataItem.min ?? 0;
       return minmax(fi.valueRef.current + (step || 1));
     })();
-    fi.set({
-      value: v,
-      edit: false,
-    });
+    fi.set({ value: v, edit: true, effect: true });
   };
 
   const decrement = () => {
@@ -116,10 +113,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
       if (fi.valueRef.current == null) return fi.dataItem.min ?? 0;
       return minmax(fi.valueRef.current - (step || 1));
     })();
-    fi.set({
-      value: v,
-      edit: false,
-    });
+    fi.set({ value: v, edit: true, effect: true });
   };
 
   const keydown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -160,7 +154,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
 
   const clear = () => {
     if (!fi.editable || empty) return;
-    fi.clear();
+    fi.clear(true);
     iref.current?.focus();
   };
 
@@ -189,7 +183,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           onBlur={blur}
           aria-invalid={fi.airaProps["aria-invalid"]}
         />
-        {!empty &&
+        {!empty && !fi.inputted &&
           <input
             type="hidden"
             name={fi.name}

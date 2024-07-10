@@ -32,7 +32,7 @@ type FormContextProps = {
     unmount: () => void;
   };
   getValue: <T>(name: string) => T;
-  setValue: (name: string, value: any) => void;
+  setValue: (name: string, value: any, edit?: boolean) => void;
 };
 
 export const FormContext = createContext<FormContextProps>({
@@ -154,7 +154,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
 
   const get = (name: string) => findItem(name)?.get<any>();
 
-  const set = (name: string, value: any) => findItem(name)?.set({ value, edit: false });
+  const set = (name: string, value: any, edit?: boolean) => findItem(name)?.set({ value, edit: edit ?? false, parse: true });
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.stopPropagation();

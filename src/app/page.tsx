@@ -11,6 +11,7 @@ import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { SelectBox } from "@/react/elements/form/items/select-box";
+import { Slider } from "@/react/elements/form/items/slider";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemWrap } from "@/react/elements/form/wrap";
@@ -20,9 +21,10 @@ import s from "./page.module.css";
 
 export default function Home() {
   const ref = useRef<HTMLButtonElement>(null);
-  const [bind, setBind] = useState({
+  const [bind, setBind] = useState<{ [v: string]: any }>({
     text: "123",
-    select: 309,
+    // select: 309,
+    select: 3,
   });
   const formItem = useFormItem();
 
@@ -71,6 +73,13 @@ export default function Home() {
         >
           <ButtonIcon>a</ButtonIcon>
         </Button>
+        <Button
+          onClick={() => {
+            setBind({});
+          }}
+        >
+          reset bind
+        </Button>
         <ToggleSwitch
           hook={formDisabled.hook}
         >
@@ -88,7 +97,7 @@ export default function Home() {
         </ToggleSwitch>
         <Button
           onClick={() => {
-            formItem.setValue("hogehoge");
+            formItem.setValue("hogehoge", true);
           }}
         >
           set hogehoge
@@ -97,10 +106,13 @@ export default function Home() {
       <Form
         bind={bind}
         disabled={formDisabled.value}
-        onSubmit={async ({ hasError, getFormData }) => {
-          console.log("--- submit ---", hasError);
+        onSubmit={async ({ hasError, getFormData, getBindData }) => {
+          console.log("--- submit --- error:", hasError);
+          console.log("--- form ---");
           const fd = getFormData();
           fd.forEach((v, k) => console.log(k, v));
+          console.log("--- bind ---");
+          console.log(getBindData());
           await sleep(3000);
         }}
       >
@@ -188,13 +200,16 @@ export default function Home() {
                 await sleep(3000);
                 const arr = [];
                 for (let i = 0; i < 100; i++) {
-                  arr.push({ value: i, label: `item-${i}`});
+                  arr.push({ value: i, label: `item-${i}` });
                 }
                 return arr;
               }}
               // reloadSourceWhenOpen
               disabled={disabled.value}
               readOnly={readOnly.value}
+              tieInNames={[
+                { dataName: "label", hiddenName: "select-label" }
+              ]}
             />
           </FormItemWrap>
           <select>
@@ -202,6 +217,15 @@ export default function Home() {
             <option value={2}>item 2</option>
             <option value={3}>item 3</option>
           </select>
+          <FormItemWrap>
+            <Slider
+              label="数値"
+              name="num-bar"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+            />
+          </FormItemWrap>
           {/* </div> */}
           <FormButton type="submit">
             submit

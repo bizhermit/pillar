@@ -30,8 +30,8 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
       };
     },
     parse: () => $strParse,
-    effect: ({ edit, value }) => {
-      if (!edit && iref.current) iref.current.value = parseFormattedValue(value) ?? "";
+    effect: ({ edit, value, effect }) => {
+      if (iref.current && (!edit || effect)) iref.current.value = parseFormattedValue(value) ?? "";
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $strValidations(dataItem);
@@ -53,7 +53,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
   const change = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (isEmpty(value)) {
-      fi.set({ value: value, edit: true });
+      fi.set({ value, edit: true });
       return;
     }
     const revert = () => {
@@ -74,7 +74,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
 
   const clear = () => {
     if (!fi.editable || empty) return;
-    fi.clear();
+    fi.clear(true);
     iref.current?.focus();
   };
 
@@ -100,7 +100,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           onChange={change}
           aria-invalid={fi.airaProps["aria-invalid"]}
         />
-        {!empty &&
+        {!empty && !fi.inputted &&
           <input
             name={fi.name}
             type="hidden"

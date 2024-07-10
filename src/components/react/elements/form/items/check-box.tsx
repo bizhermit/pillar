@@ -70,8 +70,8 @@ export const CheckBox = <True extends boolean | number | string, False extends b
       }
     },
     parse: () => $boolParse,
-    effect: ({ value, edit, dataItem }) => {
-      if (!edit && iref.current) iref.current.checked = equals(dataItem.trueValue, value);
+    effect: ({ value, edit, effect, dataItem }) => {
+      if (iref.current && (!edit || effect)) iref.current.checked = equals(dataItem.trueValue, value);
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $boolValidations(dataItem);
@@ -102,7 +102,7 @@ export const CheckBox = <True extends boolean | number | string, False extends b
           }}
           aria-invalid={fi.airaProps["aria-invalid"]}
         />
-        {fi.name && fi.value != null &&
+        {fi.name && fi.value != null && !fi.inputted &&
           <input
             name={fi.name}
             type="hidden"

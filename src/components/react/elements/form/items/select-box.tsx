@@ -285,7 +285,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
 
   const clear = () => {
     if (!fi.editable || loading || empty) return;
-    fi.set({ value: $emptyItem?.[vdn], edit: false });
+    fi.set({ value: $emptyItem?.[vdn], edit: true, effect: true, parse: true });
     iref.current?.focus();
     if (dialog.state === "closed") closeDialog();
   };
@@ -321,7 +321,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           onKeyDown={keydown}
           onChange={change}
         />
-        {!empty &&
+        {!empty && !fi.inputted &&
           <>
             <input
               type="hidden"
