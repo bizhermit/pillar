@@ -10,6 +10,7 @@ import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
+import { RadioButtons } from "@/react/elements/form/items/radio-buttons";
 import { SelectBox } from "@/react/elements/form/items/select-box";
 import { Slider } from "@/react/elements/form/items/slider";
 import { TextBox } from "@/react/elements/form/items/text-box";
@@ -24,7 +25,7 @@ export default function Home() {
   const [bind, setBind] = useState<{ [v: string]: any }>({
     text: "123",
     // select: 309,
-    select: 3,
+    // select: 3,
   });
   const formItem = useFormItem();
 
@@ -196,6 +197,7 @@ export default function Home() {
               label="セレクトボックス"
               name="select"
               required
+              initFocusValue={10}
               source={async () => {
                 await sleep(3000);
                 const arr = [];
@@ -224,6 +226,27 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <RadioButtons
+              label="ラジオボタン"
+              name="radio"
+              required
+              nullable="unselectable"
+              source={async () => {
+                // await sleep(3000);
+                const arr = [];
+                for (let i = 0; i < 3; i++) {
+                  arr.push({ value: i, label: `item-${i}` });
+                }
+                return arr;
+              }}
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+              tieInNames={[
+                { dataName: "label", hiddenName: "radio-label" }
+              ]}
             />
           </FormItemWrap>
           {/* </div> */}
