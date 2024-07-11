@@ -373,6 +373,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
                 loading={loading}
                 currentValue={fi.value?.[vdn]}
                 empty={empty}
+                initFocusValue={initFocusValue}
                 value={$emptyItem?.[vdn]}
                 onSelect={() => {
                   fi.set({ value: $emptyItem, edit: true });
@@ -391,6 +392,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
                 key={item[vdn]}
                 currentValue={fi.value?.[vdn]}
                 empty={empty}
+                initFocusValue={initFocusValue}
                 value={item[vdn]}
                 onSelect={() => {
                   if (loading) return;
@@ -417,21 +419,23 @@ type ListItemProps = {
   onEscape: () => void;
   value: any;
   currentValue: any;
+  initFocusValue: any;
   empty: boolean;
   loading: boolean;
   children: ReactNode;
-}
+};
 
 const ListItem = ({
   onSelect,
   onEscape,
   value,
   currentValue,
+  initFocusValue,
   empty,
   loading,
   children,
 }: ListItemProps) => {
-  const selected = !empty && equals(value, currentValue);
+  const selected = (!empty && equals(value, currentValue)) || (empty ? equals(initFocusValue, value) : false);
 
   const keydown = (e: KeyboardEvent<HTMLDivElement>) => {
     e.preventDefault();
