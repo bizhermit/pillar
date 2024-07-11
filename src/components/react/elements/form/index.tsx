@@ -144,7 +144,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   const getFormData = () => new FormData($ref.current!);
 
   const getBindData = (opts?: GetBindDataOptions) => {
-    if (!opts?.removeNotMounted) return clone($bind);
+    if (!opts?.removeNotMounted && !opts?.onlyUserInputted) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
       const { name, getInputted } = items.current[id];

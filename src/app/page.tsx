@@ -112,7 +112,7 @@ export default function Home() {
           const fd = getFormData();
           fd.forEach((v, k) => console.log(k, v));
           console.log("--- bind ---");
-          console.log(getBindData());
+          console.log(getBindData({ onlyUserInputted: true }));
           await sleep(3000);
         }}
       >
