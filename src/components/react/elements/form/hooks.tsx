@@ -2,6 +2,7 @@
 
 import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
+import { generateUuidV4 } from "../../../objects/string";
 import { getValue, setValue } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 
@@ -61,7 +62,7 @@ export const useFormItemCore = <
   }: FormItemOptions<D, V, any>,
     cp: FormItemCoreArgs<SD, D, V, IV>
   ) => {
-  const id = useRef(crypto.randomUUID());
+  const id = useRef((crypto.randomUUID ?? generateUuidV4)());
   const form = use(FormContext);
   const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
   const [inputted, setInputted, inputtedRef] = useRefState(false);
