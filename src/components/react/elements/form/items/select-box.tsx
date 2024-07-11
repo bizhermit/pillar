@@ -187,7 +187,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     preventScroll?: boolean;
     preventClearFilter?: boolean;
   }) => {
-    if (!fi.editable || loading || dialog.state !== "closed") return;
+    if (!fi.editable || fi.form.pending || loading || dialog.state !== "closed") return;
     iref.current.focus();
     if (!opts?.preventClearFilter) clearFilter();
     const anchorElem = iref.current?.parentElement;
@@ -284,7 +284,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   };
 
   const clear = () => {
-    if (!fi.editable || loading || empty) return;
+    if (!fi.editable || fi.form.pending || loading || empty) return;
     fi.set({ value: $emptyItem?.[vdn], edit: true, effect: true, parse: true });
     iref.current?.focus();
     if (dialog.state === "closed") closeDialog();

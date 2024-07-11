@@ -92,7 +92,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   };
 
   const focus = () => {
-    if (!fi.editable) return;
+    if (!fi.editable || fi.form.pending) return;
     renderNumberValue();
   };
 
@@ -119,13 +119,13 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   const keydown = (e: KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case "ArrowUp":
-        if (fi.editable) {
+        if (fi.editable || fi.form.pending) {
           increment();
           e.preventDefault();
         }
         break;
       case "ArrowDown":
-        if (fi.editable) {
+        if (fi.editable || fi.form.pending) {
           decrement();
           e.preventDefault();
         }
@@ -153,7 +153,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   };
 
   const clear = () => {
-    if (!fi.editable || empty) return;
+    if (!fi.editable || fi.form.pending || empty) return;
     fi.clear(true);
     iref.current?.focus();
   };

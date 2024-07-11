@@ -60,12 +60,12 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
   const empty = isEmpty(fi.value);
 
   const toggle = () => {
-    if (!fi.editable) return;
+    if (!fi.editable || fi.form.pending) return;
     setType(cur => cur === "text" ? "password" : "text");
   };
 
   const clear = () => {
-    if (!fi.editable || empty) return;
+    if (!fi.editable || fi.form.pending || empty) return;
     fi.clear(true);
     iref.current?.focus();
   };

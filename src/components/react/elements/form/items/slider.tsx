@@ -43,7 +43,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
   });
 
   const changeStart = (thumbElem: HTMLDivElement, clientX: number, isTouch?: boolean) => {
-    if (!fi.editable) return;
+    if (!fi.editable || fi.form.pending) return;
     clickThumbRef.current = true;
     const width = thumbElem.parentElement!.clientWidth;
     const cVal = fi.value ?? fi.dataItem.min!;
@@ -78,7 +78,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
   };
 
   const click = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!fi.editable || clickThumbRef.current || !bref.current) {
+    if (!fi.editable || fi.form.pending || clickThumbRef.current || !bref.current) {
       props.onClick?.(e);
       return;
     }
@@ -96,7 +96,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
   };
 
   const keydown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (!fi.editable) return;
+    if (!fi.editable || fi.form.pending) return;
     switch (e.key) {
       case "ArrowLeft":
         if (e.ctrlKey) fi.set({ value: fi.dataItem.min, edit: true });
@@ -142,7 +142,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
             style={{ left: rate }}
             onMouseDown={e => changeStart(e.currentTarget, e.clientX)}
             onTouchStart={e => changeStart(e.currentTarget, e.touches[0].clientX, true)}
-            data-editable={fi.editable}
+            data-editable={fi.editable && !fi.form.pending}
             data-value={fi.value == null ? undefined : String(fi.value)}
           />
         </div>

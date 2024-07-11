@@ -99,9 +99,11 @@
         }
       }
 
-      &:hover {
-        &::before {
-          background: var(--ipt-bg);
+      &:not([aria-disabled="true"]) {
+        &:hover {
+          &::before {
+            background: var(--ipt-bg);
+          }
         }
       }
     }

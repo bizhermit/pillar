@@ -97,7 +97,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
           tabIndex={fi.tabIndex}
           checked={equals(fi.dataItem.trueValue, fi.value)}
           onChange={e => {
-            if (fi.disabled || fi.readOnly || fi.form.pending) return;
+            if (!fi.editable || fi.form.pending || fi.form.pending) return;
             fi.set({ value: e.target.checked ? fi.dataItem.trueValue : fi.dataItem.falseValue, edit: true });
           }}
           aria-invalid={fi.airaProps["aria-invalid"]}
