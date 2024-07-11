@@ -181,7 +181,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           onKeyDown={keydown}
           onFocus={focus}
           onBlur={blur}
-          aria-invalid={fi.airaProps["aria-invalid"]}
+          data-invalid={fi.airaProps["data-invalid"]}
         />
         {fi.inputted &&
           <input
@@ -196,12 +196,12 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
             <div className="ipt-num-spins">
               <div
                 className="ipt-btn ipt-num-spin-inc"
-                aria-disabled={fi.form.pending}
+                data-disabled={fi.form.pending}
                 onMouseDown={() => mousedown("up")}
               />
               <div
                 className="ipt-btn ipt-num-spin-dec"
-                aria-disabled={fi.form.pending}
+                data-disabled={fi.form.pending}
                 onMouseDown={() => mousedown("down")}
               />
             </div>
@@ -210,7 +210,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
         {!fi.hideClearButton && fi.editable &&
           <div
             className="ipt-btn"
-            aria-disabled={fi.form.pending || empty}
+            data-disabled={fi.form.pending || empty}
             onClick={clear}
           >
             ×

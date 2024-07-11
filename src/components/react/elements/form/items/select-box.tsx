@@ -303,7 +303,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
       <div
         {...fi.props}
         {...fi.airaProps}
-        aria-readonly={fi.airaProps["aria-readonly"] || loading}
+        data-readonly={fi.airaProps["data-readonly"] || loading}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
       >
@@ -316,7 +316,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           readOnly={fi.readOnly || fi.form.pending || loading}
           tabIndex={fi.tabIndex}
           autoComplete="off"
-          aria-invalid={fi.airaProps["aria-invalid"]}
+          data-invalid={fi.airaProps["data-invalid"]}
           onFocus={focus}
           onKeyDown={keydown}
           onChange={change}
@@ -345,7 +345,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         {fi.editable &&
           <div
             className="ipt-btn ipt-pull"
-            aria-disabled={fi.form.pending || loading}
+            data-disabled={fi.form.pending || loading}
             onClick={clickPull}
             tabIndex={-1}
             data-showed={dialog.state !== "closed"}
@@ -354,7 +354,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         {!fi.hideClearButton && fi.editable &&
           <div
             className="ipt-btn"
-            aria-disabled={fi.form.pending || empty || loading}
+            data-disabled={fi.form.pending || empty || loading}
             onClick={clear}
             tabIndex={-1}
           >
@@ -395,7 +395,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
                 initFocusValue={initFocusValue}
                 value={item[vdn]}
                 onSelect={() => {
-                  if (loading) return;
+                  if (!fi.editable || fi.form.pending || loading) return;
                   fi.set({ value: item, edit: true });
                   closeDialog(true);
                 }}

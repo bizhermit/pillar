@@ -98,7 +98,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           autoComplete={autoComplete ?? "off"}
           inputMode="numeric"
           onChange={change}
-          aria-invalid={fi.airaProps["aria-invalid"]}
+          data-invalid={fi.airaProps["data-invalid"]}
         />
         {fi.inputted &&
           <input
@@ -111,7 +111,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
         {!fi.hideClearButton && fi.editable &&
           <div
             className="ipt-btn"
-            aria-disabled={fi.form.pending || empty}
+            data-disabled={fi.form.pending || empty}
             onClick={clear}
           >
             ×

@@ -78,13 +78,13 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           autoComplete={autoComplete ?? "off"}
           inputMode={inputMode ?? fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
-          aria-invalid={fi.airaProps["aria-invalid"]}
+          data-invalid={fi.airaProps["data-invalid"]}
         />
         {!fi.hideClearButton && fi.editable &&
           <div
             className="ipt-btn"
             tabIndex={-1}
-            aria-disabled={fi.form.pending || empty}
+            data-disabled={fi.form.pending || empty}
             onClick={clear}
           >
             ×

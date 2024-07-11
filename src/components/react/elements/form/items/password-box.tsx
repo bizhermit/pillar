@@ -91,12 +91,12 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           autoComplete={autoComplete ?? "off"}
           inputMode={fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
-          aria-invalid={fi.airaProps["aria-invalid"]}
+          data-invalid={fi.airaProps["data-invalid"]}
         />
         {!hideToggleButton && fi.editable &&
           <div
             className="ipt-btn"
-            aria-disabled={fi.form.pending}
+            data-disabled={fi.form.pending}
             onClick={toggle}
           >
             {type === "text" ? "●" : "○"}
@@ -105,7 +105,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
         {!fi.hideClearButton && fi.editable &&
           <div
             className="ipt-btn"
-            aria-disabled={fi.form.pending || empty}
+            data-disabled={fi.form.pending || empty}
             onClick={clear}
           >
             ×
