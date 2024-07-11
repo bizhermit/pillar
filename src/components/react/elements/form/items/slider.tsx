@@ -4,7 +4,7 @@ import { type HTMLAttributes, type KeyboardEvent, useRef } from "react";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
-type SliderOptions<D extends DataItem.$num | undefined> = FormItemOptions<D, D extends DataItem.$num ? DataItem.ValueType<D> : number> & {
+type SliderOptions<D extends DataItem.$num | undefined> = Omit<FormItemOptions<D, D extends DataItem.$num ? DataItem.ValueType<D> : number>, "hideClearButton"> & {
   min?: number;
   max?: number;
   requiredIsNotZero?: boolean;

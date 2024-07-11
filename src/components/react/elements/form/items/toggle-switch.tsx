@@ -9,7 +9,7 @@ type ToggleSwitchOptions<
   True extends boolean | number | string,
   False extends boolean | number | string,
   D extends DataItem.$boolAny<True, False> | undefined
-> = FormItemOptions<D, D extends DataItem.$boolAny ? DataItem.ValueType<D> : True | False> & {
+> = Omit<FormItemOptions<D, D extends DataItem.$boolAny ? DataItem.ValueType<D> : True | False>, "hideClearButton"> & {
   trueValue?: True;
   falseValue?: False;
   requiredIsTrue?: boolean;
