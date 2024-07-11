@@ -257,7 +257,6 @@ export const useFormItemCore = <
     set,
     reset,
     clear,
-    focus,
     props,
     airaProps: {
       "data-required": required,
