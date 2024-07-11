@@ -225,6 +225,7 @@
     display: grid;
     place-items: center;
     user-select: none;
+    border-radius: 2px;
     transition: opacity 0.1s;
 
     &:focus-within {
