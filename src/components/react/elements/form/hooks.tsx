@@ -38,6 +38,8 @@ type FormItemCoreArgs<
   focus: () => void;
 };
 
+const getId = crypto.randomUUID?.bind(crypto) ?? generateUuidV4;
+
 export const useFormItemCore = <
   SD extends DataItem.$object,
   D extends SD | undefined,
@@ -62,7 +64,7 @@ export const useFormItemCore = <
   }: FormItemOptions<D, V, any>,
     cp: FormItemCoreArgs<SD, D, V, IV>
   ) => {
-  const id = useRef((crypto.randomUUID ?? generateUuidV4)());
+  const id = useRef(getId());
   const form = use(FormContext);
   const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
   const [inputted, setInputted, inputtedRef] = useRefState(false);
