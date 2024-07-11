@@ -48,6 +48,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   ...props
 }: SelectBoxProps<D, S>) => {
   const iref = useRef<HTMLInputElement>(null!);
+  const focusInput = () => iref.current?.focus();
   const dialog = useDialog();
 
   const vdn = valueDataName ?? "value";
@@ -164,7 +165,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         setValue(data, hiddenName ?? dataName, v);
       });
     },
-    focus: () => iref.current?.focus(),
+    focus: focusInput,
   });
 
   const empty = fi.value == null || fi.value[vdn] == null || fi.value[vdn] === "";
@@ -190,7 +191,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     preventClearFilter?: boolean;
   }) => {
     if (!fi.editable || fi.form.pending || loading || dialog.state !== "closed") return;
-    iref.current.focus();
+    focusInput();
     if (!opts?.preventClearFilter) clearFilter();
     const anchorElem = iref.current?.parentElement;
     if (!anchorElem) return;
@@ -221,13 +222,13 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           preventFocus: opts?.preventFocus,
           preventScroll: opts?.preventScroll,
         });
-        if (opts?.preventFocus) iref.current.focus();
+        if (opts?.preventFocus) focusInput();
       },
     });
   };
 
   const closeDialog = (focus?: boolean) => {
-    if (focus) iref.current?.focus();
+    if (focus) focusInput();
     dialog.close({
       callback: clearFilter,
     });
@@ -288,7 +289,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   const clear = () => {
     if (!fi.editable || fi.form.pending || loading || empty) return;
     fi.set({ value: $emptyItem?.[vdn], edit: true, effect: true, parse: true });
-    fi.focus();
+    focusInput();
     if (dialog.state === "closed") closeDialog();
   };
 

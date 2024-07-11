@@ -19,6 +19,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
   ...props
 }: CreditCardNumberBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
+  const focusInput = () => iref.current?.focus();
 
   const fi = useFormItemCore<DataItem.$str, D, string, string>(props, {
     dataItemDeps: [length, minLength, maxLength, charType],
@@ -39,7 +40,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
       const funcs = $strValidations(dataItem);
       return (_, p) => iterator(funcs, p);
     },
-    focus: () => iref.current?.focus(),
+    focus: focusInput,
   });
 
   const empty = isEmpty(fi.value);
@@ -77,7 +78,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
   const clear = () => {
     if (!fi.editable || fi.form.pending || empty) return;
     fi.clear(true);
-    fi.focus();
+    focusInput();
   };
 
   return (

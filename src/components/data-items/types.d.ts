@@ -20,8 +20,8 @@ declare namespace DataItem {
         T extends "str" ? string :
         T extends "num" ? number :
         T extends "bool" ? boolean :
-        T extends "date" ? Date :
-        T extends "month" ? Date :
+        T extends "date" ? string :
+        T extends "month" ? string :
         T extends "time" ? number :
         T extends "file" ? File :
         T extends "array" ? Array<D["item"] extends Array<$object> ? Props<D["item"]> : ValueType<D["item"]>> :

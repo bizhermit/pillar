@@ -32,6 +32,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   ...props
 }: NumberBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
+  const focusInput = () => iref.current?.focus();
 
   const fi = useFormItemCore<DataItem.$num, D, number, number>(props, {
     dataItemDeps: [min, max, maxLength, float, requiredIsNotZero],
@@ -53,7 +54,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
       const funcs = $numValidations(dataItem);
       return (_, p) => iterator(funcs, p);
     },
-    focus: () => iref.current?.focus(),
+    focus: focusInput,
   });
 
   const empty = fi.value == null || Number.isNaN(fi.value);
@@ -157,7 +158,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   const clear = () => {
     if (!fi.editable || fi.form.pending || empty) return;
     fi.clear(true);
-    fi.focus();
+    focusInput();
   };
 
   return (

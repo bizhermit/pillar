@@ -8,6 +8,7 @@ import { FormButton } from "@/react/elements/form/form-button";
 import { useFormItem } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
+import { DateBox } from "@/react/elements/form/items/date-box";
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { RadioButtons } from "@/react/elements/form/items/radio-buttons";
@@ -247,6 +248,15 @@ export default function Home() {
               tieInNames={[
                 { dataName: "label", hiddenName: "radio-label" }
               ]}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <DateBox
+              label="日付"
+              name="date"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
             />
           </FormItemWrap>
           {/* </div> */}

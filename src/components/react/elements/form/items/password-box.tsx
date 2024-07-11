@@ -25,6 +25,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
   ...props
 }: PasswordBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
+  const focusInput = () => iref.current?.focus();
 
   const fi = useFormItemCore<DataItem.$str, D, string, string>(props, {
     dataItemDeps: [length, minLength, maxLength, charType, minimumValidation],
@@ -69,7 +70,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
   const clear = () => {
     if (!fi.editable || fi.form.pending || empty) return;
     fi.clear(true);
-    fi.focus();
+    focusInput();
   };
 
   return (
