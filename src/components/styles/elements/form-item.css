@@ -219,6 +219,33 @@
     }
   }
 
+  .ipt-sep {
+    display: grid;
+    place-items: center;
+  }
+
+  .ipt-date-y,
+  .ipt-date-m,
+  .ipt-date-d {
+    padding: 0;
+    text-align: center;
+    flex: none !important;
+  }
+
+  .ipt-date-y {
+    width: 4.2rem;
+    margin-left: 0.6rem;
+  }
+
+  .ipt-date-m,
+  .ipt-date-d {
+    width: 2.2rem;
+    
+    &:last-child {
+      margin-right: 0.6rem;
+    }
+  }
+
   .ipt-slider {
     position: relative;
     width: calc(var(--ipt-size) * 4);

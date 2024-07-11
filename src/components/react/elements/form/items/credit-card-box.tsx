@@ -77,7 +77,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
   const clear = () => {
     if (!fi.editable || fi.form.pending || empty) return;
     fi.clear(true);
-    iref.current?.focus();
+    fi.focus();
   };
 
   return (

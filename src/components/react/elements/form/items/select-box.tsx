@@ -288,7 +288,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   const clear = () => {
     if (!fi.editable || fi.form.pending || loading || empty) return;
     fi.set({ value: $emptyItem?.[vdn], edit: true, effect: true, parse: true });
-    iref.current?.focus();
+    fi.focus();
     if (dialog.state === "closed") closeDialog();
   };
 
