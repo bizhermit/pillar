@@ -245,7 +245,7 @@
 
     &:is(:hover, :focus-within) .ipt-slider-thumb {
       &[data-value]::before {
-        opacity: 1;
+        opacity: 0.9;
       }
     }
   }
