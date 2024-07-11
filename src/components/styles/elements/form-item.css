@@ -523,6 +523,9 @@
     }
   }
 
+  .ipt-dialog-date {
+    overflow: hidden;
+  }
 }
 
 @layer feat {

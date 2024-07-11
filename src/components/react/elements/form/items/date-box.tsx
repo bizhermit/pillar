@@ -31,7 +31,21 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   const yref = useRef<HTMLInputElement>(null!);
   const mref = useRef<HTMLInputElement>(null!);
   const dref = useRef<HTMLInputElement>(null!);
+  const focusInput = () => (dref.current ?? mref.current)?.focus();
   const dialog = useDialog();
+
+  const renderInputs = (v: DataValue | null | undefined) => {
+    const d = v?.date;
+    if (d == null) {
+      yref.current.value = "";
+      mref.current.value = "";
+      dref.current.value = "";
+      return;
+    }
+    yref.current.value = String(d.getFullYear());
+    mref.current.value = String(d.getMonth() + 1);
+    dref.current.value = String(d.getDate());
+  };
 
   const fi = useFormItemCore<DataItem.$date | DataItem.$month, D, string, DataValue>(props, {
     dataItemDeps: [min, max, pair?.name, pair?.position, pair?.same],
@@ -53,34 +67,23 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     },
     revert: (v) => v?.str,
     effect: ({ edit, value, effect }) => {
-      if (yref.current && (!edit || effect)) {
-        const d = value?.date;
-        if (d == null) {
-          yref.current.value = "";
-          mref.current.value = "";
-          dref.current.value = "";
-          return;
-        }
-        yref.current.value = String(d.getFullYear());
-        mref.current.value = String(d.getMonth() + 1);
-        dref.current.value = String(d.getDate());
-      }
+      if (yref.current && (!edit || effect)) renderInputs(value);
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $dateValidations(dataItem);
       return (_, p) => iterator(funcs, p);
     },
-    focus: () => (dref.current ?? mref.current)?.focus(),
+    focus: focusInput,
   });
 
-  const empty = fi.value == null;
+  const empty = fi.value?.str == null;
 
   const showDialog = (opts?: {
     preventFocus?: boolean;
     preventScroll?: boolean;
   }) => {
     if (!fi.editable || fi.form.pending || dialog.state !== "closed") return;
-    fi.focus();
+    if (!opts?.preventFocus) focusInput();
     const anchorElem = yref.current?.parentElement;
     if (!anchorElem) return;
     dialog.open({
@@ -92,13 +95,13 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         width: "fill",
       },
       callback: () => {
-        if (opts?.preventFocus) fi.focus();
+        if (opts?.preventFocus) focusInput();
       },
     });
   };
 
   const closeDialog = (focus?: boolean) => {
-    if (focus) fi.focus();
+    if (focus) focusInput();
     dialog.close();
   };
 
@@ -116,8 +119,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       elem = elem.parentElement;
     }
     closeDialog();
-    // iref.current.value = fi.value?.[ldn] || "";
-    // TODO render
+    renderInputs(fi.value);
     props.onBlur?.(e);
   };
 
@@ -128,7 +130,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   const clear = () => {
     if (!fi.editable || fi.form.pending || empty) return;
     fi.set({ value: undefined, edit: true, effect: true, parse: true });
-    fi.focus();
+    focusInput();
   };
 
   return (
@@ -137,24 +139,40 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         {...fi.props}
         {...fi.airaProps}
         className={joinClassNames("ipt-field", props.className)}
+        onBlur={blur}
       >
         <input
           ref={yref}
           type="text"
           className="ipt-txt ipt-date-y"
+          onFocus={focus}
         />
         <span className="ipt-sep">/</span>
         <input
           ref={mref}
           type="text"
           className="ipt-txt ipt-date-m"
+          onFocus={focus}
         />
-        <span className="ipt-sep">/</span>
-        <input
-          ref={dref}
-          type="text"
-          className="ipt-txt ipt-date-d"
-        />
+        {fi.dataItem.type !== "month" &&
+          <>
+            <span className="ipt-sep">/</span>
+            <input
+              ref={dref}
+              type="text"
+              className="ipt-txt ipt-date-d"
+              onFocus={focus}
+            />
+          </>
+        }
+        {fi.inputted &&
+          <input
+            type="hidden"
+            name={fi.name}
+            value={empty ? undefined : fi.value.str!}
+            disabled={fi.disabled}
+          />
+        }
         {fi.editable &&
           <div
             className="ipt-btn ipt-pull"
@@ -179,7 +197,13 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           mobile
           className="ipt-dialog"
         >
-          DatePickerめんどい
+          <div
+            className="ipt-dialog-date"
+            autoFocus
+            tabIndex={-1}
+          >
+            DatePickerめんどい
+          </div>
         </Dialog>
       </div>
       {fi.messageComponent}
