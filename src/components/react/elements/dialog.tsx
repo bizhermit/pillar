@@ -1,5 +1,7 @@
-import { throttle } from "@/utilities/throttle";
+"use client";
+
 import { type CSSProperties, type HTMLAttributes, useEffect, useRef, useState } from "react";
+import { throttle } from "../../utilities/throttle";
 import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./utilities";
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEvent, useRef } from "react";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";

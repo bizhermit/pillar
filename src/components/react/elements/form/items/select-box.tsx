@@ -1,3 +1,5 @@
+"use client";
+
 import { type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { $boolParse } from "../../../../data-items/bool/parse";
 import { $boolValidations } from "../../../../data-items/bool/validation";

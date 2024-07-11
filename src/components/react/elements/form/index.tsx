@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useEffect, useMemo, useReducer, useRef, type Dispatch, type FormEvent, type FormHTMLAttributes, type MutableRefObject } from "react";
 import { clone } from "../../../objects";
 import { getValue, setValue } from "../../../objects/struct";

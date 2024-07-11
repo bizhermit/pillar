@@ -1,3 +1,5 @@
+"use client";
+
 import { type HTMLAttributes, type KeyboardEvent, useRef } from "react";
 import { $numParse } from "../../../../data-items/number/parse";
 import { $numValidations } from "../../../../data-items/number/validation";
