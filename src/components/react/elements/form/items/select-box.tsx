@@ -234,7 +234,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     });
   };
 
-  const focus = () => {
+  const clickInput = () => {
     showDialog({ preventFocus: true });
   };
 
@@ -320,7 +320,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           tabIndex={fi.tabIndex}
           autoComplete="off"
           data-invalid={fi.airaProps["data-invalid"]}
-          onFocus={focus}
+          onClick={clickInput}
           onKeyDown={keydown}
           onChange={change}
         />
