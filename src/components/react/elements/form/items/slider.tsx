@@ -148,6 +148,14 @@ export const Slider = <D extends DataItem.$num | undefined>({
             data-value={fi.value == null ? undefined : String(fi.value)}
           />
         </div>
+        {fi.inputted &&
+          <input
+            type="hidden"
+            name={fi.name}
+            value={empty ? "" : fi.value}
+            disabled={fi.disabled}
+          />
+        }
       </div>
       {fi.messageComponent}
     </>
