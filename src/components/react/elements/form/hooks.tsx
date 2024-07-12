@@ -193,7 +193,7 @@ export const useFormItemCore = <
 
   hookRef.current = hook ? hook({
     get,
-    set: (value, edit) => set({ value, edit, parse: true }),
+    set: (p) => set({ ...p, parse: true }),
     clear,
     reset,
     focus: cp.focus,
@@ -219,12 +219,12 @@ export const useFormItemCore = <
     if (dataItem.name && form.state !== "nothing") {
       const [v, has] = getValue(form.bind, dataItem.name);
       if (has) {
-        set({ value: v, edit: false, parse: true });
+        set({ value: v, edit: false, parse: true, effect: true });
         return;
       }
     }
-    set({ value: defaultValue, edit: false, parse: true });
-  }, [form.bind]);
+    set({ value: defaultValue, edit: false, parse: true, effect: true });
+  }, [form.bind, dataItem]);
 
   useEffect(() => {
     if (cp.revert) {
@@ -286,7 +286,7 @@ export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
   const [value, setVal] = useState<T | DataItem.NullValue>(undefined);
   const [message, setMsg] = useState<DataItem.ValidationResult | null | undefined>(undefined);
   const con = useRef<FormItemHookConnectionParams<T> | null>(null);
-  const set = useCallback((v: T | DataItem.NullValue, edit: boolean) => con.current?.set(v, edit), []);
+  const set = useCallback((v: T | DataItem.NullValue, edit: boolean) => con.current?.set({ value: v, edit, effect: true }), []);
 
   return {
     value,

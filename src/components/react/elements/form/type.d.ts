@@ -3,7 +3,7 @@ type FormItemValue<V extends any = any, D extends DataItem.$objec | undefined> =
 
 type FormItemHookConnectionParams<IV extends any> = {
   get: () => (IV | DataItem.NullValue);
-  set: (value: IV | DataItem.NullValue, edit?: boolean) => void;
+  set: (params: { value: IV | DataItem.NullValue; edit?: boolean; effect?: boolean; }) => void;
   reset: (edit?: boolean) => void;
   clear: (edit?: boolean) => void;
   focus: () => void;
