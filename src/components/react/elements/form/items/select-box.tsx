@@ -224,7 +224,6 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           preventFocus: opts?.preventFocus,
           preventScroll: opts?.preventScroll,
         });
-        if (opts?.preventFocus) focusInput();
       },
     });
   };
