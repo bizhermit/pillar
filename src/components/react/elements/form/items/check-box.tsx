@@ -109,7 +109,7 @@ export const CheckBox = <True extends boolean | number | string, False extends b
           <input
             name={fi.name}
             type="hidden"
-            value={fi.value == null ? undefined : String(fi.value)}
+            value={String(fi.value ?? "")}
             disabled={fi.disabled}
           />
         }

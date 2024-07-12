@@ -109,7 +109,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
           <input
             name={fi.name}
             type="hidden"
-            value={fi.value == null ? undefined : String(fi.value)}
+            value={String(fi.value ?? "")}
             disabled={fi.disabled}
           />
         }

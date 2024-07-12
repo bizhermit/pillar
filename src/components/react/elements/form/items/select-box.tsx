@@ -330,7 +330,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             <input
               type="hidden"
               name={fi.name}
-              value={empty ? undefined : fi.value[vdn]}
+              value={empty ? "" : fi.value[vdn]}
               disabled={fi.disabled}
             />
             {tieInNames?.map(({ dataName, hiddenName }) => {

@@ -181,7 +181,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
           <input
             name={fi.name}
             type="hidden"
-            value={fi.value == null ? undefined : String(fi.value)}
+            value={String(fi.value?.[vdn] ?? "")}
             disabled={fi.disabled}
           />
         }

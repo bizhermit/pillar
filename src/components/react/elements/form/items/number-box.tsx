@@ -191,7 +191,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           <input
             type="hidden"
             name={fi.name}
-            value={empty ? undefined : fi.value}
+            value={empty ? "" : fi.value}
             disabled={fi.disabled}
           />
         }

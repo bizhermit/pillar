@@ -107,7 +107,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           <input
             name={fi.name}
             type="hidden"
-            value={empty ? undefined : fi.value}
+            value={empty ? "" : fi.value}
             disabled={fi.disabled}
           />
         }
