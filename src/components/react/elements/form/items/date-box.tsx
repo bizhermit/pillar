@@ -60,7 +60,6 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   };
 
   const renderInputs = (v: DataValue | null | undefined) => {
-    console.log("render input");
     const d = v?.date;
     if (d == null) {
       yref.current.value = "";
@@ -100,7 +99,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $dateValidations(dataItem);
-      return (_, p) => iterator(funcs, p);
+      return (v, p) => iterator(funcs, { ...p, value: v?.date });
     },
     setBind: ({ data, name, value }) => {
       setValue(data, name, value?.str);
@@ -147,7 +146,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         y: "outer",
         width: "fill",
       },
-      callback: () => {
+      callbackBeforeAnimation: () => {
         if (opts?.focusTarget) {
           focusInput(opts.focusTarget);
         }
@@ -334,7 +333,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   const clear = () => {
     if (!fi.editable || empty) return;
     fi.set({ value: undefined, edit: true, effect: true, parse: true });
-    // focusInput();
+    focusInput();
   };
 
   return (
@@ -416,7 +415,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           <input
             type="hidden"
             name={fi.name}
-            value={empty ? undefined : fi.value?.str!}
+            value={empty ? "" : fi.value?.str!}
             disabled={fi.disabled}
           />
         }
