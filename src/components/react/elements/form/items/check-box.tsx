@@ -96,11 +96,11 @@ export const CheckBox = <True extends boolean | number | string, False extends b
           className="ipt-chk"
           type="checkbox"
           disabled={fi.disabled}
-          readOnly={fi.readOnly || fi.form.pending}
+          readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
           checked={equals(fi.dataItem.trueValue, fi.value)}
           onChange={e => {
-            if (!fi.editable || fi.form.pending) return;
+            if (!fi.editable) return;
             fi.set({ value: e.target.checked ? fi.dataItem.trueValue : fi.dataItem.falseValue, edit: true });
           }}
           data-invalid={fi.airaProps["data-invalid"]}

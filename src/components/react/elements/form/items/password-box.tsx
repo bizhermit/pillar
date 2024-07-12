@@ -63,12 +63,12 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
   const empty = isEmpty(fi.value);
 
   const toggle = () => {
-    if (!fi.editable || fi.form.pending) return;
+    if (!fi.editable) return;
     setType(cur => cur === "text" ? "password" : "text");
   };
 
   const clear = () => {
-    if (!fi.editable || fi.form.pending || empty) return;
+    if (!fi.editable || empty) return;
     fi.clear(true);
     focusInput();
   };
@@ -87,7 +87,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           name={fi.inputted ? fi.name : undefined}
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
-          readOnly={fi.readOnly || fi.form.pending}
+          readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
           defaultValue={fi.value ?? ""}
           maxLength={minimumValidation ? undefined : (fi.dataItem.length ?? fi.dataItem.maxLength)}
@@ -96,19 +96,19 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           onChange={e => fi.set({ value: e.target.value, edit: true })}
           data-invalid={fi.airaProps["data-invalid"]}
         />
-        {!hideToggleButton && fi.editable &&
+        {!hideToggleButton && fi.showButtons &&
           <div
             className="ipt-btn"
-            data-disabled={fi.form.pending}
+            data-disabled={!fi.editable}
             onClick={toggle}
           >
             {type === "text" ? "●" : "○"}
           </div>
         }
-        {!fi.hideClearButton && fi.editable &&
+        {!fi.hideClearButton && fi.showButtons &&
           <div
             className="ipt-btn"
-            data-disabled={fi.form.pending || empty}
+            data-disabled={!fi.editable || empty}
             onClick={clear}
           >
             ×

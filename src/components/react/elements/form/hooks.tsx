@@ -68,6 +68,8 @@ export const useFormItemCore = <
   const form = use(FormContext);
   const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
   const [inputted, setInputted, inputtedRef] = useRefState(false);
+  const $disabled = disabled || form.disabled;
+  const $readOnly = readOnly || form.pending;
 
   const dataItem = useMemo(() => {
     const $name = name || $dataItem?.name;
@@ -232,7 +234,7 @@ export const useFormItemCore = <
     set({ value: valRef.current, edit: false, parse: true });
   }, [validation, parseVal]);
 
-  const editable = !readOnly && !(disabled || form.disabled);
+  const editable = !$readOnly && !$disabled && !form.pending;
 
   return {
     name: dataItem.name,
@@ -240,12 +242,13 @@ export const useFormItemCore = <
     placeholder,
     tabIndex,
     inputted,
-    disabled: disabled || form.disabled,
-    readOnly,
+    disabled: $disabled,
+    readOnly: $readOnly,
     editable,
     required: dataItem.required,
     hideClearButton,
     hideMessage,
+    showButtons: !$disabled,
     // defaultValue,
     dataItem,
     value: val,
@@ -268,7 +271,7 @@ export const useFormItemCore = <
       "data-inputted": inputted,
     },
     message: msg,
-    messageComponent: (!hideMessage && msg && editable &&
+    messageComponent: (!hideMessage && msg && !$disabled &&
       <span
         className="ipt-msg"
         data-state={msg.type}

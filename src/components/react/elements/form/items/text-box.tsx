@@ -55,7 +55,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
   const empty = isEmpty(fi.value);
 
   const clear = () => {
-    if (!fi.editable || fi.form.pending || empty) return;
+    if (!fi.editable || empty) return;
     fi.clear(true);
     focusInput();
   };
@@ -74,7 +74,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           name={fi.inputted ? fi.name : undefined}
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
-          readOnly={fi.readOnly || fi.form.pending}
+          readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
           defaultValue={fi.value ?? ""}
           maxLength={fi.dataItem.length ?? fi.dataItem.maxLength}
@@ -83,11 +83,11 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           onChange={e => fi.set({ value: e.target.value, edit: true })}
           data-invalid={fi.airaProps["data-invalid"]}
         />
-        {!fi.hideClearButton && fi.editable &&
+        {!fi.hideClearButton && fi.showButtons &&
           <div
             className="ipt-btn"
             tabIndex={-1}
-            data-disabled={fi.form.pending || empty}
+            data-disabled={!fi.editable || empty}
             onClick={clear}
           >
             ×

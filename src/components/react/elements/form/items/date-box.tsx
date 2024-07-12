@@ -1,7 +1,7 @@
 import { $dateParse } from "@/data-items/date/parse";
 import { $dateValidations } from "@/data-items/date/validation";
 import { formatDate } from "@/objects/date";
-import { FocusEvent, HTMLAttributes, useRef } from "react";
+import { ChangeEvent, FocusEvent, HTMLAttributes, useRef } from "react";
 import { Dialog, useDialog } from "../../dialog";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -82,7 +82,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     preventFocus?: boolean;
     preventScroll?: boolean;
   }) => {
-    if (!fi.editable || fi.form.pending || dialog.state !== "closed") return;
+    if (!fi.editable || dialog.state !== "closed") return;
     if (!opts?.preventFocus) focusInput();
     const anchorElem = yref.current?.parentElement;
     if (!anchorElem) return;
@@ -123,12 +123,24 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     props.onBlur?.(e);
   };
 
+  const changeY = (e: ChangeEvent<HTMLInputElement>) => {
+
+  };
+
+  const changeM = (e: ChangeEvent<HTMLInputElement>) => {
+
+  };
+
+  const changeD = (e: ChangeEvent<HTMLInputElement>) => {
+
+  };
+
   const clickPull = () => {
     showDialog();
   };
 
   const clear = () => {
-    if (!fi.editable || fi.form.pending || empty) return;
+    if (!fi.editable || empty) return;
     fi.set({ value: undefined, edit: true, effect: true, parse: true });
     focusInput();
   };
@@ -146,6 +158,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           type="text"
           className="ipt-txt ipt-date-y"
           onFocus={focus}
+          onChange={changeY}
         />
         <span className="ipt-sep">/</span>
         <input
@@ -153,6 +166,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           type="text"
           className="ipt-txt ipt-date-m"
           onFocus={focus}
+          onChange={changeM}
         />
         {fi.dataItem.type !== "month" &&
           <>
@@ -162,6 +176,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
               type="text"
               className="ipt-txt ipt-date-d"
               onFocus={focus}
+              onChange={changeD}
             />
           </>
         }
@@ -173,19 +188,19 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
             disabled={fi.disabled}
           />
         }
-        {fi.editable &&
+        {fi.showButtons &&
           <div
             className="ipt-btn ipt-pull"
-            data-disabled={fi.form.pending}
+            data-disabled={!fi.editable || dialog.state !== "closed"}
             onClick={clickPull}
             tabIndex={-1}
             data-showed={dialog.state !== "closed"}
           />
         }
-        {!fi.hideClearButton && fi.editable &&
+        {!fi.hideClearButton && fi.showButtons &&
           <div
             className="ipt-btn"
-            data-disabled={fi.form.pending || empty}
+            data-disabled={!fi.editable || empty}
             onClick={clear}
             tabIndex={-1}
           >

@@ -190,7 +190,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     preventScroll?: boolean;
     preventClearFilter?: boolean;
   }) => {
-    if (!fi.editable || fi.form.pending || loading || dialog.state !== "closed") return;
+    if (!fi.editable || loading || dialog.state !== "closed") return;
     focusInput();
     if (!opts?.preventClearFilter) clearFilter();
     const anchorElem = iref.current?.parentElement;
@@ -287,7 +287,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   };
 
   const clear = () => {
-    if (!fi.editable || fi.form.pending || loading || empty) return;
+    if (!fi.editable || loading || empty) return;
     fi.set({ value: $emptyItem?.[vdn], edit: true, effect: true, parse: true });
     focusInput();
     if (dialog.state === "closed") closeDialog();
@@ -316,7 +316,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           type="text"
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
-          readOnly={fi.readOnly || fi.form.pending || loading}
+          readOnly={fi.readOnly || loading}
           tabIndex={fi.tabIndex}
           autoComplete="off"
           data-invalid={fi.airaProps["data-invalid"]}
@@ -345,19 +345,19 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             })}
           </>
         }
-        {fi.editable &&
+        {fi.showButtons &&
           <div
             className="ipt-btn ipt-pull"
-            data-disabled={fi.form.pending || loading}
+            data-disabled={!fi.editable || loading}
             onClick={clickPull}
             tabIndex={-1}
             data-showed={dialog.state !== "closed"}
           />
         }
-        {!fi.hideClearButton && fi.editable &&
+        {!fi.hideClearButton && fi.showButtons &&
           <div
             className="ipt-btn"
-            data-disabled={fi.form.pending || empty || loading}
+            data-disabled={!fi.editable || empty || loading}
             onClick={clear}
             tabIndex={-1}
           >
@@ -398,7 +398,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
                 initFocusValue={initFocusValue}
                 value={item[vdn]}
                 onSelect={() => {
-                  if (!fi.editable || fi.form.pending || loading) return;
+                  if (!fi.editable || loading) return;
                   fi.set({ value: item, edit: true });
                   closeDialog(true);
                 }}

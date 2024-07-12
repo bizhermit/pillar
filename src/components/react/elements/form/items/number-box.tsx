@@ -95,7 +95,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   };
 
   const focus = () => {
-    if (!fi.editable || fi.form.pending) return;
+    if (!fi.editable) return;
     renderNumberValue();
   };
 
@@ -122,13 +122,13 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   const keydown = (e: KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case "ArrowUp":
-        if (fi.editable || fi.form.pending) {
+        if (fi.editable) {
           increment();
           e.preventDefault();
         }
         break;
       case "ArrowDown":
-        if (fi.editable || fi.form.pending) {
+        if (fi.editable) {
           decrement();
           e.preventDefault();
         }
@@ -138,6 +138,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   };
 
   const mousedown = (mode: "up" | "down") => {
+    if (!fi.editable) return;
     if (mode === "up") increment();
     else decrement();
     let roop = true;
@@ -156,7 +157,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   };
 
   const clear = () => {
-    if (!fi.editable || fi.form.pending || empty) return;
+    if (!fi.editable || empty) return;
     fi.clear(true);
     focusInput();
   };
@@ -174,7 +175,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           type="text"
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
-          readOnly={fi.readOnly || fi.form.pending}
+          readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
           defaultValue={parseFormattedValue(fi.value)}
           maxLength={fi.dataItem.maxLength}
@@ -194,26 +195,26 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
             disabled={fi.disabled}
           />
         }
-        {!hideSpinButtons && fi.editable &&
+        {!hideSpinButtons && fi.showButtons &&
           <>
             <div className="ipt-num-spins">
               <div
                 className="ipt-btn ipt-num-spin-inc"
-                data-disabled={fi.form.pending}
+                data-disabled={!fi.editable}
                 onMouseDown={() => mousedown("up")}
               />
               <div
                 className="ipt-btn ipt-num-spin-dec"
-                data-disabled={fi.form.pending}
+                data-disabled={!fi.editable}
                 onMouseDown={() => mousedown("down")}
               />
             </div>
           </>
         }
-        {!fi.hideClearButton && fi.editable &&
+        {!fi.hideClearButton && fi.showButtons &&
           <div
             className="ipt-btn"
-            data-disabled={fi.form.pending || empty}
+            data-disabled={!fi.editable || empty}
             onClick={clear}
           >
             ×

@@ -147,7 +147,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
           const v = item[vdn];
           const s = item[sdn];
           const disabled = fi.disabled || s === "disabled";
-          const readonly = fi.readOnly || fi.form.pending || loading || s === "readonly";
+          const readonly = fi.readOnly || loading || s === "readonly";
           return (
             <label
               className="ipt-lbl"

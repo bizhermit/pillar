@@ -76,7 +76,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
   };
 
   const clear = () => {
-    if (!fi.editable || fi.form.pending || empty) return;
+    if (!fi.editable || empty) return;
     fi.clear(true);
     focusInput();
   };
@@ -94,7 +94,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           type="text"
           placeholder={fi.editable ? fi.placeholder : ""}
           disabled={fi.disabled}
-          readOnly={fi.readOnly || fi.form.pending}
+          readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
           defaultValue={fi.value ?? ""}
           maxLength={19}
@@ -111,10 +111,10 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
             disabled={fi.disabled}
           />
         }
-        {!fi.hideClearButton && fi.editable &&
+        {!fi.hideClearButton && fi.showButtons &&
           <div
             className="ipt-btn"
-            data-disabled={fi.form.pending || empty}
+            data-disabled={!fi.editable || empty}
             onClick={clear}
           >
             ×
