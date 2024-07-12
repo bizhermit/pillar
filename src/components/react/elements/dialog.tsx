@@ -19,10 +19,12 @@ type DialogShowOptions = {
     width?: "fill";
     height?: "fill";
   };
+  callbackBeforeAnimation?: () => void;
   callback?: () => void;
 };
 
 type DialogCloseOptions = {
+  callbackBeforeAnimation?: () => void;
   callback?: () => void;
 };
 
@@ -82,6 +84,7 @@ export const Dialog = ({
       setState("closed");
       hookRef.current?.("closed");
       dref.current.close();
+      opts?.callbackBeforeAnimation?.();
       return;
     }
     setMount(true);
@@ -267,6 +270,7 @@ export const Dialog = ({
     if (state === "closed") return;
     if (state === "modal") dref.current.showModal();
     else dref.current.show();
+    showOpts?.callbackBeforeAnimation?.();
     dref.current.scrollTop = 0;
     dref.current.scrollLeft = 0;
     resetPosition();

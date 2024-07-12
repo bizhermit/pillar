@@ -137,7 +137,6 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     },
     effect: ({ value }) => {
       iref.current.value = value?.[ldn] || "";
-      clearFilter();
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = (() => {
@@ -216,6 +215,9 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         x: "inner",
         y: "outer",
         width: "fill",
+      },
+      callbackBeforeAnimation: () => {
+        if (opts?.preventFocus) focusInput();
       },
       callback: () => {
         focusSelected({
