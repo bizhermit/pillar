@@ -108,6 +108,7 @@ export default function Home() {
       <Form
         bind={bind}
         disabled={formDisabled.value}
+        // preventEnterSubmit
         onSubmit={async ({ hasError, getFormData, getBindData }) => {
           console.log("--- submit --- error:", hasError);
           console.log("--- form ---");
