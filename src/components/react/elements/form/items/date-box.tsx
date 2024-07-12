@@ -159,8 +159,8 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     dialog.close();
   };
 
-  const focus = (target?: "y" | "m" | "d") => {
-    // showDialog({ focusTarget: target });
+  const click = (target?: "y" | "m" | "d") => {
+    showDialog({ focusTarget: target });
   };
 
   const blur = (e: FocusEvent<HTMLDivElement>) => {
@@ -351,11 +351,16 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           autoComplete="off"
           inputMode="numeric"
           defaultValue={fi.value?.date?.getFullYear()}
-          onFocus={() => focus("y")}
+          onClick={() => click("y")}
           onChange={changeY}
           onKeyDown={keydownY}
         />
-        <span className="ipt-sep">/</span>
+        <span
+          className="ipt-sep"
+          onClick={() => click("m")}
+        >
+          /
+        </span>
         <input
           ref={mref}
           type="text"
@@ -371,14 +376,19 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
             if (m == null) return undefined;
             return m + 1;
           })()}
-          onFocus={() => focus("d")}
+          onClick={() => click("d")}
           onChange={changeM}
           onKeyDown={keydownM}
           data-invalid={fi.airaProps["data-invalid"]}
         />
         {fi.dataItem.type !== "month" &&
           <>
-            <span className="ipt-sep">/</span>
+            <span
+              className="ipt-sep"
+              onClick={() => click("d")}
+            >
+              /
+            </span>
             <input
               ref={dref}
               type="text"
@@ -390,7 +400,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
               autoComplete="off"
               inputMode="numeric"
               defaultValue={fi.value?.date?.getDate()}
-              onFocus={() => focus("d")}
+              onClick={() => click("d")}
               onChange={changeD}
               onKeyDown={keydownD}
               data-invalid={fi.airaProps["data-invalid"]}
