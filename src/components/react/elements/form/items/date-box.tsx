@@ -60,6 +60,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   };
 
   const renderInputs = (v: DataValue | null | undefined) => {
+    console.log("render input");
     const d = v?.date;
     if (d == null) {
       yref.current.value = "";
@@ -179,7 +180,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
 
   const commitChange = () => {
     if (cache.current.y == null || cache.current.m == null || (fi.dataItem.type !== "month" && cache.current.d == null)) {
-      fi.set({ value: undefined, edit: true });
+      fi.set({ value: undefined, edit: true, effect: false });
       return;
     }
     const date = new Date(cache.current.y, cache.current.m - 1, cache.current.d ?? 1);
@@ -205,8 +206,12 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       e.currentTarget.value = String(cache.current.m || "");
       return;
     }
-    cache.current.m = isEmpty(v) ? undefined : Number(v);
-    if (v.length === 2 || !(v === "1" || v === "2")) dref.current?.focus();
+    if (isEmpty(v)) {
+      cache.current.m = undefined;
+    } else {
+      cache.current.m = Number(v);
+      if (v.length === 2 || !(v === "1" || v === "2")) dref.current?.focus();
+    }
     commitChange();
   };
 
@@ -329,7 +334,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   const clear = () => {
     if (!fi.editable || empty) return;
     fi.set({ value: undefined, edit: true, effect: true, parse: true });
-    focusInput();
+    // focusInput();
   };
 
   return (
