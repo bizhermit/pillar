@@ -8,12 +8,13 @@ export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>, ski
   const label = dataItem.label || defaultLabel;
 
   if (dataItem.required) {
-    validations.push(({ value, fullName }) => {
-      if (value != null) {
-        if (value === 0 && dataItem.requiredIsNotZero) return { type: "e", code: "required", fullName, msg: `${label}を入力してください。` };
+    validations.push((p) => {
+      if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
+      if (p.value != null) {
+        if (p.value === 0 && dataItem.requiredIsNotZero) return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を入力してください。` };
         return undefined;
       }
-      return { type: "e", code: "required", fullName, msg: `${label}を${dataItem.source ? "選択" : "入力"}してください。` };
+      return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を${p.dataItem.source ? "選択" : "入力"}してください。` };
     });
   }
 

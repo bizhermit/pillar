@@ -14,7 +14,7 @@ type FormItemCoreArgs<
   IV extends any = V
 > = {
   dataItemDeps: Array<any>;
-  getDataItem: (props: PickPartial<DataItem.$, "name"> & {
+  getDataItem: (props: PickPartial<DataItem.$, DataItem.OmitableProps> & {
     dataItem: D | undefined;
   }) => DataItem.ArgObject<SD>;
   parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
@@ -22,8 +22,8 @@ type FormItemCoreArgs<
   equals?: (v1: IV | null | undefined, v2: IV | null | undefined) => boolean;
   validation: (props: {
     dataItem: DataItem.ArgObject<SD>;
-    iterator: (funcs: Array<DataItem.Validation<any>>, arg: DataItem.ValidationProps<SD>) => (DataItem.ValidationResult | null | undefined);
-  }) => (v: IV | null | undefined, arg: DataItem.ValidationProps<SD>) => (DataItem.ValidationResult | null | undefined);
+    iterator: (funcs: Array<DataItem.Validation<any>>, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
+  }) => (v: IV | null | undefined, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
   setBind?: (props: {
     value: IV | null | undefined;
     name: string;
@@ -118,7 +118,7 @@ export const useFormItemCore = <
 
   const doValidation = (v: IV | null | undefined) => {
     return validation(v, {
-      value: v as DataItem.ValueType<SD>,
+      value: (cp.revert ? cp.revert(v) : v) as DataItem.ValueType<SD>,
       data: form.bind,
       dataItem,
       siblings: getSiblings(),
@@ -146,6 +146,18 @@ export const useFormItemCore = <
   const cache = useRef<IV | null | undefined>(init.default ? undefined : init.val);
   const [_inputted, setInputted, _inputtedRef] = useRefState(init.default);
 
+  const getDynamicRequired = () => {
+    if (typeof dataItem.required !== "function") return false;
+    return dataItem.required({
+      value: valRef.current,
+      data: form.bind,
+      dataItem,
+      fullName: dataItem.name || "",
+      siblings: getSiblings(),
+    });
+  };
+  const [dyanmicRequired, setDyanmicRequired] = useState(getDynamicRequired);
+
   const hasChanged = () => !(cp.equals ?? equals)(cache.current, valRef.current);
   const mountValue = hasChanged();
 
@@ -171,44 +183,44 @@ export const useFormItemCore = <
       v = val;
       parseRes = msg;
     }
-    const validRes = parseRes?.type === "e" ? undefined : doValidation(v);
-    const res = validRes ?? parseRes;
-    setState(res);
+    if (!(cp.equals ?? equals)(before, v)) {
+      const validRes = parseRes?.type === "e" ? undefined : doValidation(v);
+      const res = validRes ?? parseRes;
+      setState(res);
 
-    if (dataItem.name && form.state !== "nothing") {
-      if (cp.setBind) {
-        cp.setBind({
-          value: v,
-          name: dataItem.name,
-          data: form.bind,
-          dataItem,
-        });
-      } else {
-        setValue(form.bind, dataItem.name, v);
+      if (dataItem.name && form.state !== "nothing") {
+        if (cp.setBind) {
+          cp.setBind({
+            value: v,
+            name: dataItem.name,
+            data: form.bind,
+            dataItem,
+          });
+        } else {
+          setValue(form.bind, dataItem.name, v);
+        }
       }
-    }
-    switch (init) {
-      case "default":
-        cache.current = undefined;
-        break;
-      case true:
-        cache.current = v;
-        break;
-      default: break;
+      switch (init) {
+        case "default":
+          cache.current = undefined;
+          break;
+        case true:
+          cache.current = v;
+          break;
+        default: break;
 
-    }
-    setVal(v);
-    form.change(dataItem.name);
+      }
+      setVal(v);
+      form.change(dataItem.name);
 
-    onChange?.(v, { before });
-    if (edit) {
-      onEdit?.(v, { before });
-      setInputted(true);
+      onChange?.(v, { before });
+      if (edit) {
+        onEdit?.(v, { before });
+        setInputted(true);
+      }
+      hookRef.current?.([v, res]);
     }
     cp.effect({ value: v, edit, effect, parse, init, origin: value, dataItem });
-    hookRef.current?.([v, res]);
-
-    return [v, res];
   };
 
   const reset = (edit?: boolean) => set({ value: defaultValue, edit, parse: true, effect: true });
@@ -231,8 +243,9 @@ export const useFormItemCore = <
       set,
       reset,
       hasChanged,
-      doValidation: () => {
+      changeRefs: () => {
         setState(doValidation(valRef.current));
+        setDyanmicRequired(getDynamicRequired());
       },
       dataItem,
     });
@@ -262,6 +275,7 @@ export const useFormItemCore = <
   }, [validation, parseVal]);
 
   const editable = !$readOnly && !$disabled && !form.pending;
+  const $required = typeof dataItem.required === "function" ? dyanmicRequired : dataItem.required;
 
   return {
     name: dataItem.name,
@@ -272,7 +286,7 @@ export const useFormItemCore = <
     disabled: $disabled,
     readOnly: $readOnly,
     editable,
-    required: dataItem.required,
+    required: $required,
     hideClearButton,
     hideMessage,
     showButtons: !$disabled,
@@ -289,7 +303,7 @@ export const useFormItemCore = <
     clear,
     props,
     airaProps: {
-      "data-required": required,
+      "data-required": $required,
       "data-disabled": disabled || form.disabled,
       "data-readonly": readOnly || form.pending,
       "data-invalid": editable && msg?.type === "e",

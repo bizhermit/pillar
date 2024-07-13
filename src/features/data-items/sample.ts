@@ -9,6 +9,7 @@ export const sample_str = $str({
   name: "sample_str",
   label: "サンプル文字列",
   maxLength: 10,
+  // required: () => true,
   // required: true,
   source: [
     { value: "1", label: "item-1" },
@@ -106,6 +107,11 @@ export const sample_array_obj = $array({
 sample_array_obj.item[0].name;
 sample_array_obj.item[1].name;
 export type TYPE_ARR_OBJ = DataItem.ValueType<typeof sample_array_obj>;
+
+const _fuga: TYPE_ARR_OBJ = [{
+  sample_str: "3",
+  sample_num: 5,
+}];
 
 const _hoge: DataItem.Props<[
   typeof sample_str,

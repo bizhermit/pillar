@@ -8,9 +8,10 @@ export const $strValidations = (dataItem: DataItem.ArgObject<DataItem.$str>, ski
   const label = dataItem.label || defaultLabel;
 
   if (dataItem.required) {
-    validations.push(({ value, fullName }) => {
-      if (!isEmpty(value)) return undefined;
-      return { type: "e", code: "required", fullName, msg: `${label}を${dataItem.source ? "選択" : "入力"}してください。` };
+    validations.push((p) => {
+      if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
+      if (!isEmpty(p.value)) return undefined;
+      return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を${dataItem.source ? "選択" : "入力"}してください。` };
     });
   }
 

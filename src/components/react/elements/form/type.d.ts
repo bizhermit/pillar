@@ -29,7 +29,7 @@ type FormItemOptions<
   placeholder?: string;
   disabled?: boolean;
   readOnly?: boolean;
-  required?: boolean;
+  required?: boolean | ((props: DataItem.ValidationProps<D>) => boolean);
   refs?: Array<string>;
   hideClearButton?: boolean;
   hideMessage?: boolean;

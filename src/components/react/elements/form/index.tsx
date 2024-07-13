@@ -16,7 +16,7 @@ type FormItemMountProps = {
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
-  doValidation: () => void;
+  changeRefs: (name: string) => void;
   hasChanged: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
 };
@@ -293,7 +293,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
           const item = items.current[id];
           if (self && item.name === self.name) return;
           if (!item.dataItem.refs?.some(ref => refs.some(r => ref === r))) return;
-          item.doValidation();
+          item.changeRefs(name);
         });
       },
       mount: (p) => {

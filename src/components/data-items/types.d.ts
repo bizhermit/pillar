@@ -4,7 +4,9 @@ declare namespace DataItem {
 
   type UnionToIntersection<A> = (A extends any ? (_: A) => void : never) extends ((_: infer B) => void) ? B : never;
 
-  type Prop<D extends $object> = D extends $object ? D["required"] extends true ? { [P in D["name"]]: ValueType<D> } : { [P in D["name"]]?: ValueType<D> } : never;
+  type Prop<D extends $object> = D extends $object ? (
+    D["required"] extends true ? { [P in D["name"]]: ValueType<D> } : { [P in D["name"]]?: ValueType<D> }
+  ) : never;
 
   type Props<A extends Array<$object>> = CrossProps<UnionToIntersection<Prop<A[number]>>>;
 

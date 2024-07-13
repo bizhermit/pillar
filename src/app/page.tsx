@@ -134,7 +134,11 @@ export default function Home() {
               name="text"
               label="テキスト"
               defaultValue="hoge"
-              required
+              required={(p) => {
+                console.log((p.data?.slider ?? 0) > 50);
+                return (p.data?.slider ?? 0) > 50;
+              }}
+              refs={["slider"]}
               disabled={disabled.value}
               readOnly={readOnly.value}
               hook={formItem.hook}

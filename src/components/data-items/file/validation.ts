@@ -13,9 +13,10 @@ export const $fileValidation = (dataItem: DataItem.ArgObject<DataItem.$file>): A
   });
 
   if (dataItem.required) {
-    validations.push(({ value, fullName }) => {
-      if (value != null) return undefined;
-      return { type: "e", code: "required", fullName, msg: `${label}を選択してください。` };
+    validations.push((p) => {
+      if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
+      if (p.value != null) return undefined;
+      return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を選択してください。` };
     });
   }
 
