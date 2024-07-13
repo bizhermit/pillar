@@ -1,8 +1,8 @@
 "use client";
 
-import { equals } from "@/objects";
 import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
+import { equals } from "../../../objects";
 import { generateUuidV4 } from "../../../objects/string";
 import { getValue, setValue } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";

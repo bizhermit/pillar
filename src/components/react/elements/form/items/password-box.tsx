@@ -6,7 +6,7 @@ import { $strValidations } from "../../../../data-items/string/validation";
 import { isEmpty } from "../../../../objects/string";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
-import { TextBoxProps } from "./text-box";
+import { type TextBoxProps } from "./text-box";
 
 type PasswordBoxProps<D extends DataItem.$str | undefined> = TextBoxProps<D> & {
   minimumValidation?: boolean;

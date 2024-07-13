@@ -1,12 +1,12 @@
 "use client";
 
-import { ChangeEvent, useRef } from "react";
+import { type ChangeEvent, useRef } from "react";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { isEmpty } from "../../../../objects/string";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
-import { TextBoxProps } from "./text-box";
+import { type TextBoxProps } from "./text-box";
 
 type CreditCardNumberBoxProps<D extends DataItem.$str | undefined> = Omit<TextBoxProps<D>, "inputMode">;
 

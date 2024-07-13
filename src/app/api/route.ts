@@ -1,7 +1,7 @@
 import { $bool } from "@/data-items/bool";
 import { $num } from "@/data-items/number";
 import { $str } from "@/data-items/string";
-import { apiMethodHandler } from "@/server/api-handler/app-api";
+import { apiMethodHandler } from "@/server/next-api-handler/app-api";
 
 export const GET = apiMethodHandler(async (props) => {
   const data = await props.getParams([

@@ -1,6 +1,6 @@
 "use client";
 
-import { HTMLAttributes, useMemo, useRef } from "react";
+import { type HTMLAttributes, useMemo, useRef } from "react";
 import { $boolParse } from "../../../../data-items/bool/parse";
 import { $boolValidations } from "../../../../data-items/bool/validation";
 import { $numParse } from "../../../../data-items/number/parse";
@@ -9,7 +9,7 @@ import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { equals } from "../../../../objects";
 import { setValue } from "../../../../objects/struct";
-import { LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
+import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
