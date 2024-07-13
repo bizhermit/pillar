@@ -78,13 +78,14 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
 
   const fi = useFormItemCore<DataItem.$date | DataItem.$month, D, string, DataValue>(props, {
     dataItemDeps: [min, max, pair?.name, pair?.position, pair?.same],
-    getDataItem: ({ dataItem }) => {
+    getDataItem: ({ dataItem, refs }) => {
+      const $pair = pair ?? dataItem?.pair;
       return {
         type: "date",
-        ...dataItem,
         min: min ?? dataItem?.min,
         max: max ?? dataItem?.max,
-        pair: pair ?? dataItem?.pair,
+        pair: $pair,
+        refs: $pair ? [$pair.name, ...(refs ?? [])] : refs,
       };
     },
     parse: () => {

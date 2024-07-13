@@ -116,12 +116,12 @@ export const isAfterDatetime = (base: Date, date: Date) => {
   return base.getTime() < date.getTime();
 };
 
-export const isBeforeDate = (base: Date, date: Date) => {
-  return Math.floor(base.getTime() / dRad) > Math.floor(date.getTime() / dRad);
+export const isBeforeDate = (base: Date, beforeDate: Date) => {
+  return Math.floor(base.getTime() / dRad) > Math.floor(beforeDate.getTime() / dRad);
 };
 
-export const isAfterDate = (base: Date, date: Date) => {
-  return Math.floor(base.getTime() / dRad) < Math.floor(date.getTime() / dRad);
+export const isAfterDate = (base: Date, afterDate: Date) => {
+  return Math.floor(base.getTime() / dRad) < Math.floor(afterDate.getTime() / dRad);
 };
 
 export const getDaysDiff = (before: Date | null | undefined, after: Date | null | undefined) => {

@@ -44,8 +44,8 @@ declare namespace DataItem {
 
   type ArgObject<D extends $object> = PickPartial<D, OmitableProps>;
 
-  type Validation<D extends $object> = (props: {
-    value: ValueType<D> | null | undefined;
+  type Validation<D extends $object, V = ValueType<D>> = (props: {
+    value: V | null | undefined;
     data: { [v: string | number]: any } | null | undefined;
     siblings: Array<ArgObject<$object>> | Readonly<Array<ArgObject<$object>>> | null | undefined;
     dataItem: ArgObject<D>;
@@ -64,6 +64,7 @@ declare namespace DataItem {
     name: string;
     label?: string;
     required?: boolean;
+    refs?: Array<string>;
   };
 
   type $str<V extends string = string> = $ & {

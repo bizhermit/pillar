@@ -18,6 +18,7 @@ type FormItemCoreArgs<
     name: string | undefined;
     label: string | undefined;
     required: boolean | undefined;
+    refs: Array<string> | undefined;
     dataItem: D | undefined;
   }) => DataItem.ArgObject<SD>;
   parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
@@ -55,6 +56,7 @@ export const useFormItemCore = <
     disabled,
     readOnly,
     required,
+    refs,
     hideClearButton,
     hideMessage,
     tabIndex,
@@ -76,18 +78,25 @@ export const useFormItemCore = <
     const $name = name || $dataItem?.name;
     const $required = required ?? $dataItem?.required;
     const $label = label || $dataItem?.label;
+    const $refs = (() => {
+      const ret = [...(refs ?? []), ...($dataItem?.refs ?? [])];
+      if (ret.length === 0) return undefined;
+      return ret;
+    })();
     return {
       name: $name,
       required: $required,
       label: $label,
+      refs: $refs,
       ...cp.getDataItem({
         name,
         label,
         required,
+        refs: $refs,
         dataItem: $dataItem,
       }),
     } as SD;
-  }, [name, required, ...cp.dataItemDeps]);
+  }, [name, required, ...cp.dataItemDeps, ...(refs ?? [])]);
 
   const { parseVal, validation } = useMemo(() => {
     return {
@@ -139,7 +148,7 @@ export const useFormItemCore = <
   const [msg, setMsg] = useState<DataItem.ValidationResult | null | undefined>(init.msg);
   const [val, setVal, valRef] = useRefState<IV | null | undefined>(init.val);
   const cache = useRef<IV | null | undefined>(init.default ? undefined : init.val);
-  const [_, setInputted, inputtedRef] = useRefState(init.default);
+  const [_inputted, setInputted, _inputtedRef] = useRefState(init.default);
 
   const hasChanged = () => !(cp.equals ?? equals)(cache.current, valRef.current);
   const mountValue = hasChanged();
@@ -193,6 +202,7 @@ export const useFormItemCore = <
 
     }
     setVal(v);
+    form.change(dataItem.name);
 
     onChange?.(v, { before });
     if (edit) {
@@ -225,12 +235,15 @@ export const useFormItemCore = <
       set,
       reset,
       hasChanged,
+      doValidation: () => {
+        setState(doValidation(valRef.current));
+      },
       dataItem,
     });
     return () => {
       unmount();
     };
-  }, []);
+  }, [dataItem]);
 
   useEffect(() => {
     setInputted(false);

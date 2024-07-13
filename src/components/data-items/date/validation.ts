@@ -2,8 +2,8 @@ import { equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfter
 
 const defaultLabel = "値";
 
-export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | DataItem.$month>): Array<DataItem.Validation<DataItem.$date | DataItem.$month>> => {
-  const validations: Array<DataItem.Validation<DataItem.$date | DataItem.$month>> = [];
+export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | DataItem.$month>): Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> => {
+  const validations: Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> = [];
 
   const label = dataItem.label || defaultLabel;
   const dateFormatPattern = dataItem.type === "month" ? "yyyy/MM" : "yyyy/MM/dd";
@@ -59,7 +59,7 @@ export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | D
         if (equalDate(pairDate, value)) return undefined;
       }
       if (dataItem.pair?.position === "before") {
-        if (isAfterDate(pairDate, value)) return undefined;
+        if (isBeforeDate(value, pairDate)) return undefined;
         return {
           type: "e",
           code: "pair-before",
@@ -67,7 +67,7 @@ export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | D
           msg: `日付の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(value, dateFormatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)}`,
         };
       }
-      if (isBeforeDate(pairDate, value)) return undefined;
+      if (isAfterDate(value, pairDate)) return undefined;
       return {
         type: "e",
         code: "pair-after",

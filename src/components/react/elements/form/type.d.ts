@@ -30,6 +30,7 @@ type FormItemOptions<
   disabled?: boolean;
   readOnly?: boolean;
   required?: boolean;
+  refs?: Array<string>;
   hideClearButton?: boolean;
   hideMessage?: boolean;
   tabIndex?: number;

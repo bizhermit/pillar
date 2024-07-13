@@ -16,6 +16,7 @@ type FormItemMountProps = {
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
+  doValidation: () => void;
   hasChanged: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
 };
@@ -31,6 +32,7 @@ type FormContextProps = {
   hasError: boolean;
   setItemState: Dispatch<FormItemState>;
   getMountedItems: () => { [id: string]: FormItemMountProps };
+  change: (name: string) => void;
   mount: (props: FormItemMountProps) => {
     unmount: () => void;
   };
@@ -48,6 +50,7 @@ export const FormContext = createContext<FormContextProps>({
   getMountedItems: () => {
     return {};
   },
+  change: () => { },
   mount: () => {
     return {
       unmount: () => { },
@@ -283,6 +286,16 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       state: formState,
       pending: ["submit", "reset", "init"].includes(formState),
       hasError,
+      change: (name) => {
+        const self = findItem(name);
+        const refs = [name, ...(self?.dataItem.refs ?? [])];
+        Object.keys(items.current).forEach(id => {
+          const item = items.current[id];
+          if (self && item.name === self.name) return;
+          if (!item.dataItem.refs?.some(ref => refs.some(r => ref === r))) return;
+          item.doValidation();
+        });
+      },
       mount: (p) => {
         items.current[p.id] = p;
         return {

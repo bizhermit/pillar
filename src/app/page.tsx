@@ -262,6 +262,17 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
+              pair={{
+                name: "date-after",
+                position: "after",
+              }}
+            />
+            <DateBox
+              label="日付"
+              name="date-after"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
             />
           </FormItemWrap>
           {/* </div> */}
