@@ -103,7 +103,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           onChange={change}
           data-invalid={fi.airaProps["data-invalid"]}
         />
-        {fi.inputted &&
+        {fi.mountValue &&
           <input
             name={fi.name}
             type="hidden"

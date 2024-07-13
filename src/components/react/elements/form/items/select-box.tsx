@@ -132,9 +132,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         default: return (p) => parseData([p.value], p);
       }
     },
-    revert: (v) => {
-      return v?.[vdn];
-    },
+    revert: (v) => v?.[vdn],
+    equals: (v1, v2) => equals(v1?.[vdn], v2?.[vdn]),
     effect: ({ value }) => {
       iref.current.value = value?.[ldn] || "";
     },
@@ -325,7 +324,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           onKeyDown={keydown}
           onChange={change}
         />
-        {fi.inputted &&
+        {fi.mountValue &&
           <>
             <input
               type="hidden"

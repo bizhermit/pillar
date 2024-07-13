@@ -105,7 +105,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
           }}
           data-invalid={fi.airaProps["data-invalid"]}
         />
-        {fi.name && fi.inputted &&
+        {fi.name && fi.mountValue &&
           <input
             name={fi.name}
             type="hidden"

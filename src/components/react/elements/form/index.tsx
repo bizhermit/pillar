@@ -16,7 +16,7 @@ type FormItemMountProps = {
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
-  getInputted: () => boolean;
+  hasChanged: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
 };
 
@@ -59,7 +59,7 @@ export const FormContext = createContext<FormContextProps>({
 
 type GetBindDataOptions = {
   removeNotMounted?: boolean;
-  onlyUserInputted?: boolean;
+  appendNotChanged?: boolean;
 };
 
 type FormRef<T extends { [v: string]: any } = { [v: string]: any }> = {
@@ -146,12 +146,12 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   const getFormData = () => new FormData($ref.current!);
 
   const getBindData = (opts?: GetBindDataOptions) => {
-    if (!opts?.removeNotMounted && !opts?.onlyUserInputted) return clone($bind);
+    if (!opts?.removeNotMounted && opts?.appendNotChanged) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
-      const { name, getInputted } = items.current[id];
+      const { name, hasChanged } = items.current[id];
       if (!name) return;
-      if (opts?.onlyUserInputted && !getInputted()) return;
+      if (!opts?.appendNotChanged && !hasChanged()) return;
       setValue(ret, name, clone(getValue($bind, name)[0]));
     });
     return ret as any;

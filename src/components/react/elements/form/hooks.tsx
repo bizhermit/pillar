@@ -1,5 +1,6 @@
 "use client";
 
+import { equals } from "@/objects";
 import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
 import { generateUuidV4 } from "../../../objects/string";
@@ -21,6 +22,7 @@ type FormItemCoreArgs<
   }) => DataItem.ArgObject<SD>;
   parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
   revert?: (v: IV | null | undefined) => (V | null | undefined);
+  equals?: (v1: IV | null | undefined, v2: IV | null | undefined) => boolean;
   validation: (props: {
     dataItem: DataItem.ArgObject<SD>;
     iterator: (funcs: Array<DataItem.Validation<any>>, arg: Parameters<DataItem.Validation<any>>[0]) => (DataItem.ValidationResult | null | undefined);
@@ -67,6 +69,7 @@ export const useFormItemCore = <
   const id = useRef(getId());
   const form = use(FormContext);
   const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
+  const cache = useRef<IV | null | undefined>(undefined);
   const [inputted, setInputted, inputtedRef] = useRefState(false);
   const $disabled = disabled || form.disabled;
   const $readOnly = readOnly || form.pending;
@@ -136,6 +139,9 @@ export const useFormItemCore = <
   const [msg, setMsg] = useState<DataItem.ValidationResult | null | undefined>(init.msg);
   const [val, setVal, valRef] = useRefState<IV | null | undefined>(init.val);
 
+  const hasChanged = () => inputtedRef.current && !(cp.equals ?? equals)(cache.current, valRef.current);
+  const mountValue = hasChanged();
+
   const setState = (state: DataItem.ValidationResult | null | undefined) => {
     form.setItemState({
       id: id.current,
@@ -149,7 +155,7 @@ export const useFormItemCore = <
 
   const get = () => valRef.current as any;
 
-  const set = ({ value, edit, effect, parse }: FormItemSetArg) => {
+  const set = ({ value, edit, effect, parse, init }: FormItemSetArg) => {
     const before = valRef.current;
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
@@ -174,6 +180,7 @@ export const useFormItemCore = <
         setValue(form.bind, dataItem.name, v);
       }
     }
+    if (init) cache.current = v;
     setVal(v);
 
     onChange?.(v, { before });
@@ -181,7 +188,7 @@ export const useFormItemCore = <
       onEdit?.(v, { before });
       setInputted(true);
     }
-    cp.effect({ value: v, edit, effect, parse, origin: value, dataItem });
+    cp.effect({ value: v, edit, effect, parse, init, origin: value, dataItem });
     hookRef.current?.([v, res]);
 
     return [v, res];
@@ -206,7 +213,7 @@ export const useFormItemCore = <
       get,
       set,
       reset,
-      getInputted: () => inputtedRef.current,
+      hasChanged,
       dataItem,
     });
     return () => {
@@ -219,11 +226,11 @@ export const useFormItemCore = <
     if (dataItem.name && form.state !== "nothing") {
       const [v, has] = getValue(form.bind, dataItem.name);
       if (has) {
-        set({ value: v, edit: false, parse: true, effect: true });
+        set({ value: v, edit: false, parse: true, effect: true, init: true });
         return;
       }
     }
-    set({ value: defaultValue, edit: false, parse: true, effect: true });
+    set({ value: defaultValue, edit: false, parse: true, effect: true, init: true });
   }, [form.bind, dataItem]);
 
   useEffect(() => {
@@ -241,7 +248,7 @@ export const useFormItemCore = <
     label,
     placeholder,
     tabIndex,
-    inputted,
+    mountValue,
     disabled: $disabled,
     readOnly: $readOnly,
     editable,
@@ -268,7 +275,7 @@ export const useFormItemCore = <
       "data-invalid": editable && msg?.type === "e",
       "data-label": $dataItem?.label,
       "data-placeholder": placeholder,
-      "data-inputted": inputted,
+      "data-changed": mountValue,
     },
     message: msg,
     messageComponent: (!hideMessage && msg && !$disabled &&

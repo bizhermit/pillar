@@ -105,7 +105,7 @@ export const CheckBox = <True extends boolean | number | string, False extends b
           }}
           data-invalid={fi.airaProps["data-invalid"]}
         />
-        {fi.name && fi.inputted &&
+        {fi.name && fi.mountValue &&
           <input
             name={fi.name}
             type="hidden"

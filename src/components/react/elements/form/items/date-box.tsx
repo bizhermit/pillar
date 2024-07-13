@@ -1,5 +1,6 @@
 import { $dateParse } from "@/data-items/date/parse";
 import { $dateValidations } from "@/data-items/date/validation";
+import { equals } from "@/objects";
 import { formatDate, getFirstDateAtMonth, getLastDateAtMonth, isBeforeDate, parseDate, withoutTime } from "@/objects/date";
 import { isEmpty } from "@/objects/string";
 import { setValue } from "@/objects/struct";
@@ -97,6 +98,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     effect: ({ edit, value, effect }) => {
       if (yref.current && (!edit || effect)) renderInputs(value);
     },
+    equals: (v1, v2) => equals(v1?.str, v2?.str),
     validation: ({ dataItem, iterator }) => {
       const funcs = $dateValidations(dataItem);
       return (v, p) => iterator(funcs, { ...p, value: v?.date });
@@ -411,7 +413,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
             />
           </>
         }
-        {fi.inputted &&
+        {fi.mountValue &&
           <input
             type="hidden"
             name={fi.name}

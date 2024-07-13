@@ -187,7 +187,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           onBlur={blur}
           data-invalid={fi.airaProps["data-invalid"]}
         />
-        {fi.inputted &&
+        {fi.mountValue &&
           <input
             type="hidden"
             name={fi.name}

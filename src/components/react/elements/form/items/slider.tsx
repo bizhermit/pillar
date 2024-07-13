@@ -148,7 +148,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
             data-value={fi.value == null ? undefined : String(fi.value)}
           />
         </div>
-        {fi.inputted &&
+        {fi.mountValue &&
           <input
             type="hidden"
             name={fi.name}

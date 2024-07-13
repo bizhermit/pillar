@@ -177,7 +177,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
             </label>
           );
         })}
-        {fi.name && fi.inputted &&
+        {fi.name && fi.mountValue &&
           <input
             name={fi.name}
             type="hidden"
