@@ -68,7 +68,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
 
   const click = () => {
     if (!fi.editable) return;
-    iref.current.click();
+    iref.current?.click();
   };
 
   const change = (e: ChangeEvent<HTMLInputElement>) => {
@@ -77,11 +77,12 @@ export const FileButton = <D extends DataItem.$file | undefined>({
     if (fi.form.state !== "nothing" && fileName) {
       fi.form.setValue(fileName, undefined, true);
     }
+    console.log(file);
     fi.set({ value: file, edit: true });
   };
 
   const clear = () => {
-    if (fi.editable || empty) return;
+    if (!fi.editable || empty) return;
     if (fi.form.state !== "nothing" && fileName) {
       fi.form.setValue(fileName, undefined, true);
     }
@@ -104,6 +105,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
           {props.children ?? "ファイルを選択"}
         </Button>
         <input
+          ref={iref}
           className="ipt-file-hidden"
           type="file"
           name={fi.mountValue ? fi.name : undefined}
@@ -115,7 +117,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
             {empty ? undefined : (fi.value?.name || ((!fileName || fi.form.bind == null) ? "" : fi.form.bind?.[fileName]))}
           </span>
         }
-        {fi.clearButton(empty ? undefined : clear)}
+        {!empty && fi.clearButton(clear)}
       </div>
       {fi.messageComponent}
     </>
