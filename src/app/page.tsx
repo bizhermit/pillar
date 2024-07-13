@@ -25,6 +25,8 @@ export default function Home() {
   const ref = useRef<HTMLButtonElement>(null);
   const [bind, setBind] = useState<{ [v: string]: any }>({
     // text: "123",
+    // text: null,
+    // text: undefined,
     // select: 309,
     // select: 3,
   });
