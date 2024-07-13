@@ -64,7 +64,7 @@ export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | D
           type: "e",
           code: "pair-before",
           fullName,
-          msg: `日付の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(value, dateFormatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)}`,
+          msg: pairDataItem?.pair ? "" : `日付の前後関係が不適切です。${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(value, dateFormatPattern)}`,
         };
       }
       if (isAfterDate(value, pairDate)) return undefined;
@@ -72,7 +72,7 @@ export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | D
         type: "e",
         code: "pair-after",
         fullName,
-        msg: pairDataItem?.pair ? "" : `日付の前後関係が不適切です。${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(value, dateFormatPattern)}`,
+        msg: `日付の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${formatDate(value, dateFormatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${formatDate(pairDate, dateFormatPattern)}`,
       };
     });
   }

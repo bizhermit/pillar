@@ -14,11 +14,7 @@ type FormItemCoreArgs<
   IV extends any = V
 > = {
   dataItemDeps: Array<any>;
-  getDataItem: (props: {
-    name: string | undefined;
-    label: string | undefined;
-    required: boolean | undefined;
-    refs: Array<string> | undefined;
+  getDataItem: (props: PickPartial<DataItem.$, "name"> & {
     dataItem: D | undefined;
   }) => DataItem.ArgObject<SD>;
   parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
@@ -26,8 +22,8 @@ type FormItemCoreArgs<
   equals?: (v1: IV | null | undefined, v2: IV | null | undefined) => boolean;
   validation: (props: {
     dataItem: DataItem.ArgObject<SD>;
-    iterator: (funcs: Array<DataItem.Validation<any>>, arg: Parameters<DataItem.Validation<any>>[0]) => (DataItem.ValidationResult | null | undefined);
-  }) => (v: IV | null | undefined, arg: Parameters<DataItem.Validation<SD>>[0]) => (DataItem.ValidationResult | null | undefined);
+    iterator: (funcs: Array<DataItem.Validation<any>>, arg: DataItem.ValidationProps<SD>) => (DataItem.ValidationResult | null | undefined);
+  }) => (v: IV | null | undefined, arg: DataItem.ValidationProps<SD>) => (DataItem.ValidationResult | null | undefined);
   setBind?: (props: {
     value: IV | null | undefined;
     name: string;
@@ -96,7 +92,7 @@ export const useFormItemCore = <
         dataItem: $dataItem,
       }),
     } as SD;
-  }, [name, required, ...cp.dataItemDeps, ...(refs ?? [])]);
+  }, [name, typeof required === "function" ? "" : required, ...cp.dataItemDeps, ...(refs ?? [])]);
 
   const { parseVal, validation } = useMemo(() => {
     return {

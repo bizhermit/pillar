@@ -257,7 +257,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <DateBox
-              label="日付"
+              label="From"
               name="date"
               required
               disabled={disabled.value}
@@ -268,7 +268,7 @@ export default function Home() {
               }}
             />
             <DateBox
-              label="日付"
+              label="To"
               name="date-after"
               required
               disabled={disabled.value}
