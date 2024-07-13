@@ -431,16 +431,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
             data-showed={dialog.state !== "closed"}
           />
         }
-        {!fi.hideClearButton && fi.showButtons &&
-          <div
-            className="ipt-btn"
-            data-disabled={!fi.editable || empty}
-            onClick={clear}
-            tabIndex={-1}
-          >
-            ×
-          </div>
-        }
+        {fi.clearButton(empty ? undefined : clear)}
         <Dialog
           hook={dialog.hook}
           mobile

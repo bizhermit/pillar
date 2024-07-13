@@ -111,15 +111,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
             disabled={fi.disabled}
           />
         }
-        {!fi.hideClearButton && fi.showButtons &&
-          <div
-            className="ipt-btn"
-            data-disabled={!fi.editable || empty}
-            onClick={clear}
-          >
-            ×
-          </div>
-        }
+        {fi.clearButton(empty ? undefined : clear)}
       </div>
       {fi.messageComponent}
     </>

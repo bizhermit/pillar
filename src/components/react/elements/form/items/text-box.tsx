@@ -83,16 +83,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           onChange={e => fi.set({ value: e.target.value, edit: true })}
           data-invalid={fi.airaProps["data-invalid"]}
         />
-        {!fi.hideClearButton && fi.showButtons &&
-          <div
-            className="ipt-btn"
-            tabIndex={-1}
-            data-disabled={!fi.editable || empty}
-            onClick={clear}
-          >
-            ×
-          </div>
-        }
+        {fi.clearButton(empty ? undefined : clear)}
       </div>
       {fi.messageComponent}
     </>

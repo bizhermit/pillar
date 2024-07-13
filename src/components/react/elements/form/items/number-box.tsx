@@ -211,15 +211,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
             </div>
           </>
         }
-        {!fi.hideClearButton && fi.showButtons &&
-          <div
-            className="ipt-btn"
-            data-disabled={!fi.editable || empty}
-            onClick={clear}
-          >
-            ×
-          </div>
-        }
+        {fi.clearButton(empty ? undefined : clear)}
       </div>
       {fi.messageComponent}
     </>

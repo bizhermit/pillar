@@ -276,6 +276,7 @@ export const useFormItemCore = <
 
   const editable = !$readOnly && !$disabled && !form.pending;
   const $required = typeof dataItem.required === "function" ? dyanmicRequired : dataItem.required;
+  const showButtons = !$disabled;
 
   return {
     name: dataItem.name,
@@ -289,7 +290,7 @@ export const useFormItemCore = <
     required: $required,
     hideClearButton,
     hideMessage,
-    showButtons: !$disabled,
+    showButtons,
     // defaultValue,
     dataItem,
     value: val,
@@ -319,6 +320,17 @@ export const useFormItemCore = <
       >
         {msg.msg}
       </span>
+    ),
+    clearButton: (clear: (() => void) | undefined) => (
+      !hideClearButton && showButtons &&
+      <div
+        className="ipt-btn"
+        tabIndex={-1}
+        data-disabled={!editable || !clear}
+        onClick={clear}
+      >
+        ×
+      </div>
     ),
   } as const;
 };

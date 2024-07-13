@@ -354,16 +354,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             data-showed={dialog.state !== "closed"}
           />
         }
-        {!fi.hideClearButton && fi.showButtons &&
-          <div
-            className="ipt-btn"
-            data-disabled={!fi.editable || empty || loading}
-            onClick={clear}
-            tabIndex={-1}
-          >
-            ×
-          </div>
-        }
+        {fi.clearButton(empty || loading ? undefined : clear)}
         <Dialog
           hook={dialog.hook}
           mobile

@@ -105,15 +105,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
             {type === "text" ? "●" : "○"}
           </div>
         }
-        {!fi.hideClearButton && fi.showButtons &&
-          <div
-            className="ipt-btn"
-            data-disabled={!fi.editable || empty}
-            onClick={clear}
-          >
-            ×
-          </div>
-        }
+        {fi.clearButton(empty ? undefined : clear)}
       </div>
       {fi.messageComponent}
     </>
