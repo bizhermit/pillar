@@ -27,7 +27,7 @@ declare namespace DataItem {
         T extends "time" ? number :
         T extends "file" ? File :
         T extends "array" ? Array<D["item"] extends Array<$object> ? Props<D["item"]> : ValueType<D["item"]>> :
-        T extends "struct" ? Props<D["item"]> :
+        T extends "struct" ? D["item"] extends Array<$object> ? Props<D["item"]> : never :
         any, D["required"]>
     ) : any;
 
@@ -147,7 +147,7 @@ declare namespace DataItem {
 
   type $date = $ & {
     type: "date";
-    validations?: Array<Validation<$date>>;
+    validations?: Array<Validation<$date, Date>>;
     min?: string;
     max?: string;
     pair?: {
@@ -159,7 +159,7 @@ declare namespace DataItem {
 
   type $month = $ & {
     type: "month";
-    validations?: Array<Validation<$month>>;
+    validations?: Array<Validation<$month, Date>>;
     min?: string;
     max?: string;
     pair?: {
