@@ -24,7 +24,7 @@ import s from "./page.module.css";
 export default function Home() {
   const ref = useRef<HTMLButtonElement>(null);
   const [bind, setBind] = useState<{ [v: string]: any }>({
-    text: "123",
+    // text: "123",
     // select: 309,
     // select: 3,
   });
@@ -116,7 +116,7 @@ export default function Home() {
           fd.forEach((v, k) => console.log(k, v));
           console.log("--- bind ---");
           console.log(getBindData({
-            //  appendNotChanged: true
+            // appendNotChanged: true,
           }));
           await sleep(3000);
         }}

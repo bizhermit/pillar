@@ -58,7 +58,9 @@ export const FormContext = createContext<FormContextProps>({
 });
 
 type GetBindDataOptions = {
-  removeNotMounted?: boolean;
+  pure: true;
+} | {
+  pure?: false | undefined;
   appendNotChanged?: boolean;
 };
 
@@ -146,7 +148,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   const getFormData = () => new FormData($ref.current!);
 
   const getBindData = (opts?: GetBindDataOptions) => {
-    if (!opts?.removeNotMounted && opts?.appendNotChanged) return clone($bind);
+    if (opts?.pure) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
       const { name, hasChanged } = items.current[id];

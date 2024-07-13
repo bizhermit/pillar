@@ -97,9 +97,8 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
         default: return (p) => parseData([p.value], p);
       }
     },
-    revert: (v) => {
-      return v?.[vdn];
-    },
+    revert: (v) => v?.[vdn],
+    equals: (v1, v2) => equals(v1?.[vdn], v2?.[vdn]),
     effect: () => { },
     validation: ({ dataItem, iterator }) => {
       const funcs = (() => {

@@ -49,5 +49,5 @@ type FormItemSetArg<T extends any = any> = {
   edit?: boolean;
   effect?: boolean;
   parse?: boolean;
-  init?: boolean;
+  init?: boolean | "default";
 };
