@@ -132,6 +132,7 @@ export const useFormItemCore = <
       if (dataItem.name && form.state !== "nothing") {
         const [v, has] = getValue(form.bind, dataItem.name);
         if (has) return v;
+        setValue(form.bind, dataItem.name, defaultValue);
       }
       def = true;
       return defaultValue;
