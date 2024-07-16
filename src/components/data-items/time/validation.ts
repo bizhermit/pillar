@@ -52,7 +52,7 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
       if (pairDataItem != null && pairDataItem.type !== "time") return undefined;
       const pairTime = data?.[pairName];
       if (pairTime == null) return undefined;
-      if (dataItem.pair?.same) {
+      if (!dataItem.pair?.same) {
         if (pairTime === value) return undefined;
       }
       if (dataItem.pair?.position === "before") {

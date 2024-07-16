@@ -56,7 +56,7 @@ export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | D
       if (pairDataItem != null && !(pairDataItem.type === "date" || pairDataItem.type === "month")) return undefined;
       const pairDate = parseDate(data?.[pairName]);
       if (pairDate == null) return undefined;
-      if (dataItem.pair?.same) {
+      if (!dataItem.pair?.same) {
         if (equalDate(pairDate, value)) return undefined;
       }
       if (dataItem.pair?.position === "before") {
