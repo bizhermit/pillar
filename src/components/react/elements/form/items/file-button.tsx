@@ -1,6 +1,6 @@
-import { $fileParse } from "@/data-items/file/parse";
-import { $fileValidation } from "@/data-items/file/validation";
-import { ChangeEvent, HTMLAttributes, useRef } from "react";
+import { type ChangeEvent, type HTMLAttributes, useRef } from "react";
+import { $fileParse } from "../../../../data-items/file/parse";
+import { $fileValidation } from "../../../../data-items/file/validation";
 import { Button } from "../../button";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -77,7 +77,6 @@ export const FileButton = <D extends DataItem.$file | undefined>({
     if (fi.form.state !== "nothing" && fileName) {
       fi.form.setValue(fileName, undefined, true);
     }
-    console.log(file);
     fi.set({ value: file, edit: true });
   };
 

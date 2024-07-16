@@ -281,7 +281,11 @@ export default function Home() {
             />
           </FormItemWrap>
           <FormItemWrap>
-            <FileButton>ファイルを選択</FileButton>
+            <FileButton
+              name="file"
+            >
+              ファイルを選択
+            </FileButton>
           </FormItemWrap>
           {/* </div> */}
           <FormButton type="submit">
