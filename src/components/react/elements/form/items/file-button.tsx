@@ -94,7 +94,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.airaProps}
+        {...fi.attrs}
         className={joinClassNames("ipt-file", props.className)}
       >
         <Button

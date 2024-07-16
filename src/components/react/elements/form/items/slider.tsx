@@ -123,7 +123,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.airaProps}
+        {...fi.attrs}
         className={joinClassNames("ipt-slider")}
         tabIndex={fi.disabled ? undefined : (fi.tabIndex ?? 0)}
         onKeyDown={keydown}

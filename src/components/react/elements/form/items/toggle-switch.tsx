@@ -86,7 +86,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
     <>
       <label
         {...fi.props}
-        {...fi.airaProps}
+        {...fi.attrs}
         tabIndex={fi.editable ? -1 : undefined}
         className={joinClassNames("ipt-lbl", props.className)}
         data-children={props.children != null}
@@ -103,7 +103,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
             if (!fi.editable) return;
             fi.set({ value: e.target.checked ? fi.dataItem.trueValue : fi.dataItem.falseValue, edit: true });
           }}
-          data-invalid={fi.airaProps["data-invalid"]}
+          data-invalid={fi.attrs["data-invalid"]}
         />
         {fi.name && fi.mountValue &&
           <input

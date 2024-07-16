@@ -166,7 +166,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.airaProps}
+        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
       >
         <input
@@ -185,7 +185,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           onKeyDown={keydown}
           onFocus={focus}
           onBlur={blur}
-          data-invalid={fi.airaProps["data-invalid"]}
+          data-invalid={fi.attrs["data-invalid"]}
         />
         {fi.mountValue &&
           <input

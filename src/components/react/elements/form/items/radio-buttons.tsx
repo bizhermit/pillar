@@ -138,7 +138,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
     <>
       <div
         {...fi.props}
-        {...fi.airaProps}
+        {...fi.attrs}
         className={joinClassNames("ipt-radio-btns", props.className)}
         ref={ref}
       >
@@ -162,7 +162,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
                 readOnly={readonly}
                 tabIndex={fi.tabIndex}
                 checked={!empty && equals(item[vdn], fi.value[vdn])}
-                data-invalid={fi.airaProps["data-invalid"]}
+                data-invalid={fi.attrs["data-invalid"]}
                 onChange={e => {
                   if (readonly || disabled || loading) return;
                   if (!e.target.checked && nullable === "unselectable") {

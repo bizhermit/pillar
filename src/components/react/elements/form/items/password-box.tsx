@@ -77,7 +77,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.airaProps}
+        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
       >
         <input
@@ -94,7 +94,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           autoComplete={autoComplete ?? "off"}
           inputMode={fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
-          data-invalid={fi.airaProps["data-invalid"]}
+          data-invalid={fi.attrs["data-invalid"]}
         />
         {!hideToggleButton && fi.showButtons &&
           <div

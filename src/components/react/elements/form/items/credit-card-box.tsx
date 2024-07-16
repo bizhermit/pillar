@@ -85,7 +85,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.airaProps}
+        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
       >
         <input
@@ -101,7 +101,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           autoComplete={autoComplete ?? "off"}
           inputMode="numeric"
           onChange={change}
-          data-invalid={fi.airaProps["data-invalid"]}
+          data-invalid={fi.attrs["data-invalid"]}
         />
         {fi.mountValue &&
           <input

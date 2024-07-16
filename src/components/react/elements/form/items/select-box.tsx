@@ -305,8 +305,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     <>
       <div
         {...fi.props}
-        {...fi.airaProps}
-        data-readonly={fi.airaProps["data-readonly"] || loading}
+        {...fi.attrs}
+        data-readonly={fi.attrs["data-readonly"] || loading}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
       >
@@ -319,7 +319,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           readOnly={fi.readOnly || loading}
           tabIndex={fi.tabIndex}
           autoComplete="off"
-          data-invalid={fi.airaProps["data-invalid"]}
+          data-invalid={fi.attrs["data-invalid"]}
           onClick={clickInput}
           onKeyDown={keydown}
           onChange={change}

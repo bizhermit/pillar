@@ -304,7 +304,7 @@ export const useFormItemCore = <
     reset,
     clear,
     props,
-    airaProps: {
+    attrs: {
       "data-required": $required,
       "data-disabled": disabled || form.disabled,
       "data-readonly": readOnly || form.pending,

@@ -343,7 +343,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     <>
       <div
         {...fi.props}
-        {...fi.airaProps}
+        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
       >
@@ -386,7 +386,8 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           onClick={() => click("d")}
           onChange={changeM}
           onKeyDown={keydownM}
-          data-invalid={fi.airaProps["data-invalid"]}
+          data-invalid={fi.attrs["data-invalid"]}
+          data-last={fi.dataItem.type === "month" ? "" : undefined}
         />
         {fi.dataItem.type !== "month" &&
           <>
@@ -410,7 +411,8 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
               onClick={() => click("d")}
               onChange={changeD}
               onKeyDown={keydownD}
-              data-invalid={fi.airaProps["data-invalid"]}
+              data-invalid={fi.attrs["data-invalid"]}
+              data-last=""
             />
           </>
         }
