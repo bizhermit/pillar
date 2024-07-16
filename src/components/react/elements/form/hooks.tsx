@@ -325,13 +325,11 @@ export const useFormItemCore = <
     clearButton: (clear: (() => void) | undefined) => (
       !hideClearButton && showButtons &&
       <div
-        className="ipt-btn"
+        className="ipt-btn ipt-clear"
         tabIndex={-1}
         data-disabled={!editable || !clear}
         onClick={clear}
-      >
-        ×
-      </div>
+      />
     ),
   } as const;
 };

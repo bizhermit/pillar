@@ -31,6 +31,8 @@
     --ipt-fg-err: #171717;
     --ipt-bg-clr: #4fbfff;
     --ipt-fg-clr: #f8f8f8;
+    --week-sun: rgb(255, 210, 210);
+    --week-sat: rgb(210, 220, 255);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -51,6 +53,8 @@
       --ipt-fg-err: #f8f8f8;
       --ipt-bg-clr: #5f9fdf;
       --ipt-fg-clr: #f8f8f8;
+      --week-sun: rgb(70, 20, 20);
+      --week-sat: rgb(20, 30, 70);
     }
   }
 

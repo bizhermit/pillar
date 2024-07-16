@@ -296,6 +296,19 @@ export default function Home() {
           </FormButton>
           <span>{formItem.value}</span>
         </div>
+        {/* <DatePicker
+          // initValue={new Date()}
+          // initValue={new Date(2024, 2, 1)}
+          // firstWeek={1}
+          minDate={new Date(2024, 6, 3)}
+          maxDate={new Date(2024, 8, 24)}
+          onSelect={(params) => {
+            console.log("datepicker", params);
+          }}
+          onCancel={() => {
+            console.log("datepicker cancel");
+          }}
+        /> */}
       </Form>
       <div className={s.row}>
         <Button

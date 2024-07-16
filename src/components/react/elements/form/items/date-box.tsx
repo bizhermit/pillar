@@ -1,8 +1,8 @@
-import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, useMemo, useRef } from "react";
+import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, useEffect, useMemo, useReducer, useRef, type WheelEvent } from "react";
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
 import { equals } from "../../../../objects";
-import { formatDate, getFirstDateAtMonth, getLastDateAtMonth, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
+import { addDay, equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, Week, withoutTime } from "../../../../objects/date";
 import { isEmpty } from "../../../../objects/string";
 import { setValue } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
@@ -147,7 +147,6 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         element: anchorElem,
         x: "inner",
         y: "outer",
-        width: "fill",
       },
       callbackBeforeAnimation: () => {
         if (opts?.focusTarget) {
@@ -439,14 +438,266 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           mobile
           className="ipt-dialog"
         >
-          <div
-            className="ipt-dialog-date"
-          >
-            DatePickerめんどい
-          </div>
+          <DatePicker
+            initValue={$initFocusDate}
+            minDate={minDate}
+            maxDate={maxDate}
+            dialog
+            preventSelectedRender
+            values={empty ? undefined : [fi.value?.date!]}
+            onSelect={({ date, str }) => {
+              fi.set({ value: { date, str }, edit: true, effect: true });
+              closeDialog(true);
+            }}
+            onCancel={() => {
+              closeDialog(true);
+            }}
+          />
         </Dialog>
       </div>
       {fi.messageComponent}
     </>
+  );
+};
+
+type DatePickerProps = {
+  multiple?: boolean;
+  values?: Array<Date>;
+  initValue?: Date;
+  minDate?: Date;
+  maxDate?: Date;
+  firstWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  dialog?: boolean;
+  preventSelectedRender?: boolean;
+  onSelect?: (params: { date: Date; str: string; action?: "clear"; }) => void;
+  onCancel?: () => void;
+};
+
+export const DatePicker = (props: DatePickerProps) => {
+  const values = props.values ?? (props.initValue ? [props.initValue] : []);
+
+  const [dispDate, setDispDate] = useReducer((state: Date, { date, act }: { date: Date; act?: "select" | "effect"; }) => {
+    if (state.getMonth() === date.getMonth() && state.getFullYear() === date.getFullYear()) return state;
+    if (props.preventSelectedRender && act === "select") return state;
+    return date;
+  }, getFirstDateAtMonth(values?.[0] ?? new Date()));
+  const yNum = dispDate.getFullYear();
+  const mNum = dispDate.getMonth();
+  const dNum = dispDate.getDate();
+
+  const memorizedValue = (values ?? []).map(v => formatDate(v)).join("");
+
+  const minDate = props.minDate ?? new Date(1900, 0, 1);
+  const maxDate = props.maxDate ?? new Date(2100, 11, 31);
+
+  const weekCells = useMemo(() => {
+    const cells = [];
+    for (let i = 0; i < 7; i++) {
+      const w = (i + (props.firstWeek ?? 0)) % 7;
+      cells.push(
+        <div
+          key={w}
+          className="ipt-dp-cell"
+          data-week={w}
+        >
+          {Week.ja_s[w]}
+        </div>
+      );
+    }
+    return cells;
+  }, [props.firstWeek]);
+
+  const dayCells = useMemo(() => {
+    const cells = [];
+    const w = dispDate.getDay();
+    const isSelected = (d: Date) => values?.some(v => equalDate(v, d));
+    let hasToday = false;
+    const today = new Date();
+    const isToday = (d: Date) => !hasToday && equalDate(today, d);
+    let hasOverMinDate = false;
+    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(minDate, d));
+    let hasReachedMaxDate = false;
+    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = isAfterDate(maxDate, d));
+
+    const prevDayCount = (w > 3 ? w : 7 + w) - (props.firstWeek ?? 0);
+    const cursorDate = addDay(new Date(dispDate), -(prevDayCount + 1));
+
+    const getCellComponent = ({ key, attrs }: { key: string; attrs?: { [v: string]: string | undefined } }) => {
+      const date = addDay(cursorDate, 1);
+      const selected = isSelected(date);
+      const str = formatDate(date);
+      const selectable = overMaxDate(date) && !reachedMaxDate(date);
+
+      return (
+        <div
+          {...attrs}
+          key={key}
+          className="ipt-dp-cell"
+          data-selected={selected}
+          data-disabled={!selectable}
+          data-current={isToday(date)}
+          onClick={!selectable ? undefined : () => {
+            const date = parseDate(str)!;
+            props.onSelect?.({
+              date, str,
+              action: selected && props.multiple ? "clear" : undefined,
+            });
+            setDispDate({
+              date: new Date(date.getFullYear(), date.getMonth(), 1),
+              act: "select",
+            });
+          }}
+        >
+          {date.getDate()}
+        </div>
+      );
+    };
+
+    for (let i = 0; i < prevDayCount; i++) {
+      cells.push(getCellComponent({ key: `p-${i}`, attrs: { "data-prev": "" } }));
+    }
+
+    for (let i = 0, il = getLastDateAtMonth(dispDate).getDate(); i < il; i++) {
+      cells.push(getCellComponent({ key: `c-${i}` }));
+    }
+
+    let nextDayCount = 7 - cells.length % 7;
+    if (nextDayCount < 4) nextDayCount += 7;
+    for (let i = 0; i < nextDayCount; i++) {
+      cells.push(getCellComponent({ key: `n-${i}`, attrs: { "data-next": "" } }));
+    }
+
+    return cells;
+  }, [yNum, mNum, dNum, memorizedValue]);
+
+  const prevYearDisabled = yNum - 1 < minDate.getFullYear();
+  const prevYear = () => {
+    if (prevYearDisabled) return;
+    setDispDate({ date: new Date(yNum - 1, mNum, 1) });
+  };
+
+  const nextYearDisabled = yNum + 1 > maxDate.getFullYear();
+  const nextYear = () => {
+    if (nextYearDisabled) return;
+    setDispDate({ date: new Date(yNum + 1, mNum, 1) });
+  };
+
+  const prevMonthDisabled = (() => {
+    let m = mNum - 1;
+    const y = m < 0 ? yNum - 1 : yNum;
+    m = (m + 12) % 12;
+    return y * 100 + m < minDate.getFullYear() * 100 + minDate.getMonth();
+  })();
+  const prevMonth = () => {
+    if (prevMonthDisabled) return;
+    setDispDate({ date: new Date(yNum, mNum - 1, 1) });
+  };
+
+  const nextMonthDisabled = (() => {
+    let m = mNum + 1;
+    const y = m >= 12 ? yNum + 1 : yNum;
+    m = m % 12;
+    return y * 100 + m > maxDate.getFullYear() * 100 + maxDate.getMonth();
+  })();
+  const nextMonth = () => {
+    if (nextMonthDisabled) return;
+    setDispDate({ date: new Date(yNum, mNum + 1, 1) });
+  };
+
+  const wheel = (e: WheelEvent<HTMLDivElement>) => {
+    if (e.deltaY > 0) nextMonth();
+    else prevMonth();
+  };
+
+  const selectToday = () => {
+    const date = withoutTime(new Date());
+    props.onSelect?.({ date, str: formatDate(date), action: undefined });
+    setDispDate({ date, act: "select" });
+  };
+
+  useEffect(() => {
+    setDispDate({
+      date: getFirstDateAtMonth(values[0] ?? new Date()),
+      act: "effect",
+    });
+  }, [memorizedValue]);
+
+  return (
+    <div
+      className="ipt-dp"
+      data-dialog={props.dialog}
+    >
+      <div
+        className="ipt-dp-main"
+        onWheel={wheel}
+      >
+        <div className="ipt-dp-year">
+          <div
+            className="ipt-btn ipt-prev"
+            onClick={prevYear}
+            data-disabled={prevYearDisabled}
+          />
+          <span>
+            {yNum}
+          </span>
+          <div
+            className="ipt-btn ipt-next"
+            onClick={nextYear}
+            data-disabled={nextYearDisabled}
+          />
+        </div>
+        <span className="ipt-dp-sep">/</span>
+        <div className="ipt-dp-month">
+          <div
+            className="ipt-btn ipt-prev"
+            onClick={prevMonth}
+            data-disabled={prevMonthDisabled}
+          />
+          <span>
+            {mNum + 1}
+          </span>
+          <div
+            className="ipt-btn ipt-next"
+            onClick={nextMonth}
+            data-disabled={nextMonthDisabled}
+          />
+        </div>
+        <div className="ipt-dp-week">
+          {weekCells}
+        </div>
+        <div className="ipt-dp-date">
+          {dayCells}
+        </div>
+      </div>
+      <div className="ipt-dp-btns">
+        {props.onCancel &&
+          <div
+            className="ipt-btn"
+            onClick={() => {
+              props.onCancel!();
+            }}
+          >
+            キャンセル
+          </div>
+        }
+        <div
+          className="ipt-btn"
+          onClick={selectToday}
+        >
+          今日
+        </div>
+        <div
+          className="ipt-btn"
+          onClick={() => {
+            setDispDate({
+              date: getFirstDateAtMonth(values[0] ?? new Date()),
+              act: "effect",
+            });
+          }}
+        >
+          戻す
+        </div>
+      </div>
+    </div>
   );
 };
