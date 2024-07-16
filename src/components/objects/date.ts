@@ -134,6 +134,15 @@ export const validDateContext = (before: Date | null | undefined, after: Date | 
   return getDaysDiff(before, after) >= 0;
 };
 
+export const getAge = (birth: Date, target: Date) => {
+  let age = target.getFullYear() - birth.getFullYear();
+  let monthDiff = target.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && target.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
+};
+
 // convert
 
 export const joinSplittedDate = (y: string | undefined, m: string | undefined, d: string | undefined) => {
