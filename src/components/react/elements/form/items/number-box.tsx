@@ -201,11 +201,13 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
               <div
                 className="ipt-btn ipt-num-spin-inc"
                 data-disabled={!fi.editable}
+                tabIndex={-1}
                 onMouseDown={() => mousedown("up")}
               />
               <div
                 className="ipt-btn ipt-num-spin-dec"
                 data-disabled={!fi.editable}
+                tabIndex={-1}
                 onMouseDown={() => mousedown("down")}
               />
             </div>

@@ -272,18 +272,12 @@
     align-items: stretch;
     width: calc(var(--ipt-size) * 0.8);
 
-    &:not(:has(.ipt-btn:active)) {
+    &:has(.ipt-btn:active) {
 
       >.ipt-num-spin-inc,
       >.ipt-num-spin-dec {
-        &:not([data-disabled="true"]) {
-          &:hover {
-            background: var(--ipt-fg);
-
-            &::before {
-              background: var(--ipt-bg);
-            }
-          }
+        &:not(:active) {
+          pointer-events: none;
         }
       }
     }
