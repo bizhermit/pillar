@@ -18,7 +18,7 @@ import { SelectBox } from "@/react/elements/form/items/select-box";
 import { Slider } from "@/react/elements/form/items/slider";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
-import { FormItemWrap } from "@/react/elements/form/wrap";
+import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { sleep } from "@/utilities/sleep";
 import { useRef, useState } from "react";
 import s from "./page.module.css";
@@ -263,28 +263,33 @@ export default function Home() {
             />
           </FormItemWrap>
           <input type="date" />
-          <FormItemWrap>
-            <DateBox
-              label="From"
-              name="date"
-              placeholder="年月日"
-              required
-              disabled={disabled.value}
-              readOnly={readOnly.value}
-              pair={{
-                name: "date-after",
-                position: "after",
-              }}
-            />
-            <DateBox
-              label="To"
-              name="date-after"
-              placeholder={["yyyy", "m", "d"]}
-              required
-              disabled={disabled.value}
-              readOnly={readOnly.value}
-            />
-          </FormItemWrap>
+          <FormItemRange
+            from={
+              <DateBox
+                label="From"
+                name="date"
+                placeholder="年月日"
+                required
+                disabled={disabled.value}
+                readOnly={readOnly.value}
+                pair={{
+                  name: "date-after",
+                  position: "after",
+                }}
+              />
+            }
+            to={
+              <DateBox
+                label="To"
+                name="date-after"
+                placeholder={["yyyy", "m", "d"]}
+                required
+                disabled={disabled.value}
+                readOnly={readOnly.value}
+              />
+            }
+          />
+
           <FormItemWrap>
             <DateBox
               type="month"
