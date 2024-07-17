@@ -33,7 +33,7 @@
     &.ipt-date {
       .ipt-sep {
         &:not(:last-of-type) {
-          margin-right: 0.4rem;
+          margin-right: 0.2rem;
         }
       }
 
