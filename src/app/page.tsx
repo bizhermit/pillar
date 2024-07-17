@@ -9,6 +9,7 @@ import { useFormItem } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
 import { DateBox } from "@/react/elements/form/items/date-box";
+import { DateSelectBox } from "@/react/elements/form/items/date-select-box";
 import { FileButton } from "@/react/elements/form/items/file-button";
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
@@ -210,7 +211,7 @@ export default function Home() {
               required
               initFocusValue={10}
               source={async () => {
-                await sleep(3000);
+                // await sleep(3000);
                 const arr = [];
                 for (let i = 0; i < 100; i++) {
                   arr.push({ value: i, label: `item-${i}` });
@@ -285,6 +286,25 @@ export default function Home() {
               type="month"
               label="month"
               name="month"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <DateSelectBox
+              label="日付"
+              name="date-select"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <DateSelectBox
+              type="month"
+              label="年月"
+              name="month-select"
               required
               disabled={disabled.value}
               readOnly={readOnly.value}

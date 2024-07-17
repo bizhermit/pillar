@@ -124,7 +124,11 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   }, [fi.dataItem.max]);
 
   const $initFocusDate = useMemo(() => {
-    return withoutTime(parseDate(initFocusDate) ?? new Date());
+    return withoutTime(parseDate(initFocusDate) ?? (() => {
+      const d = withoutTime(new Date());
+      if (fi.dataItem.type === "month") d.setDate(1);
+      return d;
+    })());
   }, [initFocusDate]);
 
   const empty = isEmpty(fi.value?.str);
