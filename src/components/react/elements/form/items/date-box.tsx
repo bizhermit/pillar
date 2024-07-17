@@ -168,6 +168,10 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     showDialog({ focusTarget: target });
   };
 
+  const focus = (e: FocusEvent<HTMLInputElement>) => {
+    e.currentTarget.select();
+  };
+
   const blur = (e: FocusEvent<HTMLDivElement>) => {
     let elem = e.relatedTarget;
     while (elem) {
@@ -367,6 +371,8 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           onClick={() => click("y")}
           onChange={changeY}
           onKeyDown={keydownY}
+          onFocus={focus}
+          data-invalid={fi.attrs["data-invalid"]}
         />
         <span
           className="ipt-sep"
@@ -393,6 +399,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           onClick={() => click("d")}
           onChange={changeM}
           onKeyDown={keydownM}
+          onFocus={focus}
           data-invalid={fi.attrs["data-invalid"]}
           data-last={fi.dataItem.type === "month" ? "" : undefined}
         />
@@ -419,6 +426,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
               onClick={() => click("d")}
               onChange={changeD}
               onKeyDown={keydownD}
+              onFocus={focus}
               data-invalid={fi.attrs["data-invalid"]}
               data-last=""
             />

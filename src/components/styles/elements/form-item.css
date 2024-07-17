@@ -69,6 +69,7 @@
     align-items: stretch;
     min-width: 0;
     max-width: 100%;
+    border-radius: 1px;
     transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 
     &:focus-within {
@@ -332,7 +333,8 @@
   .ipt-sep {
     display: grid;
     place-items: center;
-    height: min(var(--ipt-size), 100%);
+    height: var(--ipt-size);
+    max-height: 100%;
   }
 
   .ipt-date-y,

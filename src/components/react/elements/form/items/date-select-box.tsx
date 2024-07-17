@@ -223,14 +223,20 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
           if (cache.current.y == null) {
             showDialog("y");
           } else if (cache.current.m != null && fi.dataItem.type !== "month") {
-            showDialog("d");
+            if (cache.current.d == null) showDialog("d");
+            else dref.current?.focus();
           } else {
             focusInput(target);
           }
           break;
         default:
           if (cache.current.y != null) {
-            showDialog("m");
+            if (cache.current.m == null) {
+              showDialog("m");
+            } else {
+              if (cache.current.d == null) showDialog("d");
+              else mref.current?.focus();
+            }
           } else {
             focusInput(target);
           }
@@ -444,6 +450,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     }
   };
 
+  const focus = (e: FocusEvent<HTMLInputElement>) => {
+    e.currentTarget.select();
+  };
+
   const clear = () => {
     if (!fi.editable || selectEmpty) return;
     fi.set({ value: undefined, edit: true, effect: true, parse: true });
@@ -606,6 +616,8 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             defaultValue={fi.value?.date?.getFullYear()}
             onChange={changeY}
             onKeyDown={keydownY}
+            onFocus={focus}
+            data-invalid={fi.attrs["data-invalid"]}
           />
           {fi.showButtons &&
             <div
@@ -654,6 +666,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             })()}
             onChange={changeM}
             onKeyDown={keydownM}
+            onFocus={focus}
             data-invalid={fi.attrs["data-invalid"]}
           />
           {fi.showButtons &&
@@ -701,6 +714,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                 defaultValue={fi.value?.d ?? ""}
                 onChange={changeD}
                 onKeyDown={keydownD}
+                onFocus={focus}
                 data-invalid={fi.attrs["data-invalid"]}
               />
               {fi.showButtons &&
