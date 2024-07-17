@@ -736,7 +736,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             disabled={fi.disabled}
           />
         }
-        {fi.clearButton(selectEmpty ? undefined : clear)}
+        {!selectEmpty && fi.clearButton(selectEmpty ? undefined : clear)}
       </div>
       {fi.messageComponent}
     </>
