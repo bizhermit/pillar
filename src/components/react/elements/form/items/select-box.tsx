@@ -257,6 +257,10 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
       case "F2":
         showDialog({ preventFocus: true });
         break;
+      case "Enter":
+        iref.current.value = fi.value?.[ldn] ?? "";
+        closeDialog();
+        break;
       case "Escape":
         closeDialog();
         break;

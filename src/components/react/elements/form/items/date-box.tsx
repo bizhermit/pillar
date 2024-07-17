@@ -74,7 +74,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   };
 
   const fi = useFormItemCore<DataItem.$date | DataItem.$month, D, string, DataValue>(props, {
-    dataItemDeps: [min, max, pair?.name, pair?.position, pair?.same],
+    dataItemDeps: [type, min, max, pair?.name, pair?.position, pair?.same],
     getDataItem: ({ dataItem, refs }) => {
       const $pair = pair ?? dataItem?.pair;
       return {
@@ -261,6 +261,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         break;
       case "Enter":
         renderInputs(fi.value);
+        closeDialog();
         break;
       case "ArrowUp":
         updown(1, 0, 0);
@@ -283,6 +284,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         break;
       case "Enter":
         renderInputs(fi.value);
+        closeDialog();
         break;
       case "Backspace":
         if (e.currentTarget.value.length === 0) yref.current?.focus();
@@ -308,6 +310,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         break;
       case "Enter":
         renderInputs(fi.value);
+        closeDialog();
         break;
       case "Backspace":
         if (e.currentTarget.value.length === 0) mref.current?.focus();
@@ -376,7 +379,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           inputMode="numeric"
           defaultValue={(() => {
             const m = fi.value?.date?.getMonth();
-            if (m == null) return undefined;
+            if (m == null) return "";
             return m + 1;
           })()}
           onClick={() => click("d")}
