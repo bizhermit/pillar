@@ -637,7 +637,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             disabled={fi.disabled}
             readOnly={fi.readOnly}
             tabIndex={fi.tabIndex}
-            maxLength={4}
+            maxLength={2}
             autoComplete="off"
             inputMode="numeric"
             defaultValue={(() => {
@@ -684,7 +684,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                 disabled={fi.disabled}
                 readOnly={fi.readOnly}
                 tabIndex={fi.tabIndex}
-                maxLength={4}
+                maxLength={2}
                 autoComplete="off"
                 inputMode="numeric"
                 defaultValue={fi.value?.d ?? ""}

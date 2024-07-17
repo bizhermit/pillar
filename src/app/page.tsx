@@ -137,7 +137,7 @@ export default function Home() {
               label="テキスト"
               defaultValue="hoge"
               required={(p) => {
-                console.log((p.data?.slider ?? 0) > 50);
+                // console.log((p.data?.slider ?? 0) > 50);
                 return (p.data?.slider ?? 0) > 50;
               }}
               refs={["slider"]}
