@@ -19,7 +19,7 @@ type FormItemCoreArgs<
   }) => DataItem.ArgObject<SD>;
   parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
   revert?: (v: IV | null | undefined) => (V | null | undefined);
-  equals?: (v1: IV | null | undefined, v2: IV | null | undefined) => boolean;
+  equals?: (v1: IV | null | undefined, v2: IV | null | undefined, params: { dataItem: DataItem.ArgObject<SD>; }) => boolean;
   validation: (props: {
     dataItem: DataItem.ArgObject<SD>;
     iterator: (funcs: Array<DataItem.Validation<any>>, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
@@ -159,7 +159,7 @@ export const useFormItemCore = <
   };
   const [dyanmicRequired, setDyanmicRequired] = useState(getDynamicRequired);
 
-  const hasChanged = () => !(cp.equals ?? equals)(cache.current, valRef.current);
+  const hasChanged = () => !(cp.equals ?? equals)(cache.current, valRef.current, { dataItem });
   const mountValue = hasChanged();
 
   const setState = (state: DataItem.ValidationResult | null | undefined) => {
@@ -184,7 +184,7 @@ export const useFormItemCore = <
       v = val;
       parseRes = msg;
     }
-    if (!(cp.equals ?? equals)(before, v)) {
+    if (!(cp.equals ?? equals)(before, v, { dataItem })) {
       const validRes = parseRes?.type === "e" ? undefined : doValidation(v);
       const res = validRes ?? parseRes;
       setState(res);
