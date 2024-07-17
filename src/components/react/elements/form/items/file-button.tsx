@@ -25,7 +25,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
   const bref = useRef<HTMLButtonElement>(null!);
 
   const focusInput = () => {
-
+    bref.current?.focus();
   };
 
   const fi = useFormItemCore<DataItem.$file, D, File, File>(props, {
@@ -94,7 +94,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
       <div
         {...fi.props}
         {...fi.attrs}
-        className={joinClassNames("ipt-file", props.className)}
+        className={joinClassNames("ipt-row", props.className)}
       >
         <Button
           ref={bref}
@@ -105,7 +105,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
         </Button>
         <input
           ref={iref}
-          className="ipt-file-hidden"
+          className="ipt-file"
           type="file"
           name={fi.mountValue ? fi.name : undefined}
           accept={fi.dataItem.accept}
