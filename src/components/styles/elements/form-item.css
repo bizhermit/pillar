@@ -368,6 +368,10 @@
 
   .ipt-dp-year {
     grid-column: 1 / 2;
+
+    &[data-type="month"] {
+      grid-column: 1 / 4;
+    }
   }
 
   .ipt-dp-sep {
@@ -378,6 +382,20 @@
 
   .ipt-dp-month {
     grid-column: 3 / 4;
+
+    &[data-type="month"] {
+      height: unset;
+      flex: 1 1 0rem;
+      cursor: not-allowed;
+      grid-column: 1 / 4;
+      grid-row: 2 / 4;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      border-top: 1px solid var(--sdw);
+      padding: 2px;
+      gap: 2px;
+    }
   }
 
   .ipt-dp-week {
@@ -389,11 +407,12 @@
     grid-row: 2 / 3;
     border-top: 1px solid var(--sdw);
     border-bottom: 1px solid var(--sdw);
-    
+
     .ipt-dp-cell {
       width: calc(100% / 7);
       font-size: 1.2rem;
       line-height: 1.5rem;
+      pointer-events: none;
 
       &[data-week="0"] {
         background: var(--week-sun);
@@ -407,44 +426,13 @@
 
   .ipt-dp-date {
     flex: 1 1 0rem;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     grid-column: 1 / 4;
     grid-row: 3 / 4;
     cursor: not-allowed;
-
-    .ipt-dp-cell {
-      width: calc(100% / 7);
-      border-radius: 2px;
-
-      &:not([data-disabled="true"]) {
-        cursor: pointer;
-      }
-
-      &:hover {
-        background: var(--ipt-fg);
-        color: var(--ipt-bg);
-      }
-
-      &[data-selected="true"] {
-        background: var(--ipt-bg-clr);
-        color: var(--ipt-fg-clr)
-      }
-
-      &[data-current="true"] {
-        border: 1px solid var(--sdw);
-      }
-
-      &:is([data-prev], [data-next]) {
-        opacity: 0.6;
-
-        &[data-disabled="true"] {
-          opacity: 0.2;
-        }
-      }
-    }
+    padding: 2px;
+    gap: 2px;
   }
 
   .ipt-dp-cell {
@@ -452,10 +440,37 @@
     place-items: center;
     font-size: 1.4rem;
     user-select: none;
+    border-radius: 2px;
     transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 
     &[data-disabled="true"] {
       opacity: 0.3;
+    }
+
+    &:not([data-disabled="true"]) {
+      cursor: pointer;
+    }
+
+    &:hover {
+      background: var(--ipt-fg);
+      color: var(--ipt-bg);
+    }
+
+    &[data-selected="true"] {
+      background: var(--ipt-bg-clr);
+      color: var(--ipt-fg-clr)
+    }
+
+    &[data-current="true"] {
+      border: 1px solid var(--sdw);
+    }
+
+    &:is([data-prev], [data-next]) {
+      opacity: 0.6;
+
+      &[data-disabled="true"] {
+        opacity: 0.2;
+      }
     }
   }
 

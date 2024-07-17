@@ -281,6 +281,16 @@ export default function Home() {
             />
           </FormItemWrap>
           <FormItemWrap>
+            <DateBox
+              type="month"
+              label="month"
+              name="month"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
             <FileButton
               name="file"
             >
@@ -297,11 +307,12 @@ export default function Home() {
           <span>{formItem.value}</span>
         </div>
         {/* <DatePicker
+          type="month"
           // initValue={new Date()}
           // initValue={new Date(2024, 2, 1)}
           // firstWeek={1}
-          minDate={new Date(2024, 6, 3)}
-          maxDate={new Date(2024, 8, 24)}
+          minDate={new Date(2024, 2, 1)}
+          maxDate={new Date(2024, 8, 30)}
           onSelect={(params) => {
             console.log("datepicker", params);
           }}
