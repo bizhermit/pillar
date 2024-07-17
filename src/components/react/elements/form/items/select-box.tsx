@@ -238,6 +238,20 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     showDialog({ preventFocus: true });
   };
 
+  const selectItemByText = (commit?: boolean) => {
+    const text = iref.current.value;
+    const item = origin.find(item => equals(item[ldn], text));
+    if (item == null) {
+      if (commit) {
+        fi.set({ value: undefined, edit: true, effect: true });
+        return;
+      }
+      iref.current.value = fi.value?.[ldn] || "";
+      return;
+    }
+    fi.set({ value: item, edit: true, effect: true });
+  };
+
   const blur = (e: FocusEvent<HTMLDivElement>) => {
     let elem = e.relatedTarget;
     while (elem) {
@@ -248,7 +262,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
       elem = elem.parentElement;
     }
     closeDialog();
-    iref.current.value = fi.value?.[ldn] || "";
+    selectItemByText();
     props.onBlur?.(e);
   };
 
@@ -258,8 +272,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         showDialog({ preventFocus: true });
         break;
       case "Enter":
-        iref.current.value = fi.value?.[ldn] ?? "";
         closeDialog();
+        selectItemByText(true);
         break;
       case "Escape":
         closeDialog();
