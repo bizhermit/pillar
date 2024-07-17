@@ -29,6 +29,7 @@ type SelectBoxOptions<D extends DataItem.$str | DataItem.$num | DataItem.$boolAn
     initFocusValue?: D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean;
     emptyItem?: boolean | string | { value: (D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean) | null | undefined; label: string; };
     tieInNames?: Array<{ dataName: string; hiddenName?: string }>;
+    placeholder?: string;
   };
 
 type SelectBoxProps<D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData> =
@@ -45,6 +46,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   initFocusValue,
   emptyItem,
   tieInNames,
+  placeholder,
   ...props
 }: SelectBoxProps<D, S>) => {
   const iref = useRef<HTMLInputElement>(null!);
@@ -332,7 +334,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           ref={iref}
           className="ipt-txt"
           type="text"
-          placeholder={fi.editable ? fi.placeholder : ""}
+          placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly || loading}
           tabIndex={fi.tabIndex}

@@ -11,6 +11,7 @@ import { type TextBoxProps } from "./text-box";
 type PasswordBoxProps<D extends DataItem.$str | undefined> = TextBoxProps<D> & {
   minimumValidation?: boolean;
   hideToggleButton?: boolean;
+  placeholder?: string;
 };
 
 export const PasswordBox = <D extends DataItem.$str | undefined>({
@@ -22,6 +23,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
   autoComplete,
   minimumValidation,
   hideToggleButton,
+  placeholder,
   ...props
 }: PasswordBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
@@ -85,7 +87,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           className="ipt-txt"
           type={type}
           name={fi.mountValue ? fi.name : undefined}
-          placeholder={fi.editable ? fi.placeholder : ""}
+          placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}

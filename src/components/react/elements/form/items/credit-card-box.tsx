@@ -16,6 +16,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
   maxLength,
   charType,
   autoComplete,
+  placeholder,
   ...props
 }: CreditCardNumberBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
@@ -92,7 +93,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           ref={iref}
           className="ipt-txt"
           type="text"
-          placeholder={fi.editable ? fi.placeholder : ""}
+          placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}

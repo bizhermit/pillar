@@ -26,7 +26,6 @@ type FormItemOptions<
 > = {
   name?: string;
   label?: string;
-  placeholder?: string;
   disabled?: boolean;
   readOnly?: boolean;
   required?: boolean | ((props: DataItem.ValidationProps<D>) => boolean);

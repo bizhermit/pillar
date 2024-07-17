@@ -19,6 +19,7 @@ type DateBoxOptions<D extends DataItem.$date | DataItem.$month | undefined> =
     max?: string;
     pair?: DataItem.$date["pair"];
     initFocusDate?: string;
+    placeholder?: string | [string, string] | [string, string, string];
   };
 
 type DateBoxProps<D extends DataItem.$date | DataItem.$month | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, DateBoxOptions<D>>;
@@ -34,6 +35,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   max,
   pair,
   initFocusDate,
+  placeholder,
   ...props
 }: DateBoxProps<D>) => {
   const yref = useRef<HTMLInputElement>(null!);
@@ -354,6 +356,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           ref={yref}
           type="text"
           className="ipt-txt ipt-date-y"
+          placeholder={fi.editable ? placeholder?.[0] : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
@@ -375,6 +378,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           ref={mref}
           type="text"
           className="ipt-txt ipt-date-m"
+          placeholder={fi.editable ? placeholder?.[1] : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
@@ -404,6 +408,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
               ref={dref}
               type="text"
               className="ipt-txt ipt-date-d"
+              placeholder={fi.editable ? placeholder?.[2] : ""}
               disabled={fi.disabled}
               readOnly={fi.readOnly}
               tabIndex={fi.tabIndex}

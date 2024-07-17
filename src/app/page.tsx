@@ -208,6 +208,7 @@ export default function Home() {
             <SelectBox
               label="セレクトボックス"
               name="select"
+              placeholder="セレクトボックス"
               required
               initFocusValue={10}
               source={async () => {
@@ -266,6 +267,7 @@ export default function Home() {
             <DateBox
               label="From"
               name="date"
+              placeholder="年月日"
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
@@ -277,6 +279,7 @@ export default function Home() {
             <DateBox
               label="To"
               name="date-after"
+              placeholder={["yyyy", "m", "d"]}
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
@@ -296,6 +299,7 @@ export default function Home() {
             <DateSelectBox
               label="日付"
               name="date-select"
+              placeholder="年月日"
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
@@ -306,6 +310,7 @@ export default function Home() {
               type="month"
               label="年月"
               name="month-select"
+              placeholder={["y", "m"]}
               required
               disabled={disabled.value}
               readOnly={readOnly.value}

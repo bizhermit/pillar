@@ -48,7 +48,6 @@ export const useFormItemCore = <
     hook,
     name,
     label,
-    placeholder,
     disabled,
     readOnly,
     required,
@@ -282,7 +281,6 @@ export const useFormItemCore = <
   return {
     name: dataItem.name,
     label,
-    placeholder,
     tabIndex,
     mountValue,
     disabled: $disabled,
@@ -310,7 +308,6 @@ export const useFormItemCore = <
       "data-readonly": readOnly || form.pending,
       "data-invalid": editable && msg?.type === "e",
       "data-label": $dataItem?.label,
-      "data-placeholder": placeholder,
       "data-changed": mountValue,
     },
     message: msg,

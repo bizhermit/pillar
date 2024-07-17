@@ -16,6 +16,7 @@ type NumberBoxOptions<D extends DataItem.$num | undefined> = FormItemOptions<D, 
   preventThousandSeparate?: boolean;
   step?: number;
   hideSpinButtons?: boolean;
+  placeholder?: string;
 };
 
 type NumberBoxProps<D extends DataItem.$num | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, NumberBoxOptions<D>>;
@@ -29,6 +30,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   preventThousandSeparate,
   step,
   hideSpinButtons,
+  placeholder,
   ...props
 }: NumberBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
@@ -173,7 +175,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           ref={iref}
           className="ipt-num"
           type="text"
-          placeholder={fi.editable ? fi.placeholder : ""}
+          placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}

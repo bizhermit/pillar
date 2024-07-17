@@ -14,6 +14,7 @@ type TextBoxOptions<D extends DataItem.$str | undefined> = FormItemOptions<D, D 
   charType?: DataItem.$str["charType"];
   inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
   autoComplete?: string;
+  placeholder?: string;
 };
 
 export type TextBoxProps<D extends DataItem.$str | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TextBoxOptions<D>>;
@@ -25,6 +26,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
   charType,
   inputMode,
   autoComplete,
+  placeholder,
   ...props
 }: TextBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
@@ -72,7 +74,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           className="ipt-txt"
           type="text"
           name={fi.mountValue ? fi.name : undefined}
-          placeholder={fi.editable ? fi.placeholder : ""}
+          placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
