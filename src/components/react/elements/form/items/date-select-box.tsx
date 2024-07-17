@@ -621,7 +621,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             mobile
             className="ipt-dialog"
           >
-            <div className="ipt-dialog-list">
+            <div
+              className="ipt-dialog-list"
+              data-align="center"
+            >
               {yearItems}
             </div>
           </Dialog>
@@ -667,7 +670,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             mobile
             className="ipt-dialog"
           >
-            <div className="ipt-dialog-list">
+            <div
+              className="ipt-dialog-list"
+              data-align="center"
+            >
               {monthItems}
             </div>
           </Dialog>
@@ -711,7 +717,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                 mobile
                 className="ipt-dialog"
               >
-                <div className="ipt-dialog-list">
+                <div
+                  className="ipt-dialog-list"
+                  data-align="center"
+                >
                   {dayItems}
                 </div>
               </Dialog>

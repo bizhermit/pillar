@@ -797,6 +797,12 @@
     align-items: stretch;
     max-height: calc(50svh - var(--ipt-size));
     z-index: 0;
+
+    &[data-align="center"] {
+      .ipt-dialog-list-item {
+        place-items: center;
+      }
+    }
   }
 
   .ipt-dialog-list-item {
