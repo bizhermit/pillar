@@ -421,7 +421,6 @@
     &[data-type="month"] {
       height: unset;
       flex: 1 1 0rem;
-      cursor: not-allowed;
       grid-column: 1 / 4;
       grid-row: 2 / 4;
       display: grid;
@@ -465,7 +464,6 @@
     grid-template-columns: repeat(7, 1fr);
     grid-column: 1 / 4;
     grid-row: 3 / 4;
-    cursor: not-allowed;
     padding: 2px;
     gap: 2px;
   }
@@ -480,6 +478,7 @@
 
     &[data-disabled="true"] {
       opacity: 0.3;
+      cursor: not-allowed;
     }
 
     &:not([data-disabled="true"]) {

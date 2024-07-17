@@ -261,6 +261,7 @@ export default function Home() {
               ]}
             />
           </FormItemWrap>
+          <input type="date" />
           <FormItemWrap>
             <DateBox
               label="From"
