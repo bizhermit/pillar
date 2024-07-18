@@ -762,7 +762,7 @@
 
   }
 
-  .ipt-radio-btns {
+  .ipt-items {
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;

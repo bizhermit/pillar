@@ -1,8 +1,8 @@
-import { getObjectType } from "../../objects";
+import { equals, getObjectType } from "../../objects";
 
 const defaultLabel = "値";
 
-export const $arrayValidations = (dataItem: DataItem.ArgObject<DataItem.$array<any>>): Array<DataItem.Validation<DataItem.$array<any>>> => {
+export const $arrayValidations = (dataItem: DataItem.ArgObject<DataItem.$array<any>>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$array<any>>> => {
   const validations: Array<DataItem.Validation<DataItem.$array<any>>> = [];
 
   const label = dataItem.label || defaultLabel;
@@ -49,6 +49,15 @@ export const $arrayValidations = (dataItem: DataItem.ArgObject<DataItem.$array<a
         });
       }
     }
+  }
+
+  if (!skipSourceCheck && dataItem.source) {
+    validations.push(({ value, fullName }) => {
+      if (value == null) return undefined;
+      const notFoundVals = (value as Array<any>).filter(v => !dataItem.source!.some(s => equals(s.value, v)));
+      if (notFoundVals == null || notFoundVals.length === 0) return undefined;
+      return { type: "e", code: "source", fullName, msg: `${label}は有効な値を設定してください。${notFoundVals.join(",")}` };
+    });
   }
 
   if (dataItem.validations) {

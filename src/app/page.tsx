@@ -7,6 +7,7 @@ import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { useFormItem } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
+import { CheckList } from "@/react/elements/form/items/check-list";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
 import { DateBox } from "@/react/elements/form/items/date-box";
 import { DateSelectBox } from "@/react/elements/form/items/date-select-box";
@@ -34,6 +35,7 @@ export default function Home() {
     // text: undefined,
     // select: 309,
     // select: 3,
+    "check-list": [1]
   });
   const formItem = useFormItem();
 
@@ -262,6 +264,27 @@ export default function Home() {
               readOnly={readOnly.value}
               tieInNames={[
                 { dataName: "label", hiddenName: "radio-label" }
+              ]}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <CheckList
+              label="チェックリスト"
+              name="check-list"
+              required
+              // minLength={2}
+              source={async () => {
+                // await sleep(3000);
+                const arr = [];
+                for (let i = 0; i < 3; i++) {
+                  arr.push({ value: i, label: `item-${i}` });
+                }
+                return arr;
+              }}
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+              tieInNames={[
+                { dataName: "label", hiddenName: "check-list-label" }
               ]}
             />
           </FormItemWrap>

@@ -203,6 +203,7 @@ declare namespace DataItem {
     length?: number;
     minLength?: number;
     maxLength?: number;
+    source?: Source<ValueType<T>>;
   };
 
   type $struct<T extends Array<$object>> = $ & {

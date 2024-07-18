@@ -139,7 +139,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
       <div
         {...fi.props}
         {...fi.attrs}
-        className={joinClassNames("ipt-radio-btns", props.className)}
+        className={joinClassNames("ipt-items", props.className)}
         ref={ref}
       >
         {origin.map(item => {
@@ -161,7 +161,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
                 disabled={disabled}
                 readOnly={readonly}
                 tabIndex={fi.tabIndex}
-                checked={!empty && equals(item[vdn], fi.value[vdn])}
+                checked={!empty && equals(v, fi.value[vdn])}
                 data-invalid={fi.attrs["data-invalid"]}
                 onChange={e => {
                   if (readonly || disabled || loading) return;
@@ -177,12 +177,25 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
           );
         })}
         {fi.name && fi.mountValue &&
-          <input
-            name={fi.name}
-            type="hidden"
-            value={String(fi.value?.[vdn] ?? "")}
-            disabled={fi.disabled}
-          />
+          <>
+            <input
+              name={fi.name}
+              type="hidden"
+              value={String(fi.value?.[vdn] ?? "")}
+              disabled={fi.disabled}
+            />
+            {tieInNames?.map(({ dataName, hiddenName }) => {
+              const v = fi.value?.[dataName];
+              return (
+                <input
+                  key={dataName}
+                  type="hidden"
+                  name={hiddenName ?? dataName}
+                  value={String(v ?? "")}
+                />
+              );
+            })}
+          </>
         }
       </div>
       {fi.messageComponent}
