@@ -247,6 +247,7 @@
   }
 
   .ipt-txt,
+  .ipt-txt-area,
   .ipt-num {
     appearance: none;
     border: none;
@@ -257,6 +258,13 @@
     padding: 0 0.8rem;
     min-width: 0;
     flex: 1 1 0;
+    min-height: var(--ipt-size);
+    min-width: var(--ipt-size);
+  }
+
+  .ipt-txt-area {
+    padding: 0.4rem 0.8rem;
+    height: calc(var(--ipt-size) * 4);
   }
 
   .ipt-num {
@@ -343,6 +351,7 @@
     padding: 0;
     text-align: center;
     flex: none !important;
+    min-width: unset;
   }
 
   .ipt-date-y {

@@ -16,6 +16,7 @@ import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { RadioButtons } from "@/react/elements/form/items/radio-buttons";
 import { SelectBox } from "@/react/elements/form/items/select-box";
 import { Slider } from "@/react/elements/form/items/slider";
+import { TextArea } from "@/react/elements/form/items/text-area";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
@@ -289,7 +290,6 @@ export default function Home() {
               />
             }
           />
-
           <FormItemWrap>
             <DateBox
               type="month"
@@ -327,6 +327,16 @@ export default function Home() {
             >
               ファイルを選択
             </FileButton>
+          </FormItemWrap>
+          <FormItemWrap>
+            <TextArea
+              label="テキストエリア"
+              name="text-area"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+              // resize="horizontal"
+            />
           </FormItemWrap>
           {/* </div> */}
           <FormButton type="submit">
