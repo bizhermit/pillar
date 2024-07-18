@@ -174,7 +174,7 @@ export const useFormItemCore = <
 
   const get = () => valRef.current as any;
 
-  const set = ({ value, edit, effect, parse, init }: FormItemSetArg) => {
+  const set = ({ value, edit, effect, parse, init, mount }: FormItemSetArg) => {
     const before = valRef.current;
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
@@ -183,47 +183,51 @@ export const useFormItemCore = <
       v = val;
       parseRes = msg;
     }
-    if (!(cp.equals ?? equals)(before, v, { dataItem })) {
+    const eq = (cp.equals ?? equals)(before, v, { dataItem });
+    if (!eq || mount) {
       const validRes = parseRes?.type === "e" ? undefined : doValidation(v);
       const res = validRes ?? parseRes;
       setState(res);
 
-      if (dataItem.name && form.state !== "nothing") {
-        if (cp.setBind) {
-          cp.setBind({
-            value: v,
-            name: dataItem.name,
-            data: form.bind,
-            dataItem,
-          });
-        } else {
-          setValue(form.bind, dataItem.name, v);
+      if (!eq) {
+        if (dataItem.name && form.state !== "nothing") {
+          if (cp.setBind) {
+            cp.setBind({
+              value: v,
+              name: dataItem.name,
+              data: form.bind,
+              dataItem,
+            });
+          } else {
+            setValue(form.bind, dataItem.name, v);
+          }
         }
+        switch (init) {
+          case "default":
+            cache.current = undefined;
+            break;
+          case true:
+            cache.current = v;
+            break;
+          default: break;
+        }
+        setVal(v);
       }
-      switch (init) {
-        case "default":
-          cache.current = undefined;
-          break;
-        case true:
-          cache.current = v;
-          break;
-        default: break;
-
-      }
-      setVal(v);
       form.change(dataItem.name);
 
-      onChange?.(v, { before });
-      if (edit) {
-        onEdit?.(v, { before });
-        setInputted(true);
+      if (!eq) {
+        onChange?.(v, { before });
+        if (edit) {
+          onEdit?.(v, { before });
+          setInputted(true);
+        }
       }
       hookRef.current?.([v, res]);
     }
-    cp.effect({ value: v, edit, effect, parse, init, origin: value, dataItem });
+    cp.effect({ value: v, edit, effect, parse, init, origin: value, dataItem, mount });
   };
 
-  const reset = (edit?: boolean) => set({ value: defaultValue, edit, parse: true, effect: true });
+  const reset = (edit?: boolean) => set({ value: defaultValue, edit, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default" });
 
   const clear = (edit?: boolean) => set({ value: undefined, edit, parse: true, effect: true });
 
@@ -268,10 +272,10 @@ export const useFormItemCore = <
 
   useEffect(() => {
     if (cp.revert) {
-      set({ value: cp.revert(valRef.current), parse: false });
+      set({ value: cp.revert(valRef.current), parse: false, mount: true });
       return;
     }
-    set({ value: valRef.current, parse: true });
+    set({ value: valRef.current, parse: true, mount: true });
   }, [validation, parseVal]);
 
   const editable = !$readOnly && !$disabled && !form.pending;
@@ -292,6 +296,7 @@ export const useFormItemCore = <
     showButtons,
     // defaultValue,
     dataItem,
+    cache,
     value: val,
     valueRef: valRef,
     // onChange,

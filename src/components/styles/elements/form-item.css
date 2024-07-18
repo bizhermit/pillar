@@ -858,6 +858,39 @@
     }
   }
 
+  .ipt-elec-sign {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    &[data-invalid="true"] {
+      &>.ipt-canvas {
+        background-color: var(--ipt-bg-err);
+        border-color: var(--sdw-err);
+      }
+    }
+  }
+
+  .ipt-canvas {
+    border: 1px solid var(--sdw);
+    border-radius: 2px;
+    transition: background-color 0.1s, border-color 0.1s;
+  }
+
+  .ipt-elec-sign-btns {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+
+    >.ipt-btn {
+      height: var(--ipt-size);
+      flex: 1 1 0rem;
+      width: unset;
+    }
+  }
+
   .ipt-mask {
     position: absolute;
     inset: 0;

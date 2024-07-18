@@ -10,6 +10,7 @@ import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
 import { DateBox } from "@/react/elements/form/items/date-box";
 import { DateSelectBox } from "@/react/elements/form/items/date-select-box";
+import { ElecSign } from "@/react/elements/form/items/elec-sign";
 import { FileButton } from "@/react/elements/form/items/file-button";
 import { FileDrop } from "@/react/elements/form/items/file-drop";
 import { NumberBox } from "@/react/elements/form/items/number-box";
@@ -352,6 +353,14 @@ export default function Home() {
               // showAlways
               // preventClick
               // preventDrop
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <ElecSign
+              name="elec-sign"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
             />
           </FormItemWrap>
           {/* </div> */}

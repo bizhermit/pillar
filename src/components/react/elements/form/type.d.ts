@@ -50,4 +50,5 @@ type FormItemSetArg<T extends any = any> = {
   effect?: boolean;
   parse?: boolean;
   init?: boolean | "default";
+  mount?: boolean;
 };

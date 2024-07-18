@@ -71,6 +71,12 @@ declare namespace DataItem {
     refs?: Array<string>;
   };
 
+  type $any<V extends any = any> = $ & {
+    type: "any";
+    source?: Source<V>;
+    validations?: Array<Validation<$any<V>>>;
+  };
+
   type $str<V extends string = string> = $ & {
     type: "str";
     source?: Source<V>;
@@ -206,6 +212,7 @@ declare namespace DataItem {
   };
 
   type $atoms =
+    | $any
     | $str
     | $num
     | $boolAny
