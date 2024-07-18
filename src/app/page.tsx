@@ -11,6 +11,7 @@ import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box
 import { DateBox } from "@/react/elements/form/items/date-box";
 import { DateSelectBox } from "@/react/elements/form/items/date-select-box";
 import { FileButton } from "@/react/elements/form/items/file-button";
+import { FileDrop } from "@/react/elements/form/items/file-drop";
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { RadioButtons } from "@/react/elements/form/items/radio-buttons";
@@ -322,20 +323,35 @@ export default function Home() {
             />
           </FormItemWrap>
           <FormItemWrap>
-            <FileButton
-              name="file"
-            >
-              ファイルを選択
-            </FileButton>
-          </FormItemWrap>
-          <FormItemWrap>
             <TextArea
               label="テキストエリア"
               name="text-area"
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
-              // resize="horizontal"
+            // resize="horizontal"
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <FileButton
+              name="file"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+            >
+              ファイルを選択
+            </FileButton>
+          </FormItemWrap>
+          <FormItemWrap>
+            <FileDrop
+              name="file-drop"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+              // hideFileName
+              // showAlways
+              // preventClick
+              // preventDrop
             />
           </FormItemWrap>
           {/* </div> */}

@@ -17,6 +17,7 @@
     /* color */
     --bg: #f8f8f8;
     --fg: #171717;
+    --fg-placeholder: #888;
     --fg-err: #f00;
     --fg-warn: #f92;
     --fg-info: #393;
@@ -39,6 +40,7 @@
     :root {
       --bg: #0a0a0a;
       --fg: #f8f8f8;
+      --fg-placeholder: #888;
       --fg-err: #f40;
       --fg-warn: #ff0;
       --fg-info: #3d3;
@@ -95,6 +97,10 @@
 
   ::backdrop {
     background: var(--mask);
+  }
+
+  ::placeholder {
+    color: var(--fg-placeholder);
   }
 
 }
