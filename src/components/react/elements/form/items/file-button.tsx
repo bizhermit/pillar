@@ -1,3 +1,5 @@
+"use client";
+
 import { type ChangeEvent, type HTMLAttributes, useRef } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
 import { $fileValidation } from "../../../../data-items/file/validation";

@@ -1,3 +1,5 @@
+"use client";
+
 import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactElement, useEffect, useMemo, useReducer, useRef, type WheelEvent } from "react";
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
