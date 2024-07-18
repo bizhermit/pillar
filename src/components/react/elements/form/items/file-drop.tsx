@@ -12,7 +12,6 @@ type FileDropOptions<D extends DataItem.$file | undefined> = FormItemOptions<D, 
   fileName?: string;
   hideFileName?: boolean;
   preventClick?: boolean;
-  preventDrop?: boolean;
   showAlways?: boolean;
 };
 
@@ -24,7 +23,6 @@ export const FileDrop = <D extends DataItem.$file | undefined>({
   fileName,
   hideFileName,
   preventClick,
-  preventDrop,
   showAlways,
   ...props
 }: FileDropProps<D>) => {
