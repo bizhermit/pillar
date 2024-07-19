@@ -12,7 +12,7 @@ import { isEmpty } from "../../../../objects/string";
 import { setValue } from "../../../../objects/struct";
 import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { Dialog, useDialog } from "../../dialog";
-import { DownIcon } from "../../icon";
+import { DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -374,7 +374,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             tabIndex={-1}
             data-showed={dialog.state !== "closed"}
           >
-            <DownIcon />
+            <DownFillIcon />
           </div>
         }
         {fi.clearButton(empty || loading ? undefined : clear)}

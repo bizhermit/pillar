@@ -98,6 +98,12 @@ export const UpIcon = (p: IconProps) => (
   </svg>
 );
 
+export const UpFillIcon = (p: IconProps) => (
+  <svg {...attrs(p)}>
+    <path d="M2,14 L10,5 18,14 2,14" />
+  </svg>
+);
+
 export const DoubleUpIcon = (p: IconProps) => (
   <svg {...attrs(p)}>
     <defs>
@@ -111,6 +117,12 @@ export const DoubleUpIcon = (p: IconProps) => (
 export const DownIcon = (p: IconProps) => (
   <svg {...attrs(p)}>
     <path d="M2,6 L10,15 18,6" fill="none" />
+  </svg>
+);
+
+export const DownFillIcon = (p: IconProps) => (
+  <svg {...attrs(p)}>
+    <path d="M2,6 L10,15 18,6 2,6" />
   </svg>
 );
 

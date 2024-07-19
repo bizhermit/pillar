@@ -68,10 +68,6 @@
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;
     }
-
-    &:has(dialog[open]) {
-      overflow: hidden;
-    }
   }
 
   body {
@@ -101,6 +97,10 @@
 
   ::placeholder {
     color: var(--fg-placeholder);
+  }
+
+  :has(dialog[open]) {
+    overflow: hidden;
   }
 
 }

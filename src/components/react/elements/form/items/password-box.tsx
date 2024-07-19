@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { isEmpty } from "../../../../objects/string";
+import { CircleFillIcon, CircleIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 import { type TextBoxProps } from "./text-box";
@@ -104,7 +105,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
             data-disabled={!fi.editable}
             onClick={toggle}
           >
-            {type === "text" ? "●" : "○"}
+            {type === "text" ? <CircleFillIcon /> : <CircleIcon />}
           </div>
         }
         {fi.clearButton(empty ? undefined : clear)}

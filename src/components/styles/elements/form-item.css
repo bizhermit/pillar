@@ -108,8 +108,8 @@
     transition: opacity 0.1s, background-color 0.1s, color 0.1s;
 
     .icon {
-      width: 50%;
-      height: 50%;
+      width: 40%;
+      height: 40%;
       transition: transform 0.2s;
     }
 
@@ -162,7 +162,7 @@
         }
       }
     }
-    
+
   }
 
   .ipt-msg {
@@ -241,6 +241,11 @@
     min-height: 0;
     flex: 1 1 0rem;
     width: 100%;
+
+    .icon {
+      width: 50%;
+      height: 50%;
+    }
 
     &:not([data-disabled="true"]) {
       &:active {
