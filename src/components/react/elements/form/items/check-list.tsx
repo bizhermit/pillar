@@ -1,11 +1,13 @@
-import { $arrayValidations } from "@/data-items/array/validation";
-import { $boolParse } from "@/data-items/bool/parse";
-import { $numParse } from "@/data-items/number/parse";
-import { $strParse } from "@/data-items/string/parse";
-import { equals } from "@/objects";
-import { setValue } from "@/objects/struct";
-import { LoadableArray, useLoadableArray } from "@/react/hooks/loadable-array";
-import { Fragment, HTMLAttributes, useMemo, useRef } from "react";
+"use client";
+
+import { Fragment, type HTMLAttributes, useMemo, useRef } from "react";
+import { $arrayValidations } from "../../../../data-items/array/validation";
+import { $boolParse } from "../../../../data-items/bool/parse";
+import { $numParse } from "../../../../data-items/number/parse";
+import { $strParse } from "../../../../data-items/string/parse";
+import { equals } from "../../../../objects";
+import { setValue } from "../../../../objects/struct";
+import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 

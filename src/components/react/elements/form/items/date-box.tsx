@@ -8,7 +8,7 @@ import { addDay, addMonth, equalDate, formatDate, getFirstDateAtMonth, getLastDa
 import { isEmpty } from "../../../../objects/string";
 import { setValue } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
-import { CalendarIcon } from "../../icon";
+import { CalendarIcon, CrossIcon, LeftIcon, RightIcon, TodayIcon, UndoIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -731,7 +731,9 @@ export const DatePicker = (props: DatePickerProps) => {
             className="ipt-btn ipt-prev"
             onClick={prevYear}
             data-disabled={prevYearDisabled}
-          />
+          >
+            <LeftIcon />
+          </div>
           <span>
             {yNum}
           </span>
@@ -739,7 +741,9 @@ export const DatePicker = (props: DatePickerProps) => {
             className="ipt-btn ipt-next"
             onClick={nextYear}
             data-disabled={nextYearDisabled}
-          />
+          >
+            <RightIcon />
+          </div>
         </div>
         {type === "date" &&
           <>
@@ -749,7 +753,9 @@ export const DatePicker = (props: DatePickerProps) => {
                 className="ipt-btn ipt-prev"
                 onClick={prevMonth}
                 data-disabled={prevMonthDisabled}
-              />
+              >
+                <LeftIcon />
+              </div>
               <span>
                 {mNum + 1}
               </span>
@@ -757,7 +763,9 @@ export const DatePicker = (props: DatePickerProps) => {
                 className="ipt-btn ipt-next"
                 onClick={nextMonth}
                 data-disabled={nextMonthDisabled}
-              />
+              >
+                <RightIcon />
+              </div>
             </div>
             <div className="ipt-dp-week">
               {weekCells}
@@ -780,21 +788,24 @@ export const DatePicker = (props: DatePickerProps) => {
         {props.onCancel &&
           <div
             className="ipt-btn"
+            title="キャンセル"
             onClick={() => {
               props.onCancel!();
             }}
           >
-            キャンセル
+            <CrossIcon />
           </div>
         }
         <div
           className="ipt-btn"
+          title="今日"
           onClick={selectToday}
         >
-          今日
+          <TodayIcon />
         </div>
         <div
           className="ipt-btn"
+          title="選択中を表示する"
           onClick={() => {
             setDispDate({
               date: getFirstDateAtMonth(values[0] ?? new Date()),
@@ -802,7 +813,7 @@ export const DatePicker = (props: DatePickerProps) => {
             });
           }}
         >
-          戻す
+          <UndoIcon />
         </div>
       </div>
     </div>

@@ -1,9 +1,10 @@
-import useRender from "@/react/hooks/render";
 import { type HTMLAttributes, useEffect, useRef, useState } from "react";
 import { equals } from "../../../../objects";
 import { convertBlobToFile, convertFileToBase64 } from "../../../../objects/file";
 import { isEmpty } from "../../../../objects/string";
 import { useRefState } from "../../../hooks/ref-state";
+import useRender from "../../../hooks/render";
+import { ClearAllIcon, CrossIcon, RedoIcon, SaveIcon, UndoIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -251,8 +252,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
                 onClick={save}
                 data-disabled={!fi.editable}
               >
-                Save
-                {/* <SaveIcon /> */}
+                <SaveIcon />
               </div>
             }
             <div
@@ -261,8 +261,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               tabIndex={-1}
               onClick={undo}
             >
-              {/* <UndoIcon /> */}
-              Undo
+              <UndoIcon />
             </div>
             <div
               className="ipt-btn"
@@ -270,8 +269,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               tabIndex={-1}
               onClick={redo}
             >
-              Redo
-              {/* <RedoIcon /> */}
+              <RedoIcon />
             </div>
             <div
               className="ipt-btn"
@@ -279,8 +277,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               tabIndex={-1}
               onClick={() => clearCanvas()}
             >
-              clear
-              {/* <CrossIcon /> */}
+              <CrossIcon />
             </div>
             <div
               className="ipt-btn"
@@ -288,8 +285,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               data-disabled={!canClearHist}
               onClick={() => clearCanvas(true)}
             >
-              clear all
-              {/* <ClearAllIcon /> */}
+              <ClearAllIcon />
             </div>
           </div>
         }
