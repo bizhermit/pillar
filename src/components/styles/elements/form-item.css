@@ -118,7 +118,7 @@
     }
 
     &[data-disabled="true"] {
-      opacity: 0.6;
+      opacity: 0.3;
     }
 
     &:not([data-disabled="true"]) {
@@ -660,6 +660,7 @@
     &[data-invalid="true"] {
       &::before {
         background: var(--ipt-bg-err);
+        border-color: var(--sdw-err);
       }
     }
   }
@@ -702,6 +703,7 @@
     &[data-invalid="true"] {
       &::before {
         background: var(--ipt-bg-err);
+        border-color: var(--sdw-err);
       }
     }
 
