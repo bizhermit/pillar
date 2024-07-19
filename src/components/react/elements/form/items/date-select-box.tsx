@@ -8,6 +8,7 @@ import { addDay, addMonth, formatDate, getFirstDateAtMonth, getLastDateAtMonth, 
 import { isEmpty } from "../../../../objects/string";
 import { setValue } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
+import { DownIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -628,7 +629,9 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
               tabIndex={-1}
               data-showed={yDialog.state !== "closed"}
               data-slim
-            />
+            >
+              <DownIcon />
+            </div>
           }
           <Dialog
             hook={yDialog.hook}
@@ -678,7 +681,9 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
               tabIndex={-1}
               data-showed={mDialog.state !== "closed"}
               data-slim
-            />
+            >
+              <DownIcon />
+            </div>
           }
           <Dialog
             hook={mDialog.hook}
@@ -726,7 +731,9 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                   tabIndex={-1}
                   data-showed={dDialog.state !== "closed"}
                   data-slim
-                />
+                >
+                  <DownIcon />
+                </div>
               }
               <Dialog
                 hook={dDialog.hook}

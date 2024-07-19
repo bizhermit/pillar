@@ -6,6 +6,7 @@ import { equals } from "../../../objects";
 import { generateUuidV4 } from "../../../objects/string";
 import { getValue, setValue } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
+import { CrossIcon } from "../icon";
 
 type FormItemCoreArgs<
   SD extends DataItem.$object,
@@ -331,7 +332,9 @@ export const useFormItemCore = <
         tabIndex={-1}
         data-disabled={!editable || !clear}
         onClick={clear}
-      />
+      >
+        <CrossIcon />
+      </div>
     ),
   } as const;
 };

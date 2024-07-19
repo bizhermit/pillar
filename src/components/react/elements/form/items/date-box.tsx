@@ -8,6 +8,7 @@ import { addDay, addMonth, equalDate, formatDate, getFirstDateAtMonth, getLastDa
 import { isEmpty } from "../../../../objects/string";
 import { setValue } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
+import { CalendarIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -444,12 +445,14 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         }
         {fi.showButtons &&
           <div
-            className="ipt-btn ipt-pull"
+            className="ipt-btn"
             data-disabled={!fi.editable || dialog.state !== "closed"}
             onClick={clickPull}
             tabIndex={-1}
             data-showed={dialog.state !== "closed"}
-          />
+          >
+            <CalendarIcon />
+          </div>
         }
         {fi.clearButton(empty ? undefined : clear)}
         <Dialog

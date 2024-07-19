@@ -4,6 +4,7 @@ import { type ChangeEvent, type HTMLAttributes, type KeyboardEvent, useRef } fro
 import { $numParse } from "../../../../data-items/number/parse";
 import { $numValidations } from "../../../../data-items/number/validation";
 import { formatNum, parseNum } from "../../../../objects/number";
+import { DownIcon, UpIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -205,13 +206,17 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
                 data-disabled={!fi.editable}
                 tabIndex={-1}
                 onMouseDown={() => mousedown("up")}
-              />
+              >
+                <UpIcon />
+              </div>
               <div
                 className="ipt-btn ipt-num-spin-dec"
                 data-disabled={!fi.editable}
                 tabIndex={-1}
                 onMouseDown={() => mousedown("down")}
-              />
+              >
+                <DownIcon />
+              </div>
             </div>
           </>
         }
