@@ -251,6 +251,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
                 tabIndex={-1}
                 onClick={save}
                 data-disabled={!fi.editable}
+                title="保存"
               >
                 <SaveIcon />
               </div>
@@ -260,6 +261,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               data-disabled={!fi.editable || !canUndo}
               tabIndex={-1}
               onClick={undo}
+              title="元に戻す"
             >
               <UndoIcon />
             </div>
@@ -268,6 +270,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               data-disabled={!fi.editable || !canRedo}
               tabIndex={-1}
               onClick={redo}
+              title="やり直し"
             >
               <RedoIcon />
             </div>
@@ -276,6 +279,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               data-disabled={!fi.editable || empty}
               tabIndex={-1}
               onClick={() => clearCanvas()}
+              title="キャンパスをクリアする"
             >
               <CrossIcon />
             </div>
@@ -284,6 +288,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               tabIndex={-1}
               data-disabled={!canClearHist}
               onClick={() => clearCanvas(true)}
+              title="キャンパスと履歴クリアする"
             >
               <ClearAllIcon />
             </div>
