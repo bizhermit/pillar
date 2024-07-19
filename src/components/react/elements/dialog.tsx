@@ -279,6 +279,7 @@ export const Dialog = ({
 
   return (
     <dialog
+      tabIndex={-1}
       {...props}
       className={joinClassNames("dialog", props.className)}
       ref={dref}
