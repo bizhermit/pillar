@@ -288,7 +288,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               data-disabled={!canClearHist}
               onClick={() => clearCanvas(true)}
             >
-              clear all {rev} / {hist.current.length}
+              clear all
               {/* <ClearAllIcon /> */}
             </div>
           </div>
