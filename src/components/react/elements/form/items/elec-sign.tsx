@@ -1,3 +1,4 @@
+import useRender from "@/react/hooks/render";
 import { type HTMLAttributes, useEffect, useRef, useState } from "react";
 import { equals } from "../../../../objects";
 import { convertBlobToFile, convertFileToBase64 } from "../../../../objects/file";
@@ -6,11 +7,7 @@ import { useRefState } from "../../../hooks/ref-state";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
-type DataValue = {
-
-};
-
-type ElecSignOptions<D extends DataItem.$any | undefined> = FormItemOptions<D, D extends DataItem.$any ? DataItem.ValueType<D> : string, DataValue> & {
+type ElecSignOptions<D extends DataItem.$any | undefined> = FormItemOptions<D, D extends DataItem.$any ? DataItem.ValueType<D> : string> & {
   preventAutoSave?: boolean;
   maxHistory?: number;
   width?: number;
@@ -28,12 +25,11 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
 }: ElecSignProps<D>) => {
   const href = useRef<HTMLInputElement>(null!);
   const cref = useRef<HTMLCanvasElement>(null!);
-  const [revision, setRevision] = useState(-1);
-  const focusInput = () => {
-    cref.current?.focus();
-  };
+  const focusInput = () => cref.current?.focus();
 
-  const history = useRef<Array<ImageData>>([]);
+  const render = useRender();
+  const [rev, setRev] = useState(-1);
+  const hist = useRef<Array<ImageData>>([]);
   const [nullValue, setNullValue, nullValueRef] = useRefState("");
 
   const get2DCtx = () => {
@@ -66,7 +62,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
       if (init) clearHistory();
       if (edit || !effect) return;
       if (isEmpty(value)) {
-        get2DCtx()?.clearRect(0, 0, cref.current.width, cref.current.height);
+        clearCanvas();
       } else {
         const canvas = get2DCtx();
         if (canvas == null) return;
@@ -74,6 +70,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
         img.src = value;
         img.onload = () => {
           canvas.drawImage(img, 0, 0);
+          pushHistory(canvas.getImageData(0, 0, cref.current.width, cref.current.height));
         };
       }
     },
@@ -95,41 +92,34 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
 
   const empty = isEmpty(fi.value) || fi.value === nullValue;
 
-  const canRedo = revision >= 0 && revision < history.current.length - 1;
-  const canUndo = revision > 0;
-  const canClearHist = history.current.length > 1;
+  const canRedo = rev >= 0 && rev < hist.current.length - 1;
+  const canUndo = rev > 0;
+  const canClearHist = hist.current.length > 1;
 
   const save = () => {
     if (cref.current == null) return;
     fi.set({ value: cref.current.toDataURL(), edit: true });
   };
 
-  const spillHistory = () => {
-    if (history.current.length > Math.max(0, maxHistory ?? 100)) {
-      history.current.splice(0, 1);
-    }
-  };
-
   const clearHistory = () => {
-    history.current.splice(0, history.current.length);
-    const canvas = get2DCtx();
-    if (canvas == null) return;
-    history.current.push(canvas.getImageData(0, 0, cref.current.width, cref.current.height));
-    spillHistory();
-    setRevision(0);
+    hist.current.splice(0, hist.current.length);
+    setRev(-1);
   };
 
   const popHistory = () => {
-    const popLen = history.current.length - 1 - revision;
+    const popLen = hist.current.length - rev - 1;
     if (popLen > 0) {
-      history.current.splice(revision + 1, popLen);
+      hist.current.splice(rev + 1, popLen);
     }
   };
 
   const pushHistory = (imageData: ImageData) => {
-    history.current.push(imageData);
-    spillHistory();
-    setRevision(history.current.length - 1);
+    hist.current.push(imageData);
+    if (hist.current.length > Math.max(0, maxHistory ?? 100)) {
+      hist.current.splice(0, 1);
+    }
+    setRev(hist.current.length - 1);
+    render();
   };
 
   const drawStart = (baseX: number, baseY: number, isTouch?: boolean) => {
@@ -204,39 +194,37 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
 
   const clearCanvas = (history?: boolean) => {
     if (cref.current == null) return;
+    if (history) clearHistory();
+    else popHistory();
     const canvas = get2DCtx();
     if (canvas == null) return;
-    popHistory();
     canvas.clearRect(0, 0, cref.current.width, cref.current.height);
     pushHistory(canvas.getImageData(0, 0, cref.current.width, cref.current.height));
-    if (history) clearHistory();
     if (!preventAutoSave) save();
   };
 
   const redo = () => {
     if (!canRedo) return;
-    const r = Math.min(history.current.length - 1, revision + 1);
-    setRevision(r);
+    const r = Math.min(hist.current.length - 1, rev + 1);
+    setRev(r);
     const canvas = get2DCtx();
-    canvas.putImageData(history.current[r], 0, 0);
+    canvas.putImageData(hist.current[r], 0, 0);
     if (!preventAutoSave) save();
     return true;
   };
 
   const undo = () => {
     if (!canUndo) return;
-    const r = Math.max(0, revision - 1);
-    setRevision(r);
+    const r = Math.max(0, rev - 1);
+    setRev(r);
     const canvas = get2DCtx();
-    canvas.putImageData(history.current[r], 0, 0);
+    canvas.putImageData(hist.current[r], 0, 0);
     if (!preventAutoSave) save();
     return true;
   };
 
   useEffect(() => {
     setNullValue(cref.current?.toDataURL());
-    if (history.current.length > 0) return;
-    clearHistory();
   }, []);
 
   return (
@@ -300,7 +288,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               data-disabled={!canClearHist}
               onClick={() => clearCanvas(true)}
             >
-              clear all
+              clear all {rev} / {hist.current.length}
               {/* <ClearAllIcon /> */}
             </div>
           </div>

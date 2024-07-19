@@ -52,6 +52,30 @@ export default function Home() {
 
         <button disabled>button</button>
         <button>ボタン</button>
+        <Button
+          onClick={() => {
+            const url = "https://www.kansaigaidai.ac.jp/asp/img/pdf/82/7a79c35f7ce0704dec63be82440c8182.pdf";
+            // リンクを作成してクリックさせる
+            const a = document.createElement("a");
+            a.href = url;
+            // a.download = "hoge.pdf";
+            // a.target = "_blank";
+            document.body.appendChild(a); // DOMに追加する必要がある
+            a.click(); // クリックイベントを発生させる
+            a.addEventListener("click", function () {
+              // クリック後に別タブを閉じる
+              setTimeout(() => {
+                URL.revokeObjectURL(url); // URLを解放する
+                document.body.removeChild(a); // リンク要素を削除する
+                window.close(); // 別タブを閉じる
+              }, 100);
+            });
+            // ダウンロード後に不要になったら、URLオブジェクトを解放する
+            URL.revokeObjectURL(url);
+          }}
+        >
+          download
+        </Button>
         <a
           // href="https://bizhermit.com"
           aria-disabled
@@ -372,10 +396,10 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
-              // hideFileName
-              // showAlways
-              // preventClick
-              // preventDrop
+            // hideFileName
+            // showAlways
+            // preventClick
+            // preventDrop
             />
           </FormItemWrap>
           <FormItemWrap>
