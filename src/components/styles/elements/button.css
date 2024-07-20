@@ -1,0 +1,56 @@
+@layer default, base, feat;
+
+@layer base {
+
+  .btn-icon {
+    width: var(--btn-size);
+
+    &:only-child {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+  }
+
+  :is(.btn, a[role="button"]) {
+    position: relative;
+    font-size: inherit;
+    font-family: inherit;
+    border: none;
+    height: var(--btn-size);
+    padding: 0 calc(var(--btn-size) / 2);
+    border-radius: 0.2rem;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    border-top: 0.3rem solid transparent;
+    border-bottom: 0.3rem solid var(--sdw);
+    user-select: none;
+    text-decoration: none;
+    min-width: 0;
+    transition: opacity 0.2s, border-bottom-color 0.2s;
+
+    &:is(:disabled, [aria-disabled="true"]) {
+      cursor: not-allowed;
+      opacity: 0.6;
+      border-bottom-color: transparent;
+      color: var(--btn-fg);
+
+      &[data-processing="true"] {
+        cursor: wait;
+      }
+    }
+
+    &:not(:is(:disabled, [aria-disabled="true"])) {
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.8;
+
+        &:active {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+}

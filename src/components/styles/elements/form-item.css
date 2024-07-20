@@ -1,0 +1,906 @@
+@layer default, base, feat;
+
+@layer base {
+
+  .ipt-wrap {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.2rem;
+    min-width: 0;
+
+    >.ipt-msg {
+      padding: 0 0.4rem;
+    }
+  }
+
+  .ipt-range-wrap {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .ipt-row {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.4rem;
+
+    >.ipt-btn {
+      height: var(--ipt-size);
+    }
+
+    &.ipt-date {
+      .ipt-sep {
+        &:not(:last-of-type) {
+          margin-right: 0.2rem;
+        }
+      }
+
+      .ipt-date-y {
+        width: 4.8rem;
+        margin: 0;
+      }
+
+      .ipt-date-m,
+      .ipt-date-d {
+        width: 2.8rem;
+      }
+
+      .ipt-pull {
+        margin: 0;
+      }
+    }
+  }
+
+  .ipt-field {
+    position: relative;
+    background: var(--ipt-bg);
+    color: var(--ipt-fg);
+    border-bottom: 1px solid var(--sdw);
+    min-height: var(--ipt-size);
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+    min-width: 0;
+    max-width: 100%;
+    border-radius: 1px;
+    transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+
+    &:focus-within {
+      outline-style: solid;
+    }
+
+    &[data-disabled="true"] {
+      opacity: 0.6;
+    }
+
+    &[data-invalid="true"] {
+      border-color: var(--sdw-err);
+      background: var(--ipt-bg-err);
+      color: var(--ipt-fg-err);
+    }
+
+    /* &::before {
+      position: absolute;
+      content: attr(data-label);
+      bottom: 100%;
+      font-size: 1rem;
+    } */
+  }
+
+  .ipt-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--ipt-size);
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    min-width: 0;
+    user-select: none;
+    transition: opacity 0.1s, background-color 0.1s, color 0.1s;
+
+    .icon {
+      width: 40%;
+      height: 40%;
+      transition: transform 0.2s;
+    }
+
+    &[data-slim] {
+      width: calc(var(--ipt-size) * 0.8);
+    }
+
+    &[data-disabled="true"] {
+      opacity: 0.3;
+    }
+
+    &:not([data-disabled="true"]) {
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--ipt-fg);
+        color: var(--ipt-bg);
+      }
+    }
+
+    &:empty {
+      &::before {
+        position: absolute;
+        content: "";
+        box-sizing: border-box;
+        margin: auto;
+        background: var(--ipt-fg);
+        transition: background-color 0.1s, transform 0.2s;
+      }
+
+      &:not([data-disabled="true"]) {
+        &:hover {
+
+          &::before,
+          &::after {
+            background: var(--ipt-bg);
+          }
+        }
+      }
+    }
+
+    &.ipt-pull {
+      .icon {
+        transform: rotateX(0deg);
+      }
+
+      &[data-showed="true"] {
+        .icon {
+          transform: rotateX(180deg);
+        }
+      }
+    }
+
+  }
+
+  .ipt-msg {
+    font-size: 1.3rem;
+    min-width: 0;
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    &[data-state="e"] {
+      color: var(--fg-err);
+    }
+
+    &[data-state="w"] {
+      color: var(--fg-warn);
+    }
+
+    &[data-state="i"] {
+      color: var(--fg-info);
+    }
+  }
+
+  .ipt-txt,
+  .ipt-txt-area,
+  .ipt-num {
+    appearance: none;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0 0.8rem;
+    min-width: 0;
+    flex: 1 1 0;
+    min-height: var(--ipt-size);
+    min-width: var(--ipt-size);
+  }
+
+  .ipt-txt-area {
+    padding: 0.4rem 0.8rem;
+    height: calc(var(--ipt-size) * 4);
+  }
+
+  .ipt-num {
+    text-align: right;
+    appearance: textfield !important;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+  }
+
+  .ipt-num-spins {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+    width: calc(var(--ipt-size) * 0.8);
+
+    &:has(.ipt-btn:active) {
+
+      >.ipt-num-spin-inc,
+      >.ipt-num-spin-dec {
+        &:not(:active) {
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+  .ipt-num-spin-inc,
+  .ipt-num-spin-dec {
+    position: relative;
+    min-height: 0;
+    flex: 1 1 0rem;
+    width: 100%;
+
+    .icon {
+      width: 50%;
+      height: 50%;
+    }
+
+    &:not([data-disabled="true"]) {
+      &:active {
+        background: var(--ipt-fg) !important;
+        color: var(--ipt-bg) !important;
+      }
+    }
+  }
+
+  .ipt-sep {
+    display: grid;
+    place-items: center;
+    height: var(--ipt-size);
+    max-height: 100%;
+  }
+
+  .ipt-date-y,
+  .ipt-date-m,
+  .ipt-date-d {
+    padding: 0;
+    text-align: center;
+    flex: none !important;
+    min-width: unset;
+  }
+
+  .ipt-date-y {
+    width: 4.2rem;
+    margin-left: 0.6rem;
+  }
+
+  .ipt-date-m,
+  .ipt-date-d {
+    width: 2.2rem;
+
+    &[data-last] {
+      margin-right: 0.6rem;
+    }
+
+    ~.ipt-pull {
+      margin-left: -0.4rem;
+    }
+  }
+
+  .ipt-dp {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 32rem;
+    height: 0;
+    transition: height 0.2s;
+
+    &:not([data-dialog="true"]) {
+      height: 32rem;
+    }
+  }
+
+  .ipt-dp-main {
+    overflow: hidden;
+    flex: 1 1 0rem;
+    display: grid;
+    grid-template-columns: 1fr 1rem 1fr;
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .ipt-dp-year,
+  .ipt-dp-month {
+    display: flex;
+    flex-flow: row nowrap;
+    height: var(--ipt-size);
+
+    span {
+      display: grid;
+      place-items: center;
+      flex: 1 1 0rem;
+    }
+
+    .ipt-prev,
+    .ipt-next {
+      &[data-disabled="true"] {
+        visibility: hidden;
+        cursor: default;
+      }
+    }
+  }
+
+  .ipt-dp-year {
+    grid-column: 1 / 2;
+
+    &[data-type="month"] {
+      grid-column: 1 / 4;
+    }
+  }
+
+  .ipt-dp-sep {
+    grid-column: 2 / 3;
+    display: grid;
+    place-items: center;
+  }
+
+  .ipt-dp-month {
+    grid-column: 3 / 4;
+
+    &[data-type="month"] {
+      height: unset;
+      flex: 1 1 0rem;
+      grid-column: 1 / 4;
+      grid-row: 2 / 4;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      border-top: 1px solid var(--sdw);
+      padding: 2px;
+      gap: 2px;
+    }
+  }
+
+  .ipt-dp-week {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    grid-column: 1 / 4;
+    grid-row: 2 / 3;
+    border-top: 1px solid var(--sdw);
+    border-bottom: 1px solid var(--sdw);
+
+    .ipt-dp-cell {
+      width: calc(100% / 7);
+      font-size: 1.2rem;
+      line-height: 1.5rem;
+      pointer-events: none;
+
+      &[data-week="0"] {
+        background: var(--week-sun);
+      }
+
+      &[data-week="6"] {
+        background: var(--week-sat);
+      }
+    }
+  }
+
+  .ipt-dp-date {
+    flex: 1 1 0rem;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-column: 1 / 4;
+    grid-row: 3 / 4;
+    padding: 2px;
+    gap: 2px;
+  }
+
+  .ipt-dp-cell {
+    display: grid;
+    place-items: center;
+    font-size: 1.4rem;
+    user-select: none;
+    border-radius: 2px;
+    transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+
+    &[data-disabled="true"] {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    &:not([data-disabled="true"]) {
+      cursor: pointer;
+    }
+
+    &:hover {
+      background: var(--ipt-fg);
+      color: var(--ipt-bg);
+    }
+
+    &[data-selected="true"] {
+      background: var(--ipt-bg-clr);
+      color: var(--ipt-fg-clr)
+    }
+
+    &[data-current="true"] {
+      border: 1px solid var(--sdw);
+    }
+
+    &:is([data-prev], [data-next]) {
+      opacity: 0.6;
+
+      &[data-disabled="true"] {
+        opacity: 0.2;
+      }
+    }
+  }
+
+  .ipt-dp-btns {
+    border-top: 1px solid var(--sdw);
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+    height: var(--ipt-size);
+
+    .ipt-btn {
+      width: unset;
+      flex: 1 1 0rem;
+
+      &:not(:last-child) {
+        border-right: 1px solid var(--sdw);
+      }
+    }
+  }
+
+  .ipt-slider {
+    position: relative;
+    width: calc(var(--ipt-size) * 4);
+    height: var(--ipt-size);
+    min-width: 0;
+    display: grid;
+    place-items: center;
+    user-select: none;
+    border-radius: 2px;
+    transition: opacity 0.1s;
+
+    &:focus-within {
+      outline: auto;
+    }
+
+    &[data-disabled="true"] {
+      opacity: 0.6;
+    }
+
+    &[data-invalid="true"] {
+      &>.ipt-slider-bar {
+        border-color: var(--sdw-err);
+        background: var(--ipt-bg-err);
+      }
+    }
+
+    &:is(:hover, :focus-within) .ipt-slider-thumb {
+      &[data-value]::before {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  .ipt-slider-bar {
+    position: relative;
+    overflow: hidden;
+    width: calc(100% - var(--ipt-size) * 0.4);
+    height: 30%;
+    border-radius: 9999px;
+    background: var(--ipt-bg);
+    border: 1px solid var(--sdw);
+    opacity: 0.8;
+  }
+
+  .ipt-slider-rate {
+    width: 0%;
+    height: 100%;
+    background: var(--ipt-bg-clr);
+  }
+
+  .ipt-slider-rail {
+    position: absolute;
+    overflow: visible;
+    inset: 0;
+    top: calc(var(--ipt-size) * 0.2);
+    right: calc(var(--ipt-size) * 0.6);
+  }
+
+  .ipt-slider-thumb {
+    position: absolute;
+    width: calc(var(--ipt-size) * 0.6);
+    height: calc(var(--ipt-size) * 0.6);
+    left: 0%;
+    border-radius: 9999px;
+    border: 1px solid var(--sdw);
+    background: var(--ipt-bg-clr);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &[data-editable="true"] {
+      cursor: pointer;
+    }
+
+    &::before {
+      position: absolute;
+      content: attr(data-value);
+      box-sizing: border-box;
+      padding: 0.1rem 0.8rem;
+      background: var(--ipt-bg);
+      color: var(--ipt-fg);
+      filter: drop-shadow(0 0 3px var(--sdw));
+      bottom: calc(100% + 0.6rem);
+      font-size: 1.2rem;
+      border-radius: 0.2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s;
+    }
+  }
+
+  .ipt-lbl {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    min-height: var(--ipt-size);
+    border-radius: 2px;
+    opacity: 1;
+    transition: opacity 0.1s;
+
+    &[data-disabled="true"] {
+      opacity: 0.6;
+    }
+
+    &:not(:is([data-disabled="true"], [data-readonly="true"])) {
+      user-select: none;
+      cursor: pointer;
+    }
+
+    &:focus-within {
+      outline-style: solid;
+    }
+
+    &[data-children="true"] {
+      padding-right: 0.6rem;
+    }
+  }
+
+  .ipt-tgl {
+    appearance: none;
+    position: relative;
+    width: calc(var(--ipt-size) * 2);
+    height: var(--ipt-size);
+    cursor: inherit;
+    outline: none;
+
+    &::before {
+      position: absolute;
+      content: "";
+      box-sizing: border-box;
+      inset: 0;
+      border-radius: 9999px;
+      border: 1px solid var(--sdw);
+      background: var(--ipt-bg);
+      transition: background-color 0.1s;
+    }
+
+    &::after {
+      position: absolute;
+      content: "";
+      box-sizing: border-box;
+      top: calc(50% - var(--ipt-size) * 0.4);
+      left: calc(var(--ipt-size) * 0.1);
+      width: calc(var(--ipt-size) * 0.8);
+      height: calc(var(--ipt-size) * 0.8);
+      background: var(--ipt-bg-clr);
+      border: 1px solid var(--sdw);
+      border-radius: 9999px;
+      transition: left 0.3s;
+    }
+
+    &:checked {
+      &::after {
+        left: calc(var(--ipt-size) * 1.1);
+      }
+    }
+
+    &[data-invalid="true"] {
+      &::before {
+        background: var(--ipt-bg-err);
+        border-color: var(--sdw-err);
+      }
+    }
+  }
+
+  .ipt-chk,
+  .ipt-radio {
+    appearance: none;
+    position: relative;
+    width: var(--ipt-size);
+    height: var(--ipt-size);
+    cursor: inherit;
+    outline: none;
+
+    &::before {
+      position: absolute;
+      content: "";
+      box-sizing: border-box;
+      inset: 10%;
+      border: 1px solid var(--sdw);
+      border-radius: 2px;
+      background: var(--ipt-bg);
+      transition: background-color 0.1s;
+    }
+
+    &::after {
+      position: absolute;
+      content: "";
+      box-sizing: border-box;
+      width: 50%;
+      height: 25%;
+      top: 30%;
+      left: 25%;
+      border-left: 0.2rem solid var(--ipt-fg-clr);
+      border-bottom: 0.2rem solid var(--ipt-fg-clr);
+      transform: rotate(-45deg);
+      opacity: 0;
+      transition: opacity 0.1s;
+    }
+
+    &[data-invalid="true"] {
+      &::before {
+        background: var(--ipt-bg-err);
+        border-color: var(--sdw-err);
+      }
+    }
+
+    &:checked {
+      &::before {
+        background: var(--ipt-bg-clr);
+      }
+
+      &::after {
+        opacity: 1;
+      }
+    }
+
+  }
+
+  .ipt-items {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .ipt-radio {
+    &::before {
+      border-radius: 50%;
+    }
+  }
+
+  .ipt-file {
+    display: none !important;
+    visibility: hidden;
+    max-height: 0;
+    max-width: 0;
+    opacity: 0;
+    z-index: -2;
+  }
+
+  .ipt-file-name {
+    height: var(--btn-size);
+    display: grid;
+    place-items: center start;
+  }
+
+  .ipt-file-drop {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .ipt-clear {
+      height: var(--ipt-size);
+    }
+
+    .ipt-file-name {
+      padding: 0.4rem 0.8rem;
+      flex: 1 1 0rem;
+    }
+
+    &:not([data-disabled="true"], [data-readonly="true"]) {
+      .ipt-file-drop-area {
+        &[data-click="true"] {
+          cursor: pointer;
+
+          &:hover {
+            opacity: 0.8;
+
+            &:active {
+              opacity: 1;
+            }
+          }
+        }
+
+        &[data-dragover] {
+          opacity: 0.8;
+        }
+      }
+    }
+
+    &[data-disabled="true"] {
+      opacity: 0.6;
+    }
+
+    &[data-invalid="true"] {
+      .ipt-file-drop-area {
+        background: var(--ipt-bg-err);
+        border-color: var(--sdw-err);
+      }
+    }
+  }
+
+  .ipt-file-drop-area {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: calc(var(--ipt-size) * 3);
+    max-height: 100%;
+    padding: 0 0.8rem;
+    border-radius: 2px;
+    border: 1px solid var(--sdw);
+    background: var(--ipt-bg);
+    color: var(--fg-placeholder);
+    user-select: none;
+    transition: color 0.1s, background-color 0.1s, border-color 0.1s, opacity 0.1s;
+
+    &:focus-within {
+      outline: auto;
+    }
+  }
+
+  .ipt-elec-sign {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    &[data-invalid="true"] {
+      &>.ipt-canvas {
+        border-color: var(--sdw-err);
+        box-shadow: inset 0 0 0 3px var(--sdw-err);
+      }
+    }
+  }
+
+  .ipt-canvas {
+    background: #fff;
+    border: 1px solid var(--sdw);
+    border-radius: 2px;
+    transition: background-color 0.1s, border-color 0.1s, box-shadow 0.1s;
+  }
+
+  .ipt-elec-sign-btns {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+
+    >.ipt-btn {
+      height: var(--ipt-size);
+      flex: 1 1 0rem;
+      width: unset;
+    }
+  }
+
+  .ipt-mask {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    z-index: 1;
+    pointer-events: none;
+    transition: background-color 0.1s;
+
+    &[data-show="true"] {
+      background: var(--mask);
+      pointer-events: unset;
+    }
+  }
+
+  .ipt-dialog-list {
+    overflow: hidden;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    max-height: calc(50svh - var(--ipt-size));
+    z-index: 0;
+
+    &[data-align="center"] {
+      .ipt-dialog-list-item {
+        place-items: center;
+      }
+    }
+  }
+
+  .ipt-dialog-list-item {
+    display: grid;
+    place-items: center start;
+    height: var(--ipt-size);
+    padding: 0 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.1s, color 0.1s;
+    border-radius: 2px;
+
+    &:hover {
+      background: var(--ipt-fg);
+      color: var(--ipt-bg);
+    }
+
+    &[data-selected="true"] {
+      color: var(--ipt-fg-clr);
+      background: var(--ipt-bg-clr);
+    }
+
+    &[data-disabled="true"] {
+      opacity: 0.6;
+    }
+
+    &[data-current="true"] {
+      border: 1px solid var(--sdw);
+    }
+  }
+
+  .ipt-dialog-date {
+    overflow: hidden;
+  }
+}
+
+@layer feat {
+
+  .ipt-dialog {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .3s, display .3s allow-discrete, overlay .3s allow-discrete;
+    opacity: 1;
+    overflow: hidden;
+
+    &[open] {
+      grid-template-rows: 1fr;
+
+      >.ipt-dialog-list {
+        overflow: auto;
+      }
+
+      >.ipt-dp {
+        height: 32rem;
+      }
+    }
+  }
+
+  @starting-style {
+
+    .ipt-dialog[open] {
+      grid-template-rows: 0fr;
+    }
+  }
+
+}
