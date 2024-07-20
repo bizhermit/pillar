@@ -17,7 +17,7 @@
       "label": "cleanup branch",
       "group": "none",
       "type": "shell",
-      "command": "bash ./scripts/git/cleanup.sh"
+      "command": "bash ./scripts/cleanup-branches.sh"
     },
     {
       "label": "delete devcontainer docker",
