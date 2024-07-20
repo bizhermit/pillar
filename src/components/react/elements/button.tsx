@@ -1,12 +1,15 @@
 "use client";
 
-import { type ButtonHTMLAttributes, type MouseEvent, type MutableRefObject, type ReactNode } from "react";
+import { type ButtonHTMLAttributes, type MouseEvent, type MutableRefObject } from "react";
 import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./utilities";
 
 type ButtonOptions = {
   ref?: MutableRefObject<HTMLButtonElement | null>;
   processing?: boolean;
+  round?: boolean;
+  outline?: boolean;
+  color?: "primary" | "secondary" | "danger";
   onClick?: (props: {
     event: MouseEvent<HTMLButtonElement>;
     unlock: (focus?: boolean) => void;
@@ -15,13 +18,12 @@ type ButtonOptions = {
 
 export type ButtonProps = OverwriteAttrs<ButtonHTMLAttributes<HTMLButtonElement>, ButtonOptions>;
 
-export const ButtonIcon = (props: { children: ReactNode }) => {
-  return <div className="btn-icon">{props.children}</div>;
-};
-
 export const Button = ({
   onClick,
   processing,
+  round,
+  outline,
+  color,
   ...props
 }: ButtonProps) => {
   const [ing, setState, ingRef] = useRefState(false);
@@ -47,6 +49,9 @@ export const Button = ({
       disabled={props.disabled || ing || processing}
       onClick={click}
       data-processing={ing || processing}
+      data-round={round}
+      data-outline={outline}
+      data-color={color}
     />
   );
 };

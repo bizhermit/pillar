@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 "use client";
 
-import { Button, ButtonIcon } from "@/react/elements/button";
+import { Button } from "@/react/elements/button";
 import { Dialog, useDialog } from "@/react/elements/dialog";
 import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
@@ -23,6 +23,7 @@ import { TextArea } from "@/react/elements/form/items/text-area";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
+import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
 import { sleep } from "@/utilities/sleep";
 import { useRef, useState } from "react";
 import s from "./page.module.css";
@@ -48,8 +49,6 @@ export default function Home() {
   return (
     <div>
       <div className={s.row}>
-        root page
-
         <button disabled>button</button>
         <button>ボタン</button>
         <Button
@@ -96,6 +95,9 @@ export default function Home() {
           onClick={() => {
             console.log(ref.current);
           }}
+          round
+          color="danger"
+          outline
         >
           console
         </Button>
@@ -105,15 +107,21 @@ export default function Home() {
             await sleep(3000);
             unlock();
           }}
+          round
+          outline
         >
-          <ButtonIcon>a</ButtonIcon>
+          {/* <ButtonIcon>a</ButtonIcon> */}
+          <MagnifyingGlassIcon />
         </Button>
         <Button
           onClick={() => {
             setBind({});
           }}
+          outline
+          round
         >
-          reset bind
+          <SmileIcon />
+          <span>reset bind</span>
         </Button>
         <ToggleSwitch
           hook={formDisabled.hook}
@@ -137,6 +145,14 @@ export default function Home() {
         >
           set hogehoge
         </Button>
+      </div>
+      <div style={{ display: "flex", flexFlow: "row", gap: 4}}>
+        <Button>primary</Button>
+        <Button outline>primary</Button>
+        <Button color="secondary">secondary</Button>
+        <Button color="secondary" outline>secondary</Button>
+        <Button color="danger">danger</Button>
+        <Button color="danger" outline>danger</Button>
       </div>
       <Form
         bind={bind}
@@ -411,12 +427,20 @@ export default function Home() {
             />
           </FormItemWrap>
           {/* </div> */}
-          <FormButton type="submit">
-            submit
-          </FormButton>
-          <FormButton type="reset">
-            reset
-          </FormButton>
+          <div
+            style={{
+              display: "flex",
+              flexFlow: "column nowrap",
+              gap: 4,
+            }}
+          >
+            <FormButton type="submit">
+              submit
+            </FormButton>
+            <FormButton type="reset">
+              reset
+            </FormButton>
+          </div>
           <span>{formItem.value}</span>
         </div>
         {/* <DatePicker
