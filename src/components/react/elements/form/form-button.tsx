@@ -19,6 +19,7 @@ export const FormButton = ({
       {...props}
       disabled={disabled || form.disabled || form.pending}
       processing={form.pending}
+      outline={props.outline ?? props.type === "reset"}
     />
   );
 };

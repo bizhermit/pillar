@@ -2,38 +2,52 @@
 
 @layer base {
 
-  .btn-icon {
-    width: var(--btn-size);
-
-    &:only-child {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
-  }
-
   :is(.btn, a[role="button"]) {
+    ---btn-bg: var(--c-primary);
+    ---btn-fg: var(--c-primary_);
+
     position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: .8rem;
     font-size: inherit;
     font-family: inherit;
     border: none;
     height: var(--btn-size);
     padding: 0 calc(var(--btn-size) / 2);
-    border-radius: 0.2rem;
-    background: var(--btn-bg);
-    color: var(--btn-fg);
-    border-top: 0.3rem solid transparent;
-    border-bottom: 0.3rem solid var(--sdw);
+    border-radius: .2rem;
+    background: var(---btn-bg);
+    color: var(---btn-fg);
+    box-shadow: 0 0 0 1.2px var(---btn-bg) inset;
     user-select: none;
     text-decoration: none;
     min-width: 0;
-    transition: opacity 0.2s, border-bottom-color 0.2s;
+    transition: opacity .2s;
+
+    &[data-color="secondary"] {
+      ---btn-bg: var(--c-secondary, var(--c-primary));
+      ---btn-fg: var(--c-secondary_, var(--c-primary_));
+    }
+
+    &[data-color="danger"] {
+      ---btn-bg: var(--c-danger, var(--c-primary));
+      ---btn-fg: var(--c-danger_, var(--c-primary_));
+    }
+
+    &[data-outline="true"] {
+      background: var(--btn-bg);
+      color: var(---btn-bg);
+    }
+
+    &[data-round="true"] {
+      border-radius: 9999px;
+    }
 
     &:is(:disabled, [aria-disabled="true"]) {
       cursor: not-allowed;
-      opacity: 0.6;
-      border-bottom-color: transparent;
-      color: var(--btn-fg);
+      opacity: .6;
 
       &[data-processing="true"] {
         cursor: wait;
@@ -44,11 +58,20 @@
       cursor: pointer;
 
       &:hover {
-        opacity: 0.8;
+        opacity: .8;
 
         &:active {
           opacity: 1;
         }
+      }
+    }
+
+    >.icon {
+      width: calc(var(--btn-size) * .5);
+      overflow: hidden;        
+      
+      &:only-child {
+        position: absolute;
       }
     }
   }
