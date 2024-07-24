@@ -54,7 +54,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
   const [origin, loading] = useLoadableArray($source, { preventMemorize: preventSourceMemorize });
 
   const fi = useFormItemCore<DataItem.$array<DataItem.$str | DataItem.$num | DataItem.$boolAny>, D, Array<any>, Array<{ [P in typeof vdn]: any; } & { [P in typeof ldn]: any }>>(props, {
-    dataItemDeps: [vdn, ldn, origin, length, minLength, maxLength],
+    dataItemDeps: [vdn, ldn, origin, length, minLength, maxLength, ...(tieInNames ?? [])],
     getDataItem: ({ dataItem }) => {
       return {
         type: "array",
@@ -64,6 +64,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
         maxLength: maxLength ?? dataItem?.maxLength,
       };
     },
+    getTieInNames: () => tieInNames?.map(item => item.hiddenName || item.dataName),
     parse: ({ dataItem }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
         if (loading) {
