@@ -142,15 +142,24 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
       return equals(v1?.str, v2?.str) && equals(v1?.y, v2?.y) && equals(v1?.m, v2?.m) && (dataItem.type === "month" || equals(v1?.d, v2?.d));
     },
     validation: ({ dataItem, iterator }) => {
-      const funcs = $dateValidations(dataItem);
+      const funcs = $dateValidations(dataItem, { skipRequired: allowMissing });
       return (v, p) => {
-        if (!allowMissing && (v?.y != null || v?.m != null || (p.dataItem.type !== "month" && v?.d != null))) {
-          const parts: Array<string> = [];
-          if (v.y == null) parts.push("年");
-          if (v.m == null) parts.push("月");
-          if (v.d == null) parts.push("日");
-          if (parts.length > 0) {
-            return { type: "e", code: "lack", fullName: p.fullName, msg: `${p.dataItem.label ?? "値"}に${parts.join("と")}を入力してください。` };
+        if (allowMissing) {
+          const required = typeof p.dataItem.required === "function" ? p.dataItem.required(p) : p.dataItem.required;
+          if (required) {
+            if (v?.y == null && v?.m == null && (p.dataItem.type === "month" || v?.d == null)) {
+              return { type: "e", code: "required", fullName: p.fullName, msg: `${p.dataItem.label || "値"}を入力してください。` };
+            }
+          }
+        } else {
+          if (v?.y != null || v?.m != null || (p.dataItem.type !== "month" && v?.d != null)) {
+            const parts: Array<string> = [];
+            if (v.y == null) parts.push("年");
+            if (v.m == null) parts.push("月");
+            if (v.d == null) parts.push("日");
+            if (parts.length > 0) {
+              return { type: "e", code: "lack", fullName: p.fullName, msg: `${p.dataItem.label ?? "値"}に${parts.join("と")}を入力してください。` };
+            }
           }
         }
         return iterator(funcs, { ...p, value: v?.date });
