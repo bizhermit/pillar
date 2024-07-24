@@ -36,7 +36,8 @@ export default function Home() {
     // text: undefined,
     // select: 309,
     // select: 3,
-    "check-list": [1]
+    "check-list": [1],
+    "date-select-m": 3,
   });
   const formItem = useFormItem();
 
@@ -166,6 +167,7 @@ export default function Home() {
           console.log("--- bind ---");
           console.log(getBindData({
             // appendNotChanged: true,
+            pure: true,
           }));
           await sleep(3000);
         }}
@@ -373,6 +375,7 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
+              splitDataNames={["date-select-y", "date-select-m", "date-select-d"]}
             />
           </FormItemWrap>
           <FormItemWrap>

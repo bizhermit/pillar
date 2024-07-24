@@ -137,7 +137,12 @@ export const useFormItemCore = <
       def = true;
       return defaultValue;
     })();
-    const [val, parseRes] = parseVal({ value: v, dataItem, fullName: dataItem.name || "" });
+    const [val, parseRes] = parseVal({
+      value: v,
+      dataItem,
+      fullName: dataItem.name || "",
+      data: form.bind,
+    });
     const validRes = parseRes?.type === "e" ? undefined : doValidation(val);
     return { val, msg: validRes ?? parseRes, default: def && defaultValue != null && defaultValue !== "" };
   }, []);
@@ -180,7 +185,12 @@ export const useFormItemCore = <
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
     if (parse) {
-      const [val, msg] = parseVal({ value, dataItem, fullName: dataItem.name || "" });
+      const [val, msg] = parseVal({
+        value,
+        dataItem,
+        fullName: dataItem.name || "",
+        data: form.bind,
+      });
       v = val;
       parseRes = msg;
     }
@@ -273,10 +283,10 @@ export const useFormItemCore = <
 
   useEffect(() => {
     if (cp.revert) {
-      set({ value: cp.revert(valRef.current), parse: false, mount: true });
+      set({ value: cp.revert(valRef.current), parse: true, mount: true });
       return;
     }
-    set({ value: valRef.current, parse: true, mount: true });
+    set({ value: valRef.current, parse: false, mount: true });
   }, [validation, parseVal]);
 
   const editable = !$readOnly && !$disabled && !form.pending;

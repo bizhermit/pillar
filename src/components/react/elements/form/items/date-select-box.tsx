@@ -1,12 +1,13 @@
 "use client";
 
+import { parseNum } from "@/objects/number";
 import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactElement, type ReactNode, useMemo, useRef } from "react";
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
 import { isEmpty } from "../../../../objects/string";
-import { setValue } from "../../../../objects/struct";
+import { getValue, setValue } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
 import { DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
@@ -28,6 +29,7 @@ type DateSelectBoxOptions<D extends DataItem.$date | DataItem.$month | undefined
     pair?: DataItem.$date["pair"];
     initFocusDate?: string;
     placeholder?: string | [string, string] | [string, string, string];
+    splitDataNames?: [string, string] | [string, string, string];
   };
 
 type DateSelectBoxProps<D extends DataItem.$date | DataItem.$month | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, DateSelectBoxOptions<D>>;
@@ -48,6 +50,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   pair,
   initFocusDate,
   placeholder,
+  splitDataNames,
   ...props
 }: DateSelectBoxProps<D>) => {
   const today = withoutTime(new Date());
@@ -80,15 +83,22 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     }
   };
 
-  const renderInputs = (v: DataValue | null | undefined) => {
+  const renderInputs = (v: DataValue | null | undefined, split?: boolean) => {
     const d = v?.date;
     if (d == null) {
-      yref.current.value = "";
-      mref.current.value = "";
-      if (dref.current) dref.current.value = "";
-      cache.current.y = undefined;
-      cache.current.m = undefined;
-      cache.current.d = undefined;
+      if (split) {
+        cache.current.y = v?.y ?? undefined;
+        cache.current.m = v?.m ?? undefined;
+        cache.current.d = v?.d ?? undefined;
+        return;
+      } else {
+        cache.current.y = undefined;
+        cache.current.m = undefined;
+        cache.current.d = undefined;
+      }
+      yref.current.value = String(cache.current.y ?? "");
+      mref.current.value = String(cache.current.m ?? "");
+      if (dref.current) dref.current.value = String(cache.current.d ?? "");
       return;
     }
     yref.current.value = String(cache.current.y = d.getFullYear());
@@ -98,7 +108,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   };
 
   const fi = useFormItemCore<DataItem.$date | DataItem.$month, D, string, DataValue>(props, {
-    dataItemDeps: [type, min, max, pair?.name, pair?.position, pair?.same],
+    dataItemDeps: [type, min, max, pair?.name, pair?.position, pair?.same, ...(splitDataNames ?? [])],
     getDataItem: ({ dataItem, refs }) => {
       const $pair = pair ?? dataItem?.pair;
       return {
@@ -107,18 +117,30 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         max: max ?? dataItem?.max,
         pair: $pair,
         refs: $pair ? [$pair.name, ...(refs ?? [])] : refs,
+        splitDataNames: splitDataNames ?? dataItem?.splitDataNames,
       };
     },
     parse: () => {
       return (p) => {
         const [d, r] = $dateParse(p);
-        if (d == null) return [{ str: undefined, date: undefined, y: undefined, m: undefined, d: undefined }, r];
+        if (d == null) {
+          if (p.dataItem.splitDataNames) {
+            const m = parseNum(getValue(p.data, p.dataItem.splitDataNames[1])[0]);
+            return [{
+              str: undefined, date: undefined,
+              y: parseNum(getValue(p.data, p.dataItem.splitDataNames[0])[0]),
+              m: m == null ? undefined : m - 1,
+              d: p.dataItem.splitDataNames[2] ? parseNum(getValue(p.data, p.dataItem.splitDataNames[2])[0]) : undefined,
+            }, r];
+          }
+          return [{ str: undefined, date: undefined, y: undefined, m: undefined, d: undefined }, r];
+        }
         return [{ str: formatDate(d), date: d, y: d.getFullYear(), m: d.getMonth(), d: d.getDate() }, r];
       };
     },
     revert: (v) => v?.str,
     effect: ({ edit, value, effect }) => {
-      if (yref.current && (!edit || effect)) renderInputs(value);
+      if (yref.current && (!edit || effect)) renderInputs(value, true);
     },
     equals: (v1, v2, { dataItem }) => {
       return equals(v1?.str, v2?.str) && equals(v1?.y, v2?.y) && equals(v1?.m, v2?.m) && (dataItem.type === "month" || equals(v1?.d, v2?.d));
@@ -127,8 +149,15 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
       const funcs = $dateValidations(dataItem);
       return (v, p) => iterator(funcs, { ...p, value: v?.date });
     },
-    setBind: ({ data, name, value }) => {
+    setBind: ({ data, name, value, dataItem }) => {
       setValue(data, name, value?.str);
+      if (dataItem.splitDataNames) {
+        setValue(data, dataItem.splitDataNames[0], value?.y);
+        setValue(data, dataItem.splitDataNames[1], value?.m == null ? value?.m : value.m + 1);
+        if (dataItem.splitDataNames[2]) {
+          setValue(data, dataItem.splitDataNames[2], value?.d);
+        }
+      }
     },
     focus: focusInput,
   });
@@ -268,7 +297,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
       if (elem === e.currentTarget) return;
       elem = elem.parentElement;
     }
-    renderInputs(fi.valueRef.current);
+    // renderInputs(fi.valueRef.current);
     props.onBlur?.(e);
   };
 
@@ -752,12 +781,35 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
           </>
         }
         {fi.mountValue &&
-          <input
-            type="hidden"
-            name={fi.name}
-            value={empty ? "" : fi.value?.str!}
-            disabled={fi.disabled}
-          />
+          <>
+            <input
+              type="hidden"
+              name={fi.name}
+              value={empty ? "" : fi.value?.str!}
+              disabled={fi.disabled}
+            />
+            {fi.dataItem.splitDataNames &&
+              <>
+                <input
+                  type="hidden"
+                  name={fi.dataItem.splitDataNames[0]}
+                  value={fi.value?.y ?? ""}
+                />
+                <input
+                  type="hidden"
+                  name={fi.dataItem.splitDataNames[1]}
+                  value={fi.value?.m == null ? "" : fi.value.m + 1}
+                />
+                {fi.dataItem.splitDataNames[2] &&
+                  <input
+                    type="hidden"
+                    name={fi.dataItem.splitDataNames[2]}
+                    value={fi.value?.d ?? ""}
+                  />
+                }
+              </>
+            }
+          </>
         }
         {!selectEmpty && fi.clearButton(selectEmpty ? undefined : clear)}
       </div>
