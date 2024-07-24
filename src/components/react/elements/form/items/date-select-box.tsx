@@ -83,19 +83,12 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     }
   };
 
-  const renderInputs = (v: DataValue | null | undefined, split?: boolean) => {
+  const renderInputs = (v: DataValue | null | undefined) => {
     const d = v?.date;
     if (d == null) {
-      if (split) {
-        cache.current.y = v?.y ?? undefined;
-        cache.current.m = v?.m ?? undefined;
-        cache.current.d = v?.d ?? undefined;
-        return;
-      } else {
-        cache.current.y = undefined;
-        cache.current.m = undefined;
-        cache.current.d = undefined;
-      }
+      cache.current.y = v?.y ?? undefined;
+      cache.current.m = v?.m == null ? undefined : v.m + 1;
+      cache.current.d = v?.d ?? undefined;
       yref.current.value = String(cache.current.y ?? "");
       mref.current.value = String(cache.current.m ?? "");
       if (dref.current) dref.current.value = String(cache.current.d ?? "");
@@ -122,10 +115,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     },
     getTieInNames: ({ dataItem }) => dataItem.splitDataNames,
     parse: () => {
-      return (p) => {
+      return (p, { bind }) => {
         const [d, r] = $dateParse(p);
         if (d == null) {
-          if (p.dataItem.splitDataNames) {
+          if (bind && p.dataItem.splitDataNames) {
             const m = parseNum(getValue(p.data, p.dataItem.splitDataNames[1])[0]);
             return [{
               str: undefined, date: undefined,
@@ -141,7 +134,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     },
     revert: (v) => v?.str,
     effect: ({ edit, value, effect }) => {
-      if (yref.current && (!edit || effect)) renderInputs(value, true);
+      if (yref.current && (!edit || effect)) renderInputs(value);
     },
     equals: (v1, v2, { dataItem }) => {
       return equals(v1?.str, v2?.str) && equals(v1?.y, v2?.y) && equals(v1?.m, v2?.m) && (dataItem.type === "month" || equals(v1?.d, v2?.d));

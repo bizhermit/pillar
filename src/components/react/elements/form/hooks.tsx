@@ -19,7 +19,7 @@ type FormItemCoreArgs<
     dataItem: D | undefined;
   }) => DataItem.ArgObject<SD>;
   getTieInNames?: (params: { dataItem: SD; }) => (Array<string> | undefined);
-  parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
+  parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>, args: { bind: boolean; }) => DataItem.ParseResult<IV>;
   revert?: (v: IV | null | undefined) => (V | null | undefined);
   equals?: (v1: IV | null | undefined, v2: IV | null | undefined, params: { dataItem: DataItem.ArgObject<SD>; }) => boolean;
   validation: (props: {
@@ -143,7 +143,7 @@ export const useFormItemCore = <
       dataItem,
       fullName: dataItem.name || "",
       data: form.bind,
-    });
+    }, { bind: true });
     const validRes = parseRes?.type === "e" ? undefined : doValidation(val);
     return { val, msg: validRes ?? parseRes, default: def && defaultValue != null && defaultValue !== "" };
   }, []);
@@ -181,7 +181,7 @@ export const useFormItemCore = <
 
   const get = () => valRef.current as any;
 
-  const set = ({ value, edit, effect, parse, init, mount }: FormItemSetArg) => {
+  const set = ({ value, edit, effect, parse, init, mount, bind }: FormItemSetArg) => {
     const before = valRef.current;
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
@@ -191,7 +191,7 @@ export const useFormItemCore = <
         dataItem,
         fullName: dataItem.name || "",
         data: form.bind,
-      });
+      }, { bind: bind ?? false });
       v = val;
       parseRes = msg;
     }
@@ -276,19 +276,19 @@ export const useFormItemCore = <
     if (dataItem.name && form.state !== "nothing") {
       const [v, has] = getValue(form.bind, dataItem.name);
       if (has) {
-        set({ value: v, parse: true, effect: true, init: true });
+        set({ value: v, parse: true, effect: true, init: true, bind: true });
         return;
       }
     }
-    set({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default" });
+    set({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default", bind: true });
   }, [form.bind, dataItem]);
 
   useEffect(() => {
     if (cp.revert) {
-      set({ value: cp.revert(valRef.current), parse: true, mount: true });
+      set({ value: cp.revert(valRef.current), parse: true, mount: true, bind: true });
       return;
     }
-    set({ value: valRef.current, parse: false, mount: true });
+    set({ value: valRef.current, parse: false, mount: true, bind: true });
   }, [validation, parseVal]);
 
   const editable = !$readOnly && !$disabled && !form.pending;

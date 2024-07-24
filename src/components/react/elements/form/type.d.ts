@@ -51,4 +51,5 @@ type FormItemSetArg<T extends any = any> = {
   parse?: boolean;
   init?: boolean | "default";
   mount?: boolean;
+  bind?: boolean;
 };

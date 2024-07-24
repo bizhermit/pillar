@@ -37,7 +37,7 @@ export default function Home() {
     // select: 309,
     // select: 3,
     "check-list": [1],
-    // "date-select-m": 3,
+    "date-select-m": 3,
   });
   const formItem = useFormItem();
 
