@@ -37,7 +37,7 @@ export default function Home() {
     // select: 309,
     // select: 3,
     "check-list": [1],
-    "date-select-m": 3,
+    // "date-select-m": 3,
   });
   const formItem = useFormItem();
 
@@ -167,7 +167,7 @@ export default function Home() {
           console.log("--- bind ---");
           console.log(getBindData({
             // appendNotChanged: true,
-            pure: true,
+            // pure: true,
           }));
           await sleep(3000);
         }}

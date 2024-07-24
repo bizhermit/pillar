@@ -18,6 +18,7 @@ type FormItemCoreArgs<
   getDataItem: (props: PickPartial<DataItem.$, DataItem.OmitableProps> & {
     dataItem: D | undefined;
   }) => DataItem.ArgObject<SD>;
+  getTieInNames?: (params: { dataItem: SD; }) => (Array<string> | undefined);
   parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
   revert?: (v: IV | null | undefined) => (V | null | undefined);
   equals?: (v1: IV | null | undefined, v2: IV | null | undefined, params: { dataItem: DataItem.ArgObject<SD>; }) => boolean;
@@ -254,6 +255,7 @@ export const useFormItemCore = <
     const { unmount } = form.mount({
       id: id.current,
       name: dataItem.name,
+      tieInNames: cp.getTieInNames?.({ dataItem }),
       get,
       set,
       reset,

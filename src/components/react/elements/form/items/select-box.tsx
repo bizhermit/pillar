@@ -100,13 +100,14 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   };
 
   const fi = useFormItemCore<DataItem.$str | DataItem.$num | DataItem.$boolAny, D, string | number | boolean, { [P in typeof vdn]: string | number | boolean; } & { [P in typeof ldn]: any }>(props, {
-    dataItemDeps: [vdn, ldn, origin],
+    dataItemDeps: [vdn, ldn, origin, ...(tieInNames ?? [])],
     getDataItem: ({ dataItem }) => {
       return {
         type: dataItem?.type!,
         source: origin as DataItem.Source<any>,
       };
     },
+    getTieInNames: () => tieInNames?.map(item => item.hiddenName || item.dataName),
     parse: ({ dataItem }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
         if (loading) {

@@ -13,6 +13,7 @@ type FormItemState = {
 type FormItemMountProps = {
   id: string;
   name?: string;
+  tieInNames?: Array<string>;
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
@@ -154,10 +155,13 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     if (opts?.pure) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
-      const { name, hasChanged } = items.current[id];
+      const { name, tieInNames, hasChanged } = items.current[id];
       if (!name) return;
       if (!opts?.appendNotChanged && !hasChanged()) return;
       setValue(ret, name, clone(getValue($bind, name)[0]));
+      tieInNames?.forEach(n => {
+        setValue(ret, n, clone(getValue($bind, n)[0]));
+      });
     });
     return ret as any;
   };
