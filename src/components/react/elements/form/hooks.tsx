@@ -59,6 +59,7 @@ export const useFormItemCore = <
     tabIndex,
     defaultValue,
     dataItem: $dataItem,
+    preventCollectForm,
     onChange,
     onEdit,
     ...props
@@ -166,7 +167,7 @@ export const useFormItemCore = <
   const [dyanmicRequired, setDyanmicRequired] = useState(getDynamicRequired);
 
   const hasChanged = () => !(cp.equals ?? equals)(cache.current, valRef.current, { dataItem });
-  const mountValue = hasChanged();
+  const mountValue = !preventCollectForm && hasChanged();
 
   const setState = (state: DataItem.ValidationResult | null | undefined) => {
     form.setItemState({
@@ -265,11 +266,12 @@ export const useFormItemCore = <
         setDyanmicRequired(getDynamicRequired());
       },
       dataItem,
+      preventCollectForm,
     });
     return () => {
       unmount();
     };
-  }, [dataItem]);
+  }, [dataItem, preventCollectForm]);
 
   useEffect(() => {
     setInputted(false);

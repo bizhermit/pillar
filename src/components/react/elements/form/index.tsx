@@ -20,6 +20,7 @@ type FormItemMountProps = {
   changeRefs: (name: string) => void;
   hasChanged: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
+  preventCollectForm: boolean | undefined;
 };
 
 type FormState = "init" | "submit" | "reset" | "" | "nothing";
@@ -155,7 +156,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     if (opts?.pure) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
-      const { name, tieInNames, hasChanged } = items.current[id];
+      const { name, tieInNames, hasChanged, preventCollectForm } = items.current[id];
+      if (preventCollectForm) return;
       if (!name && (tieInNames ?? []).length === 0) return;
       if (!opts?.appendNotChanged && !hasChanged()) return;
       if (name) setValue(ret, name, clone(getValue($bind, name)[0]));

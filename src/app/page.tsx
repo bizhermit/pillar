@@ -377,6 +377,7 @@ export default function Home() {
               readOnly={readOnly.value}
               splitDataNames={["date-select-y", "date-select-m", "date-select-d"]}
               // allowMissing
+              // preventCollectForm
             />
           </FormItemWrap>
           <FormItemWrap>
