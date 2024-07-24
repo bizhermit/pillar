@@ -33,7 +33,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
         charType: charType ?? dataItem?.charType ?? "h-num",
       };
     },
-    parse: () => $strParse,
+    parse: () => (p) => $strParse(p, true),
     effect: ({ edit, value, effect }) => {
       if (iref.current && (!edit || effect)) iref.current.value = parseFormattedValue(value) ?? "";
     },

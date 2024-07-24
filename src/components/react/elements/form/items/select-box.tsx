@@ -130,9 +130,9 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         case "bool":
         case "b-num":
         case "b-str":
-          return p => parseData($boolParse(p as DataItem.ParseProps<DataItem.$boolAny>), p);
-        case "str": return p => parseData($strParse(p as DataItem.ParseProps<DataItem.$str>), p);
-        case "num": return p => parseData($numParse(p as DataItem.ParseProps<DataItem.$num>), p);
+          return (p) => parseData($boolParse(p as DataItem.ParseProps<DataItem.$boolAny>), p);
+        case "str": return (p, { bind }) => parseData($strParse(p as DataItem.ParseProps<DataItem.$str>, !bind), p);
+        case "num": return (p, { bind }) => parseData($numParse(p as DataItem.ParseProps<DataItem.$num>, !bind), p);
         default: return (p) => parseData([p.value], p);
       }
     },

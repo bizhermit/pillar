@@ -35,7 +35,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
         requiredIsNotZero: requiredIsNotZero ?? dataItem?.requiredIsNotZero,
       };
     },
-    parse: () => $numParse,
+    parse: () => (p) => $numParse(p, true),
     effect: () => { },
     validation: ({ dataItem, iterator }) => {
       const funcs = $numValidations(dataItem);

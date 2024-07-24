@@ -49,7 +49,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
         requiredIsNotZero: requiredIsNotZero ?? dataItem?.requiredIsNotZero,
       };
     },
-    parse: () => $numParse,
+    parse: () => (p) => $numParse(p, true),
     effect: ({ edit, value, effect }) => {
       if (iref.current && (!edit || effect)) iref.current.value = parseFormattedValue(value);
     },
