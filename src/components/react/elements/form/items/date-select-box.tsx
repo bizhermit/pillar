@@ -304,7 +304,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
       if (elem === e.currentTarget) return;
       elem = elem.parentElement;
     }
-    // renderInputs(fi.valueRef.current);
+    renderInputs(fi.valueRef.current);
     props.onBlur?.(e);
   };
 
