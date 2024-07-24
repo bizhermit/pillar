@@ -504,7 +504,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
 
   const clear = () => {
     if (!fi.editable || selectEmpty) return;
-    fi.set({ value: undefined, edit: true, effect: true, parse: true });
+    fi.clear(true);
     focusInput("y");
   };
 

@@ -347,7 +347,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
 
   const clear = () => {
     if (!fi.editable || empty) return;
-    fi.set({ value: undefined, edit: true, effect: true, parse: true });
+    fi.clear(true);
     focusInput();
   };
 
