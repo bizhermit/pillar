@@ -134,7 +134,6 @@ export const useFormItemCore = <
       if (dataItem.name && form.state !== "nothing") {
         const [v, has] = getValue(form.bind, dataItem.name);
         if (has) return v;
-        setValue(form.bind, dataItem.name, defaultValue);
       }
       def = true;
       return defaultValue;
@@ -152,7 +151,7 @@ export const useFormItemCore = <
   const [msg, setMsg] = useState<DataItem.ValidationResult | null | undefined>(init.msg);
   const [val, setVal, valRef] = useRefState<IV | null | undefined>(init.val);
   const cache = useRef<IV | null | undefined>(init.default ? undefined : init.val);
-  const [_inputted, setInputted, _inputtedRef] = useRefState(init.default);
+  const [_inputted, setInputted, _inputtedRef] = useRefState(false);
 
   const getDynamicRequired = () => {
     if (typeof dataItem.required !== "function") return false;
@@ -183,7 +182,6 @@ export const useFormItemCore = <
   const get = () => valRef.current as any;
 
   const set = ({ value, edit, effect, parse, init, mount, bind }: FormItemSetArg) => {
-    const before = valRef.current;
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
     if (parse) {
@@ -196,13 +194,28 @@ export const useFormItemCore = <
       v = val;
       parseRes = msg;
     }
+
+    let updateBind = false;
+    switch (init) {
+      case "default":
+        cache.current = undefined;
+        updateBind = true;
+        break;
+      case true:
+        cache.current = v;
+        updateBind = true;
+        break;
+      default: break;
+    }
+
+    const before = valRef.current;
     const eq = (cp.equals ?? equals)(before, v, { dataItem });
-    if (!eq || mount) {
+    if (!eq || mount || updateBind) {
       const validRes = parseRes?.type === "e" ? undefined : doValidation(v);
       const res = validRes ?? parseRes;
       setState(res);
 
-      if (!eq) {
+      if (!eq || updateBind) {
         if (form.state !== "nothing") {
           if (cp.setBind) {
             cp.setBind({
@@ -214,15 +227,6 @@ export const useFormItemCore = <
           } else {
             if (dataItem.name) setValue(form.bind, dataItem.name, v);
           }
-        }
-        switch (init) {
-          case "default":
-            cache.current = undefined;
-            break;
-          case true:
-            cache.current = v;
-            break;
-          default: break;
         }
         setVal(v);
       }
@@ -283,7 +287,7 @@ export const useFormItemCore = <
       }
     }
     set({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default", bind: true });
-  }, [form.bind, dataItem]);
+  }, [form.bind]);
 
   useEffect(() => {
     if (cp.revert) {
