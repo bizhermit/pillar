@@ -18,7 +18,8 @@ type FormItemCoreArgs<
   getDataItem: (props: PickPartial<DataItem.$, DataItem.OmitableProps> & {
     dataItem: D | undefined;
   }) => DataItem.ArgObject<SD>;
-  parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>) => DataItem.ParseResult<IV>;
+  getTieInNames?: (params: { dataItem: SD; }) => (Array<string> | undefined);
+  parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>, args: { bind: boolean; }) => DataItem.ParseResult<IV>;
   revert?: (v: IV | null | undefined) => (V | null | undefined);
   equals?: (v1: IV | null | undefined, v2: IV | null | undefined, params: { dataItem: DataItem.ArgObject<SD>; }) => boolean;
   validation: (props: {
@@ -27,7 +28,7 @@ type FormItemCoreArgs<
   }) => (v: IV | null | undefined, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
   setBind?: (props: {
     value: IV | null | undefined;
-    name: string;
+    name: string | undefined;
     data: { [v: string]: any };
     dataItem: DataItem.ArgObject<SD>;
   }) => void;
@@ -58,6 +59,7 @@ export const useFormItemCore = <
     tabIndex,
     defaultValue,
     dataItem: $dataItem,
+    preventCollectForm,
     onChange,
     onEdit,
     ...props
@@ -132,12 +134,16 @@ export const useFormItemCore = <
       if (dataItem.name && form.state !== "nothing") {
         const [v, has] = getValue(form.bind, dataItem.name);
         if (has) return v;
-        setValue(form.bind, dataItem.name, defaultValue);
       }
       def = true;
       return defaultValue;
     })();
-    const [val, parseRes] = parseVal({ value: v, dataItem, fullName: dataItem.name || "" });
+    const [val, parseRes] = parseVal({
+      value: v,
+      dataItem,
+      fullName: dataItem.name || "",
+      data: form.bind,
+    }, { bind: true });
     const validRes = parseRes?.type === "e" ? undefined : doValidation(val);
     return { val, msg: validRes ?? parseRes, default: def && defaultValue != null && defaultValue !== "" };
   }, []);
@@ -145,7 +151,7 @@ export const useFormItemCore = <
   const [msg, setMsg] = useState<DataItem.ValidationResult | null | undefined>(init.msg);
   const [val, setVal, valRef] = useRefState<IV | null | undefined>(init.val);
   const cache = useRef<IV | null | undefined>(init.default ? undefined : init.val);
-  const [_inputted, setInputted, _inputtedRef] = useRefState(init.default);
+  const [_inputted, setInputted, _inputtedRef] = useRefState(false);
 
   const getDynamicRequired = () => {
     if (typeof dataItem.required !== "function") return false;
@@ -160,7 +166,7 @@ export const useFormItemCore = <
   const [dyanmicRequired, setDyanmicRequired] = useState(getDynamicRequired);
 
   const hasChanged = () => !(cp.equals ?? equals)(cache.current, valRef.current, { dataItem });
-  const mountValue = hasChanged();
+  const mountValue = !preventCollectForm && hasChanged();
 
   const setState = (state: DataItem.ValidationResult | null | undefined) => {
     form.setItemState({
@@ -175,23 +181,42 @@ export const useFormItemCore = <
 
   const get = () => valRef.current as any;
 
-  const set = ({ value, edit, effect, parse, init, mount }: FormItemSetArg) => {
-    const before = valRef.current;
+  const set = ({ value, edit, effect, parse, init, mount, bind }: FormItemSetArg) => {
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
     if (parse) {
-      const [val, msg] = parseVal({ value, dataItem, fullName: dataItem.name || "" });
+      const [val, msg] = parseVal({
+        value,
+        dataItem,
+        fullName: dataItem.name || "",
+        data: form.bind,
+      }, { bind: bind ?? false });
       v = val;
       parseRes = msg;
     }
+
+    let updateBind = false;
+    switch (init) {
+      case "default":
+        cache.current = undefined;
+        updateBind = true;
+        break;
+      case true:
+        cache.current = v;
+        updateBind = true;
+        break;
+      default: break;
+    }
+
+    const before = valRef.current;
     const eq = (cp.equals ?? equals)(before, v, { dataItem });
-    if (!eq || mount) {
+    if (!eq || mount || updateBind) {
       const validRes = parseRes?.type === "e" ? undefined : doValidation(v);
       const res = validRes ?? parseRes;
       setState(res);
 
-      if (!eq) {
-        if (dataItem.name && form.state !== "nothing") {
+      if (!eq || updateBind) {
+        if (form.state !== "nothing") {
           if (cp.setBind) {
             cp.setBind({
               value: v,
@@ -200,17 +225,8 @@ export const useFormItemCore = <
               dataItem,
             });
           } else {
-            setValue(form.bind, dataItem.name, v);
+            if (dataItem.name) setValue(form.bind, dataItem.name, v);
           }
-        }
-        switch (init) {
-          case "default":
-            cache.current = undefined;
-            break;
-          case true:
-            cache.current = v;
-            break;
-          default: break;
         }
         setVal(v);
       }
@@ -244,6 +260,7 @@ export const useFormItemCore = <
     const { unmount } = form.mount({
       id: id.current,
       name: dataItem.name,
+      tieInNames: cp.getTieInNames?.({ dataItem }),
       get,
       set,
       reset,
@@ -253,30 +270,31 @@ export const useFormItemCore = <
         setDyanmicRequired(getDynamicRequired());
       },
       dataItem,
+      preventCollectForm,
     });
     return () => {
       unmount();
     };
-  }, [dataItem]);
+  }, [dataItem, preventCollectForm]);
 
   useEffect(() => {
     setInputted(false);
     if (dataItem.name && form.state !== "nothing") {
       const [v, has] = getValue(form.bind, dataItem.name);
       if (has) {
-        set({ value: v, parse: true, effect: true, init: true });
+        set({ value: v, parse: true, effect: true, init: true, bind: true });
         return;
       }
     }
-    set({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default" });
-  }, [form.bind, dataItem]);
+    set({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default", bind: true });
+  }, [form.bind]);
 
   useEffect(() => {
     if (cp.revert) {
-      set({ value: cp.revert(valRef.current), parse: false, mount: true });
+      set({ value: cp.revert(valRef.current), parse: true, mount: true, bind: true });
       return;
     }
-    set({ value: valRef.current, parse: true, mount: true });
+    set({ value: valRef.current, parse: false, mount: true, bind: true });
   }, [validation, parseVal]);
 
   const editable = !$readOnly && !$disabled && !form.pending;
@@ -291,21 +309,21 @@ export const useFormItemCore = <
     disabled: $disabled,
     readOnly: $readOnly,
     editable,
-    required: $required,
-    hideClearButton,
-    hideMessage,
+    // required: $required,
+    // hideClearButton,
+    // hideMessage,
     showButtons,
     // defaultValue,
     dataItem,
-    cache,
+    // cache,
     value: val,
     valueRef: valRef,
     // onChange,
     // onEdit,
     form,
-    get,
+    // get,
     set,
-    reset,
+    // reset,
     clear,
     props,
     attrs: {
@@ -316,7 +334,7 @@ export const useFormItemCore = <
       "data-label": $dataItem?.label,
       "data-changed": mountValue,
     },
-    message: msg,
+    // message: msg,
     messageComponent: (!hideMessage && msg && !$disabled &&
       <span
         className="ipt-msg"

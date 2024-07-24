@@ -91,9 +91,9 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
         case "bool":
         case "b-num":
         case "b-str":
-          return p => parseData($boolParse(p as DataItem.ParseProps<DataItem.$boolAny>), p);
-        case "str": return p => parseData($strParse(p as DataItem.ParseProps<DataItem.$str>), p);
-        case "num": return p => parseData($numParse(p as DataItem.ParseProps<DataItem.$num>), p);
+          return (p) => parseData($boolParse(p as DataItem.ParseProps<DataItem.$boolAny>), p);
+        case "str": return (p, { bind }) => parseData($strParse(p as DataItem.ParseProps<DataItem.$str>, !bind), p);
+        case "num": return (p, { bind }) => parseData($numParse(p as DataItem.ParseProps<DataItem.$num>, !bind), p);
         default: return (p) => parseData([p.value], p);
       }
     },
@@ -120,7 +120,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
       return (v, p) => iterator(funcs, { ...p, value: v?.[vdn] });
     },
     setBind: ({ data, name, value }) => {
-      setValue(data, name, value?.[vdn]);
+      if (name) setValue(data, name, value?.[vdn]);
       tieInNames?.forEach(({ dataName, hiddenName }) => {
         const v = value?.[dataName];
         setValue(data, hiddenName ?? dataName, v);

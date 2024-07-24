@@ -12,13 +12,15 @@ type FormItemState = {
 
 type FormItemMountProps = {
   id: string;
-  name?: string;
+  name: string | undefined;
+  tieInNames?: Array<string>;
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
   changeRefs: (name: string) => void;
   hasChanged: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
+  preventCollectForm: boolean | undefined;
 };
 
 type FormState = "init" | "submit" | "reset" | "" | "nothing";
@@ -32,7 +34,7 @@ type FormContextProps = {
   hasError: boolean;
   setItemState: Dispatch<FormItemState>;
   getMountedItems: () => { [id: string]: FormItemMountProps };
-  change: (name: string) => void;
+  change: (name: string | undefined) => void;
   mount: (props: FormItemMountProps) => {
     unmount: () => void;
   };
@@ -154,10 +156,14 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     if (opts?.pure) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
-      const { name, hasChanged } = items.current[id];
-      if (!name) return;
+      const { name, tieInNames, hasChanged, preventCollectForm } = items.current[id];
+      if (preventCollectForm) return;
+      if (!name && (tieInNames ?? []).length === 0) return;
       if (!opts?.appendNotChanged && !hasChanged()) return;
-      setValue(ret, name, clone(getValue($bind, name)[0]));
+      if (name) setValue(ret, name, clone(getValue($bind, name)[0]));
+      tieInNames?.forEach(n => {
+        setValue(ret, n, clone(getValue($bind, n)[0]));
+      });
     });
     return ret as any;
   };
@@ -287,6 +293,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       pending: ["submit", "reset", "init"].includes(formState),
       hasError,
       change: (name) => {
+        if (name == null) return;
         const self = findItem(name);
         const refs = [name, ...(self?.dataItem.refs ?? [])];
         Object.keys(items.current).forEach(id => {

@@ -107,7 +107,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       return (v, p) => iterator(funcs, { ...p, value: v?.date });
     },
     setBind: ({ data, name, value }) => {
-      setValue(data, name, value?.str);
+      if (name) setValue(data, name, value?.str);
     },
     focus: focusInput,
   });
@@ -347,7 +347,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
 
   const clear = () => {
     if (!fi.editable || empty) return;
-    fi.set({ value: undefined, edit: true, effect: true, parse: true });
+    fi.clear(true);
     focusInput();
   };
 

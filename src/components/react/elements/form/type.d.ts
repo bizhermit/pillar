@@ -35,6 +35,7 @@ type FormItemOptions<
   tabIndex?: number;
   defaultValue?: V | DataItem.NullValue;
   dataItem?: D;
+  preventCollectForm?: boolean;
   onChange?: (value: IV | DataItem.NullValue, params: {
     before: IV | DataItem.NullValue;
   }) => void;
@@ -51,4 +52,5 @@ type FormItemSetArg<T extends any = any> = {
   parse?: boolean;
   init?: boolean | "default";
   mount?: boolean;
+  bind?: boolean;
 };

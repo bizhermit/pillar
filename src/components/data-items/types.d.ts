@@ -60,6 +60,7 @@ declare namespace DataItem {
     value: any;
     dataItem: ArgObject<D>;
     fullName: string;
+    data: { [v: string | number]: any };
   };
 
   type ParseResult<V> = [parsedValue: V | NullValue, result?: ValidationResult];
@@ -161,6 +162,7 @@ declare namespace DataItem {
       position: "before" | "after";
       same?: boolean;
     };
+    splitDataNames?: [string, string, string];
   };
 
   type $month = $ & {
@@ -173,6 +175,7 @@ declare namespace DataItem {
       position: "before" | "after";
       same?: boolean;
     };
+    splitDataNames?: [string, string];
   };
 
   type $time = $ & {

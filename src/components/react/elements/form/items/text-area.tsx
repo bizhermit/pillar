@@ -45,7 +45,7 @@ export const TextArea = <D extends DataItem.$str | undefined>({
         charType: charType ?? dataItem?.charType,
       };
     },
-    parse: () => $strParse,
+    parse: () => (p) => $strParse(p, true),
     effect: ({ edit, value, effect }) => {
       if (iref.current && (!edit || effect)) iref.current.value = value ?? "";
     },

@@ -2,13 +2,17 @@ import { equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfter
 
 const defaultLabel = "値";
 
-export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | DataItem.$month>): Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> => {
+type Options = {
+  skipRequired?: boolean;
+};
+
+export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | DataItem.$month>, opts?: Options): Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> => {
   const validations: Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> = [];
 
   const label = dataItem.label || defaultLabel;
   const dateFormatPattern = dataItem.type === "month" ? "yyyy/MM" : "yyyy/MM/dd";
 
-  if (dataItem.required) {
+  if (dataItem.required && !opts?.skipRequired) {
     validations.push((p) => {
       if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
       if (p.value != null) return undefined;
