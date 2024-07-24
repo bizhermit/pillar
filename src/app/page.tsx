@@ -370,12 +370,13 @@ export default function Home() {
           <FormItemWrap>
             <DateSelectBox
               label="日付"
-              name="date-select"
+              // name="date-select"
               placeholder="年月日"
-              required
+              // required
               disabled={disabled.value}
               readOnly={readOnly.value}
               splitDataNames={["date-select-y", "date-select-m", "date-select-d"]}
+              // allowMissing
             />
           </FormItemWrap>
           <FormItemWrap>

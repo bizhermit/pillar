@@ -122,12 +122,12 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
     },
     setBind: ({ data, name, value }) => {
       if (value == null) {
-        setValue(data, name, undefined);
+        if (name) setValue(data, name, undefined);
         tieInNames?.forEach(({ dataName, hiddenName }) => {
           setValue(data, hiddenName ?? dataName, undefined);
         });
       }
-      setValue(data, name, value?.map(v => v[vdn]));
+      if (name) setValue(data, name, value?.map(v => v[vdn]));
       tieInNames?.forEach(({ dataName, hiddenName }) => {
         setValue(data, hiddenName ?? dataName, value?.map(v => v[dataName]));
       });

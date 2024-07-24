@@ -28,7 +28,7 @@ type FormItemCoreArgs<
   }) => (v: IV | null | undefined, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
   setBind?: (props: {
     value: IV | null | undefined;
-    name: string;
+    name: string | undefined;
     data: { [v: string]: any };
     dataItem: DataItem.ArgObject<SD>;
   }) => void;
@@ -202,7 +202,7 @@ export const useFormItemCore = <
       setState(res);
 
       if (!eq) {
-        if (dataItem.name && form.state !== "nothing") {
+        if (form.state !== "nothing") {
           if (cp.setBind) {
             cp.setBind({
               value: v,
@@ -211,7 +211,7 @@ export const useFormItemCore = <
               dataItem,
             });
           } else {
-            setValue(form.bind, dataItem.name, v);
+            if (dataItem.name) setValue(form.bind, dataItem.name, v);
           }
         }
         switch (init) {

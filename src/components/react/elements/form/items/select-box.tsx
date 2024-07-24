@@ -161,7 +161,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
       return (v, p) => iterator(funcs, { ...p, value: v?.[vdn] });
     },
     setBind: ({ data, name, value }) => {
-      setValue(data, name, value?.[vdn]);
+      if (name) setValue(data, name, value?.[vdn]);
       tieInNames?.forEach(({ dataName, hiddenName }) => {
         const v = value?.[dataName];
         setValue(data, hiddenName ?? dataName, v);

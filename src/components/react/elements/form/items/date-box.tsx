@@ -107,7 +107,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       return (v, p) => iterator(funcs, { ...p, value: v?.date });
     },
     setBind: ({ data, name, value }) => {
-      setValue(data, name, value?.str);
+      if (name) setValue(data, name, value?.str);
     },
     focus: focusInput,
   });

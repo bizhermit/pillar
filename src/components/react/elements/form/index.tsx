@@ -12,7 +12,7 @@ type FormItemState = {
 
 type FormItemMountProps = {
   id: string;
-  name?: string;
+  name: string | undefined;
   tieInNames?: Array<string>;
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
@@ -33,7 +33,7 @@ type FormContextProps = {
   hasError: boolean;
   setItemState: Dispatch<FormItemState>;
   getMountedItems: () => { [id: string]: FormItemMountProps };
-  change: (name: string) => void;
+  change: (name: string | undefined) => void;
   mount: (props: FormItemMountProps) => {
     unmount: () => void;
   };
@@ -156,9 +156,9 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     const ret = {};
     Object.keys(items.current).forEach(id => {
       const { name, tieInNames, hasChanged } = items.current[id];
-      if (!name) return;
+      if (!name && (tieInNames ?? []).length === 0) return;
       if (!opts?.appendNotChanged && !hasChanged()) return;
-      setValue(ret, name, clone(getValue($bind, name)[0]));
+      if (name) setValue(ret, name, clone(getValue($bind, name)[0]));
       tieInNames?.forEach(n => {
         setValue(ret, n, clone(getValue($bind, n)[0]));
       });
@@ -291,6 +291,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       pending: ["submit", "reset", "init"].includes(formState),
       hasError,
       change: (name) => {
+        if (name == null) return;
         const self = findItem(name);
         const refs = [name, ...(self?.dataItem.refs ?? [])];
         Object.keys(items.current).forEach(id => {

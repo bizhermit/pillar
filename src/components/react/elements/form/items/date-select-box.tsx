@@ -30,6 +30,7 @@ type DateSelectBoxOptions<D extends DataItem.$date | DataItem.$month | undefined
     initFocusDate?: string;
     placeholder?: string | [string, string] | [string, string, string];
     splitDataNames?: [string, string] | [string, string, string];
+    allowMissing?: boolean;
   };
 
 type DateSelectBoxProps<D extends DataItem.$date | DataItem.$month | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, DateSelectBoxOptions<D>>;
@@ -51,6 +52,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   initFocusDate,
   placeholder,
   splitDataNames,
+  allowMissing,
   ...props
 }: DateSelectBoxProps<D>) => {
   const today = withoutTime(new Date());
@@ -101,7 +103,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   };
 
   const fi = useFormItemCore<DataItem.$date | DataItem.$month, D, string, DataValue>(props, {
-    dataItemDeps: [type, min, max, pair?.name, pair?.position, pair?.same, ...(splitDataNames ?? [])],
+    dataItemDeps: [type, min, max, pair?.name, pair?.position, pair?.same, allowMissing, ...(splitDataNames ?? [])],
     getDataItem: ({ dataItem, refs }) => {
       const $pair = pair ?? dataItem?.pair;
       return {
@@ -141,10 +143,21 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     },
     validation: ({ dataItem, iterator }) => {
       const funcs = $dateValidations(dataItem);
-      return (v, p) => iterator(funcs, { ...p, value: v?.date });
+      return (v, p) => {
+        if (!allowMissing && (v?.y != null || v?.m != null || (p.dataItem.type !== "month" && v?.d != null))) {
+          const parts: Array<string> = [];
+          if (v.y == null) parts.push("年");
+          if (v.m == null) parts.push("月");
+          if (v.d == null) parts.push("日");
+          if (parts.length > 0) {
+            return { type: "e", code: "lack", fullName: p.fullName, msg: `${p.dataItem.label ?? "値"}に${parts.join("と")}を入力してください。` };
+          }
+        }
+        return iterator(funcs, { ...p, value: v?.date });
+      };
     },
     setBind: ({ data, name, value, dataItem }) => {
-      setValue(data, name, value?.str);
+      if (name) setValue(data, name, value?.str);
       if (dataItem.splitDataNames) {
         setValue(data, dataItem.splitDataNames[0], value?.y);
         setValue(data, dataItem.splitDataNames[1], value?.m == null ? value?.m : value.m + 1);
