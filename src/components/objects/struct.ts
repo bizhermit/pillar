@@ -32,13 +32,12 @@ export const set = <U = any>(data: { [v: string | number | symbol]: any } | null
   const names = name.split(".");
   let o = data;
   for (let i = 0, il = names.length - 1; i < il; i++) {
-    const n = names[i];
     try {
-      const $n = getArrIdxOrName(n);
-      if (o[$n] == null) {
-        o[$n] = isArrIdxName(names[i + 1]) ? [] : {};
+      const n = getArrIdxOrName(names[i]);
+      if (o[n] == null) {
+        o[n] = isArrIdxName(names[i + 1]) ? [] : {};
       }
-      o = o[$n];
+      o = o[n];
     } catch {
       return value;
     }
