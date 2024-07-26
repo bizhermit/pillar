@@ -51,24 +51,28 @@ export const set = <U = any>(data: { [v: string | number | symbol]: any } | null
   return value;
 };
 
-export const appendValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
+export const append = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
   const names = name.split(".");
   let o = data;
-  for (const n of names.slice(0, names.length - 1)) {
-    if (o[n] == null) o[n] = {};
+  for (let i = 0, il = names.length - 1; i < il; i++) {
+    const n = getArrIdxOrName(names[i]);
+    if (o[n] == null) {
+      o[n] = isArrIdxName(names[i + 1]) ? [] : {};
+    }
     o = o[n];
   }
-  const ov = o[names[names.length - 1]];
+  const n = getArrIdxOrName(names[names.length - 1]);
+  const ov = o[n];
   if (ov == null) {
-    o[names[names.length - 1]] = value;
+    o[n] = value;
     return value;
   }
   if (Array.isArray(ov)) {
     ov.push(value);
     return value;
   }
-  o[names[names.length - 1]] = [ov, value];
+  o[n] = [ov, value];
   return value;
 };
 

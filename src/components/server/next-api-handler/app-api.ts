@@ -14,7 +14,7 @@ import { $structValidations } from "../../data-items/struct/validation";
 import { $timeParse } from "../../data-items/time/parse";
 import { $timeValidations } from "../../data-items/time/validation";
 import { getObjectType } from "../../objects";
-import { appendValue, get, set } from "../../objects/struct";
+import { append, get, set } from "../../objects/struct";
 
 export class ApiError extends Error {
 
@@ -238,7 +238,7 @@ export const apiMethodHandler = <
           const { searchParams } = new URL(req.url);
           const queryParams: { [v: string]: any } = {};
           searchParams.forEach((value, key) => {
-            appendValue(queryParams, key, value);
+            append(queryParams, key, value);
           });
 
           let bodyParams: { [v: string]: any } = {};
@@ -249,7 +249,7 @@ export const apiMethodHandler = <
             } else {
               const formData = await req.formData();
               formData.forEach((value, key) => {
-                appendValue(bodyParams, key, value);
+                append(bodyParams, key, value);
               });
             }
           }
