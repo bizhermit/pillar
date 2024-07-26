@@ -1,5 +1,14 @@
 // base
 
+const isArrIdxName = (name: string) => {
+  return name.match(/^\[(\d+)\]$/);
+};
+
+const getArrIdxOrName = (name: string) => {
+  const r = isArrIdxName(name);
+  return r ? Number(r[1]) : name;
+};
+
 export const get = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string): [value: U | null | undefined, has: boolean] => {
   let has = false;
   if (data == null) return [undefined, false];
@@ -8,8 +17,9 @@ export const get = <U = any>(data: { [v: string | number | symbol]: any } | null
   for (const n of names) {
     if (v == null) return [undefined, false];
     try {
-      has = n in v;
-      v = v[n];
+      const $n = getArrIdxOrName(n);
+      has = $n in v;
+      v = v[$n];
     } catch {
       return [undefined, false];
     }
@@ -21,16 +31,20 @@ export const set = <U = any>(data: { [v: string | number | symbol]: any } | null
   if (data == null) return value;
   const names = name.split(".");
   let o = data;
-  for (const n of names.slice(0, names.length - 1)) {
+  for (let i = 0, il = names.length - 1; i < il; i++) {
+    const n = names[i];
     try {
-      if (o[n] == null) o[n] = {};
-      o = o[n];
+      const $n = getArrIdxOrName(n);
+      if (o[$n] == null) {
+        o[$n] = isArrIdxName(names[i + 1]) ? [] : {};
+      }
+      o = o[$n];
     } catch {
       return value;
     }
   }
   try {
-    o[names[names.length - 1]] = value;
+    o[getArrIdxOrName(names[names.length - 1])] = value;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
