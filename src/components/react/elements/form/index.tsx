@@ -2,7 +2,7 @@
 
 import { createContext, useEffect, useMemo, useReducer, useRef, type Dispatch, type FormEvent, type FormHTMLAttributes, type MutableRefObject } from "react";
 import { clone } from "../../../objects";
-import { getValue, setValue } from "../../../objects/struct";
+import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 
 type FormItemState = {
@@ -160,17 +160,17 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       if (preventCollectForm) return;
       if (!name && (tieInNames ?? []).length === 0) return;
       if (!opts?.appendNotChanged && !hasChanged()) return;
-      if (name) setValue(ret, name, clone(getValue($bind, name)[0]));
+      if (name) set(ret, name, clone(get($bind, name)[0]));
       tieInNames?.forEach(n => {
-        setValue(ret, n, clone(getValue($bind, n)[0]));
+        set(ret, n, clone(get($bind, n)[0]));
       });
     });
     return ret as any;
   };
 
-  const get = (name: string) => findItem(name)?.get<any>();
+  const getValue = (name: string) => findItem(name)?.get<any>();
 
-  const set = (name: string, value: any, edit?: boolean) => findItem(name)?.set({ value, edit: edit ?? false, parse: true });
+  const setValue = (name: string, value: any, edit?: boolean) => findItem(name)?.set({ value, edit: edit ?? false, parse: true });
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.stopPropagation();
@@ -275,8 +275,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       reset: () => $ref.current?.reset(),
       getFormData,
       getBindData,
-      getValue: get,
-      setValue: set,
+      getValue,
+      setValue,
     };
   }
 
@@ -314,8 +314,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       },
       setItemState,
       getMountedItems: () => items.current,
-      getValue: get,
-      setValue: set,
+      getValue: getValue,
+      setValue: setValue,
     }}>
       <form
         {...props}

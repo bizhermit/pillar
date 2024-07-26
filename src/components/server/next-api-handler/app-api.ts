@@ -14,7 +14,7 @@ import { $structValidations } from "../../data-items/struct/validation";
 import { $timeParse } from "../../data-items/time/parse";
 import { $timeValidations } from "../../data-items/time/validation";
 import { getObjectType } from "../../objects";
-import { appendValue, getValue, setValue } from "../../objects/struct";
+import { appendValue, get, set } from "../../objects/struct";
 
 export class ApiError extends Error {
 
@@ -41,7 +41,7 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
 
   const replace = <D extends DataItem.$object>(dataItem: D, parse: (parseProps: DataItem.ParseProps<D>) => DataItem.ParseResult<any>, index: number | undefined): { value: (DataItem.ValueType<D> | null | undefined); name: string; } => {
     const name = getDataName(dataItem, index);
-    const value = getValue(params, name)[0];
+    const value = get(params, name)[0];
     const props = {
       value,
       dataItem,
@@ -49,7 +49,7 @@ const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Arr
       data: params,
     } as const satisfies DataItem.ParseProps<D>;
     const [v, r] = parse(props);
-    setValue(params, name, v);
+    set(params, name, v);
     if (r) results.push(r);
     return { value: v, name };
   };
@@ -130,7 +130,7 @@ const validationParams = (params: { [v: string]: any } | Array<any>, dataItems: 
 
   const isValid = <D extends DataItem.$object>(dataItem: D, validations: Array<DataItem.Validation<any>>, index: number | undefined): { ok: boolean; value: DataItem.ValueType<D>; name: string; } => {
     const name = getDataName(dataItem, index);
-    const value = getValue(params, name)[0];
+    const value = get(params, name)[0];
 
     let r: DataItem.ValidationResult | null | undefined;
     for (const func of validations) {

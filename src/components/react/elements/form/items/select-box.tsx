@@ -9,7 +9,7 @@ import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { equals } from "../../../../objects";
 import { isEmpty } from "../../../../objects/string";
-import { setValue } from "../../../../objects/struct";
+import { set } from "../../../../objects/struct";
 import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { Dialog, useDialog } from "../../dialog";
 import { DownFillIcon } from "../../icon";
@@ -161,10 +161,10 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
       return (v, p) => iterator(funcs, { ...p, value: v?.[vdn] });
     },
     setBind: ({ data, name, value }) => {
-      if (name) setValue(data, name, value?.[vdn]);
+      if (name) set(data, name, value?.[vdn]);
       tieInNames?.forEach(({ dataName, hiddenName }) => {
         const v = value?.[dataName];
-        setValue(data, hiddenName ?? dataName, v);
+        set(data, hiddenName ?? dataName, v);
       });
     },
     focus: focusInput,

@@ -4,7 +4,7 @@ import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
 import { equals } from "../../../objects";
 import { generateUuidV4 } from "../../../objects/string";
-import { getValue, setValue } from "../../../objects/struct";
+import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 import { CrossIcon } from "../icon";
 
@@ -132,7 +132,7 @@ export const useFormItemCore = <
     let def = false;
     const v = (() => {
       if (dataItem.name && form.state !== "nothing") {
-        const [v, has] = getValue(form.bind, dataItem.name);
+        const [v, has] = get(form.bind, dataItem.name);
         if (has) return v;
       }
       def = true;
@@ -179,9 +179,9 @@ export const useFormItemCore = <
     });
   };
 
-  const get = () => valRef.current as any;
+  const getValue = () => valRef.current as any;
 
-  const set = ({ value, edit, effect, parse, init, mount, bind }: FormItemSetArg) => {
+  const setValue = ({ value, edit, effect, parse, init, mount, bind }: FormItemSetArg) => {
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
     if (parse) {
@@ -225,7 +225,7 @@ export const useFormItemCore = <
               dataItem,
             });
           } else {
-            if (dataItem.name) setValue(form.bind, dataItem.name, v);
+            if (dataItem.name) set(form.bind, dataItem.name, v);
           }
         }
         setVal(v);
@@ -244,13 +244,13 @@ export const useFormItemCore = <
     cp.effect({ value: v, edit, effect, parse, init, origin: value, dataItem, mount });
   };
 
-  const reset = (edit?: boolean) => set({ value: defaultValue, edit, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default" });
+  const reset = (edit?: boolean) => setValue({ value: defaultValue, edit, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default" });
 
-  const clear = (edit?: boolean) => set({ value: undefined, edit, parse: true, effect: true });
+  const clear = (edit?: boolean) => setValue({ value: undefined, edit, parse: true, effect: true });
 
   hookRef.current = hook ? hook({
-    get,
-    set: (p) => set({ ...p, parse: true }),
+    get: getValue,
+    set: (p) => setValue({ ...p, parse: true }),
     clear,
     reset,
     focus: cp.focus,
@@ -261,8 +261,8 @@ export const useFormItemCore = <
       id: id.current,
       name: dataItem.name,
       tieInNames: cp.getTieInNames?.({ dataItem }),
-      get,
-      set,
+      get: getValue,
+      set: setValue,
       reset,
       hasChanged,
       changeRefs: () => {
@@ -280,21 +280,21 @@ export const useFormItemCore = <
   useEffect(() => {
     setInputted(false);
     if (dataItem.name && form.state !== "nothing") {
-      const [v, has] = getValue(form.bind, dataItem.name);
+      const [v, has] = get(form.bind, dataItem.name);
       if (has) {
-        set({ value: v, parse: true, effect: true, init: true, bind: true });
+        setValue({ value: v, parse: true, effect: true, init: true, bind: true });
         return;
       }
     }
-    set({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default", bind: true });
+    setValue({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default", bind: true });
   }, [form.bind]);
 
   useEffect(() => {
     if (cp.revert) {
-      set({ value: cp.revert(valRef.current), parse: true, mount: true, bind: true });
+      setValue({ value: cp.revert(valRef.current), parse: true, mount: true, bind: true });
       return;
     }
-    set({ value: valRef.current, parse: false, mount: true, bind: true });
+    setValue({ value: valRef.current, parse: false, mount: true, bind: true });
   }, [validation, parseVal]);
 
   const editable = !$readOnly && !$disabled && !form.pending;
@@ -322,7 +322,7 @@ export const useFormItemCore = <
     // onEdit,
     form,
     // get,
-    set,
+    set: setValue,
     // reset,
     clear,
     props,

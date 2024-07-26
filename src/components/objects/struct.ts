@@ -1,6 +1,6 @@
 // base
 
-export const getValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string): [value: U | null | undefined, has: boolean] => {
+export const get = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string): [value: U | null | undefined, has: boolean] => {
   let has = false;
   if (data == null) return [undefined, false];
   const names = name.split(".");
@@ -17,7 +17,7 @@ export const getValue = <U = any>(data: { [v: string | number | symbol]: any } |
   return [v as U, has];
 };
 
-export const setValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
+export const set = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
   const names = name.split(".");
   let o = data;
