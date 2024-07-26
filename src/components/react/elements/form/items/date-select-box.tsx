@@ -7,7 +7,7 @@ import { $dateValidations } from "../../../../data-items/date/validation";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
 import { isEmpty } from "../../../../objects/string";
-import { getValue, setValue } from "../../../../objects/struct";
+import { get, set } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
 import { DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
@@ -121,12 +121,12 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         const [d, r] = $dateParse(p);
         if (d == null) {
           if (bind && p.dataItem.splitDataNames) {
-            const m = parseNum(getValue(p.data, p.dataItem.splitDataNames[1])[0]);
+            const m = parseNum(get(p.data, p.dataItem.splitDataNames[1])[0]);
             return [{
               str: undefined, date: undefined,
-              y: parseNum(getValue(p.data, p.dataItem.splitDataNames[0])[0]),
+              y: parseNum(get(p.data, p.dataItem.splitDataNames[0])[0]),
               m: m == null ? undefined : m - 1,
-              d: p.dataItem.splitDataNames[2] ? parseNum(getValue(p.data, p.dataItem.splitDataNames[2])[0]) : undefined,
+              d: p.dataItem.splitDataNames[2] ? parseNum(get(p.data, p.dataItem.splitDataNames[2])[0]) : undefined,
             }, r];
           }
           return [{ str: undefined, date: undefined, y: undefined, m: undefined, d: undefined }, r];
@@ -166,12 +166,12 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
       };
     },
     setBind: ({ data, name, value, dataItem }) => {
-      if (name) setValue(data, name, value?.str);
+      if (name) set(data, name, value?.str);
       if (dataItem.splitDataNames) {
-        setValue(data, dataItem.splitDataNames[0], value?.y);
-        setValue(data, dataItem.splitDataNames[1], value?.m == null ? value?.m : value.m + 1);
+        set(data, dataItem.splitDataNames[0], value?.y);
+        set(data, dataItem.splitDataNames[1], value?.m == null ? value?.m : value.m + 1);
         if (dataItem.splitDataNames[2]) {
-          setValue(data, dataItem.splitDataNames[2], value?.d);
+          set(data, dataItem.splitDataNames[2], value?.d);
         }
       }
     },

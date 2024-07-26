@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 "use client";
 
+import { get, set } from "@/objects/struct";
 import { Button } from "@/react/elements/button";
 import { Dialog, useDialog } from "@/react/elements/dialog";
 import { Form } from "@/react/elements/form";
@@ -54,27 +55,22 @@ export default function Home() {
         <button>ボタン</button>
         <Button
           onClick={() => {
-            const url = "https://www.kansaigaidai.ac.jp/asp/img/pdf/82/7a79c35f7ce0704dec63be82440c8182.pdf";
-            // リンクを作成してクリックさせる
-            const a = document.createElement("a");
-            a.href = url;
-            // a.download = "hoge.pdf";
-            // a.target = "_blank";
-            document.body.appendChild(a); // DOMに追加する必要がある
-            a.click(); // クリックイベントを発生させる
-            a.addEventListener("click", function () {
-              // クリック後に別タブを閉じる
-              setTimeout(() => {
-                URL.revokeObjectURL(url); // URLを解放する
-                document.body.removeChild(a); // リンク要素を削除する
-                window.close(); // 別タブを閉じる
-              }, 100);
-            });
-            // ダウンロード後に不要になったら、URLオブジェクトを解放する
-            URL.revokeObjectURL(url);
+            const data: {[v:string]:any} = {};
+            // const name1 = "hoge";
+            // const name2 = "fuga";
+            // const name1 = "hoge.fuga.[0]";
+            // const name2 = "hoge.fuga.[1]";
+            const name1 = "hoge.fuga.[0].piyo";
+            const name2 = "hoge.fuga.[1].piyo";
+            set(data, name1, "value");
+            // set(data, "hoge.fuga.[0].pipo", "value2");
+            set(data, name2, undefined);
+            console.log(data);
+            console.log(get(data, name1));
+            console.log(get(data, name2));
           }}
         >
-          download
+          click
         </Button>
         <a
           // href="https://bizhermit.com"
@@ -192,6 +188,11 @@ export default function Home() {
               readOnly={readOnly.value}
               hook={formItem.hook}
             />
+          </FormItemWrap>
+          <FormItemWrap>
+            <TextBox name="texts.[2]" />
+            <TextBox name="texts.[1]" />
+            <TextBox name="texts.[0]" />
           </FormItemWrap>
           <label>
             <span>Label:</span>

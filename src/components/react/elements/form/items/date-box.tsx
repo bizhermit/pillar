@@ -6,7 +6,7 @@ import { $dateValidations } from "../../../../data-items/date/validation";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, Month, parseDate, Week, withoutTime } from "../../../../objects/date";
 import { isEmpty } from "../../../../objects/string";
-import { setValue } from "../../../../objects/struct";
+import { set } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
 import { CalendarIcon, CrossIcon, LeftIcon, RightIcon, TodayIcon, UndoIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
@@ -107,7 +107,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       return (v, p) => iterator(funcs, { ...p, value: v?.date });
     },
     setBind: ({ data, name, value }) => {
-      if (name) setValue(data, name, value?.str);
+      if (name) set(data, name, value?.str);
     },
     focus: focusInput,
   });

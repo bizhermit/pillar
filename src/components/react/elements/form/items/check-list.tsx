@@ -6,7 +6,7 @@ import { $boolParse } from "../../../../data-items/bool/parse";
 import { $numParse } from "../../../../data-items/number/parse";
 import { $strParse } from "../../../../data-items/string/parse";
 import { equals } from "../../../../objects";
-import { setValue } from "../../../../objects/struct";
+import { set } from "../../../../objects/struct";
 import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -122,14 +122,14 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
     },
     setBind: ({ data, name, value }) => {
       if (value == null) {
-        if (name) setValue(data, name, undefined);
+        if (name) set(data, name, undefined);
         tieInNames?.forEach(({ dataName, hiddenName }) => {
-          setValue(data, hiddenName ?? dataName, undefined);
+          set(data, hiddenName ?? dataName, undefined);
         });
       }
-      if (name) setValue(data, name, value?.map(v => v[vdn]));
+      if (name) set(data, name, value?.map(v => v[vdn]));
       tieInNames?.forEach(({ dataName, hiddenName }) => {
-        setValue(data, hiddenName ?? dataName, value?.map(v => v[dataName]));
+        set(data, hiddenName ?? dataName, value?.map(v => v[dataName]));
       });
     },
     focus: () => {

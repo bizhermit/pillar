@@ -1,6 +1,15 @@
 // base
 
-export const getValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string): [value: U | null | undefined, has: boolean] => {
+const isArrIdxName = (name: string) => {
+  return name.match(/^\[(\d+)\]$/);
+};
+
+const getArrIdxOrName = (name: string) => {
+  const r = isArrIdxName(name);
+  return r ? Number(r[1]) : name;
+};
+
+export const get = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string): [value: U | null | undefined, has: boolean] => {
   let has = false;
   if (data == null) return [undefined, false];
   const names = name.split(".");
@@ -8,8 +17,9 @@ export const getValue = <U = any>(data: { [v: string | number | symbol]: any } |
   for (const n of names) {
     if (v == null) return [undefined, false];
     try {
-      has = n in v;
-      v = v[n];
+      const $n = getArrIdxOrName(n);
+      has = $n in v;
+      v = v[$n];
     } catch {
       return [undefined, false];
     }
@@ -17,20 +27,23 @@ export const getValue = <U = any>(data: { [v: string | number | symbol]: any } |
   return [v as U, has];
 };
 
-export const setValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
+export const set = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
   const names = name.split(".");
   let o = data;
-  for (const n of names.slice(0, names.length - 1)) {
+  for (let i = 0, il = names.length - 1; i < il; i++) {
     try {
-      if (o[n] == null) o[n] = {};
+      const n = getArrIdxOrName(names[i]);
+      if (o[n] == null) {
+        o[n] = isArrIdxName(names[i + 1]) ? [] : {};
+      }
       o = o[n];
     } catch {
       return value;
     }
   }
   try {
-    o[names[names.length - 1]] = value;
+    o[getArrIdxOrName(names[names.length - 1])] = value;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
@@ -38,24 +51,28 @@ export const setValue = <U = any>(data: { [v: string | number | symbol]: any } |
   return value;
 };
 
-export const appendValue = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
+export const append = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
   const names = name.split(".");
   let o = data;
-  for (const n of names.slice(0, names.length - 1)) {
-    if (o[n] == null) o[n] = {};
+  for (let i = 0, il = names.length - 1; i < il; i++) {
+    const n = getArrIdxOrName(names[i]);
+    if (o[n] == null) {
+      o[n] = isArrIdxName(names[i + 1]) ? [] : {};
+    }
     o = o[n];
   }
-  const ov = o[names[names.length - 1]];
+  const n = getArrIdxOrName(names[names.length - 1]);
+  const ov = o[n];
   if (ov == null) {
-    o[names[names.length - 1]] = value;
+    o[n] = value;
     return value;
   }
   if (Array.isArray(ov)) {
     ov.push(value);
     return value;
   }
-  o[names[names.length - 1]] = [ov, value];
+  o[n] = [ov, value];
   return value;
 };
 
