@@ -189,6 +189,11 @@ export default function Home() {
               hook={formItem.hook}
             />
           </FormItemWrap>
+          <FormItemWrap>
+            <TextBox name="texts.[2]" />
+            <TextBox name="texts.[1]" />
+            <TextBox name="texts.[0]" />
+          </FormItemWrap>
           <label>
             <span>Label:</span>
             <FormItemWrap>
