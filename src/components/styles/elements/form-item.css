@@ -290,18 +290,17 @@
   }
 
   .ipt-dp {
-    position: relative;
     overflow: hidden;
     display: flex;
     flex-flow: column nowrap;
     justify-content: stretch;
     align-items: stretch;
-    width: 32rem;
+    width: 30rem;
     height: 0;
     transition: height 0.2s;
 
     &:not([data-dialog="true"]) {
-      height: 32rem;
+      height: 30rem;
     }
   }
 
@@ -877,13 +876,13 @@
 @layer feat {
 
   .ipt-dialog {
-    display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows .3s, display .3s allow-discrete, overlay .3s allow-discrete;
     opacity: 1;
     overflow: hidden;
 
     &[open] {
+      display: grid;
       grid-template-rows: 1fr;
 
       >.ipt-dialog-list {
@@ -891,7 +890,7 @@
       }
 
       >.ipt-dp {
-        height: 32rem;
+        height: 30rem;
       }
     }
   }
@@ -899,7 +898,12 @@
   @starting-style {
 
     .ipt-dialog[open] {
+      display: grid;
       grid-template-rows: 0fr;
+
+      >.ipt-dp {
+        height: 0;
+      }
     }
   }
 
