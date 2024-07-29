@@ -795,6 +795,9 @@
     border: 1px solid var(--ipt-bd);
     border-radius: 2px;
     transition: background-color 0.1s, border-color 0.1s, box-shadow 0.1s;
+    touch-action: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
 
   .ipt-elec-sign-btns {
