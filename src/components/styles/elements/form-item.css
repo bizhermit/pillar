@@ -290,18 +290,17 @@
   }
 
   .ipt-dp {
-    position: relative;
     overflow: hidden;
     display: flex;
     flex-flow: column nowrap;
     justify-content: stretch;
     align-items: stretch;
-    width: 32rem;
+    width: min(100svw, calc(var(--ipt-size) * 10));
     height: 0;
     transition: height 0.2s;
 
     &:not([data-dialog="true"]) {
-      height: 32rem;
+      height: min(100svh, calc(var(--ipt-size) * 10));
     }
   }
 
@@ -796,6 +795,9 @@
     border: 1px solid var(--ipt-bd);
     border-radius: 2px;
     transition: background-color 0.1s, border-color 0.1s, box-shadow 0.1s;
+    touch-action: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
 
   .ipt-elec-sign-btns {
@@ -877,13 +879,13 @@
 @layer feat {
 
   .ipt-dialog {
-    display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows .3s, display .3s allow-discrete, overlay .3s allow-discrete;
     opacity: 1;
     overflow: hidden;
 
     &[open] {
+      display: grid;
       grid-template-rows: 1fr;
 
       >.ipt-dialog-list {
@@ -891,7 +893,7 @@
       }
 
       >.ipt-dp {
-        height: 32rem;
+        height: min(100svh, calc(var(--ipt-size) * 10));
       }
     }
   }
@@ -899,7 +901,12 @@
   @starting-style {
 
     .ipt-dialog[open] {
+      display: grid;
       grid-template-rows: 0fr;
+
+      >.ipt-dp {
+        height: 0;
+      }
     }
   }
 

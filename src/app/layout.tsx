@@ -9,6 +9,8 @@ import "../components/styles/elements/icon.css";
 export const metadata: Metadata = {
   title: "Next App Template",
   description: "next-app template",
+  viewport: "width=device-width,initial-scale=1,maximum-scale=1.0",
+  robots: "none",
 };
 
 export default function RootLayout({
@@ -18,6 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="format-detection" content="telephone=no, email=no, address=no" />
+        <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicons/favicon.ico" />
+      </head>
       <body>
         {children}
       </body>
