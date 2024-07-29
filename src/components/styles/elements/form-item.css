@@ -295,12 +295,12 @@
     flex-flow: column nowrap;
     justify-content: stretch;
     align-items: stretch;
-    width: 30rem;
+    width: min(100svw, calc(var(--ipt-size) * 10));
     height: 0;
     transition: height 0.2s;
 
     &:not([data-dialog="true"]) {
-      height: 30rem;
+      height: min(100svh, calc(var(--ipt-size) * 10));
     }
   }
 
@@ -890,7 +890,7 @@
       }
 
       >.ipt-dp {
-        height: 30rem;
+        height: min(100svh, calc(var(--ipt-size) * 10));
       }
     }
   }

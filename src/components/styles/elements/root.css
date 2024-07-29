@@ -68,10 +68,19 @@
     }
   }
 
+  @media screen and (max-width: 480px) {
+    :root {
+      --btn-size: 4.8rem;
+      --ipt-size: 4.8rem;
+    }
+  }
+
   html {
     font-size: 62.5%;
     background: var(--bg);
     color: var(--fg);
+    width: 100%;
+    overflow-x: hidden;
 
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;
@@ -81,6 +90,8 @@
   body {
     font-family: "Yu Gothic", sans-serif;
     font-size: 1.6rem;
+    width: 100%;
+    overflow-x: hidden;
   }
 
   h1,
