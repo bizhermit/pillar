@@ -1,0 +1,143 @@
+@layer default, base, feat;
+
+@mixin lightTheme {
+  --bg: #f8f8f8;
+  --fg: #171717;
+  --fg-placeholder: #888;
+  --fg-err: #f00;
+  --fg-warn: #f92;
+  --fg-info: #393;
+  --mask: rgba(0, 0, 0, 0.2);
+  --sdw: rgba(0, 0, 0, 0.4);
+  --week-sun: rgb(255, 210, 210);
+  --week-sat: rgb(210, 220, 255);
+  --btn-bg: #fff;
+  --ipt-bg: #fff;
+  --ipt-fg: #171717;
+  --ipt-bd: rgba(0, 0, 0, 0.4);
+  --ipt-bg-err: #ffcccc;
+  --ipt-fg-err: #171717;
+  --ipt-bd-err: rgba(255, 0, 0, 0.4);
+  --c-primary: #7fbfff;
+  --c-primary_: #f8f8f8;
+  --c-secondary: #7fbf7f;
+  --c-secondary_: #f8f8f8;
+  --c-danger: #f66;
+  --c-danger_: #f8f8f8;
+}
+
+@mixin darkTheme {
+  --bg: #0a0a0a;
+  --fg: #f8f8f8;
+  --fg-placeholder: #888;
+  --fg-err: #f40;
+  --fg-warn: #ff0;
+  --fg-info: #3d3;
+  --mask: rgba(255, 255, 255, 0.2);
+  --sdw: rgba(255, 255, 255, 0.4);
+  --week-sun: rgb(70, 20, 20);
+  --week-sat: rgb(20, 30, 70);
+  --btn-bg: #000;
+  --ipt-bg: #222;
+  --ipt-fg: #f8f8f8;
+  --ipt-bd: rgba(255, 255, 255, 0.4);
+  --ipt-bg-err: #422;
+  --ipt-fg-err: #f8f8f8;
+  --ipt-bd-err: rgba(255, 0, 0, 0.4);
+  --c-primary: #5f9fdf;
+  --c-primary_: #f8f8f8;
+  --c-secondary: #4faf4f;
+  --c-secondary_: #f8f8f8;
+  --c-danger: #d44;
+  --c-danger_: #f8f8f8;
+}
+
+@layer default {
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    flex: none;
+  }
+
+  :root {
+    /* size */
+    --btn-size: 3.2rem;
+    --ipt-size: 3.2rem;
+
+    @include lightTheme();
+
+    &[data-theme="dark"] {
+      @include darkTheme();
+    }
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      &[data-theme="auto"] {
+        @include darkTheme();
+      }
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    :root {
+      --btn-size: 4.8rem;
+      --ipt-size: 4.8rem;
+    }
+  }
+
+  html {
+    font-size: 62.5%;
+    background: var(--bg);
+    color: var(--fg);
+    width: 100%;
+    overflow-x: hidden;
+
+    @media (prefers-color-scheme: dark) {
+      &[data-theme="auto"] {
+        color-scheme: dark;
+      }
+    }
+    &[data-theme="dark"] {
+      color-scheme: dark;
+    }
+  }
+
+  body {
+    font-family: "Yu Gothic", sans-serif;
+    font-size: 1.6rem;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-block: unset;
+  }
+
+  a {
+    &[aria-disabled="true"] {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
+  ::backdrop {
+    background: var(--mask);
+  }
+
+  ::placeholder {
+    color: var(--fg-placeholder);
+  }
+
+  :has(dialog[open]) {
+    overflow: hidden;
+  }
+
+}
