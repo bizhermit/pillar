@@ -25,11 +25,13 @@ import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
+import { LayoutContext } from "@/react/hooks/layout";
 import { sleep } from "@/utilities/sleep";
-import { useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 import s from "./page.module.css";
 
 export default function Home() {
+  const layout = use(LayoutContext);
   const ref = useRef<HTMLButtonElement>(null);
   const [bind, setBind] = useState<{ [v: string]: any }>({
     // text: "123",
@@ -141,6 +143,29 @@ export default function Home() {
           }}
         >
           set hogehoge
+        </Button>
+      </div>
+      <div style={{ display: "flex", flexFlow: "row", gap: 4}}>
+        <Button
+          onClick={() => {
+            layout.setTheme("auto");
+          }}
+        >
+          auto
+        </Button>
+        <Button
+          onClick={() => {
+            layout.setTheme("light");
+          }}
+        >
+          light theme
+        </Button>
+        <Button
+          onClick={() => {
+            layout.setTheme("dark");
+          }}
+        >
+          dark theme
         </Button>
       </div>
       <div style={{ display: "flex", flexFlow: "row", gap: 4}}>

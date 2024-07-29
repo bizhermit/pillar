@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
-import "../components/styles/elements/root.css";
+import type { Metadata, Viewport } from "next";
+import "../components/styles/elements/root.scss";
 // root.css is require first
+import { cookies } from "next/headers";
+import { defaultLayoutTheme, LayoutProvider, LayoutTheme } from "../components/react/hooks/layout";
 import "../components/styles/elements/button.css";
 import "../components/styles/elements/dialog.css";
 import "../components/styles/elements/form-item.css";
@@ -9,8 +11,18 @@ import "../components/styles/elements/icon.css";
 export const metadata: Metadata = {
   title: "Next App Template",
   description: "next-app template",
-  viewport: "width=device-width,initial-scale=1,maximum-scale=1.0",
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
   robots: "none",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -18,15 +30,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const layoutTheme = (cookies().get("theme")?.value as LayoutTheme) || defaultLayoutTheme;
   return (
-    <html lang="ja">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="format-detection" content="telephone=no, email=no, address=no" />
-        <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicons/favicon.ico" />
-      </head>
+    <html
+      lang="ja"
+      data-theme={layoutTheme}
+    >
       <body>
-        {children}
+        <LayoutProvider defaultLayoutTheme={layoutTheme}>
+          {children}
+        </LayoutProvider>
       </body>
     </html>
   );
