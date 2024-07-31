@@ -57,19 +57,26 @@ export default function Home() {
         <button>ボタン</button>
         <Button
           onClick={() => {
-            const data: {[v:string]:any} = {};
+            const data: { [v: string]: any } = {};
             // const name1 = "hoge";
             // const name2 = "fuga";
-            // const name1 = "hoge.fuga.[0]";
-            // const name2 = "hoge.fuga.[1]";
-            const name1 = "hoge.fuga.[0].piyo";
-            const name2 = "hoge.fuga.[1].piyo";
+            // const name2_ = "fuga";
+            // const name1 = "hoge[]";
+            // const name2 = "hoge[]";
+            // const name2_ = "hoge[1]";
+            // const name1 = "hoge.fuga[].piyo";
+            // const name2 = "hoge.fuga[].piyo";
+            // const name2_ = "hoge.fuga[1].piyo";
+            const name1 = "hoge.fuga[].piyo";
+            const name2 = "hoge.fuga[].piyo";
+            const name2_ = "hoge.fuga.[1].piyo";
             set(data, name1, "value");
-            // set(data, "hoge.fuga.[0].pipo", "value2");
+            console.log("---------");
+            // set(data, "hoge.fuga.[1].pipo", "value2");
             set(data, name2, undefined);
             console.log(data);
             console.log(get(data, name1));
-            console.log(get(data, name2));
+            console.log(get(data, name2_));
           }}
         >
           click
@@ -145,7 +152,7 @@ export default function Home() {
           set hogehoge
         </Button>
       </div>
-      <div style={{ display: "flex", flexFlow: "row", gap: 4}}>
+      <div style={{ display: "flex", flexFlow: "row", gap: 4 }}>
         <Button
           onClick={() => {
             layout.setTheme("auto");
@@ -168,7 +175,7 @@ export default function Home() {
           dark theme
         </Button>
       </div>
-      <div style={{ display: "flex", flexFlow: "row", gap: 4}}>
+      <div style={{ display: "flex", flexFlow: "row", gap: 4 }}>
         <Button>primary</Button>
         <Button outline>primary</Button>
         <Button color="secondary">secondary</Button>
@@ -189,6 +196,10 @@ export default function Home() {
           console.log(getBindData({
             // appendNotChanged: true,
             // pure: true,
+          }));
+          console.log("--- bind:pure ---");
+          console.log(getBindData({
+            pure: true,
           }));
           await sleep(3000);
         }}
@@ -403,7 +414,7 @@ export default function Home() {
               readOnly={readOnly.value}
               splitDataNames={["date-select-y", "date-select-m", "date-select-d"]}
               allowMissing
-              // preventCollectForm
+            // preventCollectForm
             />
           </FormItemWrap>
           <FormItemWrap>
