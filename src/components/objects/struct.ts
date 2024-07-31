@@ -48,7 +48,7 @@ export const set = <U = any>(data: { [v: string | number | symbol]: any } | null
   }
   const $n = getArrIdxOrName(names[names.length - 1]);
   if (isPush($n)) {
-    if (!Array.isArray(o)) throw new Error(`type mismatch: object not array`);
+    if (!Array.isArray(o)) throw new Error(`type mismatch: object is not array`);
     o.push(value);
   } else {
     o[$n] = value;
@@ -62,22 +62,29 @@ export const append = <U = any>(data: { [v: string | number | symbol]: any } | n
   let o = data;
   for (let i = 0, il = names.length - 1; i < il; i++) {
     const n = getArrIdxOrName(names[i]);
+    if (isPush(n)) {
+      o = o[o.length] = isArrIdxName(names[i + 1]) ? [] : {};
+      continue;
+    }
     if (o[n] == null) {
       o[n] = isArrIdxName(names[i + 1]) ? [] : {};
     }
     o = o[n];
   }
-  const n = getArrIdxOrName(names[names.length - 1]);
-  const ov = o[n];
-  if (ov == null) {
-    o[n] = value;
-    return value;
+  const $n = getArrIdxOrName(names[names.length - 1]);
+  if (isPush($n)) {
+    if (!Array.isArray(o)) throw new Error(`type mismatch: object is not array`);
+    o.push(value);
+  } else {
+    const ov = o[$n];
+    if (ov == null) {
+      o[$n] = value;
+    } else if (Array.isArray(ov)) {
+      ov.push(value);
+    } else {
+      o[$n] = [ov, value];
+    }
   }
-  if (Array.isArray(ov)) {
-    ov.push(value);
-    return value;
-  }
-  o[n] = [ov, value];
   return value;
 };
 
