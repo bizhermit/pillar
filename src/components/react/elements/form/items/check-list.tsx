@@ -113,7 +113,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
       if ((v1 == null || v1.length === 0) && (v2 == null || v2.length === 0)) return true;
       if (v1 == null || v2 == null) return false;
       if (v1.length !== v2.length) return false;
-      return !v1.some(val1 => v2.some(val2 => equals(val1[vdn], val2[vdn])));
+      return v1.some(val1 => v2.some(val2 => equals(val1[vdn], val2[vdn])));
     },
     effect: () => { },
     validation: ({ dataItem, iterator }) => {
@@ -191,7 +191,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
           return (
             <Fragment key={item[vdn]}>
               <input
-                name={fi.name}
+                name={`${fi.name}[]`}
                 type="hidden"
                 value={String(item[vdn] ?? "")}
                 disabled={fi.disabled}
@@ -202,7 +202,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
                   <input
                     key={dataName}
                     type="hidden"
-                    name={hiddenName ?? dataName}
+                    name={`${hiddenName ?? dataName}[]`}
                     value={String(v ?? "")}
                   />
                 );

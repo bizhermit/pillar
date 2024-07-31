@@ -1,78 +1,90 @@
 // base
 
 const isArrIdxName = (name: string) => {
-  return name.match(/^\[(\d+)\]$/);
+  return name.match(/^\[(\d*)\]$/);
 };
 
 const getArrIdxOrName = (name: string) => {
   const r = isArrIdxName(name);
-  return r ? Number(r[1]) : name;
+  return r ? Number(r[1] || "n") : name;
+};
+
+const split = (str: string) => {
+  return str.split(/\.|(\[\d*\])/).filter(s => s);
+};
+
+const isPush = (idxOrName: string | number) => {
+  return typeof idxOrName === "number" && isNaN(idxOrName);
 };
 
 export const get = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string): [value: U | null | undefined, has: boolean] => {
   let has = false;
   if (data == null) return [undefined, false];
-  const names = name.split(".");
+  const names = split(name);
   let v: any = data;
   for (const n of names) {
     if (v == null) return [undefined, false];
-    try {
-      const $n = getArrIdxOrName(n);
-      has = $n in v;
-      v = v[$n];
-    } catch {
-      return [undefined, false];
-    }
+    const $n = getArrIdxOrName(n) || 0;
+    has = $n in v;
+    v = v[$n];
   }
   return [v as U, has];
 };
 
 export const set = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
-  const names = name.split(".");
+  const names = split(name);
   let o = data;
   for (let i = 0, il = names.length - 1; i < il; i++) {
-    try {
-      const n = getArrIdxOrName(names[i]);
-      if (o[n] == null) {
-        o[n] = isArrIdxName(names[i + 1]) ? [] : {};
-      }
-      o = o[n];
-    } catch {
-      return value;
+    const n = getArrIdxOrName(names[i]);
+    if (isPush(n)) {
+      o = o[o.length] = isArrIdxName(names[i + 1]) ? [] : {};
+      continue;
     }
+    if (o[n] == null) {
+      o[n] = isArrIdxName(names[i + 1]) ? [] : {};
+    }
+    o = o[n];
   }
-  try {
-    o[getArrIdxOrName(names[names.length - 1])] = value;
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(e);
+  const $n = getArrIdxOrName(names[names.length - 1]);
+  if (isPush($n)) {
+    if (!Array.isArray(o)) throw new Error(`type mismatch: object is not array`);
+    o.push(value);
+  } else {
+    o[$n] = value;
   }
   return value;
 };
 
 export const append = <U = any>(data: { [v: string | number | symbol]: any } | null | undefined, name: string, value: U) => {
   if (data == null) return value;
-  const names = name.split(".");
+  const names = split(name);
   let o = data;
   for (let i = 0, il = names.length - 1; i < il; i++) {
     const n = getArrIdxOrName(names[i]);
+    if (isPush(n)) {
+      o = o[o.length] = isArrIdxName(names[i + 1]) ? [] : {};
+      continue;
+    }
     if (o[n] == null) {
       o[n] = isArrIdxName(names[i + 1]) ? [] : {};
     }
     o = o[n];
   }
-  const n = getArrIdxOrName(names[names.length - 1]);
-  const ov = o[n];
-  if (ov == null) {
-    o[n] = value;
-    return value;
+  const $n = getArrIdxOrName(names[names.length - 1]);
+  if (isPush($n)) {
+    if (!Array.isArray(o)) throw new Error(`type mismatch: object is not array`);
+    o.push(value);
+  } else {
+    const ov = o[$n];
+    if (ov == null) {
+      o[$n] = value;
+    } else if (Array.isArray(ov)) {
+      ov.push(value);
+    } else {
+      o[$n] = [ov, value];
+    }
   }
-  if (Array.isArray(ov)) {
-    ov.push(value);
-    return value;
-  }
-  o[n] = [ov, value];
   return value;
 };
 
