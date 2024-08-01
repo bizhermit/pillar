@@ -66,7 +66,7 @@ export const appendStructData = (
       }
       try {
         Object.keys(v).forEach(k => {
-          setFormValue(`${key}[${k}]`, v[k]);
+          setFormValue(`${key}.${k}`, v[k]);
         });
       } catch {
         // eslint-disable-next-line no-console
