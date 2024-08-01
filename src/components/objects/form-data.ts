@@ -1,3 +1,5 @@
+import { set } from "./struct";
+
 type Options = {
   removeItem?: "un" | "null" | "null-blank"
 };
@@ -21,7 +23,7 @@ export const convertFormDataToStruct = <
           break;
       }
     }
-    ret[key] = v;
+    set(ret, key, v);
   });
   return ret as T;
 };
@@ -66,7 +68,7 @@ export const appendStructData = (
       }
       try {
         Object.keys(v).forEach(k => {
-          setFormValue(`${key}[${k}]`, v[k]);
+          setFormValue(`${key}.${k}`, v[k]);
         });
       } catch {
         // eslint-disable-next-line no-console
