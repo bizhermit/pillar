@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import nextConfig from "../next.config.mjs";
 
 const quiet = true;
 
@@ -10,7 +9,7 @@ const appRoot = path.join(srcRoot, appAlias);
 const pageAlias = "pages";
 const pageRoot = path.join(srcRoot, pageAlias);
 
-const extensions = (nextConfig.pageExtensions ?? ["ts", "tsx", "mts", "cts"]).sort((a, b) => b.length - a.length);
+const extensions = ["ts", "tsx", "mts", "cts", "dev.ts", "dev.tsx"].sort((a, b) => b.length - a.length);
 
 const pagesRoutes = [];
 const pagesApiRoutes = [];
