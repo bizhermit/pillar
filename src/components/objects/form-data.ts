@@ -1,3 +1,5 @@
+import { set } from "./struct";
+
 type Options = {
   removeItem?: "un" | "null" | "null-blank"
 };
@@ -21,7 +23,7 @@ export const convertFormDataToStruct = <
           break;
       }
     }
-    ret[key] = v;
+    set(ret, key, v);
   });
   return ret as T;
 };
