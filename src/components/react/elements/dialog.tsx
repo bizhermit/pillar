@@ -248,11 +248,6 @@ export const Dialog = ({
   useEffect(() => {
     if (state === "closed") return;
 
-    const resizeListener = throttle(() => {
-      resetPosition();
-    }, 40);
-    window.addEventListener("resize", resizeListener);
-
     const transitionEndListener = () => {
       dref.current?.removeEventListener("transitionend", transitionEndListener);
       resetPosition();
@@ -262,23 +257,31 @@ export const Dialog = ({
 
     resetPosition();
     return () => {
-      window.removeEventListener("resize", resizeListener);
       dref.current?.removeEventListener("transitionend", transitionEndListener);
     };
   }, [showOpts]);
 
   useEffect(() => {
     if (state === "closed") return;
-    dref.current.style.transitionDuration = "0s !important";
     if (state === "modal") dref.current.showModal();
     else dref.current.show();
     resetPosition();
-    // dref.current.style.removeProperty("transition-duration");
     showOpts?.callbackBeforeAnimation?.();
     dref.current.scrollTop = 0;
     dref.current.scrollLeft = 0;
     hookRef.current?.(state);
   }, [state]);
+
+  useEffect(() => {
+    if (state === "closed") return;
+    const resizeListener = throttle(() => {
+      resetPosition();
+    }, 40);
+    window.addEventListener("resize", resizeListener);
+    return () => {
+      window.removeEventListener("resize", resizeListener);
+    };
+  }, [state, showOpts]);
 
   return (
     <dialog
