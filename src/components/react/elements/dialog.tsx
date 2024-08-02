@@ -45,6 +45,8 @@ type DialogOptions = {
   immediatelyMount?: boolean;
   keepMount?: boolean;
   mobile?: boolean;
+  preventRootScroll?: boolean;
+  closeWhenScrolled?: boolean;
 };
 
 type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptions>;
@@ -55,6 +57,8 @@ export const Dialog = ({
   immediatelyMount,
   keepMount,
   mobile,
+  preventRootScroll,
+  closeWhenScrolled,
   ...props
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
@@ -274,12 +278,34 @@ export const Dialog = ({
 
   useEffect(() => {
     if (state === "closed") return;
+
+    let scrollTopBuf = document.documentElement.scrollTop;
+    let scrollLeftBuf = document.documentElement.scrollLeft;
+
     const resizeListener = throttle(() => {
+      scrollTopBuf = document.documentElement.scrollTop;
+      scrollLeftBuf = document.documentElement.scrollLeft;
       resetPosition();
     }, 40);
     window.addEventListener("resize", resizeListener);
+
+    const scrollListener = preventRootScroll ? undefined :
+      closeWhenScrolled ? () => {
+        toggle("close");
+      } : (e: Event) => {
+        e.preventDefault();
+        document.documentElement.scrollTop = scrollTopBuf;
+        document.documentElement.scrollLeft = scrollLeftBuf;
+      };
+    if (!preventRootScroll) {
+      window.addEventListener("scroll", scrollListener!, { passive: false });
+    }
+
     return () => {
       window.removeEventListener("resize", resizeListener);
+      if (!preventRootScroll) {
+        window.removeEventListener("scroll", scrollListener!);
+      }
     };
   }, [state, showOpts]);
 
