@@ -96,7 +96,7 @@ export const Dialog = ({
     const anchor = showOpts?.anchor;
     if (anchor == null) return;
 
-    const winW = window.innerWidth;
+    const winW = document.body.offsetWidth;
     const winH = window.innerHeight;
     const wMax = dref.current.offsetWidth;
     const hMax = dref.current.offsetHeight;
@@ -136,12 +136,12 @@ export const Dialog = ({
         );
         break;
       case "inner":
-        if (winW - rect.left < wMax && rect.left > winW - rect.right) {
+        if (rect.left + wMax > winW && rect.right >= wMax) {
           dref.current.style.left = "unset";
-          dref.current.style.right = parseStyleNum(winW - Math.max(rect.right, wMax));
+          dref.current.style.right = parseStyleNum(winW - rect.right);
         } else {
           dref.current.style.right = "unset";
-          dref.current.style.left = parseStyleNum(rect.left);
+          dref.current.style.left = parseStyleNum(Math.min(rect.left, winW - wMax));
         }
         break;
       case "inner-left":
@@ -159,12 +159,12 @@ export const Dialog = ({
         );
         break;
       case "outer":
-        if (winW - rect.right < wMax && rect.left > winW - rect.right) {
+        if (rect.right + wMax > winW && rect.left >= wMax) {
           dref.current.style.left = "unset";
           dref.current.style.right = parseStyleNum(winW - rect.left);
         } else {
           dref.current.style.right = "unset";
-          dref.current.style.left = parseStyleNum(rect.right);
+          dref.current.style.left = parseStyleNum(Math.min(rect.right, winW - wMax));
         }
         break;
       case "outer-left":
@@ -194,12 +194,12 @@ export const Dialog = ({
         );
         break;
       case "inner":
-        if (winH - rect.top < hMax && rect.top > winH - rect.bottom) {
+        if (rect.bottom > winH - rect.top && rect.bottom >= hMax) {
           dref.current.style.top = "unset";
           dref.current.style.bottom = parseStyleNum(winH - rect.bottom);
         } else {
           dref.current.style.bottom = "unset";
-          dref.current.style.top = parseStyleNum(rect.top);
+          dref.current.style.top = parseStyleNum(Math.min(rect.top, winH - hMax));
         }
         break;
       case "inner-top":
@@ -217,9 +217,9 @@ export const Dialog = ({
         );
         break;
       case "outer":
-        if (winH - rect.bottom < hMax && rect.top > winH - rect.bottom) {
+        if (rect.top > winH - rect.bottom && rect.top >= hMax) {
           dref.current.style.top = "unset";
-          dref.current.style.bottom = parseStyleNum(winH - rect.top);
+          dref.current.style.bottom = parseStyleNum(Math.max(winH - rect.top));
         } else {
           dref.current.style.bottom = "unset";
           dref.current.style.top = parseStyleNum(Math.min(rect.bottom, winH - hMax));
@@ -255,6 +255,7 @@ export const Dialog = ({
 
     const transitionEndListener = () => {
       dref.current?.removeEventListener("transitionend", transitionEndListener);
+      resetPosition();
       showOpts?.callback?.();
     };
     dref.current?.addEventListener("transitionend", transitionEndListener);
@@ -268,12 +269,14 @@ export const Dialog = ({
 
   useEffect(() => {
     if (state === "closed") return;
+    dref.current.style.transitionDuration = "0s !important";
     if (state === "modal") dref.current.showModal();
     else dref.current.show();
+    resetPosition();
+    // dref.current.style.removeProperty("transition-duration");
     showOpts?.callbackBeforeAnimation?.();
     dref.current.scrollTop = 0;
     dref.current.scrollLeft = 0;
-    resetPosition();
     hookRef.current?.(state);
   }, [state]);
 
