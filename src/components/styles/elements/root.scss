@@ -136,8 +136,4 @@
     color: var(--fg-placeholder);
   }
 
-  :has(dialog[open]) {
-    overflow: hidden;
-  }
-
 }
