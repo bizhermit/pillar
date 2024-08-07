@@ -700,6 +700,30 @@ export const DatePicker = (props: DatePickerProps) => {
     else prevMonth();
   };
 
+  const touchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const startX = e.touches[0].pageX;
+    let moveX = 0;
+
+    const move = (e: TouchEvent) => {
+      moveX = e.changedTouches[0].pageX - startX;
+    };
+    const end = (e: TouchEvent) => {
+      window.removeEventListener("touchend", end);
+      window.removeEventListener("touchmove", move);
+      if (Math.abs(moveX) > 80) {
+        if (type === "month") {
+          if (moveX > 0) nextYear();
+          else prevYear();
+        } else {
+          if (moveX > 0) nextMonth();
+          else prevMonth();
+        }
+      }
+    };
+    window.addEventListener("touchend", end);
+    window.addEventListener("touchmove", move);
+  };
+
   const selectToday = () => {
     const date = withoutTime(new Date());
     if (type === "month") date.setDate(1);
@@ -722,6 +746,7 @@ export const DatePicker = (props: DatePickerProps) => {
       <div
         className="ipt-dp-main"
         onWheel={wheel}
+        onTouchStart={touchStart}
       >
         <div
           className="ipt-dp-year"
