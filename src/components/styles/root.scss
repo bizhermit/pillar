@@ -2,9 +2,15 @@
 
 @layer default, base, feat;
 
+$lightBg: #f8f8f8;
+$lightFg: #171717;
+$darkBg: #0a0a0a;
+$darkFg: #f8f8f8;
+
 @mixin lightTheme {
-  --bg: #f8f8f8;
-  --fg: #171717;
+
+  --bg: #{$lightBg};
+  --fg: #{$lightFg};
   --fg-placeholder: #888;
   --fg-err: #f00;
   --fg-warn: #f92;
@@ -15,22 +21,24 @@
   --week-sat: rgb(210, 220, 255);
   --btn-bg: #fff;
   --ipt-bg: #fff;
-  --ipt-fg: #171717;
+  --ipt-fg: #{$lightFg};
   --ipt-bd: rgba(0, 0, 0, 0.4);
   --ipt-bg-err: #ffcccc;
-  --ipt-fg-err: #171717;
+  --ipt-fg-err: #{$lightFg};
   --ipt-bd-err: rgba(255, 0, 0, 0.4);
   --c-primary: #7fbfff;
-  --c-primary_: #f8f8f8;
+  --c-primary_: #{$lightBg};
   --c-secondary: #7fbf7f;
-  --c-secondary_: #f8f8f8;
+  --c-secondary_: #{$lightBg};
   --c-danger: #f66;
-  --c-danger_: #f8f8f8;
+  --c-danger_: #{$lightBg};
+  --c-gray: #bbb;
+  --c-gray_: #{$lightBg};
 }
 
 @mixin darkTheme {
-  --bg: #0a0a0a;
-  --fg: #f8f8f8;
+  --bg: #{$darkBg};
+  --fg: #{$darkFg};
   --fg-placeholder: #888;
   --fg-err: #f40;
   --fg-warn: #ff0;
@@ -41,17 +49,19 @@
   --week-sat: rgb(20, 30, 70);
   --btn-bg: #000;
   --ipt-bg: #222;
-  --ipt-fg: #f8f8f8;
+  --ipt-fg: #{$darkFg};
   --ipt-bd: rgba(255, 255, 255, 0.4);
   --ipt-bg-err: #422;
-  --ipt-fg-err: #f8f8f8;
+  --ipt-fg-err: #{$darkFg};
   --ipt-bd-err: rgba(255, 0, 0, 0.4);
   --c-primary: #5f9fdf;
-  --c-primary_: #f8f8f8;
+  --c-primary_: #{$darkFg};
   --c-secondary: #4faf4f;
-  --c-secondary_: #f8f8f8;
+  --c-secondary_: #{$darkFg};
   --c-danger: #d44;
-  --c-danger_: #f8f8f8;
+  --c-danger_: #{$darkFg};
+  --c-gray: #666;
+  --c-gray_: #{$darkFg};
 }
 
 @layer default {

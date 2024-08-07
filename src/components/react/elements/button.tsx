@@ -9,7 +9,7 @@ type ButtonOptions = {
   processing?: boolean;
   round?: boolean;
   outline?: boolean;
-  color?: "primary" | "secondary" | "danger";
+  color?: "primary" | "secondary" | "danger" | "gray";
   onClick?: (props: {
     event: MouseEvent<HTMLButtonElement>;
     unlock: (focus?: boolean) => void;

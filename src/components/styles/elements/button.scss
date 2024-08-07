@@ -36,6 +36,11 @@
       ---btn-fg: var(--c-danger_, var(--c-primary_));
     }
 
+    &[data-color="gray"] {
+      ---btn-bg: var(--c-gray, var(--c-primary));
+      ---btn-fg: var(--c-gray_, var(--c-primary_));
+    }
+
     &[data-outline="true"] {
       background: var(--btn-bg);
       color: var(---btn-bg);
