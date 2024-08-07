@@ -1,12 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import "../components/styles/elements/root.scss";
-// root.css is require first
 import { cookies } from "next/headers";
 import { defaultLayoutTheme, LayoutProvider, LayoutTheme } from "../components/react/hooks/layout";
-import "../components/styles/elements/button.css";
-import "../components/styles/elements/dialog.css";
-import "../components/styles/elements/form-item.css";
-import "../components/styles/elements/icon.css";
+import "../components/styles/index.scss";
 
 export const metadata: Metadata = {
   title: "Next App Template",

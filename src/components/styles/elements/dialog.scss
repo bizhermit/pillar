@@ -1,4 +1,4 @@
-@layer default, base, feat;
+@use "../mixins" as mixins;
 
 @layer base {
 
@@ -39,7 +39,7 @@
     }
   }
 
-  @media screen and (max-width: 480px) {
+  @include mixins.sp {
     html {
       &:has(.dialog[open]) {
         overflow: hidden;
@@ -55,7 +55,7 @@
         }
       }
     }
-
+  
     .dialog[data-mobile] {
       inset: 0 !important;
       margin: auto;
