@@ -1,4 +1,4 @@
-@layer default, base, feat;
+@use "../mixins" as mixins;
 
 @layer base {
 
@@ -124,7 +124,7 @@
     &:not([data-disabled="true"]) {
       cursor: pointer;
 
-      &:hover {
+      @include mixins.hover {
         background-color: var(--ipt-fg);
         color: var(--ipt-bg);
       }
@@ -141,7 +141,7 @@
       }
 
       &:not([data-disabled="true"]) {
-        &:hover {
+        @include mixins.hover {
 
           &::before,
           &::after {
@@ -417,7 +417,7 @@
       cursor: pointer;
     }
 
-    &:hover {
+    @include mixins.hover {
       background: var(--ipt-fg);
       color: var(--ipt-bg);
     }
@@ -468,6 +468,8 @@
     user-select: none;
     border-radius: 2px;
     transition: opacity 0.1s;
+    touch-action: none;
+    -webkit-touch-callout: none;
 
     &:focus-within {
       outline: auto;
@@ -484,10 +486,20 @@
       }
     }
 
-    &:is(:hover, :focus-within) .ipt-slider-thumb {
-      &[data-value]::before {
-        opacity: 0.9;
+    @mixin hoverStyle {
+      .ipt-slider-thumb {
+        &[data-value]::before {
+          opacity: 0.9;
+        }
       }
+    }
+
+    @include mixins.hover {
+      @include hoverStyle();
+    }
+
+    &:focus-within {
+      @include hoverStyle();
     }
   }
 
@@ -730,9 +742,9 @@
         &[data-click="true"] {
           cursor: pointer;
 
-          &:hover {
+          @include mixins.hover {
             opacity: 0.8;
-
+  
             &:active {
               opacity: 1;
             }
@@ -852,7 +864,7 @@
     transition: background-color 0.1s, color 0.1s;
     border-radius: 2px;
 
-    &:hover {
+    @include mixins.hover {
       background: var(--ipt-fg);
       color: var(--ipt-bg);
     }

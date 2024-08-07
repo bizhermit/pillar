@@ -1,4 +1,4 @@
-@layer default, base, feat;
+@use "../mixins" as mixins;
 
 @layer base {
 
@@ -36,6 +36,11 @@
       ---btn-fg: var(--c-danger_, var(--c-primary_));
     }
 
+    &[data-color="gray"] {
+      ---btn-bg: var(--c-gray, var(--c-primary));
+      ---btn-fg: var(--c-gray_, var(--c-primary_));
+    }
+
     &[data-outline="true"] {
       background: var(--btn-bg);
       color: var(---btn-bg);
@@ -57,7 +62,7 @@
     &:not(:is(:disabled, [aria-disabled="true"])) {
       cursor: pointer;
 
-      &:hover {
+      @include mixins.hover {
         opacity: .8;
 
         &:active {

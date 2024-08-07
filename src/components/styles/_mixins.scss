@@ -1,0 +1,25 @@
+@mixin sp {
+  @media screen and (max-width: 480px) {
+    @content;
+  }
+}
+
+@mixin notSp() {
+  @media screen and (min-width: 480px) {
+    @content;
+  }
+}
+
+@mixin hover() {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      @content;
+    }
+  }
+}

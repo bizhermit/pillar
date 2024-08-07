@@ -182,6 +182,8 @@ export default function Home() {
         <Button color="secondary" outline>secondary</Button>
         <Button color="danger">danger</Button>
         <Button color="danger" outline>danger</Button>
+        <Button color="gray">gray</Button>
+        <Button color="gray" outline>gary</Button>
       </div>
       <Form
         bind={bind}
