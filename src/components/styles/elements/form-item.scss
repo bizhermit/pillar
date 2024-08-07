@@ -468,6 +468,8 @@
     user-select: none;
     border-radius: 2px;
     transition: opacity 0.1s;
+    touch-action: none;
+    -webkit-touch-callout: none;
 
     &:focus-within {
       outline: auto;
