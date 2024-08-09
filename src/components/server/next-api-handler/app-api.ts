@@ -5,7 +5,7 @@ import { $boolValidations } from "../../data-items/bool/validation";
 import { $dateParse } from "../../data-items/date/parse";
 import { $dateValidations } from "../../data-items/date/validation";
 import { $fileParse } from "../../data-items/file/parse";
-import { $fileValidation } from "../../data-items/file/validation";
+import { $fileValidations } from "../../data-items/file/validation";
 import { $numParse } from "../../data-items/number/parse";
 import { $numValidations } from "../../data-items/number/validation";
 import { $strParse } from "../../data-items/string/parse";
@@ -170,7 +170,7 @@ const validationParams = (params: { [v: string]: any } | Array<any>, dataItems: 
         isValid(dataItem, $timeValidations(dataItem), index);
         return;
       case "file":
-        isValid(dataItem, $fileValidation(dataItem), index);
+        isValid(dataItem, $fileValidations(dataItem), index);
         return;
       case "array": {
         const { value, name } = isValid(dataItem, $arrayValidations(dataItem), index);
