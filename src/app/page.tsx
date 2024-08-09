@@ -42,7 +42,7 @@ export default function Home() {
     // select: 3,
     "check-list": [1],
     "date-select-m": 3,
-    "hidden": "piyo",
+    // "hidden": "piyo",
   });
   const formItem = useFormItem();
   const [hiddenValue, setHiddenValue] = useState<any>(undefined);
@@ -240,7 +240,7 @@ export default function Home() {
           <Hidden
             name="hidden"
             required
-            // value={hiddenValue}
+            value={hiddenValue}
             // defaultValue="fuga"
           />
           <label>
