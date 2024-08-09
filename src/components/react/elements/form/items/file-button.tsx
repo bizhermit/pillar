@@ -2,7 +2,7 @@
 
 import { type ChangeEvent, type HTMLAttributes, useRef } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
-import { $fileValidation } from "../../../../data-items/file/validation";
+import { $fileValidations } from "../../../../data-items/file/validation";
 import { Button } from "../../button";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -60,7 +60,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
       }
     },
     validation: ({ dataItem, iterator }) => {
-      const funcs = $fileValidation(dataItem);
+      const funcs = $fileValidations(dataItem);
       return (_, p) => iterator(funcs, p);
     },
     focus: focusInput,

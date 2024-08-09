@@ -86,6 +86,7 @@ export const useFormItemCore = <
       required: $required,
       label: $label,
       refs: $refs,
+      validations: $dataItem?.validations,
       ...cp.getDataItem({
         name,
         label,
