@@ -15,6 +15,7 @@ import { DateSelectBox } from "@/react/elements/form/items/date-select-box";
 import { ElecSign } from "@/react/elements/form/items/elec-sign";
 import { FileButton } from "@/react/elements/form/items/file-button";
 import { FileDrop } from "@/react/elements/form/items/file-drop";
+import { Hidden } from "@/react/elements/form/items/hidden";
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { RadioButtons } from "@/react/elements/form/items/radio-buttons";
@@ -41,8 +42,10 @@ export default function Home() {
     // select: 3,
     "check-list": [1],
     "date-select-m": 3,
+    "hidden": "piyo",
   });
   const formItem = useFormItem();
+  const [hiddenValue, setHiddenValue] = useState<any>(undefined);
 
   const formDisabled = useFormItem();
   const disabled = useFormItem();
@@ -174,6 +177,8 @@ export default function Home() {
         >
           dark theme
         </Button>
+        <Button onClick={() => setHiddenValue("hoge")}>set hidden</Button>
+        <Button onClick={() => setHiddenValue(undefined)}>clear hidden</Button>
       </div>
       <div style={{ display: "flex", flexFlow: "row", gap: 4 }}>
         <Button>primary</Button>
@@ -232,6 +237,12 @@ export default function Home() {
             <TextBox name="texts.[1]" />
             <TextBox name="texts.[0]" />
           </FormItemWrap>
+          <Hidden
+            name="hidden"
+            required
+            // value={hiddenValue}
+            // defaultValue="fuga"
+          />
           <label>
             <span>Label:</span>
             <FormItemWrap>
