@@ -17,10 +17,11 @@ type FormItemMountProps = {
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
-  changeRefs: (name: string) => void;
+  changeRefs: (item: FormItemMountProps) => void;
   hasChanged: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
   preventCollectForm: boolean | undefined;
+  noInput?: boolean;
 };
 
 type FormState = "init" | "submit" | "reset" | "" | "nothing";
@@ -34,7 +35,7 @@ type FormContextProps = {
   hasError: boolean;
   setItemState: Dispatch<FormItemState>;
   getMountedItems: () => { [id: string]: FormItemMountProps };
-  change: (name: string | undefined) => void;
+  change: (id: string) => void;
   mount: (props: FormItemMountProps) => {
     unmount: () => void;
   };
@@ -120,7 +121,10 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
 
   const items = useRef<{ [id: string]: FormItemMountProps }>({});
   const findItem = (name: string) => {
-    const id = Object.keys(items.current).find(id => items.current[id].name === name);
+    const id = Object.keys(items.current).find(id => {
+      const item = items.current[id];
+      return !item.noInput && item.name === name;
+    });
     if (id == null) return undefined;
     return items.current[id];
   };
@@ -156,8 +160,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     if (opts?.pure) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
-      const { name, tieInNames, hasChanged, preventCollectForm } = items.current[id];
-      if (preventCollectForm) return;
+      const { name, tieInNames, hasChanged, preventCollectForm, noInput } = items.current[id];
+      if (preventCollectForm || noInput) return;
       if (!name && (tieInNames ?? []).length === 0) return;
       if (!opts?.appendNotChanged && !hasChanged()) return;
       if (name) set(ret, name, clone(get($bind, name)[0]));
@@ -292,15 +296,15 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       state: formState,
       pending: ["submit", "reset", "init"].includes(formState),
       hasError,
-      change: (name) => {
-        if (name == null) return;
-        const self = findItem(name);
-        const refs = [name, ...(self?.dataItem.refs ?? [])];
-        Object.keys(items.current).forEach(id => {
-          const item = items.current[id];
-          if (self && item.name === self.name) return;
+      change: (id) => {
+        const self = items.current[id];
+        if (!self.name) return;
+        const refs = [self.name, ...(self?.dataItem.refs ?? [])];
+        Object.keys(items.current).forEach(iid => {
+          if (iid === id) return;
+          const item = items.current[iid];
           if (!item.dataItem.refs?.some(ref => refs.some(r => ref === r))) return;
-          item.changeRefs(name);
+          item.changeRefs(self);
         });
       },
       mount: (p) => {

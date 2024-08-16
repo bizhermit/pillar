@@ -231,7 +231,7 @@ export const useFormItemCore = <
         }
         setVal(v);
       }
-      form.change(dataItem.name);
+      form.change(id.current);
 
       if (!eq) {
         onChange?.(v, { before });
@@ -376,4 +376,44 @@ export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
       };
     },
   } as const;
+};
+
+export const useFormValue = <T extends any>(name: string) => {
+  const id = useRef(getId());
+  const form = use(FormContext);
+  const [value, setVal] = useState<T | undefined>(form.getValue(name));
+
+  const set = (value: T) => {
+    form.setValue(name, value);
+  };
+
+  useEffect(() => {
+    const { unmount } = form.mount({
+      id: id.current,
+      name,
+      get: () => undefined as any,
+      set: () => { },
+      reset: () => { },
+      hasChanged: () => false,
+      changeRefs: () => {
+        setVal(form.getValue<T>(name));
+      },
+      dataItem: {
+        type: "any",
+        refs: [name],
+      },
+      preventCollectForm: true,
+      noInput: true,
+    });
+    setVal(form.getValue(name));
+    return () => {
+      unmount();
+    };
+  }, [name]);
+
+  return {
+    value,
+    setValue: set,
+    initialized: form.state !== "init",
+  };
 };
