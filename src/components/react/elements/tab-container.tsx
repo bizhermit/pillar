@@ -143,6 +143,7 @@ export const TabContainer = ({
               data-current={c.key === key}
               tabIndex={0}
               onClick={() => select(c.key!)}
+              data-disabled={disabled}
               onKeyDown={e => {
                 if (e.key === "Enter" || e.key === " ") {
                   select(c.key!);

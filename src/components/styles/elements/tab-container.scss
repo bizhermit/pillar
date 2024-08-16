@@ -37,7 +37,7 @@
       }
     }
 
-    &:not([data-current="true"]) {
+    &:not([data-current="true"]):not([data-disabled="true"]) {
       cursor: pointer;
     }
   }
