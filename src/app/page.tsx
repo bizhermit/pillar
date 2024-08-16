@@ -26,6 +26,7 @@ import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
+import { TabContainer, TabContent, useTabContainer } from "@/react/elements/tab-container";
 import { LayoutContext } from "@/react/hooks/layout";
 import { sleep } from "@/utilities/sleep";
 import { use, useRef, useState } from "react";
@@ -46,6 +47,7 @@ export default function Home() {
   });
   const formItem = useFormItem();
   const [hiddenValue, setHiddenValue] = useState<any>(undefined);
+  const tabCont = useTabContainer();
 
   const formDisabled = useFormItem();
   const disabled = useFormItem();
@@ -55,6 +57,46 @@ export default function Home() {
 
   return (
     <div>
+      <TabContainer
+        disabled={disabled.value}
+        // defaultMount
+        // keepMount
+        hook={tabCont.hook}
+        onChange={(k) => {
+          console.log("tab change", k, formItem.value);
+        }}
+      >
+        <TabContent
+          key="1"
+          label="タブ１"
+          className="hogehoge"
+          // keepMount
+        >
+          <h1>tab 1</h1>
+          <Button
+            onClick={() => {
+              tabCont.setKey("2");
+            }}
+          >
+            switch tab 2
+          </Button>
+        </TabContent>
+        <TabContent
+          key="2"
+          label="タブ２"
+          // defaultMount
+        >
+          <h1>tab 2</h1>
+          <Button
+            onClick={() => {
+              tabCont.setKey("1");
+            }}
+          >
+            switch tab 1
+          </Button>
+        </TabContent>
+      </TabContainer>
+      <span>tab: {tabCont.key}</span>
       <div className={s.row}>
         <button disabled>button</button>
         <button>ボタン</button>
@@ -241,7 +283,7 @@ export default function Home() {
             name="hidden"
             required
             value={hiddenValue}
-            // defaultValue="fuga"
+          // defaultValue="fuga"
           />
           <label>
             <span>Label:</span>
@@ -364,7 +406,7 @@ export default function Home() {
               label="チェックリスト"
               name="check-list"
               required
-              // minLength={2}
+              minLength={2}
               source={async () => {
                 // await sleep(3000);
                 const arr = [];

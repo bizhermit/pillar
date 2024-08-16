@@ -1,0 +1,81 @@
+@layer base {
+
+  .tab-wrap {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+  }
+
+  .tabs {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .tab-item {
+    position: relative;
+    padding: 0 1rem;
+    user-select: none;
+
+    &::before {
+      box-sizing: border-box;
+      position: absolute;
+      content: "";
+      height: 3px;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      background: transparent;
+      transition: background-color .2s;
+    }
+
+    &[data-current="true"] {
+      &::before {
+        background: var(--c-primary);
+      }
+    }
+
+    &:not([data-current="true"]) {
+      cursor: pointer;
+    }
+  }
+
+  .tab-child {
+    flex: 1 1 auto;
+    position: relative;
+    overflow: auto;
+  }
+
+  .tab-cont {
+    z-index: 0;
+    display: none;
+    opacity: 0;
+    transition: opacity .2s, display .2s allow-discrete, overlay .2s allow-discrete;
+
+    &[data-current="true"] {
+      display: unset;
+      opacity: 1;
+      z-index: 1;
+    }
+
+    &:not([data-current="true"]) {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  }
+
+  @starting-style {
+
+    .tab-cont {
+      &[data-current="true"] {
+        opacity: 0;
+        z-index: 1;
+      }
+    }
+
+  }
+
+}
