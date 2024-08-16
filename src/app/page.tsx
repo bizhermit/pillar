@@ -254,6 +254,7 @@ export default function Home() {
           await sleep(3000);
         }}
       >
+        <ObservationFormValue name="tab" />
         <InputTabContainer
           name="tab"
         >
@@ -333,7 +334,6 @@ export default function Home() {
               </CheckBox>
             </FormItemWrap>
           </label>
-          <ObservationFormValue name="num" />
           <FormItemWrap style={{ width: 150 }}>
             <NumberBox
               label="数値"

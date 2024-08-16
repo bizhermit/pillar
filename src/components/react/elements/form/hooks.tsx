@@ -405,6 +405,7 @@ export const useFormValue = <T extends any>(name: string) => {
       preventCollectForm: true,
       noInput: true,
     });
+    setVal(form.getValue(name));
     return () => {
       unmount();
     };
