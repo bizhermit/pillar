@@ -21,7 +21,7 @@ import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { RadioButtons } from "@/react/elements/form/items/radio-buttons";
 import { SelectBox } from "@/react/elements/form/items/select-box";
 import { Slider } from "@/react/elements/form/items/slider";
-import { FormTabContainer } from "@/react/elements/form/items/tab-container";
+import { InputTabContainer } from "@/react/elements/form/items/tab-container";
 import { TextArea } from "@/react/elements/form/items/text-area";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
@@ -254,7 +254,7 @@ export default function Home() {
           await sleep(3000);
         }}
       >
-        <FormTabContainer
+        <InputTabContainer
           name="tab"
         >
           <TabContent
@@ -270,7 +270,7 @@ export default function Home() {
           >
             tab2
           </TabContent>
-        </FormTabContainer>
+        </InputTabContainer>
         <div className={s.row}>
           {/* <div style={{ width: 150 }}> */}
           <FormItemWrap

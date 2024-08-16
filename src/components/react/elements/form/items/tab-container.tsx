@@ -2,7 +2,7 @@ import { $strValidations } from "../../../../data-items/string/validation";
 import { getDefaultTabKey, TabContainer, type TabContainerProps, useTabContainer } from "../../tab-container";
 import { useFormItemCore } from "../hooks";
 
-type FormTabContainerOptions = Pick<FormItemOptions<undefined, string>,
+type InputTabContainerOptions = Pick<FormItemOptions<undefined, string>,
   | "name"
   | "readOnly"
   | "label"
@@ -10,9 +10,9 @@ type FormTabContainerOptions = Pick<FormItemOptions<undefined, string>,
   | "onChange"
 >;
 
-type FormTabContainerProps = OverwriteProps<Omit<TabContainerProps, "hook">, FormTabContainerOptions>;
+type InputTabContainerProps = OverwriteProps<Omit<TabContainerProps, "hook">, InputTabContainerOptions>;
 
-export const FormTabContainer = ({
+export const InputTabContainer = ({
   name,
   readOnly,
   label,
@@ -22,7 +22,7 @@ export const FormTabContainer = ({
   disabled,
   children,
   ...props
-}: FormTabContainerProps) => {
+}: InputTabContainerProps) => {
   const $hook = useTabContainer();
   const $children = Array.isArray(children) ? children : [children];
 
