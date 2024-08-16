@@ -333,6 +333,7 @@ export default function Home() {
               </CheckBox>
             </FormItemWrap>
           </label>
+          <ObservationFormValue name="num" />
           <FormItemWrap style={{ width: 150 }}>
             <NumberBox
               label="数値"
@@ -344,7 +345,6 @@ export default function Home() {
             // requiredIsNotZero
             />
           </FormItemWrap>
-          <ObservationFormValue name="num" />
           <FormItemWrap>
             <PasswordBox
               label="パスワード"

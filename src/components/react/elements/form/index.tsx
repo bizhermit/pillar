@@ -17,10 +17,11 @@ type FormItemMountProps = {
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
-  changeRefs: (name: string) => void;
+  changeRefs: (item: FormItemMountProps) => void;
   hasChanged: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
   preventCollectForm: boolean | undefined;
+  noInput?: boolean;
 };
 
 type FormState = "init" | "submit" | "reset" | "" | "nothing";
@@ -120,7 +121,10 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
 
   const items = useRef<{ [id: string]: FormItemMountProps }>({});
   const findItem = (name: string) => {
-    const id = Object.keys(items.current).find(id => items.current[id].name === name);
+    const id = Object.keys(items.current).find(id => {
+      const item = items.current[id];
+      return !item.noInput && item.name === name;
+    });
     if (id == null) return undefined;
     return items.current[id];
   };
@@ -156,8 +160,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     if (opts?.pure) return clone($bind);
     const ret = {};
     Object.keys(items.current).forEach(id => {
-      const { name, tieInNames, hasChanged, preventCollectForm } = items.current[id];
-      if (preventCollectForm) return;
+      const { name, tieInNames, hasChanged, preventCollectForm, noInput } = items.current[id];
+      if (preventCollectForm || noInput) return;
       if (!name && (tieInNames ?? []).length === 0) return;
       if (!opts?.appendNotChanged && !hasChanged()) return;
       if (name) set(ret, name, clone(get($bind, name)[0]));
@@ -300,7 +304,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
           if (iid === id) return;
           const item = items.current[iid];
           if (!item.dataItem.refs?.some(ref => refs.some(r => ref === r))) return;
-          item.changeRefs(self.name!);
+          item.changeRefs(self);
         });
       },
       mount: (p) => {

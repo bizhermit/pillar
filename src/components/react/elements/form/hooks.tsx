@@ -403,6 +403,7 @@ export const useFormValue = <T extends any>(name: string) => {
         refs: [name],
       },
       preventCollectForm: true,
+      noInput: true,
     });
     return () => {
       unmount();
@@ -412,5 +413,6 @@ export const useFormValue = <T extends any>(name: string) => {
   return {
     value,
     setValue: set,
+    initialized: form.state !== "init",
   };
 };
