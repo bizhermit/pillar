@@ -44,6 +44,15 @@ type TabContainerOptions = {
 
 export type TabContainerProps = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TabContainerOptions>;
 
+export const getDefaultTabKey = (children: Array<JSX.Element>, defaultKey: TabContainerProps["defaultKey"]): string => {
+  if (defaultKey) {
+    if (children.find(c => c.key === defaultKey)) return defaultKey;
+  }
+  const c = children.findIndex(c => c.props.default);
+  if (c < 0) return children[0].key!;
+  return children[c].key!;
+};
+
 export const TabContainer = ({
   disabled,
   defaultKey,
@@ -93,14 +102,7 @@ export const TabContainer = ({
     switchMount({ action: "mount", key: action });
     return action;
   }, $children[0].key!, (_) => {
-    const k = (() => {
-      if (defaultKey) {
-        if ($children.find(c => c.key === defaultKey)) return defaultKey;
-      }
-      const c = $children.findIndex(c => c.props.default);
-      if (c < 0) return $children[0].key!;
-      return $children[c].key!;
-    })();
+    const k = getDefaultTabKey($children, defaultKey);
     switchMount({ action: "mount", key: k });
     return k;
   });

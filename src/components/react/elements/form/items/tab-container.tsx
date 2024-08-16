@@ -1,5 +1,5 @@
 import { $strValidations } from "../../../../data-items/string/validation";
-import { TabContainer, TabContainerProps, useTabContainer } from "../../tab-container";
+import { getDefaultTabKey, TabContainer, type TabContainerProps, useTabContainer } from "../../tab-container";
 import { useFormItemCore } from "../hooks";
 
 type FormTabContainerOptions = Pick<FormItemOptions<undefined, string>,
@@ -26,14 +26,7 @@ export const FormTabContainer = ({
   const $hook = useTabContainer();
   const $children = Array.isArray(children) ? children : [children];
 
-  const defaultValue = (() => {
-    if (defaultKey) {
-      if ($children.find(c => c.key === defaultKey)) return defaultKey;
-    }
-    const c = $children.findIndex(c => c.props.default);
-    if (c < 0) return $children[0].key!;
-    return $children[c].key!;
-  })();
+  const defaultValue = getDefaultTabKey($children, defaultKey);
 
   const fi = useFormItemCore<DataItem.$str, undefined, string, string>({
     name,
