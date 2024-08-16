@@ -254,7 +254,7 @@ export default function Home() {
           await sleep(3000);
         }}
       >
-        <ObservationFormValue name="tab" />
+        <ObservationFormValue name="slider" value={30} />
         <InputTabContainer
           name="tab"
         >
@@ -626,6 +626,7 @@ export default function Home() {
 
 const ObservationFormValue = (props: {
   name: string;
+  value: any;
 }) => {
   const formValue = useFormValue<number>(props.name);
 
@@ -636,7 +637,7 @@ const ObservationFormValue = (props: {
       </span>
       <Button
         onClick={() => {
-          formValue.setValue(5);
+          formValue.setValue(props.value);
         }}
       >
         set value
