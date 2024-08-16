@@ -37,7 +37,6 @@ type TabContainerOptions = {
   defaultKey?: string;
   defaultMount?: boolean;
   keepMount?: boolean;
-  exChildren?: ReactNode;
   onChange?: (key: string) => void;
   hook?: TabContainerHook["hook"];
   children: JSX.Element | Array<JSX.Element>;
@@ -50,7 +49,6 @@ export const TabContainer = ({
   defaultKey,
   defaultMount,
   keepMount,
-  exChildren,
   children,
   onChange,
   hook,
@@ -130,7 +128,6 @@ export const TabContainer = ({
       {...props}
       className={joinClassNames("tab-wrap", props.className)}
     >
-      {exChildren}
       <div
         ref={tabsRef}
         className="tabs"
