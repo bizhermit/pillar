@@ -34,6 +34,7 @@ export const useTabContainer = (): TabContainerHook => {
 
 type TabContainerOptions = {
   disabled?: boolean;
+  defaultKey?: string;
   defaultMount?: boolean;
   keepMount?: boolean;
   exChildren?: ReactNode;
@@ -42,10 +43,11 @@ type TabContainerOptions = {
   children: JSX.Element | Array<JSX.Element>;
 };
 
-type TabContainerProps = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TabContainerOptions>;
+export type TabContainerProps = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TabContainerOptions>;
 
 export const TabContainer = ({
   disabled,
+  defaultKey,
   defaultMount,
   keepMount,
   exChildren,
@@ -89,11 +91,18 @@ export const TabContainer = ({
   });
 
   const [key, setKey] = useReducer((state: string, action: string) => {
-    if (state === action) return state;
+    if (!action || state === action) return state;
     switchMount({ action: "mount", key: action });
     return action;
   }, $children[0].key!, (_) => {
-    const k = $children[0].key!;
+    const k = (() => {
+      if (defaultKey) {
+        if ($children.find(c => c.key === defaultKey)) return defaultKey;
+      }
+      const c = $children.findIndex(c => c.props.default);
+      if (c < 0) return $children[0].key!;
+      return $children[c].key!;
+    })();
     switchMount({ action: "mount", key: k });
     return k;
   });
@@ -154,6 +163,7 @@ export const TabContainer = ({
             defaultMount,
             keepMount,
             className,
+            default: defaultSelect,
             ...cprops
           } = c.props as TabContentProps;
 
@@ -183,6 +193,7 @@ type TabContentOptions = {
   label: ReactNode;
   defaultMount?: boolean;
   keepMount?: boolean;
+  default?: boolean;
 };
 
 type TabContentProps = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TabContentOptions>;
