@@ -34,7 +34,7 @@ type FormContextProps = {
   hasError: boolean;
   setItemState: Dispatch<FormItemState>;
   getMountedItems: () => { [id: string]: FormItemMountProps };
-  change: (name: string | undefined) => void;
+  change: (id: string) => void;
   mount: (props: FormItemMountProps) => {
     unmount: () => void;
   };
@@ -292,15 +292,15 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       state: formState,
       pending: ["submit", "reset", "init"].includes(formState),
       hasError,
-      change: (name) => {
-        if (name == null) return;
-        const self = findItem(name);
-        const refs = [name, ...(self?.dataItem.refs ?? [])];
-        Object.keys(items.current).forEach(id => {
-          const item = items.current[id];
-          if (self && item.name === self.name) return;
+      change: (id) => {
+        const self = items.current[id];
+        if (!self.name) return;
+        const refs = [self.name, ...(self?.dataItem.refs ?? [])];
+        Object.keys(items.current).forEach(iid => {
+          if (iid === id) return;
+          const item = items.current[iid];
           if (!item.dataItem.refs?.some(ref => refs.some(r => ref === r))) return;
-          item.changeRefs(name);
+          item.changeRefs(self.name!);
         });
       },
       mount: (p) => {

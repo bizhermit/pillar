@@ -6,7 +6,7 @@ import { Button } from "@/react/elements/button";
 import { Dialog, useDialog } from "@/react/elements/dialog";
 import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
-import { useFormItem } from "@/react/elements/form/hooks";
+import { useFormItem, useFormValue } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CheckList } from "@/react/elements/form/items/check-list";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
@@ -71,7 +71,7 @@ export default function Home() {
           key="1"
           label="タブ１"
           className="hogehoge"
-          // keepMount
+        // keepMount
         >
           <h1>tab 1</h1>
           <Button
@@ -85,7 +85,7 @@ export default function Home() {
         <TabContent
           key="2"
           label="タブ２"
-          // defaultMount
+        // defaultMount
         >
           <h1>tab 2</h1>
           <Button
@@ -344,6 +344,7 @@ export default function Home() {
             // requiredIsNotZero
             />
           </FormItemWrap>
+          <ObservationFormValue name="num" />
           <FormItemWrap>
             <PasswordBox
               label="パスワード"
@@ -622,3 +623,24 @@ export default function Home() {
     </div>
   );
 }
+
+const ObservationFormValue = (props: {
+  name: string;
+}) => {
+  const formValue = useFormValue<number>(props.name);
+
+  return (
+    <div>
+      <span>
+        observe {String(formValue.value)}
+      </span>
+      <Button
+        onClick={() => {
+          formValue.setValue(5);
+        }}
+      >
+        set value
+      </Button>
+    </div>
+  );
+};
