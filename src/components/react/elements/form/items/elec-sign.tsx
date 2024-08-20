@@ -181,6 +181,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
     canvas.beginPath();
     canvas.fillRect(curX - lineWidth / 2, curY - lineWidth / 2, lineWidth, lineWidth);
     canvas.closePath();
+    cref.current.focus();
   };
 
   const mouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {

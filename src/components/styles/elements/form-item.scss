@@ -1,5 +1,17 @@
 @use "../mixins" as mixins;
 
+@layer default {
+
+  input:is([type="text"], [type="password"]) {
+    width: 20rem;
+  }
+
+  ::-ms-reveal {
+    display: none;
+  }
+
+}
+
 @layer base {
 
   .ipt-wrap {
@@ -21,6 +33,39 @@
     justify-content: flex-start;
     align-items: flex-start;
     gap: 0.4rem;
+
+    &:not(:has(>.ipt-wrap:not(:first-child) > .ipt-msg)) {
+      >.ipt-wrap {
+        &:first-child {
+          >.ipt-msg {
+            width: 0;
+            overflow: visible;
+            word-break: keep-all;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+
+  .ipt-msg {
+    font-size: 1.3rem;
+    min-width: 0;
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    &[data-state="e"] {
+      color: var(--fg-err);
+    }
+
+    &[data-state="w"] {
+      color: var(--fg-warn);
+    }
+
+    &[data-state="i"] {
+      color: var(--fg-info);
+    }
   }
 
   .ipt-row {
@@ -165,26 +210,6 @@
 
   }
 
-  .ipt-msg {
-    font-size: 1.3rem;
-    min-width: 0;
-    max-width: 100%;
-    white-space: pre-wrap;
-    word-break: break-word;
-
-    &[data-state="e"] {
-      color: var(--fg-err);
-    }
-
-    &[data-state="w"] {
-      color: var(--fg-warn);
-    }
-
-    &[data-state="i"] {
-      color: var(--fg-info);
-    }
-  }
-
   .ipt-txt,
   .ipt-txt-area,
   .ipt-num {
@@ -204,6 +229,7 @@
   .ipt-txt-area {
     padding: 0.4rem 0.8rem;
     height: calc(var(--ipt-size) * 4);
+    width: 30rem;
   }
 
   .ipt-num {
@@ -474,7 +500,7 @@
     -webkit-touch-callout: none;
 
     &:focus-within {
-      outline: auto;
+      outline-style: solid;
     }
 
     &[data-disabled="true"] {
@@ -746,7 +772,7 @@
 
           @include mixins.hover {
             opacity: 0.8;
-  
+
             &:active {
               opacity: 1;
             }
@@ -786,7 +812,7 @@
     transition: color 0.1s, background-color 0.1s, border-color 0.1s, opacity 0.1s;
 
     &:focus-within {
-      outline: auto;
+      outline-style: solid;
     }
   }
 
@@ -812,6 +838,11 @@
     touch-action: none;
     user-select: none;
     -webkit-touch-callout: none;
+    align-self: center;
+
+    &:focus {
+      outline-style: solid;
+    }
   }
 
   .ipt-elec-sign-btns {
@@ -823,7 +854,7 @@
     >.ipt-btn {
       height: var(--ipt-size);
       flex: 1 1 0rem;
-      width: unset;
+      width: 0;
     }
   }
 

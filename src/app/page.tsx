@@ -274,11 +274,8 @@ export default function Home() {
         </InputTabContainer>
         <div className={s.row}>
           {/* <div style={{ width: 150 }}> */}
-          <FormItemWrap
-          // style={{ width: 100 }}
-          >
+          <FormItemWrap>
             <TextBox
-              // style={{ width: "100px" }}
               placeholder="テキスト"
               name="text"
               label="テキスト"
@@ -353,8 +350,18 @@ export default function Home() {
               readOnly={readOnly.value}
             />
           </FormItemWrap>
-          <FormItemWrap>
+          <FormItemWrap
+            style={{
+              // width: 400,
+              // width: 100,
+            }}
+          >
             <CreditCardNumberBox
+              style={{
+                // width: "100%",
+                // width: 100,
+                // width: 400,
+              }}
               label="クレジットカード番号"
               name="credit-card"
               required
