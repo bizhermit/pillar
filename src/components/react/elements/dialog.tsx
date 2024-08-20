@@ -5,11 +5,7 @@ import { throttle } from "../../utilities/throttle";
 import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./utilities";
 
-type DailogOrder = "close" | "modal" | "modeless";
-type DialogState = "closed" | "modal" | "modeless"
-
 type DialogShowOptions = {
-  modal?: boolean;
   anchor?: {
     element: HTMLElement;
     x?: "inner" | "outer" | "center" | "inner-left" | "inner-right" | "outer-left" | "outer-right";
@@ -28,18 +24,21 @@ type DialogCloseOptions = {
   callback?: () => void;
 };
 
+type ToggleFunction = <S extends boolean>(show: S, opts?: S extends true ? DialogShowOptions : DialogCloseOptions) => void;
+
 type DialogHookConnectionParams = {
-  toggle: <Order extends DailogOrder>(order: Order, opts?: Order extends "close" ? DialogCloseOptions : DialogShowOptions) => void;
+  toggle: ToggleFunction;
 };
 
 type DialogHook = {
-  state: DialogState;
+  showed: boolean;
   open: (options?: DialogShowOptions) => void;
   close: (options?: DialogCloseOptions) => void;
-  hook: (params: DialogHookConnectionParams) => ((state: DialogState) => void);
+  hook: (params: DialogHookConnectionParams) => ((show: boolean) => void);
 };
 
 type DialogOptions = {
+  modeless?: boolean;
   hook?: DialogHook["hook"];
   preventBackdropClose?: boolean;
   immediatelyMount?: boolean;
@@ -47,11 +46,13 @@ type DialogOptions = {
   mobile?: boolean;
   preventRootScroll?: boolean;
   closeWhenScrolled?: boolean;
+  transparent?: boolean;
 };
 
 type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptions>;
 
 export const Dialog = ({
+  modeless,
   hook,
   preventBackdropClose,
   immediatelyMount,
@@ -59,40 +60,41 @@ export const Dialog = ({
   mobile,
   preventRootScroll,
   closeWhenScrolled,
+  transparent,
   ...props
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
-  const [state, setState, stateRef] = useRefState<DialogState>("closed");
-  const hookRef = useRef<((state: DialogState) => void) | null>(null);
+  const [showed, toggleShowed, showedRef] = useRefState<boolean>(false);
+  const hookRef = useRef<((showed: boolean) => void) | null>(null);
   const [mount, setMount] = useState(immediatelyMount === true);
   const [showOpts, setShowOpts] = useState<DialogShowOptions | null | undefined>();
 
-  const toggle = <Order extends DailogOrder>(order: Order, opts?: Order extends "close" ? DialogCloseOptions : DialogShowOptions) => {
+  const toggle: ToggleFunction = (show, opts) => {
     if (!dref.current) {
       // eslint-disable-next-line no-console
       console.warn("not mounted dialog element");
       return;
     }
-    if (order === "close") {
+    if (!show) {
       if (!keepMount) {
         const unmount = (e: TransitionEvent) => {
           if (e.target !== e.currentTarget || !e.pseudoElement) return;
           dref.current.removeEventListener("transitioncancel", unmount);
           dref.current.removeEventListener("transitionend", unmount);
-          if (stateRef.current === "closed") setMount(false);
+          if (!showedRef.current) setMount(false);
           opts?.callback?.();
         };
         dref.current.addEventListener("transitioncancel", unmount);
         dref.current.addEventListener("transitionend", unmount);
       }
-      setState("closed");
-      hookRef.current?.("closed");
+      toggleShowed(false);
+      hookRef.current?.(false);
       dref.current.close();
       opts?.callbackBeforeAnimation?.();
       return;
     }
     setMount(true);
-    setState(order);
+    toggleShowed(show);
     setShowOpts(opts);
   };
 
@@ -250,7 +252,7 @@ export const Dialog = ({
   hookRef.current = hook ? hook({ toggle }) : null;
 
   useEffect(() => {
-    if (state === "closed") return;
+    if (!showed) return;
 
     const transitionEndListener = () => {
       dref.current?.removeEventListener("transitionend", transitionEndListener);
@@ -266,18 +268,18 @@ export const Dialog = ({
   }, [showOpts]);
 
   useEffect(() => {
-    if (state === "closed") return;
-    if (state === "modal") dref.current.showModal();
-    else dref.current.show();
+    if (!showed) return;
+    if (modeless) dref.current.show();
+    else dref.current.showModal();
     resetPosition();
     showOpts?.callbackBeforeAnimation?.();
     dref.current.scrollTop = 0;
     dref.current.scrollLeft = 0;
-    hookRef.current?.(state);
-  }, [state]);
+    hookRef.current?.(showed);
+  }, [showed]);
 
   useEffect(() => {
-    if (state === "closed") return;
+    if (!showed) return;
 
     let scrollTopBuf = document.documentElement.scrollTop;
     let scrollLeftBuf = document.documentElement.scrollLeft;
@@ -291,7 +293,7 @@ export const Dialog = ({
 
     const scrollListener = preventRootScroll ? undefined :
       closeWhenScrolled ? () => {
-        toggle("close");
+        toggle(false);
       } : (e: Event) => {
         e.preventDefault();
         document.documentElement.scrollTop = scrollTopBuf;
@@ -307,7 +309,7 @@ export const Dialog = ({
         window.removeEventListener("scroll", scrollListener!);
       }
     };
-  }, [state, showOpts]);
+  }, [showed, showOpts]);
 
   return (
     <dialog
@@ -319,14 +321,15 @@ export const Dialog = ({
         const { offsetX, offsetY } = e.nativeEvent;
         const { offsetWidth, offsetHeight } = e.currentTarget;
         if (offsetX < 0 || offsetY < 0 || offsetX - offsetWidth > 0 || offsetY - offsetHeight > 0) {
-          toggle("close");
+          toggle(false);
         }
         props.onClick?.(e);
       }}
       data-pos={showOpts?.anchor != null}
-      data-modal={state === "modal" ? "" : undefined}
-      data-modeless={state === "modeless" ? "" : undefined}
+      data-modal={modeless ? undefined : ""}
+      data-modeless={modeless ? "" : undefined}
       data-mobile={mobile ? "" : undefined}
+      data-transparent={transparent ? "" : undefined}
     >
       {mount && props.children}
     </dialog>
@@ -334,16 +337,16 @@ export const Dialog = ({
 };
 
 export const useDialog = (): DialogHook => {
-  const [state, setState] = useState<DialogState>("closed");
+  const [showed, setShowed] = useState<boolean>(false);
   const con = useRef<DialogHookConnectionParams | null>(null);
 
   return {
-    state,
-    open: (opts) => con.current?.toggle(opts?.modal === false ? "modeless" : "modal", opts),
-    close: (opts) => con.current?.toggle("close", opts),
+    showed,
+    open: (opts) => con.current?.toggle(true, opts),
+    close: (opts) => con.current?.toggle(false, opts),
     hook: (c) => {
       con.current = c;
-      return setState;
+      return setShowed;
     },
   } as const;
 };
