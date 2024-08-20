@@ -9,6 +9,7 @@ export const GET = apiMethodHandler(async (props) => {
     $num({ name: "fuga", required: false }),
     $bool({ name: "piyo", required: true }),
   ]);
+  // eslint-disable-next-line no-console
   console.log(data);
   props.throwIfHasValidationError();
   return {

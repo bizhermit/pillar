@@ -2,7 +2,7 @@ import queryString from "querystring";
 import { convertFormDataToStruct } from "./form-data";
 import { get } from "./struct";
 
-type UrlPath = `http://${string}` | `https://${string}` | `tel:${string}` | `mailto:${string}` | PagePath | ApiPath;
+export type UrlPath = `http://${string}` | `https://${string}` | `tel:${string}` | `mailto:${string}` | PagePath | ApiPath;
 
 const replace = <T extends UrlPath>(href: T, getValue: (key: string) => any): T => {
   if (href == null) return href;
