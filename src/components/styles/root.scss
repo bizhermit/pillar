@@ -133,7 +133,8 @@ $darkFg: #f8f8f8;
   }
 
   a {
-    &[aria-disabled="true"] {
+    &[aria-disabled="true"],
+    &[data-nodecoration="true"] {
       text-decoration: none;
       color: inherit;
     }

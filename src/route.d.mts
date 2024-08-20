@@ -1,7 +1,23 @@
 // generate by script
 // do not edit
 
-type AppRoutePath = "/";
+type AppRoutePath = "/"
+  | "/sandbox"
+  | "/sandbox/element"
+  | "/sandbox/page-transition/client"
+  | "/sandbox/page-transition/client/layout-path-param/[id]"
+  | "/sandbox/page-transition/client/layout-path-params/[[...id]]"
+  | "/sandbox/page-transition/client/layout-path-params-req/[...id]"
+  | "/sandbox/page-transition/client/path-param/[id]"
+  | "/sandbox/page-transition/client/path-params/[[...id]]"
+  | "/sandbox/page-transition/client/path-params-req/[...id]"
+  | "/sandbox/page-transition/server"
+  | "/sandbox/page-transition/server/layout-path-param/[id]"
+  | "/sandbox/page-transition/server/layout-path-params/[[...id]]"
+  | "/sandbox/page-transition/server/layout-path-params-req/[...id]"
+  | "/sandbox/page-transition/server/path-param/[id]"
+  | "/sandbox/page-transition/server/path-params/[[...id]]"
+  | "/sandbox/page-transition/server/path-params-req/[...id]";
 
 type AppApiPath = "/api";
 
