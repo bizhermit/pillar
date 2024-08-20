@@ -47,9 +47,11 @@ export const Slider = <D extends DataItem.$num | undefined>({
   const changeStart = (thumbElem: HTMLDivElement, clientX: number, isTouch?: boolean) => {
     if (!fi.editable) return;
     clickThumbRef.current = true;
-    const width = thumbElem.parentElement!.clientWidth;
+    const parentElem = thumbElem.parentElement!;
+    const width = parentElem!.clientWidth;
     const cVal = fi.value ?? fi.dataItem.min!;
     const range = fi.dataItem.max! - fi.dataItem.min!;
+    parentElem.focus();
 
     const moveImpl = (cx: number) => {
       fi.set({ value: Math.min(fi.dataItem.max!, Math.max(fi.dataItem.min!, cVal + Math.round(range * (cx - clientX) / width))), edit: true });
