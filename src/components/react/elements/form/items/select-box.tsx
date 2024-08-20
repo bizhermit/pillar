@@ -192,7 +192,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     preventScroll?: boolean;
     preventClearFilter?: boolean;
   }) => {
-    if (!fi.editable || loading || dialog.state !== "closed") return;
+    if (!fi.editable || loading || dialog.showed) return;
     focusInput();
     if (!opts?.preventClearFilter) clearFilter();
     const anchorElem = iref.current?.parentElement;
@@ -212,7 +212,6 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
       }
     }
     dialog.open({
-      modal: false,
       anchor: {
         element: anchorElem,
         x: "inner",
@@ -284,7 +283,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         break;
       case "ArrowDown":
         if (!loading) {
-          if (dialog.state === "closed") {
+          if (!dialog.showed) {
             showDialog({ preventClearFilter: true });
           } else {
             focusSelected();
@@ -299,7 +298,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
 
   const change = () => {
     filterItems();
-    if (dialog.state === "closed") {
+    if (!dialog.showed) {
       showDialog({ preventClearFilter: true, preventFocus: true });
     }
   };
@@ -312,7 +311,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     if (!fi.editable || loading || empty) return;
     fi.set({ value: $emptyItem?.[vdn], edit: true, effect: true, parse: true });
     focusInput();
-    if (dialog.state === "closed") closeDialog();
+    if (!dialog.showed) closeDialog();
   };
 
   useEffect(() => {
@@ -373,13 +372,14 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             data-disabled={!fi.editable || loading}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.state !== "closed"}
+            data-showed={dialog.showed}
           >
             <DownFillIcon />
           </div>
         }
         {fi.clearButton(empty || loading ? undefined : clear)}
         <Dialog
+          modeless
           hook={dialog.hook}
           mobile
           className="ipt-dialog"

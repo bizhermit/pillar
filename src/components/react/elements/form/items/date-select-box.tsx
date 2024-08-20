@@ -226,7 +226,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
 
   const showDialog = (target: Target) => {
     const d = dialog(target);
-    if (!fi.editable || d.state !== "closed") return;
+    if (!fi.editable || d.showed) return;
     const anchorElem = (() => {
       switch (target) {
         case "d": return dref.current?.parentElement;
@@ -237,7 +237,6 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     if (!anchorElem) return;
     focusInput(target);
     d.open({
-      modal: false,
       anchor: {
         element: anchorElem,
         x: "inner",
@@ -670,15 +669,16 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
           {fi.showButtons &&
             <div
               className="ipt-btn ipt-pull"
-              data-disabled={!fi.editable || yDialog.state !== "closed"}
+              data-disabled={!fi.editable || yDialog.showed}
               tabIndex={-1}
-              data-showed={yDialog.state !== "closed"}
+              data-showed={yDialog.showed}
               data-slim
             >
               <DownFillIcon />
             </div>
           }
           <Dialog
+            modeless
             hook={yDialog.hook}
             mobile
             className="ipt-dialog"
@@ -722,15 +722,16 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
           {fi.showButtons &&
             <div
               className="ipt-btn ipt-pull"
-              data-disabled={!fi.editable || mDialog.state !== "closed"}
+              data-disabled={!fi.editable || mDialog.showed}
               tabIndex={-1}
-              data-showed={mDialog.state !== "closed"}
+              data-showed={mDialog.showed}
               data-slim
             >
               <DownFillIcon />
             </div>
           }
           <Dialog
+            modeless
             hook={mDialog.hook}
             mobile
             className="ipt-dialog"
@@ -772,15 +773,16 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
               {fi.showButtons &&
                 <div
                   className="ipt-btn ipt-pull"
-                  data-disabled={!fi.editable || dDialog.state !== "closed"}
+                  data-disabled={!fi.editable || dDialog.showed}
                   tabIndex={-1}
-                  data-showed={dDialog.state !== "closed"}
+                  data-showed={dDialog.showed}
                   data-slim
                 >
                   <DownFillIcon />
                 </div>
               }
               <Dialog
+                modeless
                 hook={dDialog.hook}
                 mobile
                 className="ipt-dialog"

@@ -23,7 +23,6 @@
 
   .dialog {
     border: none;
-    background: var(--bg);
     overflow: auto;
     filter: drop-shadow(0 0 3px var(--sdw));
     max-width: 100svh;
@@ -37,13 +36,15 @@
       inset: 0;
       margin: auto;
     }
+
+    &[data-transparent] {
+      background: transparent;
+    }
   }
 
   @include mixins.sp {
     html {
       &:has(.dialog[open]) {
-        overflow: hidden;
-        
         &::before {
           position: fixed;
           content: "";

@@ -54,7 +54,8 @@ export default function Home() {
   const disabled = useFormItem();
   const readOnly = useFormItem();
 
-  const dialog = useDialog();
+  const modalDialog = useDialog();
+  const modelessDialog = useDialog();
 
   return (
     <div>
@@ -584,20 +585,13 @@ export default function Home() {
       <div className={s.row}>
         <Button
           onClick={() => {
-            dialog.open();
+            modalDialog.open();
           }}
         >
           show modal dialog
         </Button>
-        <Button
-          onClick={() => {
-            dialog.open({ modal: false });
-          }}
-        >
-          show modaless dialog
-        </Button>
         <Dialog
-          hook={dialog.hook}
+          hook={modalDialog.hook}
           // preventBackdropClose
           // customPosition
           immediatelyMount
@@ -619,13 +613,51 @@ export default function Home() {
           </div>
           <Button
             onClick={() => {
-              dialog.close();
+              modalDialog.close();
             }}
           >
             close
           </Button>
         </Dialog>
-        <span>{dialog.state}</span>
+        <Button
+          onClick={() => {
+            modelessDialog.open();
+          }}
+        >
+          show modeless dialog
+        </Button>
+        <Dialog
+          modeless
+          // transparent
+          hook={modelessDialog.hook}
+          closeWhenScrolled
+          // preventBackdropClose
+          // customPosition
+          immediatelyMount
+          keepMount
+          style={{
+            // width: 100,
+            // height: 100,
+            // top: 30,
+            // left: 30,
+          }}
+        >
+          <div
+            style={{
+              width: 200,
+              height: 200,
+            }}
+          >
+            dialog
+          </div>
+          <Button
+            onClick={() => {
+              modelessDialog.close();
+            }}
+          >
+            close
+          </Button>
+        </Dialog>
       </div>
     </div>
   );

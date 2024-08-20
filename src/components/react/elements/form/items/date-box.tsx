@@ -141,14 +141,13 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   const showDialog = (opts?: {
     focusTarget?: "y" | "m" | "d";
   }) => {
-    if (!fi.editable || dialog.state !== "closed") return;
+    if (!fi.editable || dialog.showed) return;
     const anchorElem = yref.current?.parentElement;
     if (!anchorElem) return;
     if (opts?.focusTarget) {
       focusInput(opts.focusTarget);
     }
     dialog.open({
-      modal: false,
       anchor: {
         element: anchorElem,
         x: "inner",
@@ -446,16 +445,17 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         {fi.showButtons &&
           <div
             className="ipt-btn"
-            data-disabled={!fi.editable || dialog.state !== "closed"}
+            data-disabled={!fi.editable || dialog.showed}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.state !== "closed"}
+            data-showed={dialog.showed}
           >
             <CalendarIcon />
           </div>
         }
         {fi.clearButton(empty ? undefined : clear)}
         <Dialog
+          modeless
           hook={dialog.hook}
           mobile
           className="ipt-dialog"
