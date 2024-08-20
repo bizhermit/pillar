@@ -3,7 +3,7 @@
 @layer default {
 
   input:is([type="text"], [type="password"]) {
-    width: 150px;
+    width: 20rem;
   }
 
   ::-ms-reveal {
@@ -229,6 +229,7 @@
   .ipt-txt-area {
     padding: 0.4rem 0.8rem;
     height: calc(var(--ipt-size) * 4);
+    width: 30rem;
   }
 
   .ipt-num {

@@ -38,7 +38,8 @@
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "explicit",
           "source.organizeImports": "explicit"
-        }
+        },
+        "scss.lint.unknownAtRules": "ignore"
       }
     }
   }
