@@ -1,6 +1,5 @@
 "use client";
 
-import { getDynamicPathname } from "@/objects/url";
 import { Button } from "@/react/elements/button";
 import useRouter from "@/react/hooks/router";
 
@@ -9,8 +8,7 @@ type Props = {
   params?: { [v: string]: any };
 };
 
-export const LinkButton = (props: Props) => {
-  const url = getDynamicPathname(props.href, props.params);
+export const PageTransLinkButton = (props: Props) => {
   const router = useRouter();
 
   return (
@@ -19,7 +17,7 @@ export const LinkButton = (props: Props) => {
         router.push(props.href, props.params);
       }}
     >
-      {url}
+      {JSON.stringify(props.params ?? {})}
     </Button>
   );
 };

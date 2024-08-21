@@ -74,6 +74,7 @@ $darkFg: #f8f8f8;
 
   :root {
     /* size */
+    --font-size: 1.6rem;
     --btn-size: 3.2rem;
     --ipt-size: 3.2rem;
 
@@ -118,7 +119,7 @@ $darkFg: #f8f8f8;
 
   body {
     font-family: "Yu Gothic", sans-serif;
-    font-size: 1.6rem;
+    font-size: var(--font-size);
     width: 100%;
     overflow-x: hidden;
   }
@@ -138,6 +139,10 @@ $darkFg: #f8f8f8;
       text-decoration: none;
       color: inherit;
     }
+  }
+
+  ul {
+    padding-left: calc(var(--font-size) * 2);
   }
 
   ::backdrop {
