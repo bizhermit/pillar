@@ -1,25 +1,27 @@
-/* eslint-disable no-console */
 "use client";
 
 import Link from "@/react/elements/link";
-import { LinkButton } from "../../../link-button";
+import css from "../../../../styles.module.scss";
+import { InputsAsClient } from "../../../inputs-client";
+import { InputsAsServer } from "../../../inputs-server";
+import { PageTransLinkButton } from "../../../link-button";
 
 type Params = {
   id: Array<string>;
 }
 
 const Page = (props: { params: Params; }) => {
-  console.log(props);
+  // eslint-disable-next-line no-console
+  console.log("layout", props.params);
   return (
-    <div>
+    <>
+      <h3>page</h3>
       <span>{JSON.stringify(props.params)}</span>
+      <div className={css.inputs}>
+        <InputsAsClient />
+        <InputsAsServer />
+      </div>
       <ul>
-        <li>
-          <Link href="/sandbox">sandbox</Link>
-        </li>
-        <li>
-          <Link href="/sandbox/page-transition/client">client</Link>
-        </li>
         <li>
           <Link
             href="/sandbox/page-transition/client/path-params-req/[...id]"
@@ -61,37 +63,37 @@ const Page = (props: { params: Params; }) => {
           </Link>
         </li>
         <li>
-          <LinkButton
+          <PageTransLinkButton
             href="/sandbox/page-transition/client/path-params-req/[...id]"
             params={{}}
           />
         </li>
         <li>
-          <LinkButton
+          <PageTransLinkButton
             href="/sandbox/page-transition/client/path-params-req/[...id]"
             params={{ id: 4 }}
           />
         </li>
         <li>
-          <LinkButton
+          <PageTransLinkButton
             href="/sandbox/page-transition/client/path-params-req/[...id]"
             params={{ id: 5 }}
           />
         </li>
         <li>
-          <LinkButton
+          <PageTransLinkButton
             href="/sandbox/page-transition/client/path-params-req/[...id]"
             params={{ id: [6, 7] }}
           />
         </li>
         <li>
-          <LinkButton
+          <PageTransLinkButton
             href="/sandbox/page-transition/client/path-params-req/[...id]"
             params={{ id: [8, 9, 10] }}
           />
         </li>
       </ul>
-    </div>
+    </>
   );
 };
 

@@ -4,13 +4,13 @@ const Page = () => {
   return (
     <ul>
       <li>
-        <Link href="/sandbox/element">react element</Link>
+        <Link href="/sandbox/element">React Elements</Link>
       </li>
       <li>
         <Link
           href="/sandbox/page-transition/server"
         >
-          server page-transition
+          Page Transition SSR
         </Link>
       </li>
       <li>
@@ -18,7 +18,7 @@ const Page = () => {
           href="/sandbox/page-transition/client"
           params={{ id: 3 }}
         >
-          client page-transition
+          Page Transition CSR
         </Link>
       </li>
     </ul>

@@ -1,0 +1,23 @@
+.wrap {
+  padding: 1rem 3rem;
+}
+
+.inputs {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.6rem;
+}

@@ -1,6 +1,6 @@
 import Link from "@/react/elements/link";
 import { ReactNode } from "react";
-import style from "./layout.module.scss";
+import css from "./styles.module.scss";
 
 const Layout = (props: { children: ReactNode; }) => {
   return (
@@ -10,7 +10,7 @@ const Layout = (props: { children: ReactNode; }) => {
           SandBox
         </h1>
       </Link>
-      <div className={style.wrap}>
+      <div className={css.wrap}>
         {props.children}
       </div>
     </>

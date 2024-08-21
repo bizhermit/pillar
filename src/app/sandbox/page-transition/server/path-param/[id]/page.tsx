@@ -1,67 +1,25 @@
-/* eslint-disable no-console */
-import Link from "@/react/elements/link";
-import { LinkButton } from "../../../link-button";
+import css from "../../../../styles.module.scss";
+import { InputsAsClient } from "../../../inputs-client";
+import { InputsAsServer } from "../../../inputs-server";
+import { Links } from "./links";
 
 type Params = {
   id: string;
 };
 
 const Page = (props: { params: Params }) => {
-  console.log(props);
+  // eslint-disable-next-line no-console
+  console.log("page", props.params);
   return (
-    <div>
+    <>
+      <h3>page</h3>
       <span>{props.params.id}</span>
-      <ul>
-        <li>
-          <Link href="/sandbox">sandbox</Link>
-        </li>
-        <li>
-          <Link href="/sandbox/page-transition/server">server</Link>
-        </li>
-        <li>
-          <Link
-            href="/sandbox/page-transition/server/path-param/[id]"
-            params={{}}
-          >
-            null
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/sandbox/page-transition/server/path-param/[id]"
-            params={{ id: 4 }}
-          >
-            /4
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/sandbox/page-transition/server/path-param/[id]"
-            params={{ id: 5 }}
-          >
-            /5
-          </Link>
-        </li>
-        <li>
-          <LinkButton
-            href="/sandbox/page-transition/server/path-param/[id]"
-            params={{}}
-          />
-        </li>
-        <li>
-          <LinkButton
-            href="/sandbox/page-transition/server/path-param/[id]"
-            params={{ id: 4 }}
-          />
-        </li>
-        <li>
-          <LinkButton
-            href="/sandbox/page-transition/server/path-param/[id]"
-            params={{ id: 5 }}
-          />
-        </li>
-      </ul>
-    </div>
+      <div className={css.inputs}>
+        <InputsAsClient />
+        <InputsAsServer />
+      </div>
+      <Links />
+    </>
   );
 };
 
