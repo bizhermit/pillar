@@ -74,6 +74,30 @@ export const Links = () => {
           params={{ id: [8, 9, 10] }}
         />
       </li>
+      <li>
+        <Link
+          href="/sandbox/page-transition/csr/path-param/[id]"
+          params={{ id: 0 }}
+        >
+          path param
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/sandbox/page-transition/csr/path-params-req/[...id]"
+          params={{ id: 1 }}
+        >
+          path params req
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/sandbox/page-transition/csr/path-params/[[...id]]"
+          params={{ id: 2 }}
+        >
+          path params
+        </Link>
+      </li>
     </ul>
   );
 };

@@ -3,8 +3,11 @@ import { ReactNode } from "react";
 import css from "../../styles.module.scss";
 import { InputsAsClient } from "../inputs-client";
 import { InputsAsServer } from "../inputs-server";
+import { PageTransitionProvider } from "../provider";
 
 const Layout = (props: { children: ReactNode }) => {
+  // eslint-disable-next-line no-console
+  console.log("ssr render");
   return (
     <>
       <Link href="/sandbox/page-transition/ssr">
@@ -14,7 +17,11 @@ const Layout = (props: { children: ReactNode }) => {
         <InputsAsClient />
         <InputsAsServer />
       </div>
-      {props.children}
+      <PageTransitionProvider
+        params={{ params: "ssr" }}
+      >
+        {props.children}
+      </PageTransitionProvider>
     </>
   );
 };

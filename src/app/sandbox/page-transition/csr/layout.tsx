@@ -5,8 +5,11 @@ import { ReactNode } from "react";
 import css from "../../styles.module.scss";
 import { InputsAsClient } from "../inputs-client";
 import { InputsAsServer } from "../inputs-server";
+import { PageTransitionProvider } from "../provider";
 
 const Layout = (props: { children: ReactNode}) => {
+  // eslint-disable-next-line no-console
+  console.log("csr render");
   return (
     <>
       <Link href="/sandbox/page-transition/csr">
@@ -16,7 +19,11 @@ const Layout = (props: { children: ReactNode}) => {
         <InputsAsClient />
         <InputsAsServer />
       </div>
-      {props.children}
+      <PageTransitionProvider
+        params={{ params: "csr" }}
+      >
+        {props.children}
+      </PageTransitionProvider>
     </>
   );
 };
