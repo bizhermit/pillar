@@ -5,7 +5,7 @@ const Page = () => {
     <ul>
       <li>
         <Link
-          href="/sandbox/page-transition/server/path-param/[id]"
+          href="/sandbox/page-transition/ssr/path-param/[id]"
           params={{ id: 3 }}
         // disabled
         >
@@ -14,7 +14,7 @@ const Page = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/server/path-params-req/[...id]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: 3 }}
         >
           path-params-req
@@ -22,7 +22,7 @@ const Page = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params/[[...id]]"
           params={{ id: 3 }}
         >
           path-params

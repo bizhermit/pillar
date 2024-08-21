@@ -4,14 +4,14 @@
 type AppRoutePath = "/"
   | "/sandbox"
   | "/sandbox/element"
-  | "/sandbox/page-transition/client"
-  | "/sandbox/page-transition/client/path-param/[id]"
-  | "/sandbox/page-transition/client/path-params/[[...id]]"
-  | "/sandbox/page-transition/client/path-params-req/[...id]"
-  | "/sandbox/page-transition/server"
-  | "/sandbox/page-transition/server/path-param/[id]"
-  | "/sandbox/page-transition/server/path-params/[[...id]]"
-  | "/sandbox/page-transition/server/path-params-req/[...id]";
+  | "/sandbox/page-transition/csr"
+  | "/sandbox/page-transition/csr/path-param/[id]"
+  | "/sandbox/page-transition/csr/path-params/[[...id]]"
+  | "/sandbox/page-transition/csr/path-params-req/[...id]"
+  | "/sandbox/page-transition/ssr"
+  | "/sandbox/page-transition/ssr/path-param/[id]"
+  | "/sandbox/page-transition/ssr/path-params/[[...id]]"
+  | "/sandbox/page-transition/ssr/path-params-req/[...id]";
 
 type AppApiPath = "/api";
 

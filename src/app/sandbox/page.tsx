@@ -8,14 +8,14 @@ const Page = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/server"
+          href="/sandbox/page-transition/ssr"
         >
           Page Transition SSR
         </Link>
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/client"
+          href="/sandbox/page-transition/csr"
           params={{ id: 3 }}
         >
           Page Transition CSR

@@ -6,7 +6,7 @@ export const Links = () => {
     <ul>
       <li>
         <Link
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{}}
         >
               null
@@ -14,7 +14,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: 4 }}
         >
               /4
@@ -22,7 +22,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: 5 }}
         >
               /5
@@ -30,7 +30,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: [6, 7] }}
         >
               /6/7
@@ -38,7 +38,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: [8, 9, 10] }}
         >
               /8/9/10
@@ -46,31 +46,31 @@ export const Links = () => {
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{}}
         />
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: 4 }}
         />
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: 5 }}
         />
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: [6, 7] }}
         />
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/server/path-params/[[...id]]"
+          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
           params={{ id: [8, 9, 10] }}
         />
       </li>
