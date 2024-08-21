@@ -1,9 +1,7 @@
-"use client";
-
-import css from "../../../../styles.module.scss";
-import { InputsAsClient } from "../../../inputs-client";
-import { InputsAsServer } from "../../../inputs-server";
-import { Links } from "../links";
+import css from "../../../styles.module.scss";
+import { InputsAsClient } from "../../inputs-client";
+import { InputsAsServer } from "../../inputs-server";
+import { Links } from "./links";
 
 type Params = {
   id: Array<string>;
@@ -14,7 +12,7 @@ const Page = (props: { params: Params; }) => {
   console.log("page", props.params);
   return (
     <>
-      <h3>page</h3>
+      <h3>page (null)</h3>
       <span>{JSON.stringify(props.params)}</span>
       <div className={css.inputs}>
         <InputsAsClient />

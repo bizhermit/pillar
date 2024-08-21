@@ -1,7 +1,7 @@
 import css from "../../../../styles.module.scss";
 import { InputsAsClient } from "../../../inputs-client";
 import { InputsAsServer } from "../../../inputs-server";
-import { Links } from "./links";
+import { Links } from "../links";
 
 type Params = {
   id: Array<string>;

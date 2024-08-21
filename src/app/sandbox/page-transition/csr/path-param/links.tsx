@@ -1,12 +1,12 @@
 import Link from "@/react/elements/link";
-import { PageTransLinkButton } from "../../../link-button";
+import { PageTransLinkButton } from "../../link-button";
 
 export const Links = () => {
   return (
     <ul>
       <li>
         <Link
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{}}
         >
           null
@@ -14,7 +14,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: 4 }}
         >
           /4
@@ -22,7 +22,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: 5 }}
         >
           /5
@@ -30,7 +30,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: [6, 7] }}
         >
           /6/7
@@ -38,7 +38,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: [8, 9, 10] }}
         >
           /8/9/10
@@ -46,37 +46,37 @@ export const Links = () => {
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{}}
         />
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: 4 }}
         />
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: 5 }}
         />
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: [6, 7] }}
         />
       </li>
       <li>
         <PageTransLinkButton
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: [8, 9, 10] }}
         />
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/ssr/path-param/[id]"
+          href="/sandbox/page-transition/csr/path-param/[id]"
           params={{ id: 0 }}
         >
           path param
@@ -84,7 +84,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/ssr/path-params-req/[...id]"
+          href="/sandbox/page-transition/csr/path-params-req/[...id]"
           params={{ id: 1 }}
         >
           path params req
@@ -92,7 +92,7 @@ export const Links = () => {
       </li>
       <li>
         <Link
-          href="/sandbox/page-transition/ssr/path-params/[[...id]]"
+          href="/sandbox/page-transition/csr/path-params/[[...id]]"
           params={{ id: 2 }}
         >
           path params

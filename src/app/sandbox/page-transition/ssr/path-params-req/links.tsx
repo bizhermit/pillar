@@ -1,5 +1,5 @@
 import Link from "@/react/elements/link";
-import { PageTransLinkButton } from "../../../link-button";
+import { PageTransLinkButton } from "../../link-button";
 
 export const Links = () => {
   return (
