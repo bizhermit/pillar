@@ -14,7 +14,7 @@ const Page = (props: { params: Params; }) => {
   console.log("page", props.params);
   return (
     <>
-      <h3>page (null)</h3>
+      <h3>page (parent)</h3>
       <span>{JSON.stringify(props.params)}</span>
       <div className={css.inputs}>
         <InputsAsClient />
