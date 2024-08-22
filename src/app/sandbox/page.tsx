@@ -21,6 +21,20 @@ const Page = () => {
           Page Transition CSR
         </Link>
       </li>
+      <li>
+        <Link
+          href="/sandbox/paralell-routes"
+        >
+          Parallel Routes
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/sandbox/paralell-routes/hoge"
+        >
+          Parallel Routes / hoge
+        </Link>
+      </li>
     </ul>
   );
 };

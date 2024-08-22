@@ -15,7 +15,9 @@ type AppRoutePath = "/"
   | "/sandbox/page-transition/ssr/path-param/[id]"
   | "/sandbox/page-transition/ssr/path-params/[[...id]]"
   | "/sandbox/page-transition/ssr/path-params-req"
-  | "/sandbox/page-transition/ssr/path-params-req/[...id]";
+  | "/sandbox/page-transition/ssr/path-params-req/[...id]"
+  | "/sandbox/paralell-routes"
+  | "/sandbox/paralell-routes/hoge";
 
 type AppApiPath = "/api";
 
