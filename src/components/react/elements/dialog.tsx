@@ -30,8 +30,8 @@ type DialogHookConnectionParams = {
   toggle: ToggleFunction;
 };
 
-type DialogHook = {
-  showed: boolean;
+type DialogHook<Sync extends boolean | undefined> = {
+  showed: Sync extends true ? boolean : null;
   open: (options?: DialogShowOptions) => void;
   close: (options?: DialogCloseOptions) => void;
   hook: (params: DialogHookConnectionParams) => ((show: boolean) => void);
@@ -39,14 +39,18 @@ type DialogHook = {
 
 type DialogOptions = {
   modeless?: boolean;
-  hook?: DialogHook["hook"];
+  hook?: DialogHook<any>["hook"];
+  open?: boolean;
   preventBackdropClose?: boolean;
+  preventEscapeClose?: boolean;
   immediatelyMount?: boolean;
   keepMount?: boolean;
   mobile?: boolean;
   preventRootScroll?: boolean;
   closeWhenScrolled?: boolean;
   transparent?: boolean;
+  onClose?: () => void;
+  onClickBackdrop?: () => void;
 };
 
 type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptions>;
@@ -55,12 +59,15 @@ export const Dialog = ({
   modeless,
   hook,
   preventBackdropClose,
+  preventEscapeClose,
   immediatelyMount,
   keepMount,
   mobile,
   preventRootScroll,
   closeWhenScrolled,
   transparent,
+  onClose,
+  onClickBackdrop,
   ...props
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
@@ -68,6 +75,7 @@ export const Dialog = ({
   const hookRef = useRef<((showed: boolean) => void) | null>(null);
   const [mount, setMount] = useState(immediatelyMount === true);
   const [showOpts, setShowOpts] = useState<DialogShowOptions | null | undefined>();
+  const hasOpenProp = props.open != null;
 
   const toggle: ToggleFunction = (show, opts) => {
     if (!dref.current) {
@@ -75,6 +83,7 @@ export const Dialog = ({
       console.warn("not mounted dialog element");
       return;
     }
+    if (show === showed) return;
     if (!show) {
       if (!keepMount) {
         const unmount = (e: TransitionEvent) => {
@@ -91,6 +100,7 @@ export const Dialog = ({
       hookRef.current?.(false);
       dref.current.close();
       opts?.callbackBeforeAnimation?.();
+      onClose?.();
       return;
     }
     setMount(true);
@@ -311,10 +321,17 @@ export const Dialog = ({
     };
   }, [showed, showOpts]);
 
+  useEffect(() => {
+    if (hasOpenProp) {
+      toggle(props.open!);
+    }
+  }, [props.open]);
+
   return (
     <dialog
       tabIndex={-1}
       {...props}
+      open={undefined}
       className={joinClassNames("dialog", props.className)}
       ref={dref}
       onClick={preventBackdropClose ? props.onClick : (e) => {
@@ -324,6 +341,13 @@ export const Dialog = ({
           toggle(false);
         }
         props.onClick?.(e);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          if (!preventEscapeClose) toggle(false);
+        }
+        props.onKeyDown?.(e);
       }}
       data-pos={showOpts?.anchor != null}
       data-modal={modeless ? undefined : ""}
@@ -336,17 +360,17 @@ export const Dialog = ({
   );
 };
 
-export const useDialog = (): DialogHook => {
+export const useDialog = <Sync extends boolean | undefined = undefined>(sync?: Sync): DialogHook<Sync> => {
   const [showed, setShowed] = useState<boolean>(false);
   const con = useRef<DialogHookConnectionParams | null>(null);
 
   return {
-    showed,
+    showed: (sync ? showed : null) as DialogHook<Sync>["showed"],
     open: (opts) => con.current?.toggle(true, opts),
     close: (opts) => con.current?.toggle(false, opts),
     hook: (c) => {
       con.current = c;
-      return setShowed;
+      return sync ? setShowed : () => { };
     },
   } as const;
 };

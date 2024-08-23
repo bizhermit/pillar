@@ -1,4 +1,4 @@
-const Page = () => {
+const Default = () => {
   return (
     <div>
       @page_default/default.tsx
@@ -6,4 +6,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Default;

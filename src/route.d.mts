@@ -16,6 +16,8 @@ type AppRoutePath = "/"
   | "/sandbox/page-transition/ssr/path-params/[[...id]]"
   | "/sandbox/page-transition/ssr/path-params-req"
   | "/sandbox/page-transition/ssr/path-params-req/[...id]"
+  | "/sandbox/paralell-route-modal"
+  | "/sandbox/paralell-route-modal/[id]"
   | "/sandbox/paralell-routes"
   | "/sandbox/paralell-routes/hoge";
 

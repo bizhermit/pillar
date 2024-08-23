@@ -1,7 +1,7 @@
 const Default = () => {
   return (
     <div>
-      @default_page/default.tsx
+      @detail: default
     </div>
   );
 };
