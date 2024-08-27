@@ -22,6 +22,9 @@ const Page = async (props: Props) => {
         <li>
           <Link href="/sandbox/paralell-route-modal/[id]" params={{ id: 3 }} replace>detail 3</Link>
         </li>
+        <li>
+          <Link href="/sandbox/paralell-route-modal">to list</Link>
+        </li>
       </ul>
     </div>
   );

@@ -27,6 +27,8 @@ const Layout = (props: Props) => {
 
   return (
     <>
+      <span>mode: {showDetail ? "detail" : "list"}</span>
+      <br />
       {props.children}
       {props.list}
       {dialogDetail ?
