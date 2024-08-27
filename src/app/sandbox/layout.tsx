@@ -1,6 +1,6 @@
 import Link from "@/react/elements/link";
 import { ReactNode } from "react";
-import css from "./styles.module.scss";
+import css from "./layout.module.scss";
 
 const Layout = (props: { children: ReactNode; }) => {
   return (
