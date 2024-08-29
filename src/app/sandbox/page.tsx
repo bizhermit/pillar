@@ -40,6 +40,11 @@ const Page = () => {
           Parallel Route Modal
         </Link>
       </li>
+      <li>
+        <Link href="/sandbox/intercepting-routes">
+          Intercepting Routes
+        </Link>
+      </li>
     </ul>
   );
 };
