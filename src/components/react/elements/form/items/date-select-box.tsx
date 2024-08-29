@@ -432,6 +432,9 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         renderInputs(fi.value);
         closeDialog("y");
         break;
+      case "Escape":
+        closeDialog("y");
+        break;
       case "ArrowUp":
         updown(1, 0, 0);
         e.preventDefault();
@@ -453,6 +456,9 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         break;
       case "Enter":
         renderInputs(fi.value);
+        closeDialog("m");
+        break;
+      case "Escape":
         closeDialog("m");
         break;
       case "Backspace":
@@ -479,6 +485,9 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         break;
       case "Enter":
         renderInputs(fi.value);
+        closeDialog("d");
+        break;
+      case "Escape":
         closeDialog("d");
         break;
       case "Backspace":

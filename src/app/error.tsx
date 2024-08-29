@@ -11,6 +11,9 @@ type Props = {
 };
 
 const ErrorPage = ({ error, reset }: Props) => {
+  // eslint-disable-next-line no-console
+  console.log(error);
+
   return (
     <main className={css.main}>
       <h1>500&nbsp;|&nbsp;System&nbsp;Error</h1>

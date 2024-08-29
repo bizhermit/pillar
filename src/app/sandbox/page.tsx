@@ -35,6 +35,11 @@ const Page = () => {
           Parallel Routes / hoge
         </Link>
       </li>
+      <li>
+        <Link href="/sandbox/paralell-route-modal">
+          Parallel Route Modal
+        </Link>
+      </li>
     </ul>
   );
 };
