@@ -1,0 +1,97 @@
+@use "../mixins" as mixins;
+
+@mixin minNavScreen {
+  @media screen and (max-width: 1080px) and (min-width: 800px) {
+    @content;
+  }
+}
+
+@mixin hideNavScreen {
+  @media screen and (max-width: 800px) {
+    @content;
+  }
+};
+
+@layer base {
+
+  .nav-wrap {
+    --nav-min-width: 5rem;
+    --nav-width: 26rem;
+    ---nav-width: var(--nav-width);
+
+    width: 100%;
+    min-height: 100dvh;
+    padding-left: var(---nav-width);
+    transition: padding-left 0.3s;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    @include minNavScreen() {
+      ---nav-width: var(--nav-min-width);
+    }
+
+    @include hideNavScreen() {
+      ---nav-width: 0;
+    }
+  }
+
+  .header {
+    z-index: 1;
+    position: sticky;
+    top: 0;
+    transition: width 0.3s;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    background: var(--bg);
+  }
+
+  .footer {
+    z-index: 0;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .main {
+    z-index: 0;
+    flex: 1 0 0rem;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .nav {
+    z-index: 2;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(---nav-width);
+    height: 100%;
+    transition: width 0.3s;
+    overflow: auto;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    background: var(--bg);
+
+    @include minNavScreen() {
+      overflow: hidden;
+      
+      @include mixins.hover {
+        ---nav-width: var(--nav-width);
+        overflow: auto;
+      }
+    }
+
+    @include hideNavScreen() {
+      overflow: hidden;
+    }
+  }
+  
+}

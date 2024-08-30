@@ -105,11 +105,10 @@ $darkFg: #f8f8f8;
   }
 
   html {
+    position: relative;
     font-size: 62.5%;
     background: var(--bg);
     color: var(--fg);
-    width: 100%;
-    overflow-x: hidden;
 
     @media (prefers-color-scheme: dark) {
       &[data-theme="auto"] {
