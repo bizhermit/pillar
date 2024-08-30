@@ -36,9 +36,9 @@
       ---btn-fg: var(--c-danger_, var(--c-primary_));
     }
 
-    &[data-color="gray"] {
-      ---btn-bg: var(--c-gray, var(--c-primary));
-      ---btn-fg: var(--c-gray_, var(--c-primary_));
+    &[data-color="subdued"] {
+      ---btn-bg: var(--c-subdued, var(--c-primary));
+      ---btn-fg: var(--c-subdued_, var(--c-primary_));
     }
 
     &[data-outline="true"] {

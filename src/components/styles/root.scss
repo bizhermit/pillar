@@ -33,8 +33,8 @@ $darkFg: #f8f8f8;
   --c-secondary_: #{$lightBg};
   --c-danger: #f66;
   --c-danger_: #{$lightBg};
-  --c-gray: #bbb;
-  --c-gray_: #{$lightBg};
+  --c-subdued: #bbb;
+  --c-subdued_: #{$lightBg};
 }
 
 @mixin darkTheme {
@@ -63,8 +63,8 @@ $darkFg: #f8f8f8;
   --c-secondary_: #{$darkFg};
   --c-danger: #d44;
   --c-danger_: #{$darkFg};
-  --c-gray: #666;
-  --c-gray_: #{$darkFg};
+  --c-subdued: #666;
+  --c-subdued_: #{$darkFg};
 }
 
 @layer default {
