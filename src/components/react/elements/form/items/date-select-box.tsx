@@ -60,9 +60,9 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   const mref = useRef<HTMLInputElement>(null!);
   const dref = useRef<HTMLInputElement>(null!);
   const cache = useRef<{ y: number | undefined; m: number | undefined; d: number | undefined; }>({ y: undefined, m: undefined, d: undefined });
-  const yDialog = useDialog();
-  const mDialog = useDialog();
-  const dDialog = useDialog();
+  const yDialog = useDialog(true);
+  const mDialog = useDialog(true);
+  const dDialog = useDialog(true);
   const dialog = (target: Target) => {
     switch (target) {
       case "d": return dDialog;
