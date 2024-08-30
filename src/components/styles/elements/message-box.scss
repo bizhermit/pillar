@@ -21,23 +21,23 @@
     overflow: hidden;
 
     &[data-color="secondary"] {
-      --c: var(--c-primary);
-      --c_: var(--c-primary_);
+      ---msgbox-bg: var(--c-primary);
+      ---msgbox-fg: var(--c-primary_);
     }
 
     &[data-color="secondary"] {
-      --c: var(--c-secondary);
-      --c_: var(--c-secondary_);
+      ---msgbox-bg: var(--c-secondary);
+      ---msgbox-fg: var(--c-secondary_);
     }
 
     &[data-color="danger"] {
-      --c: var(--c-danger);
-      --c_: var(--c-danger_);
+      ---msgbox-bg: var(--c-danger);
+      ---msgbox-fg: var(--c-danger_);
     }
 
-    &[data-color="gray"] {
-      --c: var(--c-gray);
-      --c_: var(--c-gray_);
+    &[data-color="subdued"] {
+      ---msgbox-bg: var(--c-subdued);
+      ---msgbox-fg: var(--c-subdued_);
     }
   }
 
@@ -52,8 +52,8 @@
 
   .msgbox-title {
     font-size: 2.4rem;
-    background: var(--c);
-    color: var(--c_);
+    background: var(---msgbox-bg);
+    color: var(---msgbox-fg);
   }
 
   .msgbox-body {
@@ -73,7 +73,7 @@
     align-items: center;
     gap: 0.8rem;
     padding: 0.8rem;
-    border-top: 1px solid var(--c, var(--sdw));
+    border-top: 1px solid var(---msgbox-bg, var(--sdw));
   }
 
   .msgbox-btn {

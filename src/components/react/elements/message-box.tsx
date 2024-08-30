@@ -33,7 +33,7 @@ type MessageBoxButtonProps = Omit<ButtonProps, "onClick" | "disabled">
 type MessageBoxProps = {
   title?: ReactNode;
   body?: ReactNode;
-  color?: "primary" | "secondary" | "danger" | "gray";
+  color?: StyleColor;
   buttons: Array<ButtonProps>;
 };
 
