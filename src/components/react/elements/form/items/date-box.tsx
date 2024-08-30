@@ -45,7 +45,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   const mref = useRef<HTMLInputElement>(null!);
   const dref = useRef<HTMLInputElement>(null!);
   const cache = useRef<{ y: number | undefined; m: number | undefined; d: number | undefined; }>({ y: undefined, m: undefined, d: undefined });
-  const dialog = useDialog();
+  const dialog = useDialog(true);
 
   const focusInput = (target?: "y" | "m" | "d") => {
     switch (target) {

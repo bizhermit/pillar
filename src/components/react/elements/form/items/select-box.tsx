@@ -52,7 +52,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
 }: SelectBoxProps<D, S>) => {
   const iref = useRef<HTMLInputElement>(null!);
   const focusInput = () => iref.current?.focus();
-  const dialog = useDialog();
+  const dialog = useDialog(true);
 
   const vdn = valueDataName ?? "value";
   const ldn = labelDataName ?? "label";
@@ -182,6 +182,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
 
   const focusSelected = (opts?: { preventFocus?: boolean; preventScroll?: boolean; }) => {
     const elem = findSelectedOrFirstItemElem();
+    console.log(elem);
     if (elem == null) return;
     if (!opts?.preventFocus) elem.focus();
     if (!opts?.preventScroll) elem.scrollIntoView({ block: "center" });
