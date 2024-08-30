@@ -27,11 +27,13 @@ import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
+import { useMessageBox } from "@/react/elements/message-box";
 import { TabContainer, TabContent, useTabContainer } from "@/react/elements/tab-container";
 import { LayoutContext } from "@/react/hooks/layout";
+import useRouter from "@/react/hooks/router";
 import { sleep } from "@/utilities/sleep";
 import { use, useRef, useState } from "react";
-import s from "./page.module.css";
+import css from "./page.module.css";
 
 export default function Home() {
   const layout = use(LayoutContext);
@@ -56,6 +58,9 @@ export default function Home() {
 
   const modalDialog = useDialog();
   const modelessDialog = useDialog();
+
+  const msgBox = useMessageBox();
+  const router = useRouter();
 
   return (
     <div>
@@ -99,7 +104,7 @@ export default function Home() {
         </TabContent>
       </TabContainer>
       <span>tab: {tabCont.key}</span>
-      <div className={s.row}>
+      <div className={css.row}>
         <button disabled>button</button>
         <button>ボタン</button>
         <Button
@@ -225,6 +230,59 @@ export default function Home() {
         <Button onClick={() => setHiddenValue(undefined)}>clear hidden</Button>
       </div>
       <div style={{ display: "flex", flexFlow: "row", gap: 4 }}>
+        <Button
+          onClick={async ({ unlock }) => {
+            console.log("alert: start");
+            // await msgBox.alert("ALERT");
+            // await msgBox.alert("ALERT\nALERT\nALERT");
+            await msgBox.alert({
+              title: "ALERT",
+              body: "click OK",
+              color: "danger",
+            });
+            console.log("alert: closed");
+            unlock();
+          }}
+        >
+          alert
+        </Button>
+        <Button
+          onClick={async ({ unlock }) => {
+            console.log("confirm: start");
+            // const ret = await msgBox.confirm("CONFIRM");
+            // const ret = await msgBox.confirm("CONFIRM\nCONFIRM\nCONFIRM");
+            const ret = await msgBox.confirm({
+              title: "CONFIRM",
+              body: "CONFIRM\nCONFIRM\nCONFIRM",
+              color: "secondary",
+            });
+            console.log("confirm: ", ret);
+            unlock();
+          }}
+        >
+          confirm
+        </Button>
+        <Button
+          onClick={async () => {
+            await msgBox.alert("transition");
+            router.push("/sandbox");
+          }}
+        >
+          transition page
+        </Button>
+        <Button
+          onClick={async () => {
+            msgBox.alert({
+              body: "transition (no block)",
+              notEffectUnmount: true,
+            });
+            router.push("/sandbox");
+          }}
+        >
+          transition page (no block)
+        </Button>
+      </div>
+      <div style={{ display: "flex", flexFlow: "row", gap: 4 }}>
         <Button>primary</Button>
         <Button outline>primary</Button>
         <Button color="secondary">secondary</Button>
@@ -273,7 +331,7 @@ export default function Home() {
             tab2
           </TabContent>
         </InputTabContainer>
-        <div className={s.row}>
+        <div className={css.row}>
           {/* <div style={{ width: 150 }}> */}
           <FormItemWrap>
             <TextBox
@@ -582,7 +640,7 @@ export default function Home() {
           }}
         /> */}
       </Form>
-      <div className={s.row}>
+      <div className={css.row}>
         <Button
           onClick={() => {
             modalDialog.open();
