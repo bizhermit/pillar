@@ -92,27 +92,23 @@
 
     >.nav-btn-wrap {
       visibility: hidden;
+      background: var(--bg);
     }
 
     @include minNavScreen() {
-      overflow: hidden;
-
       @include mixins.hover {
         ---nav-width: var(--nav-width);
-        overflow: auto;
+
+        >.nav {
+          overflow: auto;
+        }
       }
     }
 
     @include hideNavScreen() {
-      overflow: hidden;
-
       >.nav-btn-wrap {
         visibility: visible;
       }
-    }
-
-    .nav-btn-wrap {
-      background: var(--bg);
     }
   }
 
@@ -121,7 +117,7 @@
     flex: 1 0 0rem;
     min-height: 0;
     width: 100%;
-    overflow: auto;
+    overflow: hidden;
     overscroll-behavior: contain;
     display: flex;
     flex-flow: column nowrap;
@@ -182,7 +178,10 @@
       &:checked {
         &~.nav-wrap {
           ---nav-width: var(--nav-width);
-          overflow: auto;
+
+          >.nav {
+            overflow: auto;
+          }
         }
       }
     }
