@@ -10,11 +10,11 @@
   @media screen and (max-width: 800px) {
     @content;
   }
-};
+}
 
 @layer base {
 
-  .nav-wrap {
+  .wrap {
     --nav-min-width: 5rem;
     --nav-width: 26rem;
     ---nav-width: var(--nav-width);
@@ -37,16 +37,27 @@
     }
   }
 
-  .header {
+  .nav-check {
+    display: none;
+  }
+
+  .header-wrap {
     z-index: 1;
     position: sticky;
     top: 0;
-    transition: width 0.3s;
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     background: var(--bg);
+    height: var(--nav-min-width);
+  }
+
+  .header {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
   }
 
   .footer {
@@ -64,7 +75,7 @@
     align-items: flex-start;
   }
 
-  .nav {
+  .nav-wrap {
     z-index: 2;
     position: fixed;
     top: 0;
@@ -72,17 +83,20 @@
     width: var(---nav-width);
     height: 100%;
     transition: width 0.3s;
-    overflow: auto;
+    overflow: hidden;
     overscroll-behavior: contain;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
-    background: var(--bg);
+
+    >.nav-btn-wrap {
+      visibility: hidden;
+    }
 
     @include minNavScreen() {
       overflow: hidden;
-      
+
       @include mixins.hover {
         ---nav-width: var(--nav-width);
         overflow: auto;
@@ -91,7 +105,87 @@
 
     @include hideNavScreen() {
       overflow: hidden;
+
+      >.nav-btn-wrap {
+        visibility: visible;
+      }
+    }
+
+    .nav-btn-wrap {
+      background: var(--bg);
     }
   }
-  
+
+  .nav {
+    background-color: blue;
+    flex: 1 0 0rem;
+    min-height: 0;
+    width: 100%;
+    overflow: auto;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    background: var(--bg);
+  }
+
+  .nav-btn-wrap {
+    position: relative;
+    opacity: 0;
+    width: 0;
+    height: var(--nav-min-width);
+    overflow: hidden;
+    transition: width 0.3s, opacity 0.3s;
+    display: grid;
+    place-items: center;
+  }
+
+  .nav-close {
+    transition: width 0.3s, height 0.1s, opacity 0.3s;
+    transition-delay: 0.3s;
+    height: 0;
+
+    @include minNavScreen() {
+      transition: width 0.3s, height 0.01s, opacity 0.3s;
+    }
+  }
+
+  .nav-btn {
+    width: calc(var(--nav-min-width) * 0.7);
+    height: calc(var(--nav-min-width) * 0.7);
+    border: 1px solid var(--sdw);
+    border-radius: 0.2rem;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: opacity .2s;
+
+    @include mixins.hover {
+      opacity: 0.8;
+    }
+  }
+
+  @include hideNavScreen() {
+    .nav-open {
+      width: var(--nav-min-width);
+      opacity: 1;
+    }
+
+    .nav-close {
+      width: var(--nav-min-width);
+      height: var(--nav-min-width);
+      opacity: 1;
+    }
+
+    #navOpen {
+      &:checked {
+        &~.nav-wrap {
+          ---nav-width: var(--nav-width);
+          overflow: auto;
+        }
+      }
+    }
+  }
+
 }
