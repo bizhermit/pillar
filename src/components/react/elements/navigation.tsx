@@ -41,7 +41,9 @@ export const Navigation = (props: NavigationProps) => {
           </label>
         </div>
         <div className="nav">
-          {props.children}
+          <div className="nav-contents">
+            {props.children}
+          </div>
         </div>
       </nav>
     </div>

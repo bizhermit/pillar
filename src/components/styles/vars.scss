@@ -1,0 +1,102 @@
+@use "./mixins" as mixins;
+
+@layer default, base, feat;
+
+$lightBg: #f8f8f8;
+$lightFg: #171717;
+$darkBg: #0a0a0a;
+$darkFg: #f8f8f8;
+
+@mixin lightTheme {
+  --bg: #{$lightBg};
+  --fg: #{$lightFg};
+  --fg-placeholder: #888;
+  --fg-err: #f00;
+  --fg-warn: #f92;
+  --fg-info: #393;
+  --mask: rgba(0, 0, 0, 0.2);
+  --sdw: rgba(0, 0, 0, 0.4);
+  --msg-bg: rgba(255, 255, 255, 0.8);
+  --msg-fg: #{$lightFg};
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --nav-fg: #{$lightFg};
+  --week-sun: rgb(255, 210, 210);
+  --week-sat: rgb(210, 220, 255);
+  --btn-bg: #fff;
+  --ipt-bg: #fff;
+  --ipt-fg: #{$lightFg};
+  --ipt-bd: rgba(0, 0, 0, 0.4);
+  --ipt-bg-err: #ffcccc;
+  --ipt-fg-err: #{$lightFg};
+  --ipt-bd-err: rgba(255, 0, 0, 0.4);
+  --c-primary: #7fbfff;
+  --c-primary_: #{$lightBg};
+  --c-secondary: #7fbf7f;
+  --c-secondary_: #{$lightBg};
+  --c-danger: #f66;
+  --c-danger_: #{$lightBg};
+  --c-subdued: #bbb;
+  --c-subdued_: #{$lightBg};
+}
+
+@mixin darkTheme {
+  --bg: #{$darkBg};
+  --fg: #{$darkFg};
+  --fg-placeholder: #888;
+  --fg-err: #f40;
+  --fg-warn: #ff0;
+  --fg-info: #3d3;
+  --mask: rgba(255, 255, 255, 0.2);
+  --sdw: rgba(255, 255, 255, 0.4);
+  --msg-bg: rgba(0, 0, 0, 0.8);
+  --msg-fg: #{$darkFg};
+  --nav-bg: rgba(0, 0, 0, 0.95);
+  --nav-fg: #{$darkFg};
+  --week-sun: rgb(70, 20, 20);
+  --week-sat: rgb(20, 30, 70);
+  --btn-bg: #000;
+  --ipt-bg: #222;
+  --ipt-fg: #{$darkFg};
+  --ipt-bd: rgba(255, 255, 255, 0.4);
+  --ipt-bg-err: #422;
+  --ipt-fg-err: #{$darkFg};
+  --ipt-bd-err: rgba(255, 0, 0, 0.4);
+  --c-primary: #5f9fdf;
+  --c-primary_: #{$darkFg};
+  --c-secondary: #4faf4f;
+  --c-secondary_: #{$darkFg};
+  --c-danger: #d44;
+  --c-danger_: #{$darkFg};
+  --c-subdued: #666;
+  --c-subdued_: #{$darkFg};
+}
+
+@layer default {
+  :root {
+    /* size */
+    --font-size: 1.6rem;
+    --btn-size: 3.2rem;
+    --ipt-size: 3.2rem;
+
+    @include lightTheme();
+
+    &[data-theme="dark"] {
+      @include darkTheme();
+    }
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      &[data-theme="auto"] {
+        @include darkTheme();
+      }
+    }
+  }
+
+  @include mixins.sp {
+    :root {
+      --btn-size: 4.8rem;
+      --ipt-size: 4.8rem;
+    }
+  }
+}

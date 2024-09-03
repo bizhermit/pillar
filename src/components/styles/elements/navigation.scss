@@ -17,6 +17,7 @@
   .wrap {
     --nav-min-width: 5rem;
     --nav-width: 26rem;
+    --header-height: var(--nav-min-width);
     ---nav-width: var(--nav-width);
 
     width: 100%;
@@ -49,8 +50,10 @@
     flex-flow: row nowrap;
     justify-content: flex-start;
     align-items: flex-start;
-    background: var(--bg);
-    height: var(--nav-min-width);
+    background: var(--nav-bg);
+    color: var(--nav-fg);
+    height: var(--header-height);
+    box-shadow: 0 1px 1px -1px var(--sdw);
   }
 
   .header {
@@ -64,6 +67,9 @@
     z-index: 0;
     font-size: 1.2rem;
     text-align: center;
+    background: var(--nav-bg);
+    color: var(--nav-fg);
+    box-shadow: 0 -1px 1px -1px var(--sdw);
   }
 
   .main {
@@ -92,14 +98,15 @@
 
     >.nav-btn-wrap {
       visibility: hidden;
-      background: var(--bg);
+      background: var(--nav-bg);
+      color: var(--nav-fg);
     }
 
     @include minNavScreen() {
       @include mixins.hover {
         ---nav-width: var(--nav-width);
 
-        >.nav {
+        .nav-contents {
           overflow: auto;
         }
       }
@@ -113,28 +120,37 @@
   }
 
   .nav {
-    background-color: blue;
     flex: 1 0 0rem;
     min-height: 0;
+    width: calc(100% - 1px);
+    overflow: visible;
+    background: var(--nav-bg);
+    color: var(--nav-fg);
+    box-shadow: 0 1px 1px -1px var(--sdw) inset, 1px 0 1px -1px var(--sdw);
+    z-index: 1;
+  }
+
+  .nav-contents {
     width: 100%;
-    overflow: hidden;
-    overscroll-behavior: contain;
+    min-height: 100%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
-    background: var(--bg);
+    overflow: hidden;
+    overscroll-behavior: contain;
   }
 
   .nav-btn-wrap {
     position: relative;
     opacity: 0;
     width: 0;
-    height: var(--nav-min-width);
+    height: var(--header-height);
     overflow: hidden;
     transition: width 0.3s, opacity 0.3s;
     display: grid;
     place-items: center;
+    z-index: 0;
   }
 
   .nav-close {
@@ -176,10 +192,16 @@
 
     #navOpen {
       &:checked {
+        &~.header-wrap {
+          >.nav-btn-wrap {
+            opacity: 0;
+          }
+        }
+
         &~.nav-wrap {
           ---nav-width: var(--nav-width);
 
-          >.nav {
+          .nav-contents {
             overflow: auto;
           }
         }
