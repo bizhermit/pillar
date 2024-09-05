@@ -7,10 +7,10 @@ type IconProps = OverwriteAttrs<Omit<HTMLAttributes<SVGSVGElement>, "children">,
 
 const attrs = (p: IconProps) => {
   return {
-    className: joinClassNames("icon", p.className),
     viewBox: "0 0 20 20",
     xmlns: "http://www.w2.5.org/2000/svg",
     ...p,
+    className: joinClassNames("icon", p.className),
   };
 };
 

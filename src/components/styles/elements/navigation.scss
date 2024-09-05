@@ -12,6 +12,12 @@
   }
 }
 
+@mixin toggleNavScreen {
+  @media screen and (min-width: 800px) {
+    @content;
+  }
+}
+
 @layer base {
 
   .wrap {
@@ -97,7 +103,6 @@
     align-items: stretch;
 
     >.nav-btn-wrap {
-      visibility: hidden;
       background: var(--nav-bg);
       color: var(--nav-fg);
     }
@@ -113,7 +118,7 @@
     }
 
     @include hideNavScreen() {
-      >.nav-btn-wrap {
+      >.nav-close {
         visibility: visible;
       }
     }
@@ -143,24 +148,29 @@
 
   .nav-btn-wrap {
     position: relative;
-    opacity: 0;
-    width: 0;
     height: var(--header-height);
     overflow: hidden;
+    background: var(--nav-bg);
+    color: var(--nav-fg);
     transition: width 0.3s, opacity 0.3s;
-    display: grid;
-    place-items: center;
+    user-select: none;
     z-index: 0;
   }
 
-  .nav-close {
-    transition: width 0.3s, height 0.1s, opacity 0.3s;
-    transition-delay: 0.3s;
-    height: 0;
+  .nav-open {
+    width: 0;
+    display: grid;
+    place-items: center;
+  }
 
-    @include minNavScreen() {
-      transition: width 0.3s, height 0.01s, opacity 0.3s;
-    }
+  .nav-toggle {
+    width: calc(100% - 1px);
+    box-shadow: 1px 0 1px -1px var(--sdw);
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 calc(var(--nav-min-width) * .15);
   }
 
   .nav-btn {
@@ -170,30 +180,90 @@
     border-radius: 0.2rem;
     display: grid;
     place-items: center;
+    grid-auto-flow: column;
     cursor: pointer;
-    transition: opacity .2s;
+    transition: opacity .3s, width .3s;
 
     @include mixins.hover {
       opacity: 0.8;
     }
   }
 
+  .nav-min {
+    margin-left: auto;
+  }
+
+  .nav-close {
+    transition-delay: 0.3s;
+  }
+
+  @include toggleNavScreen() {
+    .nav-close {
+      width: 0;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .nav {
+      box-shadow: 1px 0 1px -1px var(--sdw);
+    }
+
+    .nav-vis,
+    .nav-min {
+      opacity: 1;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 calc(var(--nav-min-width) * 0.15);
+    }
+
+    #navToggle {
+      &:checked {
+        &~.nav-wrap {
+          .nav-toggle-btn {
+            margin-left: 0;
+          }
+
+          .nav-min {
+            display: none;
+          }
+        }
+      }
+
+      &:not(:checked) {
+        &~.nav-wrap {
+          .nav-vis {
+            display: none;
+          }
+        }
+      }
+    }
+
+  }
+
   @include hideNavScreen() {
     .nav-open {
       width: var(--nav-min-width);
-      opacity: 1;
     }
 
-    .nav-close {
+    .nav-toggle {
       width: var(--nav-min-width);
-      height: var(--nav-min-width);
-      opacity: 1;
+      box-shadow: none;
+    }
+
+    .nav-vis,
+    .nav-min {
+      width: 0;
+      opacity: 0;
+      visibility: hidden;
+      display: none;
     }
 
     #navOpen {
       &:checked {
         &~.header-wrap {
-          >.nav-btn-wrap {
+          >.nav-open {
             opacity: 0;
           }
         }
