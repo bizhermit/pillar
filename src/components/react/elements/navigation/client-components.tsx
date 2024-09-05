@@ -1,13 +1,14 @@
 "use client";
 
 import { MenuLeftRightIcon } from "../icon";
+import { navToggleRadioName } from "./consts";
 
-export const NavSizeAutoButton = ({ ids }: { ids: [string, string] }) => {
+export const NavSizeAutoButton = () => {
   return (
     <div
       className="nav-btn nav-auto"
       onClick={() => {
-        document.querySelectorAll(`#${ids[0]},#${ids[1]}`).forEach(elem => {
+        document.querySelectorAll(`input[name="${navToggleRadioName}"]`).forEach(elem => {
           (elem as HTMLInputElement).checked = false;
         });
       }}

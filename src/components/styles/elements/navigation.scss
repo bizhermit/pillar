@@ -4,8 +4,6 @@ $L: 1080px;
 $S: 800px;
 $transDuration: 0.3s;
 $opacityTransDuration: 0.2s;
-$navWidth: 26rem;
-$navMinWidth: 5rem;
 
 @mixin minNavScreen {
   @media screen and (max-width: $L) and (min-width: $S) {
@@ -42,8 +40,8 @@ $navMinWidth: 5rem;
 @layer base {
 
   .wrap {
-    --nav-min-width: #{$navMinWidth};
-    --nav-width: #{$navWidth};
+    --nav-min-width: 5rem;
+    --nav-width: 26rem;
     --header-height: var(--nav-min-width);
     ---nav-width: var(--nav-width);
 
@@ -55,6 +53,10 @@ $navMinWidth: 5rem;
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
+
+    @include mixins.sp {
+      --nav-min-width: 6rem;
+    }
 
     &:not(:has(#navToggleVis:checked, #navToggleMin:checked)) {
       .nav-auto {
@@ -106,7 +108,7 @@ $navMinWidth: 5rem;
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     background: var(--nav-bg);
     color: var(--nav-fg);
     height: var(--header-height);
@@ -114,6 +116,8 @@ $navMinWidth: 5rem;
   }
 
   .header {
+    flex: 1 1 0rem;
+    min-width: 0;
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;

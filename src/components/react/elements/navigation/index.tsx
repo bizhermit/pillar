@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { CrossIcon, MenuIcon, MenuLeftIcon, MenuRightIcon } from "../icon";
-import { NavSizeAutoButton } from "./nav-client-components";
+import { NavSizeAutoButton } from "./client-components";
+import { navMinId, navOpenId, navToggleRadioName, navVisId } from "./consts";
 
 type NavigationProps = {
   header: ReactNode;
@@ -8,11 +9,6 @@ type NavigationProps = {
   content: ReactNode;
   children: ReactNode;
 };
-
-const toggleNavRadioName = "nav-toggle";
-const navVisId = "navToggleVis";
-const navMinId = "navToggleMin";
-const navOpenId = "navOpen";
 
 export const Navigation = (props: NavigationProps) => {
   return (
@@ -25,13 +21,13 @@ export const Navigation = (props: NavigationProps) => {
       <input
         className="nav-check"
         type="radio"
-        name={toggleNavRadioName}
+        name={navToggleRadioName}
         id={navVisId}
       />
       <input
         className="nav-check"
         type="radio"
-        name={toggleNavRadioName}
+        name={navToggleRadioName}
         id={navMinId}
       />
       <header className="header-wrap">
@@ -57,7 +53,7 @@ export const Navigation = (props: NavigationProps) => {
           <label className="nav-btn nav-vis" htmlFor={navVisId}>
             <MenuRightIcon />
           </label>
-          <NavSizeAutoButton ids={[navVisId, navMinId]} />
+          <NavSizeAutoButton />
           <label className="nav-btn nav-close" htmlFor={navOpenId}>
             <CrossIcon />
           </label>
