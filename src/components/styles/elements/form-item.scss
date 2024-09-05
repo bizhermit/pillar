@@ -320,7 +320,7 @@
     flex-flow: column nowrap;
     justify-content: stretch;
     align-items: stretch;
-    width: min(100dvw, calc(var(--ipt-size) * 10));
+    width: min(calc(100dvw - 5rem), calc(var(--ipt-size) * 10));
     height: 0;
     transition: height 0.2s;
 
