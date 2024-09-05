@@ -110,7 +110,7 @@ $navMinWidth: 5rem;
     background: var(--nav-bg);
     color: var(--nav-fg);
     height: var(--header-height);
-    box-shadow: 0 1px 1px -1px var(--sdw);
+    box-shadow: -0.1px 1px 1px -1px var(--sdw);
   }
 
   .header {
@@ -172,7 +172,7 @@ $navMinWidth: 5rem;
     overflow: visible;
     background: var(--nav-bg);
     color: var(--nav-fg);
-    box-shadow: 0 1px 1px -1px var(--sdw) inset, 1px 0 1px -1px var(--sdw);
+    box-shadow: 0 1.1px 1px -1px var(--sdw) inset, 1px 0px 1px -1px var(--sdw);
     z-index: 1;
   }
 
@@ -206,7 +206,7 @@ $navMinWidth: 5rem;
 
   .nav-toggle {
     width: calc(100% - 1px);
-    box-shadow: 1px 0 1px -1px var(--sdw);
+    box-shadow: 1px 1.1px 1px -1px var(--sdw);
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
