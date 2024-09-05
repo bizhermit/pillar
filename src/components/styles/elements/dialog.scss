@@ -43,21 +43,6 @@
   }
 
   @include mixins.sp {
-    html {
-      &:has(.dialog[open]) {
-        &::before {
-          position: fixed;
-          content: "";
-          width: 100dvw;
-          height: 100dvh;
-          inset: 0;
-          background: transparent;
-          z-index: 99998;
-          overscroll-behavior: contain;
-        }
-      }
-    }
-  
     .dialog[data-mobile] {
       inset: 0 !important;
       margin: auto;

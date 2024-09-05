@@ -37,7 +37,7 @@ type DateSelectBoxProps<D extends DataItem.$date | DataItem.$month | undefined> 
 
 type Target = "y" | "m" | "d";
 
-const listItemClassName = "ipt-dialog-list-item";
+const listItemClassName = "ipt-list-item";
 
 const isNumericOrEmpty = (value?: string): value is `${number}` => {
   if (isEmpty(value)) return true;
@@ -690,10 +690,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             modeless
             hook={yDialog.hook}
             mobile
-            className="ipt-dialog"
+            className="ipt-dialog ipt-dialog-list"
           >
             <div
-              className="ipt-dialog-list"
+              className="ipt-list"
               data-align="center"
             >
               {yearItems}
@@ -743,10 +743,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             modeless
             hook={mDialog.hook}
             mobile
-            className="ipt-dialog"
+            className="ipt-dialog ipt-dialog-list"
           >
             <div
-              className="ipt-dialog-list"
+              className="ipt-list"
               data-align="center"
             >
               {monthItems}
@@ -794,10 +794,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                 modeless
                 hook={dDialog.hook}
                 mobile
-                className="ipt-dialog"
+                className="ipt-dialog ipt-dialog-list"
               >
                 <div
-                  className="ipt-dialog-list"
+                  className="ipt-list"
                   data-align="center"
                 >
                   {dayItems}

@@ -310,7 +310,7 @@ export const Dialog = ({
         document.documentElement.scrollLeft = scrollLeftBuf;
       };
     if (!preventRootScroll) {
-      window.addEventListener("scroll", scrollListener!, { passive: false });
+      window.addEventListener("scroll", scrollListener!);
     }
 
     return () => {

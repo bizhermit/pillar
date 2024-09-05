@@ -871,7 +871,15 @@
     }
   }
 
-  .ipt-dialog-list {
+  @include mixins.sp {
+    .ipt-dialog-list {
+      &[data-mobile] {
+        min-width: 50dvw;
+      }
+    }
+  }
+
+  .ipt-list {
     overflow: hidden;
     display: flex;
     flex-flow: column nowrap;
@@ -881,13 +889,13 @@
     z-index: 0;
 
     &[data-align="center"] {
-      .ipt-dialog-list-item {
+      .ipt-list-item {
         place-items: center;
       }
     }
   }
 
-  .ipt-dialog-list-item {
+  .ipt-list-item {
     display: grid;
     place-items: center start;
     height: var(--ipt-size);
@@ -932,7 +940,7 @@
       display: grid;
       grid-template-rows: 1fr;
 
-      >.ipt-dialog-list {
+      >.ipt-list {
         overflow: auto;
       }
 

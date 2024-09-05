@@ -36,7 +36,7 @@ type SelectBoxOptions<D extends DataItem.$str | DataItem.$num | DataItem.$boolAn
 type SelectBoxProps<D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData> =
   OverwriteAttrs<HTMLAttributes<HTMLDivElement>, SelectBoxOptions<D, S>>;
 
-const listItemClassName = "ipt-dialog-list-item";
+const listItemClassName = "ipt-list-item";
 
 export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData>({
   labelDataName,
@@ -382,10 +382,10 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           modeless
           hook={dialog.hook}
           mobile
-          className="ipt-dialog"
+          className="ipt-dialog ipt-dialog-list"
         >
           <div className="ipt-mask" data-show={loading} />
-          <div className="ipt-dialog-list">
+          <div className="ipt-list">
             {$emptyItem &&
               <ListItem
                 loading={loading}
