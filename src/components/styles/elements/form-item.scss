@@ -936,7 +936,7 @@
     opacity: 1;
     overflow: hidden;
 
-    &[open] {
+    &:is([open], :popover-open) {
       display: grid;
       grid-template-rows: 1fr;
 
@@ -952,12 +952,14 @@
 
   @starting-style {
 
-    .ipt-dialog[open] {
-      display: grid;
-      grid-template-rows: 0fr;
-
-      >.ipt-dp {
-        height: 0;
+    .ipt-dialog {
+      &:is([open], :popover-open) {
+        display: grid;
+        grid-template-rows: 0fr;
+  
+        >.ipt-dp {
+          height: 0;
+        }
       }
     }
   }

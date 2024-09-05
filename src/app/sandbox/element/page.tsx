@@ -691,6 +691,7 @@ export default function Home() {
           closeWhenScrolled
           // preventBackdropClose
           // customPosition
+          // preventEscapeClose
           immediatelyMount
           keepMount
           style={{
@@ -716,6 +717,11 @@ export default function Home() {
             close
           </Button>
         </Dialog>
+        <button popoverTarget="popover" popoverTargetAction="show">popover</button>
+        <div popover="manual" id="popover">
+          hoge
+          <button popoverTarget="popover" popoverTargetAction="hide">close</button>
+        </div>
       </div>
     </div>
   );

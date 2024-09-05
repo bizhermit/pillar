@@ -9,16 +9,12 @@
   }
 
   .dialog[open],
-  .dialog[open]::backdrop {
+  .dialog[open]::backdrop,
+  .dialog:popover-open,
+  .dialog:popover-open::backdrop {
     opacity: 1;
-  }
-
-  @starting-style {
-
-    .dialog[open],
-    .dialog[open]::backdrop {
-      opacity: 0;
-    }
+    z-index: 99999;
+    
   }
 
   .dialog {
@@ -30,7 +26,6 @@
     outline: none;
     position: fixed;
     overscroll-behavior: contain;
-    z-index: 99999;
 
     &:not([data-pos="true"]) {
       inset: 0;
@@ -40,9 +35,39 @@
     &[data-transparent] {
       background: transparent;
     }
+
+    &[popover] {
+      &::backdrop {
+        display: none;
+      }
+    }
+  }
+
+  @starting-style {
+
+    .dialog[open],
+    .dialog:popover-open,
+    .dialog[open]::backdrop {
+      opacity: 0;
+    }
   }
 
   @include mixins.sp {
+    html {
+      &:has(.dialog:popover-open) {
+        &::before {
+          position: fixed;
+          content: "";
+          width: 100dvw;
+          height: 100dvh;
+          inset: 0;
+          background: transparent;
+          z-index: 99998;
+          overscroll-behavior: contain;
+        }
+      }
+    }
+
     .dialog[data-mobile] {
       inset: 0 !important;
       margin: auto;
