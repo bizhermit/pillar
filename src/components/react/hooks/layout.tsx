@@ -39,7 +39,7 @@ export const LayoutProvider = (props: Props) => {
   const [theme, setTheme] = useReducer((_: LayoutTheme, action: LayoutTheme) => {
     if (typeof window !== "undefined") {
       document.documentElement.setAttribute("data-theme", action);
-      document.cookie = `theme=${action}`;
+      document.cookie = `theme=${action};path=/;${action === "auto" ? "max-age=0;" : ""}`;
     }
     return action;
   }, props.defaultLayoutTheme || defaultLayoutTheme);

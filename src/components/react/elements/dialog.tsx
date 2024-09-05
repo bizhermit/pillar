@@ -98,7 +98,8 @@ export const Dialog = ({
       }
       toggleShowed(false);
       hookRef.current?.(false);
-      dref.current.close();
+      if (modeless) dref.current.hidePopover();
+      else dref.current.close();
       opts?.callbackBeforeAnimation?.();
       onClose?.();
       return;
@@ -279,7 +280,7 @@ export const Dialog = ({
 
   useEffect(() => {
     if (!showed) return;
-    if (modeless) dref.current.show();
+    if (modeless) dref.current.showPopover();
     else dref.current.showModal();
     resetPosition();
     showOpts?.callbackBeforeAnimation?.();
@@ -354,6 +355,7 @@ export const Dialog = ({
       data-modeless={modeless ? "" : undefined}
       data-mobile={mobile ? "" : undefined}
       data-transparent={transparent ? "" : undefined}
+      popover={modeless ? "manual" : undefined}
     >
       {mount && props.children}
     </dialog>
