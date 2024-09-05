@@ -1,27 +1,38 @@
 @use "../mixins" as mixins;
 
+$L: 1080px;
+$S: 800px;
+
 @mixin minNavScreen {
-  @media screen and (max-width: 1080px) and (min-width: 800px) {
+  @media screen and (max-width: $L) and (min-width: $S) {
     @content;
   }
 }
 
 @mixin visNavScreen {
-  @media screen and (min-width: 1080px) {
+  @media screen and (min-width: $L) {
     @content;
   }
 }
 
 @mixin hideNavScreen {
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: $S) {
     @content;
   }
 }
 
 @mixin toggleNavScreen {
-  @media screen and (min-width: 800px) {
+  @media screen and (min-width: $S) {
     @content;
   }
+}
+
+@mixin btnDisable($width: true) {
+  @if $width==true {
+    width: 0;
+  }
+  opacity: 0;
+  pointer-events: none;
 }
 
 @layer base {
@@ -44,8 +55,7 @@
     &:not(:has(#navToggleVis:checked, #navToggleMin:checked)) {
       @include visNavScreen() {
         .nav-vis {
-          width: 0;
-          opacity: 0;
+          @include btnDisable();
         }
 
         .nav-contents {
@@ -62,8 +72,7 @@
         }
 
         .nav-min {
-          width: 0;
-          opacity: 0;
+          @include btnDisable();
         }
 
         .nav-wrap {
@@ -243,8 +252,7 @@
         ---nav-width: var(--nav-width);
 
         .nav-vis {
-          width: 0;
-          opacity: 0;
+          @include btnDisable();
         }
 
         .nav-contents {
@@ -256,8 +264,7 @@
         ---nav-width: var(--nav-min-width);
 
         .nav-min {
-          width: 0;
-          opacity: 0;
+          @include btnDisable();
         }
       }
     }
@@ -285,7 +292,7 @@
       &:checked {
         &~.header-wrap {
           >.nav-open {
-            opacity: 0;
+            @include btnDisable(false);
           }
         }
 
