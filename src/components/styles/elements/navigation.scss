@@ -140,6 +140,9 @@ $opacityTransDuration: 0.2s;
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: flex-start;
+    max-width: 100%;
+    min-height: 0;
+    overflow-x: hidden;
   }
 
   .nav-wrap {
