@@ -320,12 +320,12 @@
     flex-flow: column nowrap;
     justify-content: stretch;
     align-items: stretch;
-    width: min(100svw, calc(var(--ipt-size) * 10));
+    width: min(calc(100dvw - 5rem), calc(var(--ipt-size) * 10));
     height: 0;
     transition: height 0.2s;
 
     &:not([data-dialog="true"]) {
-      height: min(100svh, calc(var(--ipt-size) * 10));
+      height: min(100dvh, calc(var(--ipt-size) * 10));
     }
   }
 
@@ -871,23 +871,31 @@
     }
   }
 
-  .ipt-dialog-list {
+  @include mixins.sp {
+    .ipt-dialog-list {
+      &[data-mobile] {
+        min-width: 50dvw;
+      }
+    }
+  }
+
+  .ipt-list {
     overflow: hidden;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
-    max-height: calc(50svh - var(--ipt-size));
+    max-height: calc(50dvh - var(--ipt-size));
     z-index: 0;
 
     &[data-align="center"] {
-      .ipt-dialog-list-item {
+      .ipt-list-item {
         place-items: center;
       }
     }
   }
 
-  .ipt-dialog-list-item {
+  .ipt-list-item {
     display: grid;
     place-items: center start;
     height: var(--ipt-size);
@@ -932,12 +940,12 @@
       display: grid;
       grid-template-rows: 1fr;
 
-      >.ipt-dialog-list {
+      >.ipt-list {
         overflow: auto;
       }
 
       >.ipt-dp {
-        height: min(100svh, calc(var(--ipt-size) * 10));
+        height: min(100dvh, calc(var(--ipt-size) * 10));
       }
     }
   }

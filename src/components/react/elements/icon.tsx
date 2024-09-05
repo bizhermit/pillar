@@ -7,10 +7,10 @@ type IconProps = OverwriteAttrs<Omit<HTMLAttributes<SVGSVGElement>, "children">,
 
 const attrs = (p: IconProps) => {
   return {
-    className: joinClassNames("icon", p.className),
     viewBox: "0 0 20 20",
     xmlns: "http://www.w2.5.org/2000/svg",
     ...p,
+    className: joinClassNames("icon", p.className),
   };
 };
 
@@ -56,6 +56,16 @@ export const MenuRightIcon = (p: IconProps) => (
     <line x1="2" x2="18" y1="5" y2="5" />
     <line x1="2" x2="15" y1="10" y2="10" />
     <line x1="2" x2="18" y1="15" y2="15" />
+    <path d="M14,6 L18,10 14,14" fill="none" />
+  </svg>
+);
+
+export const MenuLeftRightIcon = (p: IconProps) => (
+  <svg {...attrs(p)}>
+    <line x1="2" x2="18" y1="5" y2="5" />
+    <line x1="5" x2="15" y1="10" y2="10" />
+    <line x1="2" x2="18" y1="15" y2="15" />
+    <path d="M6,6 L2,10 6,14" fill="none" />
     <path d="M14,6 L18,10 14,14" fill="none" />
   </svg>
 );
