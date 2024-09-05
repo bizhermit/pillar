@@ -48,6 +48,10 @@ export const Navigation = (props: NavigationProps) => {
           {props.footer}
         </footer>
       }
+      <label
+        className="nav-mask"
+        htmlFor={navOpenId}
+      />
       <nav className="nav-wrap">
         <div className="nav-btn-wrap nav-toggle">
           <label className="nav-btn nav-vis" htmlFor={navVisId}>
