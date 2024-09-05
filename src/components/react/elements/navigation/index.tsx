@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
-import { CrossIcon, MenuIcon, MenuLeftIcon, MenuRightIcon } from "./icon";
+import { CrossIcon, MenuIcon, MenuLeftIcon, MenuRightIcon } from "../icon";
+import { NavSizeAutoButton } from "./nav-client-components";
 
 type NavigationProps = {
   header: ReactNode;
@@ -9,6 +10,9 @@ type NavigationProps = {
 };
 
 const toggleNavRadioName = "nav-toggle";
+const navVisId = "navToggleVis";
+const navMinId = "navToggleMin";
+const navOpenId = "navOpen";
 
 export const Navigation = (props: NavigationProps) => {
   return (
@@ -16,23 +20,23 @@ export const Navigation = (props: NavigationProps) => {
       <input
         className="nav-check"
         type="checkbox"
-        id="navOpen"
+        id={navOpenId}
       />
       <input
         className="nav-check"
         type="radio"
         name={toggleNavRadioName}
-        id="navToggleVis"
+        id={navVisId}
       />
       <input
         className="nav-check"
         type="radio"
         name={toggleNavRadioName}
-        id="navToggleMin"
+        id={navMinId}
       />
       <header className="header-wrap">
         <div className="nav-btn-wrap nav-open">
-          <label className="nav-btn" htmlFor="navOpen">
+          <label className="nav-btn" htmlFor={navOpenId}>
             <MenuIcon />
           </label>
         </div>
@@ -50,13 +54,14 @@ export const Navigation = (props: NavigationProps) => {
       }
       <nav className="nav-wrap">
         <div className="nav-btn-wrap nav-toggle">
-          <label className="nav-btn nav-vis" htmlFor="navToggleVis">
+          <label className="nav-btn nav-vis" htmlFor={navVisId}>
             <MenuRightIcon />
           </label>
-          <label className="nav-btn nav-close" htmlFor="navOpen">
+          <NavSizeAutoButton ids={[navVisId, navMinId]} />
+          <label className="nav-btn nav-close" htmlFor={navOpenId}>
             <CrossIcon />
           </label>
-          <label className="nav-btn nav-min" htmlFor="navToggleMin">
+          <label className="nav-btn nav-min" htmlFor={navMinId}>
             <MenuLeftIcon />
           </label>
         </div>

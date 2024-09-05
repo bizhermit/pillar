@@ -2,6 +2,10 @@
 
 $L: 1080px;
 $S: 800px;
+$transDuration: 0.3s;
+$opacityTransDuration: 0.2s;
+$navWidth: 26rem;
+$navMinWidth: 5rem;
 
 @mixin minNavScreen {
   @media screen and (max-width: $L) and (min-width: $S) {
@@ -38,21 +42,25 @@ $S: 800px;
 @layer base {
 
   .wrap {
-    --nav-min-width: 5rem;
-    --nav-width: 26rem;
+    --nav-min-width: #{$navMinWidth};
+    --nav-width: #{$navWidth};
     --header-height: var(--nav-min-width);
     ---nav-width: var(--nav-width);
 
     width: 100%;
     min-height: 100dvh;
     padding-left: var(---nav-width);
-    transition: padding-left 0.3s;
+    transition: padding-left #{$transDuration};
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
 
     &:not(:has(#navToggleVis:checked, #navToggleMin:checked)) {
+      .nav-auto {
+        @include btnDisable();
+      }
+
       @include visNavScreen() {
         .nav-vis {
           @include btnDisable();
@@ -65,12 +73,7 @@ $S: 800px;
 
       @include minNavScreen() {
         ---nav-width: var(--nav-min-width);
-
-        .nav-vis {
-          width: calc(var(--nav-min-width) * 0.7);
-          opacity: 1;
-        }
-
+        
         .nav-min {
           @include btnDisable();
         }
@@ -142,7 +145,7 @@ $S: 800px;
     left: 0;
     width: var(---nav-width);
     height: 100%;
-    transition: width 0.3s;
+    transition: width #{$transDuration};
     overflow: hidden;
     overscroll-behavior: contain;
     display: flex;
@@ -190,7 +193,7 @@ $S: 800px;
     overflow: hidden;
     background: var(--nav-bg);
     color: var(--nav-fg);
-    transition: width 0.3s, opacity 0.3s;
+    transition: width #{$transDuration}, opacity #{$opacityTransDuration};
     user-select: none;
     z-index: 0;
   }
@@ -220,11 +223,11 @@ $S: 800px;
     place-items: center;
     grid-auto-flow: column;
     cursor: pointer;
-    transition: opacity .3s, width .3s;
+    transition: width #{$transDuration}, opacity #{$opacityTransDuration};
     overflow: hidden;
 
     @include mixins.hover {
-      opacity: 0.8;
+      opacity: 0.7;
     }
   }
 
@@ -233,7 +236,7 @@ $S: 800px;
   }
 
   .nav-close {
-    transition-delay: 0.3s;
+    transition-delay: #{$transDuration};
   }
 
   @include toggleNavScreen() {
@@ -263,7 +266,7 @@ $S: 800px;
       &:has(#navToggleMin:checked) {
         ---nav-width: var(--nav-min-width);
 
-        .nav-min {
+        :is(.nav-min, .nav-auto) {
           @include btnDisable();
         }
       }
@@ -281,10 +284,9 @@ $S: 800px;
     }
 
     .nav-vis,
-    .nav-min {
-      width: 0;
-      opacity: 0;
-      visibility: hidden;
+    .nav-min,
+    .nav-auto {
+      @include btnDisable();
       display: none;
     }
 
@@ -298,6 +300,10 @@ $S: 800px;
 
         &~.nav-wrap {
           ---nav-width: var(--nav-width);
+
+          .nav-close {
+            transition-delay: 0s;
+          }
 
           .nav-contents {
             overflow: auto;

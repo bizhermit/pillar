@@ -29,7 +29,7 @@ $darkFg: #f8f8f8;
   --ipt-bg-err: #ffcccc;
   --ipt-fg-err: #{$lightFg};
   --ipt-bd-err: rgba(255, 0, 0, 0.4);
-  --c-primary: #7fbfff;
+  --c-primary: #5fafff;
   --c-primary_: #{$lightBg};
   --c-secondary: #7fbf7f;
   --c-secondary_: #{$lightBg};
@@ -61,13 +61,13 @@ $darkFg: #f8f8f8;
   --ipt-bg-err: #422;
   --ipt-fg-err: #{$darkFg};
   --ipt-bd-err: rgba(255, 0, 0, 0.4);
-  --c-primary: #5f9fdf;
+  --c-primary: #0f4f8f;
   --c-primary_: #{$darkFg};
-  --c-secondary: #4faf4f;
+  --c-secondary: #2f6f2f;
   --c-secondary_: #{$darkFg};
-  --c-danger: #d44;
+  --c-danger: #a32;
   --c-danger_: #{$darkFg};
-  --c-subdued: #666;
+  --c-subdued: #555;
   --c-subdued_: #{$darkFg};
 }
 

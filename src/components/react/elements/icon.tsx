@@ -60,6 +60,16 @@ export const MenuRightIcon = (p: IconProps) => (
   </svg>
 );
 
+export const MenuLeftRightIcon = (p: IconProps) => (
+  <svg {...attrs(p)}>
+    <line x1="2" x2="18" y1="5" y2="5" />
+    <line x1="5" x2="15" y1="10" y2="10" />
+    <line x1="2" x2="18" y1="15" y2="15" />
+    <path d="M6,6 L2,10 6,14" fill="none" />
+    <path d="M14,6 L18,10 14,14" fill="none" />
+  </svg>
+);
+
 export const LeftIcon = (p: IconProps) => (
   <svg {...attrs(p)}>
     <path d="M14,2 L5,10 14,18" fill="none" />
