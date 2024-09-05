@@ -18,7 +18,9 @@ const Layout = (props: { children: ReactNode; }) => {
         </span>
       }
     >
-      navigation menus
+      <div style={{ width: 500, height: 1000, background: "blue" }}>
+        navigation menus
+      </div>
     </Navigation>
   );
 };

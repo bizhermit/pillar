@@ -6,6 +6,12 @@
   }
 }
 
+@mixin visNavScreen {
+  @media screen and (min-width: 1080px) {
+    @content;
+  }
+}
+
 @mixin hideNavScreen {
   @media screen and (max-width: 800px) {
     @content;
@@ -35,8 +41,41 @@
     justify-content: flex-start;
     align-items: stretch;
 
-    @include minNavScreen() {
-      ---nav-width: var(--nav-min-width);
+    &:not(:has(#navToggleVis:checked, #navToggleMin:checked)) {
+      @include visNavScreen() {
+        .nav-vis {
+          width: 0;
+          opacity: 0;
+        }
+
+        .nav-contents {
+          overflow: auto;
+        }
+      }
+
+      @include minNavScreen() {
+        ---nav-width: var(--nav-min-width);
+
+        .nav-vis {
+          width: calc(var(--nav-min-width) * 0.7);
+          opacity: 1;
+        }
+
+        .nav-min {
+          width: 0;
+          opacity: 0;
+        }
+
+        .nav-wrap {
+          @include mixins.hover {
+            ---nav-width: var(--nav-width);
+
+            .nav-contents {
+              overflow: auto;
+            }
+          }
+        }
+      }
     }
 
     @include hideNavScreen() {
@@ -107,16 +146,6 @@
       color: var(--nav-fg);
     }
 
-    @include minNavScreen() {
-      @include mixins.hover {
-        ---nav-width: var(--nav-width);
-
-        .nav-contents {
-          overflow: auto;
-        }
-      }
-    }
-
     @include hideNavScreen() {
       >.nav-close {
         visibility: visible;
@@ -137,7 +166,7 @@
 
   .nav-contents {
     width: 100%;
-    min-height: 100%;
+    height: 100%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
@@ -183,6 +212,7 @@
     grid-auto-flow: column;
     cursor: pointer;
     transition: opacity .3s, width .3s;
+    overflow: hidden;
 
     @include mixins.hover {
       opacity: 0.8;
@@ -208,38 +238,29 @@
       box-shadow: 1px 0 1px -1px var(--sdw);
     }
 
-    .nav-vis,
-    .nav-min {
-      opacity: 1;
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 0 calc(var(--nav-min-width) * 0.15);
-    }
+    .wrap {
+      &:has(#navToggleVis:checked) {
+        ---nav-width: var(--nav-width);
 
-    #navToggle {
-      &:checked {
-        &~.nav-wrap {
-          .nav-toggle-btn {
-            margin-left: 0;
-          }
+        .nav-vis {
+          width: 0;
+          opacity: 0;
+        }
 
-          .nav-min {
-            display: none;
-          }
+        .nav-contents {
+          overflow: auto;
         }
       }
 
-      &:not(:checked) {
-        &~.nav-wrap {
-          .nav-vis {
-            display: none;
-          }
+      &:has(#navToggleMin:checked) {
+        ---nav-width: var(--nav-min-width);
+
+        .nav-min {
+          width: 0;
+          opacity: 0;
         }
       }
     }
-
   }
 
   @include hideNavScreen() {
