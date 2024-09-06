@@ -27,6 +27,7 @@ import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
+import { LoadingBar } from "@/react/elements/loading";
 import { useMessageBox } from "@/react/elements/message-box";
 import { TabContainer, TabContent, useTabContainer } from "@/react/elements/tab-container";
 import { LayoutContext } from "@/react/hooks/layout";
@@ -64,6 +65,9 @@ export default function Home() {
 
   return (
     <div>
+      <LoadingBar
+        // mask
+      />
       <TabContainer
         disabled={disabled.value}
         // defaultMount
