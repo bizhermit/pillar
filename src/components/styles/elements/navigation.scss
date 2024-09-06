@@ -4,6 +4,7 @@ $L: 1080px;
 $S: 800px;
 $transDuration: 0.3s;
 $opacityTransDuration: 0.2s;
+$nestPadding: calc(var(--nav-min-width) * 0.25);
 
 @mixin minNavScreen {
   @media screen and (max-width: $L) and (min-width: $S) {
@@ -33,6 +34,7 @@ $opacityTransDuration: 0.2s;
   @if $width==true {
     width: 0;
   }
+
   opacity: 0;
   pointer-events: none;
 }
@@ -44,6 +46,7 @@ $opacityTransDuration: 0.2s;
     --nav-width: 26rem;
     --header-height: var(--nav-min-width);
     ---nav-width: var(--nav-width);
+    ---nav-menu-nest: #{$nestPadding};
 
     width: 100%;
     min-height: 100dvh;
@@ -75,7 +78,8 @@ $opacityTransDuration: 0.2s;
 
       @include minNavScreen() {
         ---nav-width: var(--nav-min-width);
-        
+        ---nav-menu-nest: 0;
+
         .nav-min {
           @include btnDisable();
         }
@@ -83,6 +87,7 @@ $opacityTransDuration: 0.2s;
         .nav-wrap {
           @include mixins.hover {
             ---nav-width: var(--nav-width);
+            ---nav-menu-nest: #{$nestPadding};
 
             .nav-contents {
               overflow: auto;
@@ -182,7 +187,9 @@ $opacityTransDuration: 0.2s;
     z-index: 2;
     pointer-events: none;
     opacity: 0;
-    transition: opacity #{$transDuration}, display #{$transDuration} allow-discrete, overlay #{$transDuration} allow-discrete;
+    transition: opacity #{$transDuration},
+    display #{$transDuration} allow-discrete,
+    overlay #{$transDuration} allow-discrete;
     display: none;
   }
 
@@ -214,7 +221,8 @@ $opacityTransDuration: 0.2s;
     overflow: hidden;
     background: var(--nav-bg);
     color: var(--nav-fg);
-    transition: width #{$transDuration}, opacity #{$opacityTransDuration};
+    transition: width #{$transDuration},
+    opacity #{$opacityTransDuration};
     user-select: none;
     z-index: 0;
   }
@@ -244,7 +252,8 @@ $opacityTransDuration: 0.2s;
     place-items: center;
     grid-auto-flow: column;
     cursor: pointer;
-    transition: width #{$transDuration}, opacity #{$opacityTransDuration};
+    transition: width #{$transDuration},
+    opacity #{$opacityTransDuration};
     overflow: hidden;
 
     @include mixins.hover {
@@ -286,6 +295,7 @@ $opacityTransDuration: 0.2s;
 
       &:has(#navToggleMin:checked) {
         ---nav-width: var(--nav-min-width);
+        ---nav-menu-nest: 0;
 
         :is(.nav-min, .nav-auto) {
           @include btnDisable();
@@ -345,6 +355,99 @@ $opacityTransDuration: 0.2s;
         display: unset;
       }
     }
+  }
+
+  .nav-menu-list {
+    padding: 0;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: hidden;
+  }
+
+  .nav-menu-toggle {
+    display: grid;
+    place-items: center;
+    margin-left: auto;
+    height: 100%;
+    width: var(--nav-min-width);
+    transform: rotate(0deg);
+    transition: transform 0.2s;
+  }
+
+  .nav-menu-close {
+    display: none;
+  }
+
+  .nav-menu-children {
+    width: 100%;
+    display: grid;
+    grid-template-rows: 0fr;
+    overflow: hidden;
+    padding-left: var(---nav-menu-nest, 0);
+    transition: grid-template-rows 0.5s, padding-left #{$transDuration};
+  }
+
+  .nav-menu-check {
+    display: none;
+
+    &:checked {
+      &~.nav-menu-item {
+        .nav-menu-toggle {
+          transform: rotate(180deg);
+        }
+      }
+
+      &~.nav-menu-children {
+        grid-template-rows: 1fr;
+      }
+    }
+  }
+
+  .nav-menu-item-wrap {
+    list-style: none;
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  .nav-menu-item {
+    width: 100%;
+    height: calc(var(--nav-min-width) * 0.8);
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: center;
+    overflow: hidden;
+    word-break: keep-all;
+    white-space: nowrap;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 1px;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity .2s, background-color .2s, color .2s;
+
+    &[data-selected="true"] {
+      background: var(--c-primary);
+      color: var(--c-primary_);
+    }
+
+    @include mixins.hover {
+      opacity: 0.7;
+    }
+  }
+
+  .nav-menu-icon {
+    height: 100%;
+    width: var(--nav-min-width);
+    display: grid;
+    place-items: center;
   }
 
 }

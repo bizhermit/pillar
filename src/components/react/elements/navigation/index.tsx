@@ -30,24 +30,6 @@ export const Navigation = (props: NavigationProps) => {
         name={navToggleRadioName}
         id={navMinId}
       />
-      <header className="header-wrap">
-        <div className="nav-btn-wrap nav-open">
-          <label className="nav-btn" htmlFor={navOpenId}>
-            <MenuIcon />
-          </label>
-        </div>
-        <div className="header">
-          {props.header}
-        </div>
-      </header>
-      <main className="main">
-        {props.content}
-      </main>
-      {props.footer &&
-        <footer className="footer">
-          {props.footer}
-        </footer>
-      }
       <label
         className="nav-mask"
         htmlFor={navOpenId}
@@ -71,6 +53,24 @@ export const Navigation = (props: NavigationProps) => {
           </div>
         </div>
       </nav>
+      <header className="header-wrap">
+        <div className="nav-btn-wrap nav-open">
+          <label className="nav-btn" htmlFor={navOpenId}>
+            <MenuIcon />
+          </label>
+        </div>
+        <div className="header">
+          {props.header}
+        </div>
+      </header>
+      <main className="main">
+        {props.content}
+      </main>
+      {props.footer &&
+        <footer className="footer">
+          {props.footer}
+        </footer>
+      }
     </div>
   );
 };
