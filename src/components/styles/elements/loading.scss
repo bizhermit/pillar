@@ -12,6 +12,7 @@ $bar2Width: 15%;
     position: fixed;
     top: initial;
     left: initial;
+    z-index: 9999;
 
     &::before,
     &::after {

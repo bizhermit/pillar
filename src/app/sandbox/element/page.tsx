@@ -66,7 +66,7 @@ export default function Home() {
   return (
     <div>
       <LoadingBar
-        mask
+        // mask
       />
       <TabContainer
         disabled={disabled.value}

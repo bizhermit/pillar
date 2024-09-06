@@ -1,5 +1,7 @@
+import { LoadingBar } from "@/react/elements/loading";
+
 const Loading = () => {
-  return "loading...";
+  return <LoadingBar />;
 };
 
 export default Loading;
