@@ -1,6 +1,7 @@
 "use client";
 
 import { type CSSProperties, type HTMLAttributes, useEffect, useRef, useState } from "react";
+import { preventScroll } from "../../dom/prevent-scroll";
 import { throttle } from "../../utilities/throttle";
 import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./utilities";
@@ -302,23 +303,23 @@ export const Dialog = ({
     }, 40);
     window.addEventListener("resize", resizeListener);
 
-    const scrollListener = preventRootScroll ? undefined :
-      closeWhenScrolled ? () => {
-        toggle(false);
-      } : (e: Event) => {
-        e.preventDefault();
-        document.documentElement.scrollTop = scrollTopBuf;
-        document.documentElement.scrollLeft = scrollLeftBuf;
-      };
-    if (!preventRootScroll) {
-      window.addEventListener("scroll", scrollListener!);
-    }
+    const releaseScroll = (() => {
+      if (preventRootScroll) return;
+      if (closeWhenScrolled) {
+        const ev = () => {
+          toggle(false);
+        };
+        window.addEventListener("scroll", ev);
+        return () => {
+          window.removeEventListener("scroll", ev);
+        };
+      }
+      return preventScroll();
+    })();
 
     return () => {
       window.removeEventListener("resize", resizeListener);
-      if (!preventRootScroll) {
-        window.removeEventListener("scroll", scrollListener!);
-      }
+      releaseScroll?.();
     };
   }, [showed, showOpts]);
 

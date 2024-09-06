@@ -2,6 +2,7 @@
 
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { preventScroll } from "../../dom/prevent-scroll";
 import { Button, type ButtonProps } from "./button";
 
 type MessageBoxChildrenProps = {
@@ -90,14 +91,7 @@ const createAndOpenDialog = (node: (props: MessageBoxChildrenProps) => ReactNode
   };
   elem.addEventListener("keydown", keydownHandler);
 
-  const scrollTopBuf = document.documentElement.scrollTop;
-  const scrollLeftBuf = document.documentElement.scrollLeft;
-  const scrollHandler = (e: Event) => {
-    e.preventDefault();
-    document.documentElement.scrollTop = scrollTopBuf;
-    document.documentElement.scrollLeft = scrollLeftBuf;
-  };
-  window.addEventListener("scroll", scrollHandler);
+  const releaseScroll = preventScroll();
 
   const state = {
     closing: false,
@@ -111,7 +105,7 @@ const createAndOpenDialog = (node: (props: MessageBoxChildrenProps) => ReactNode
         elem.removeEventListener("transitioncancel", unmount);
         elem.removeEventListener("transitionend", unmount);
         elem.removeEventListener("keydown", keydownHandler);
-        window.removeEventListener("scroll", scrollHandler);
+        releaseScroll();
         root.unmount();
         document.body.removeChild(elem);
         resolve();
