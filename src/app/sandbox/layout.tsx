@@ -1,5 +1,7 @@
+import { ExLinkIcon, HomeIcon, TextBoxIcon } from "@/react/elements/icon";
 import Link from "@/react/elements/link";
 import { Navigation } from "@/react/elements/navigation";
+import { NavigationMenu, NavMenuLink, NavMenuNest } from "@/react/elements/navigation/menu";
 import { ReactNode } from "react";
 import { InputsAsClient } from "./inputs-client";
 import { InputsAsServer } from "./inputs-server";
@@ -20,49 +22,64 @@ const Layout = (props: { children: ReactNode; }) => {
         </span>
       }
     >
-      <ul style={{ wordBreak: "keep-all", whiteSpace: "nowrap" }}>
-        <li>
-          <Link href="/sandbox/element">React Elements</Link>
-        </li>
-        <li>
-          <Link
-            href="/sandbox/page-transition/ssr"
+      <NavigationMenu>
+        <NavMenuLink
+          url="/sandbox"
+          icon={<HomeIcon />}
+          selected="match"
+        >
+          Home
+        </NavMenuLink>
+        <NavMenuLink
+          url="/sandbox/element"
+          icon={<TextBoxIcon />}
+        >
+          React Elements
+        </NavMenuLink>
+        <NavMenuNest
+          text="Routing"
+          icon={<ExLinkIcon />}
+        >
+          <NavMenuLink
+            url="/sandbox/page-transition/ssr"
+            icon={<ExLinkIcon />}
           >
             Page Transition SSR
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/sandbox/page-transition/csr"
-            params={{ id: 3 }}
+          </NavMenuLink>
+          <NavMenuLink
+            url="/sandbox/page-transition/csr"
+            icon={<ExLinkIcon />}
           >
             Page Transition CSR
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/sandbox/paralell-routes"
+          </NavMenuLink>
+          <NavMenuLink
+            url="/sandbox/paralell-routes"
+            icon={<ExLinkIcon />}
           >
             Parallel Routes
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/sandbox/paralell-routes/hoge"
+          </NavMenuLink>
+          <NavMenuLink
+            url="/sandbox/paralell-routes/hoge"
+            icon={<ExLinkIcon />}
           >
             Parallel Routes / hoge
-          </Link>
-        </li>
-        <li>
-          <Link href="/sandbox/paralell-route-modal">
+          </NavMenuLink>
+          <NavMenuLink
+            url="/sandbox/paralell-route-modal"
+            icon={<ExLinkIcon />}
+          >
             Parallel Route Modal
-          </Link>
-        </li>
-        <li>
-          <Link href="/sandbox/intercepting-routes">
+          </NavMenuLink>
+          <NavMenuLink
+            url="/sandbox/intercepting-routes"
+            icon={<ExLinkIcon />}
+          >
             Intercepting Routes
-          </Link>
-        </li>
+          </NavMenuLink>
+
+        </NavMenuNest>
+      </NavigationMenu>
+      <ul style={{ wordBreak: "keep-all", whiteSpace: "nowrap" }}>
         <li>
           server
           <InputsAsServer />
