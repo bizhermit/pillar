@@ -92,21 +92,36 @@ export const NavMenuNest = ({
 type NavMenuLinkProps = OverwriteProps<NavigationMenuItemProps, {
   icon?: ReactNode;
   url: PagePath;
+  selected?: boolean | "match" | "prefix-match" | ((pathname: string, url: string) => boolean);
 }>;
 
 export const NavMenuLink = ({
   icon,
   url,
+  selected,
   children,
   className,
   ...props
 }: NavMenuLinkProps) => {
   const pathname = usePathname();
-  const selected = url === pathname;
+  const current = (() => {
+    if (typeof selected === "function") {
+      return selected(pathname, url);
+    }
+    switch (selected) {
+      case true:
+      case false:
+        return selected;
+      case "match":
+        return url === pathname;
+      default:
+        return new RegExp(`^${url}($|/)`).test(pathname);
+    }
+  })();
   const ref = useRef<HTMLLIElement>(null!);
 
   useEffect(() => {
-    if (selected) {
+    if (current) {
       let elem: HTMLElement = ref.current;
       while (elem != null) {
         if (elem.tagName === "LABEL") {
@@ -131,7 +146,7 @@ export const NavMenuLink = ({
       <Link
         href={url}
         className="nav-menu-item"
-        data-selected={selected}
+        data-selected={current}
       >
         {icon && <NavMenuIcon>{icon}</NavMenuIcon>}
         {children}
