@@ -388,7 +388,7 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     grid-template-rows: 0fr;
     overflow: hidden;
     padding-left: var(---nav-menu-nest, 0);
-    transition: grid-template-rows 0.5s, padding-left #{$transDuration};
+    transition: grid-template-rows 0.3s, padding-left #{$transDuration};
   }
 
   .nav-menu-check {

@@ -133,7 +133,7 @@ export const NavMenuLink = ({
       }
       setTimeout(() => {
         ref.current.scrollIntoView({ block: "nearest" });
-      }, 500);
+      }, 300);
     }
   }, [pathname]);
 
