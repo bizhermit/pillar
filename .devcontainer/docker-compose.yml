@@ -22,11 +22,42 @@ services:
     environment:
       - 'WATCHPACK_POLLING=true'
       - 'LOCALHOST=${LOCALHOST:-host.docker.internal}'
+      - 'DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${LOCALHOST:-host.docker.internal}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-next-app-template}'
     ports:
       - '${NEXT_PORT:-3000}:${NEXT_PORT:-3000}'
-    command:
-      bash -c 'sh /workspace/.devcontainer/postCreatedCommand.sh && npm i && npm run dev && bash'
+    command: bash -c 'sh /workspace/.devcontainer/postCreatedCommand.sh && npm i && npm run migrate && npm run dev && bash'
+    depends_on:
+      - database
+  database:
+    container_name: 'next-app-template_dev_db'
+    env_file:
+      - path: '../.env'
+        required: true
+      - path: '../.env.local'
+        required: false
+    build:
+      context: '../'
+      dockerfile: '.devcontainer/docker/postgres/Dockerfile'
+    image: 'next-app-template_dev_db'
+    restart: always
+    volumes:
+      - 'next-app-template_dev_db:/var/lib/postgresql/data'
+      - '../database/postgres/init:/docker-entrypoint-initdb.d'
+    environment:
+      - 'POSTGRES_USER=${POSTGRES_USER:-postgres}'
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}'
+      - 'POSTGRES_DB=${POSTGRES_DB:-next-app-template}'
+      - 'POSTGRES_PORT=${POSTGRES_PORT:-5432}'
+    ports:
+      - '${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}'
+    healthcheck:
+      test: [ 'CMD', 'pg_isready' ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: 'postgres -c log_destination=stderr -c log_statement=all -c log_connections=on -c log_disconnections=on'
 volumes:
   next-app-template_dev_node_modules:
   next-app-template_dev_next:
   next-app-template_dev_server:
+  next-app-template_dev_db:

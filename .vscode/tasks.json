@@ -26,10 +26,28 @@
       "command": "bash ./.devcontainer/deleteVolumes.sh",
     },
     {
+      "label": "next dev",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run dev"
+    },
+    {
       "label": "build next route",
       "group": "none",
       "type": "shell",
       "command": "npm run route"
     },
+    {
+      "label": "database migrate",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run migrate"
+    },
+    {
+      "label": "Prisma studio",
+      "group": "none",
+      "type": "shell",
+      "command": "npx prisma studio"
+    }
   ]
 }
