@@ -13,9 +13,11 @@
     "export": "npm run clean && npx rimraf dist/out && npx cross-env NEXT_OUTPUT=\"dist\" npm run build",
     "lint": "npx next lint",
     "format": "npx next lint --fix",
-    "route": "node scripts/next-route.mjs"
+    "route": "node scripts/next-route.mjs",
+    "migrate": "npx prisma migrate dev"
   },
   "dependencies": {
+    "@prisma/client": "^5.19.1",
     "next": "15.0.0-rc.0",
     "react": "19.0.0-rc-f994737d14-20240522",
     "react-dom": "19.0.0-rc-f994737d14-20240522"
@@ -29,6 +31,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-next": "15.0.0-rc.0",
+    "prisma": "^5.19.1",
     "typescript": "^5"
   }
 }

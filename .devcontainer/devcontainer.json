@@ -5,7 +5,7 @@
   "workspaceFolder": "/workspace",
   "initializeCommand": "bash ./.devcontainer/initializeCommand.sh",
   "postCreateCommand": "bash ./.devcontainer/postCreatedCommand.sh",
-  "postStartCommand": "npm i",
+  "postStartCommand": "npm i && npm run migrate",
   "overrideCommand": true,
   "remoteUser": "node",
   "customizations": {
@@ -28,18 +28,23 @@
         "shd101wyy.markdown-preview-enhanced",
         "GrapeCity.gc-excelviewer",
         "hediet.vscode-drawio",
-        "ritwickdey.LiveServer"
+        "ritwickdey.LiveServer",
+        "Prisma.prisma"
       ],
       "settings": {
         "liveServer.settings.root": "/dist/out",
         "files.associations": {
           ".env.*": "properties"
         },
+        "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "explicit",
           "source.organizeImports": "explicit"
         },
-        "scss.lint.unknownAtRules": "ignore"
+        "scss.lint.unknownAtRules": "ignore",
+        "[prisma]": {
+          "editor.defaultFormatter": "Prisma.prisma"
+        }
       }
     }
   }

@@ -22,10 +22,10 @@ services:
     environment:
       - 'WATCHPACK_POLLING=true'
       - 'LOCALHOST=${LOCALHOST:-host.docker.internal}'
+      - 'DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${LOCALHOST:-host.docker.internal}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-next-app-template}'
     ports:
       - '${NEXT_PORT:-3000}:${NEXT_PORT:-3000}'
-    command:
-      bash -c 'sh /workspace/.devcontainer/postCreatedCommand.sh && npm i && npm run dev && bash'
+    command: bash -c 'sh /workspace/.devcontainer/postCreatedCommand.sh && npm i && npm run migrate && npm run dev && bash'
     depends_on:
       - database
   database:
@@ -51,12 +51,11 @@ services:
     ports:
       - '${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}'
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      test: [ 'CMD', 'pg_isready' ]
       interval: 10s
       timeout: 5s
       retries: 3
-    command:
-      'postgres -c log_destination=stderr -c log_statement=all -c log_connections=on -c log_disconnections=on'
+    command: 'postgres -c log_destination=stderr -c log_statement=all -c log_connections=on -c log_disconnections=on'
 volumes:
   next-app-template_dev_node_modules:
   next-app-template_dev_next:
