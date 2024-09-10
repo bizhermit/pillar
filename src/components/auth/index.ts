@@ -64,4 +64,8 @@ export const {
     updateUser: async () => {
     },
   },
+  logger: {
+    error: () => {
+    },
+  },
 });
