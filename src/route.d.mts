@@ -2,6 +2,7 @@
 // do not edit
 
 type AppRoutePath = "/"
+  | "/home"
   | "/sandbox"
   | "/sandbox/element"
   | "/sandbox/intercepting-routes"
@@ -22,12 +23,15 @@ type AppRoutePath = "/"
   | "/sandbox/paralell-route-modal"
   | "/sandbox/paralell-route-modal/[id]"
   | "/sandbox/paralell-routes"
-  | "/sandbox/paralell-routes/hoge";
+  | "/sandbox/paralell-routes/hoge"
+  | "/sign-in";
 
-type AppApiPath = "/api";
+type AppApiPath = "/api"
+  | "/api/auth/[...nextauth]";
 
 type TypeofAppApi = {
   "/api": typeof import("app/api/route.ts");
+  "/api/auth/[...nextauth]": typeof import("app/api/auth/[...nextauth]/route.ts");
 };
 
 type PagesRoutePath = "";

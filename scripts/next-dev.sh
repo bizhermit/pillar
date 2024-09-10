@@ -13,4 +13,4 @@ if [ -z "$NEXT_PORT" ]; then
   export NEXT_PORT=3000
 fi
 
-npx next dev --turbo -p $NEXT_PORT
+npx next dev -p $NEXT_PORT

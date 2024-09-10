@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
 import { defaultLayoutTheme, LayoutProvider, LayoutTheme } from "../components/react/hooks/layout";
 import "../components/styles/index.scss";
@@ -32,9 +33,11 @@ export default function RootLayout({
       data-theme={layoutTheme}
     >
       <body>
-        <LayoutProvider defaultLayoutTheme={layoutTheme}>
-          {children}
-        </LayoutProvider>
+        <SessionProvider>
+          <LayoutProvider defaultLayoutTheme={layoutTheme}>
+            {children}
+          </LayoutProvider>
+        </SessionProvider>
       </body>
     </html>
   );
