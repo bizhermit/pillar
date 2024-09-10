@@ -17,7 +17,7 @@ const Layout = ({ children }: Props) => {
       content={children}
     >
       <NavMenuLink
-        url="/user"
+        url="/home"
         icon={<HomeIcon />}
       >
         HOME

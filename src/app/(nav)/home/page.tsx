@@ -1,4 +1,4 @@
-import { auth } from "src/auth";
+import { auth } from "@/auth";
 
 const Page = async () => {
   const session = await auth();

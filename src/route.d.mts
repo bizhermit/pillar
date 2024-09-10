@@ -2,6 +2,7 @@
 // do not edit
 
 type AppRoutePath = "/"
+  | "/home"
   | "/sandbox"
   | "/sandbox/element"
   | "/sandbox/intercepting-routes"
@@ -23,8 +24,7 @@ type AppRoutePath = "/"
   | "/sandbox/paralell-route-modal/[id]"
   | "/sandbox/paralell-routes"
   | "/sandbox/paralell-routes/hoge"
-  | "/sign-in"
-  | "/user";
+  | "/sign-in";
 
 type AppApiPath = "/api"
   | "/api/auth/[...nextauth]";

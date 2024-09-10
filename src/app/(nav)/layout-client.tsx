@@ -1,13 +1,16 @@
 "use client";
 
+import { signInPageUrl } from "@/auth/consts";
 import { Button } from "@/react/elements/button";
-import { signOut } from "../../../auth";
+import { signOut } from "next-auth/react";
 
 export const SignOutButton = () => {
   return (
     <Button
       onClick={async () => {
-        signOut();
+        await signOut({
+          callbackUrl: signInPageUrl,
+        });
       }}
     >
       SignOut

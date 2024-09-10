@@ -1,5 +1,4 @@
-import { NextRequest } from "next/server";
-import { auth } from "./auth";
+import { auth } from "@/auth";
 
 export const config = {
   matcher: [
@@ -7,6 +6,4 @@ export const config = {
   ],
 };
 
-export const middleware = auth(async (req: NextRequest) => {
-  console.log(req.nextUrl);
-});
+export const middleware = auth;
