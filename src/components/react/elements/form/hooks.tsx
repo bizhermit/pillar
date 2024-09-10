@@ -60,6 +60,7 @@ export const useFormItemCore = <
   defaultValue,
   dataItem: $dataItem,
   preventCollectForm,
+  autoFocus,
   onChange,
   onEdit,
   ...props
@@ -272,6 +273,7 @@ export const useFormItemCore = <
       },
       dataItem,
       preventCollectForm,
+      autoFocus,
     });
     return () => {
       unmount();
@@ -326,6 +328,7 @@ export const useFormItemCore = <
     set: setValue,
     // reset,
     clear,
+    autoFocus,
     props,
     attrs: {
       "data-required": $required,

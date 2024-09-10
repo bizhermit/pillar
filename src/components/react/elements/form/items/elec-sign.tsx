@@ -244,6 +244,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
           width={width || 500}
           height={height || 200}
           tabIndex={fi.disabled ? undefined : (fi.tabIndex ?? 0)}
+          autoFocus={fi.autoFocus}
         />
         {fi.editable &&
           <div className="ipt-elec-sign-btns">

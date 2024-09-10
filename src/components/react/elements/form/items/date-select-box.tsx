@@ -666,6 +666,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             disabled={fi.disabled}
             readOnly={fi.readOnly}
             tabIndex={fi.tabIndex}
+            autoFocus={fi.autoFocus}
             maxLength={4}
             autoComplete="off"
             inputMode="numeric"

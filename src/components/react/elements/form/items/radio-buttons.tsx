@@ -142,7 +142,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
         className={joinClassNames("ipt-items", props.className)}
         ref={ref}
       >
-        {origin.map(item => {
+        {origin.map((item, i) => {
           const v = item[vdn];
           const s = item[sdn];
           const disabled = fi.disabled || s === "disabled";
@@ -161,6 +161,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
                 disabled={disabled}
                 readOnly={readonly}
                 tabIndex={fi.tabIndex}
+                autoFocus={i === 0 && fi.autoFocus}
                 checked={!empty && equals(v, fi.value[vdn])}
                 data-invalid={fi.attrs["data-invalid"]}
                 onChange={e => {

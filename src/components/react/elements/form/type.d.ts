@@ -37,6 +37,7 @@ type FormItemOptions<
   defaultValue?: V | DataItem.NullValue;
   dataItem?: D;
   preventCollectForm?: boolean;
+  autoFocus?: boolean;
   onChange?: (value: IV | DataItem.NullValue, params: {
     before: IV | DataItem.NullValue;
   }) => void;

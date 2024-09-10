@@ -58,6 +58,7 @@ export const SignInForm = (props: Props) => {
           placeholder={signIn_email.label}
           hideMessage
           hook={email.hook}
+          autoFocus
         />
         <PasswordBox
           className={css.input}

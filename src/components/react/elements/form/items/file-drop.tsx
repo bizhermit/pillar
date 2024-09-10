@@ -130,6 +130,7 @@ export const FileDrop = <D extends DataItem.$file | undefined>({
           <div
             className="ipt-file-drop-area"
             tabIndex={fi.disabled ? undefined : (fi.tabIndex ?? 0)}
+            autoFocus={fi.autoFocus}
             data-click={!preventClick}
             onClick={preventClick ? undefined : click}
             onKeyDown={preventClick ? undefined : (e) => {
