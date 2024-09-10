@@ -97,6 +97,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
+          autoFocus={fi.autoFocus}
           defaultValue={fi.value ?? ""}
           maxLength={19}
           autoComplete={autoComplete ?? "off"}

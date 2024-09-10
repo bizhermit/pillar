@@ -22,6 +22,7 @@ type FormItemMountProps = {
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
   preventCollectForm: boolean | undefined;
   noInput?: boolean;
+  autoFocus?: boolean;
 };
 
 type FormState = "init" | "submit" | "reset" | "" | "nothing";

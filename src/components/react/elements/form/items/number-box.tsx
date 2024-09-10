@@ -180,6 +180,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
+          autoFocus={fi.autoFocus}
           defaultValue={parseFormattedValue(fi.value)}
           maxLength={fi.dataItem.maxLength}
           autoComplete="off"

@@ -148,7 +148,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
         className={joinClassNames("ipt-items", props.className)}
         ref={ref}
       >
-        {origin.map(item => {
+        {origin.map((item, i) => {
           const v = item[vdn];
           const s = item[sdn];
           const disabled = fi.disabled || s === "disabled";
@@ -168,6 +168,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
                 disabled={disabled}
                 readOnly={readonly}
                 tabIndex={fi.tabIndex}
+                autoFocus={i === 0 && fi.autoFocus}
                 checked={!empty && selected}
                 data-invalid={fi.attrs["data-invalid"]}
                 onChange={e => {

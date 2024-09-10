@@ -102,6 +102,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
           ref={bref}
           onClick={click}
           disabled={!fi.editable}
+          autoFocus={fi.autoFocus}
         >
           {props.children ?? "ファイルを選択"}
         </Button>

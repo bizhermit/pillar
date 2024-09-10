@@ -339,6 +339,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           disabled={fi.disabled}
           readOnly={fi.readOnly || loading}
           tabIndex={fi.tabIndex}
+          autoFocus={fi.autoFocus}
           autoComplete="off"
           data-invalid={fi.attrs["data-invalid"]}
           onClick={clickInput}

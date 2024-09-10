@@ -98,6 +98,7 @@ export const CheckBox = <True extends boolean | number | string, False extends b
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
+          autoFocus={fi.autoFocus}
           checked={equals(fi.dataItem.trueValue, fi.value)}
           onChange={e => {
             if (!fi.editable) return;

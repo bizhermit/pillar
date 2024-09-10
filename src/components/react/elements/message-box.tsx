@@ -234,6 +234,7 @@ export const useMessageBox = () => {
             buttons: [
               {
                 children: "OK",
+                autoFocus: true,
                 ...buttonProps,
                 onClick: () => {
                   close();
@@ -254,6 +255,7 @@ export const useMessageBox = () => {
               {
                 children: "キャンセル",
                 outline: true,
+                autoFocus: true,
                 ...negativeButtonProps,
                 onClick: () => {
                   close(false);

@@ -47,25 +47,26 @@ export const useFormItemCore = <
   V extends any,
   IV extends any = V
 >({
-    hook,
-    name,
-    label,
-    disabled,
-    readOnly,
-    required,
-    refs,
-    hideClearButton,
-    hideMessage,
-    tabIndex,
-    defaultValue,
-    dataItem: $dataItem,
-    preventCollectForm,
-    onChange,
-    onEdit,
-    ...props
-  }: FormItemOptions<D, V, any>,
-    cp: FormItemCoreArgs<SD, D, V, IV>
-  ) => {
+  hook,
+  name,
+  label,
+  disabled,
+  readOnly,
+  required,
+  refs,
+  hideClearButton,
+  hideMessage,
+  tabIndex,
+  defaultValue,
+  dataItem: $dataItem,
+  preventCollectForm,
+  autoFocus,
+  onChange,
+  onEdit,
+  ...props
+}: FormItemOptions<D, V, any>,
+  cp: FormItemCoreArgs<SD, D, V, IV>
+) => {
   const id = useRef(getId());
   const form = use(FormContext);
   const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
@@ -272,6 +273,7 @@ export const useFormItemCore = <
       },
       dataItem,
       preventCollectForm,
+      autoFocus,
     });
     return () => {
       unmount();
@@ -326,6 +328,7 @@ export const useFormItemCore = <
     set: setValue,
     // reset,
     clear,
+    autoFocus,
     props,
     attrs: {
       "data-required": $required,
@@ -368,6 +371,7 @@ export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
     value,
     setValue: set,
     message,
+    focus: () => con.current?.focus(),
     hook: (c) => {
       con.current = c;
       return ([v, r]) => {

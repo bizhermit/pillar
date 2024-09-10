@@ -92,6 +92,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
+          autoFocus={fi.autoFocus}
           defaultValue={fi.value ?? ""}
           maxLength={minimumValidation ? undefined : (fi.dataItem.length ?? fi.dataItem.maxLength)}
           autoComplete={autoComplete ?? "off"}

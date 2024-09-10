@@ -13,6 +13,7 @@ type FormItemHook<IV extends any> = {
   value: IV | DataItem.NullValue;
   setValue: (value: IV | DataItem.NullValue, edit: boolean) => void;
   message: DataItem.ValidationResult | null | undefined;
+  focus: () => void;
   hook: (params: FormItemHookConnectionParams<IV>) => (params: [
     value: IV | DataItem.NullValue,
     result?: DataItem.ValidationResult | null | undefined,
@@ -36,6 +37,7 @@ type FormItemOptions<
   defaultValue?: V | DataItem.NullValue;
   dataItem?: D;
   preventCollectForm?: boolean;
+  autoFocus?: boolean;
   onChange?: (value: IV | DataItem.NullValue, params: {
     before: IV | DataItem.NullValue;
   }) => void;
