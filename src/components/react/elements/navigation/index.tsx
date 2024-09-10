@@ -1,13 +1,18 @@
 import { type ReactNode } from "react";
 import { CrossIcon, MenuIcon, MenuLeftIcon, MenuRightIcon } from "../icon";
+import { joinClassNames } from "../utilities";
 import { NavSizeAutoButton } from "./client-components";
 import { navMinId, navOpenId, navToggleRadioName, navVisId } from "./consts";
 
 type NavigationProps = {
-  header: ReactNode;
+  header?: ReactNode;
+  headerClassName?: string;
   footer?: ReactNode;
+  footerClassName?: string;
   content: ReactNode;
+  contentClassName?: string;
   children: ReactNode;
+  navClassName?: string;
 };
 
 export const Navigation = (props: NavigationProps) => {
@@ -48,7 +53,7 @@ export const Navigation = (props: NavigationProps) => {
           </label>
         </div>
         <div className="nav">
-          <div className="nav-contents">
+          <div className={joinClassNames("nav-contents", props.navClassName)}>
             {props.children}
           </div>
         </div>
@@ -59,15 +64,15 @@ export const Navigation = (props: NavigationProps) => {
             <MenuIcon />
           </label>
         </div>
-        <div className="header">
+        <div className={joinClassNames("header", props.headerClassName)}>
           {props.header}
         </div>
       </header>
-      <main className="main">
+      <main className={joinClassNames("main", props.contentClassName)}>
         {props.content}
       </main>
       {props.footer &&
-        <footer className="footer">
+        <footer className={joinClassNames("footer", props.footerClassName)}>
           {props.footer}
         </footer>
       }
