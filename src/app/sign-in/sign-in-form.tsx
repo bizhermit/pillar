@@ -3,6 +3,7 @@
 import { authErrorCallbackUrlQueryName, signIn_email, signIn_password } from "@/auth/consts";
 import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
+import { useFormItem } from "@/react/elements/form/hooks";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { useMessageBox } from "@/react/elements/message-box";
@@ -19,6 +20,7 @@ export const SignInForm = (props: Props) => {
   const msgBox = useMessageBox();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const email = useFormItem();
 
   return (
     <div className={css.wrap}>
@@ -44,6 +46,8 @@ export const SignInForm = (props: Props) => {
             msgBox.alert({
               body: "SignIn Error",
               color: "danger",
+            }).finally(() => {
+              email.focus();
             });
           }
         }}
@@ -53,6 +57,7 @@ export const SignInForm = (props: Props) => {
           dataItem={signIn_email}
           placeholder={signIn_email.label}
           hideMessage
+          hook={email.hook}
         />
         <PasswordBox
           className={css.input}
