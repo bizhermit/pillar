@@ -7,8 +7,8 @@ import { FormButton } from "@/react/elements/form/form-button";
 import { NumberBox } from "@/react/elements/form/items/number-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
-import { useFetchApi } from "@/react/hooks/fetch";
-import fetchApi from "@/utilities/fetch";
+import { useFetch } from "@/react/hooks/fetch";
+import $fetch from "@/utilities/fetch";
 
 type Req = TypeofAppApi["/api"]["GET"]["req"];
 type Res = TypeofAppApi["/api"]["GET"]["res"];
@@ -17,13 +17,13 @@ type Res = TypeofAppApi["/api"]["GET"]["res"];
 // type $Res = Api.Response<"/api", "get">;
 
 const Page = () => {
-  const api = useFetchApi();
+  const api = useFetch();
 
   return (
     <div>
       <Button
         onClick={async ({ unlock }) => {
-          const res = await fetchApi.get("/sandbox/fetch/api");
+          const res = await $fetch.get("/sandbox/fetch/api");
           console.log(res);
           unlock();
         }}
@@ -43,7 +43,7 @@ const Page = () => {
                   message: {
                     body: `piyo: ${res.data.req.piyo}`,
                   },
-                }
+                };
               }
             });
             console.log(data);
@@ -69,7 +69,7 @@ const Page = () => {
                   messageClosed: async () => {
                     console.log("msg closed");
                   },
-                }
+                };
               }
             });
             console.log(data);
@@ -85,7 +85,7 @@ const Page = () => {
         onClick={async ({ unlock }) => {
           try {
             const ret = await api.get("/home/api");
-            console.log(ret.datetime);
+            console.log(ret.data.datetime);
           } catch (e) {
             console.log(e);
           }

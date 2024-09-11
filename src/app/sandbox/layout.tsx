@@ -2,7 +2,7 @@ import { CloudIcon, ExLinkIcon, HomeIcon, TextBoxIcon } from "@/react/elements/i
 import Link from "@/react/elements/link";
 import { Navigation } from "@/react/elements/navigation";
 import { NavigationMenu, NavMenuLink, NavMenuNest } from "@/react/elements/navigation/menu";
-import { FetchApiProvider } from "@/react/hooks/fetch";
+import { FetchProvider } from "@/react/hooks/fetch";
 import { ReactNode } from "react";
 import { InputsAsClient } from "./inputs-client";
 import { InputsAsServer } from "./inputs-server";
@@ -10,7 +10,7 @@ import css from "./layout.module.scss";
 
 const Layout = (props: { children: ReactNode; }) => {
   return (
-    <FetchApiProvider>
+    <FetchProvider>
       <Navigation
         header={
           <h1>
@@ -104,7 +104,7 @@ const Layout = (props: { children: ReactNode; }) => {
           </li>
         </ul>
       </Navigation>
-    </FetchApiProvider>
+    </FetchProvider>
   );
 };
 

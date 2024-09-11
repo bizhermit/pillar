@@ -91,6 +91,7 @@ export const apiMethodHandler = <
             type: "e",
             title: "バリデーションエラー",
             body: validationError.map(item => item.msg).join("\n"),
+            buttonText: "閉じる",
           }, { validationResults });
         },
       });

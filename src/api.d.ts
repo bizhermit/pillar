@@ -4,6 +4,7 @@ declare namespace Api {
     type: "e" | "w" | "i";
     title?: string;
     body?: string;
+    buttonText?: string;
   };
 
   type Methods = "get" | "put" | "post" | "delete";

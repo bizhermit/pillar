@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, type ReactNode, use } from "react";
-import fetchApi, { FetchFailedResponse, FetchOptions, FetchResponse } from "../../utilities/fetch";
+import $fetch, { FetchFailedResponse, FetchOptions, FetchResponse, optimizeHeader } from "../../utilities/fetch";
 import { $alert, $confirm, MessageBoxAlertProps, MessageBoxConfirmProps } from "../elements/message-box";
 
 type FetchHookMessageBoxOptions =
@@ -27,51 +27,11 @@ type FetchHookOptions<U extends ApiPath, M extends Api.Methods> = FetchOptions &
   quiet?: boolean;
 };
 
-type FetchApiContextProps<EndPoint extends ApiPath> = {
-  get: <U extends EndPoint>(
-    url: U,
-    params?: Api.Request<U, "get"> | FormData | null,
-    options?: FetchHookOptions<U, "get">
-  ) => Promise<Api.Response<U, "get">>;
-  put: <U extends EndPoint>(
-    url: U,
-    params?: Api.Request<U, "put"> | FormData | null,
-    options?: FetchHookOptions<U, "put">
-  ) => Promise<Api.Response<U, "put">>;
-  post: <U extends EndPoint>(
-    url: U,
-    params?: Api.Request<U, "post"> | FormData | null,
-    options?: FetchHookOptions<U, "post">
-  ) => Promise<Api.Response<U, "post">>;
-  delete: <U extends EndPoint>(
-    url: U,
-    params?: Api.Request<U, "delete"> | FormData | null,
-    options?: FetchHookOptions<U, "delete">
-  ) => Promise<Api.Response<U, "delete">>;
+type FetchContextProps = {
+  headers?: FetchOptions["headers"];
 };
 
-export const FetchApiContext = createContext<FetchApiContextProps<ApiPath>>({
-  get: () => {
-    throw new Error("no fetch-api provider.");
-  },
-  put: () => {
-    throw new Error("no fetch-api provider.");
-  },
-  post: () => {
-    throw new Error("no fetch-api provider.");
-  },
-  delete: () => {
-    throw new Error("no fetch-api provider.");
-  },
-});
-
-export const useFetchApi = () => {
-  return use(FetchApiContext);
-};
-
-type FetchApiProviderProps = {
-  children: ReactNode;
-};
+export const FetchContext = createContext<FetchContextProps>({});
 
 const getColor = (msgType: Api.Message["type"] | undefined): StyleColor => {
   switch (msgType) {
@@ -81,14 +41,31 @@ const getColor = (msgType: Api.Message["type"] | undefined): StyleColor => {
   }
 };
 
-export const FetchApiProvider = (props: FetchApiProviderProps) => {
+type FetchProviderProps = {
+  headers?: FetchOptions["headers"];
+  children: ReactNode;
+};
+
+export const FetchProvider = (props: FetchProviderProps) => {
+  return (
+    <FetchContext.Provider value={{
+      headers: props.headers
+    }}>
+      {props.children}
+    </FetchContext.Provider>
+  );
+};
+
+export const useFetch = <EndPoint extends ApiPath>() => {
+  const ctx = use(FetchContext);
+
   const impl = async <U extends ApiPath, M extends Api.Methods>(
     url: U,
     method: M,
     params?: Api.Request<U, M> | FormData | null,
     opts?: FetchHookOptions<U, M>
   ) => {
-    return new Promise<Api.Response<U, M>>(async (resolve, reject) => {
+    return new Promise<FetchResponse<Api.Response<U, M>>>(async (resolve, reject) => {
       const showMsgBox = (message: Api.Message | undefined, ret: FetchHookCallbackReturnType | undefined | void) => {
         if (ret?.quiet) return;
         if (opts?.quiet && ret?.quiet !== false) return;
@@ -102,6 +79,11 @@ export const FetchApiProvider = (props: FetchApiProviderProps) => {
         if (msg) {
           if (ret?.messageBox === "confirm") {
             $confirm({
+              ...(msg.buttonText ? {
+                positiveButtonProps: {
+                  children: msg.buttonText,
+                }
+              } : null),
               ...msg,
               color: msg.color ?? getColor(msg.type),
             }).then((v) => {
@@ -109,6 +91,11 @@ export const FetchApiProvider = (props: FetchApiProviderProps) => {
             });
           } else {
             $alert({
+              ...(msg.buttonText ? {
+                buttonProps: {
+                  children: msg.buttonText,
+                },
+              } : null),
               ...msg,
               color: msg.color ?? getColor(msg.type),
             }).finally(() => {
@@ -119,14 +106,17 @@ export const FetchApiProvider = (props: FetchApiProviderProps) => {
       };
 
       try {
-        const res = await fetchApi[method](url, params as any, {
+        const res = await $fetch[method](url, params as any, {
           contentType: opts?.contentType,
-          headers: opts?.headers,
+          headers: {
+            ...optimizeHeader(ctx.headers),
+            ...optimizeHeader(opts?.headers),
+          },
         });
 
         if (res.ok) {
           showMsgBox(res.message, opts?.done?.(res as FetchResponse<Api.Response<U, M>>));
-          resolve(res.data as Api.Response<U, M>);
+          resolve(res as FetchResponse<Api.Response<U, M>>);
           return;
         }
 
@@ -139,14 +129,26 @@ export const FetchApiProvider = (props: FetchApiProviderProps) => {
     });
   };
 
-  return (
-    <FetchApiContext.Provider value={{
-      get: (url, params, opts) => impl(url, "get", params, opts),
-      put: (url, params, opts) => impl(url, "put", params, opts),
-      post: (url, params, opts) => impl(url, "post", params, opts),
-      delete: (url, params, opts) => impl(url, "delete", params, opts),
-    }}>
-      {props.children}
-    </FetchApiContext.Provider>
-  );
+  return {
+    get: <U extends EndPoint>(
+      url: U,
+      params?: Api.Request<U, "get"> | FormData | null,
+      options?: FetchHookOptions<U, "get">
+    ) => impl(url, "get", params, options),
+    put: <U extends EndPoint>(
+      url: U,
+      params?: Api.Request<U, "put"> | FormData | null,
+      options?: FetchHookOptions<U, "put">
+    ) => impl(url, "put", params, options),
+    post: <U extends EndPoint>(
+      url: U,
+      params?: Api.Request<U, "post"> | FormData | null,
+      options?: FetchHookOptions<U, "post">
+    ) => impl(url, "post", params, options),
+    delete: <U extends EndPoint>(
+      url: U,
+      params?: Api.Request<U, "delete"> | FormData | null,
+      options?: FetchHookOptions<U, "delete">
+    ) => impl(url, "delete", params, options),
+  } as const;
 };
