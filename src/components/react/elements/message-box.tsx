@@ -135,18 +135,18 @@ type MessageBoxBaseProps = Pick<MessageBoxProps,
   | "color"
 >
 
-type MessageBoxCustomProps<T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps> = MessageBoxShowOptions & P & {
+export type MessageBoxCustomProps<T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps> = MessageBoxShowOptions & P & {
   component: (props: {
     props: Omit<P, keyof MessageBoxShowOptions>;
     close: (value: T) => Promise<void>;
   }) => MessageBoxProps;
 };
 
-type MessageBoxAlertProps = MessageBoxShowOptions & MessageBoxBaseProps & {
+export type MessageBoxAlertProps = MessageBoxShowOptions & MessageBoxBaseProps & {
   buttonProps?: MessageBoxButtonProps;
 };
 
-type MessageBoxConfirmProps = MessageBoxShowOptions & MessageBoxBaseProps & {
+export type MessageBoxConfirmProps = MessageBoxShowOptions & MessageBoxBaseProps & {
   positiveButtonProps?: MessageBoxButtonProps;
   negativeButtonProps?: MessageBoxButtonProps;
 };

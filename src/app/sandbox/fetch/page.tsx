@@ -2,6 +2,12 @@
 "use client";
 
 import { Button } from "@/react/elements/button";
+import { Form } from "@/react/elements/form";
+import { FormButton } from "@/react/elements/form/form-button";
+import { NumberBox } from "@/react/elements/form/items/number-box";
+import { TextBox } from "@/react/elements/form/items/text-box";
+import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
+import { useFetchApi } from "@/react/hooks/fetch";
 import fetchApi from "@/utilities/fetch";
 
 type Req = TypeofAppApi["/api"]["GET"]["req"];
@@ -11,15 +17,17 @@ type Res = TypeofAppApi["/api"]["GET"]["res"];
 // type $Res = Api.Response<"/api", "get">;
 
 const Page = () => {
+  const api = useFetchApi();
+
   return (
     <div>
       <Button
         onClick={async ({ unlock }) => {
           const res = await fetchApi.get("/api");
           console.log(res);
-          res.data?.req.hoge;
-          res.data?.req.fuga;
           if (res.ok) {
+            res.data?.req.hoge;
+            res.data?.req.fuga;
             res.data.count;
           }
           unlock();
@@ -27,6 +35,78 @@ const Page = () => {
       >
         fetch
       </Button>
+      <Button
+        onClick={async ({ unlock }) => {
+          try {
+            const data = await api.get("/api", {
+              hoge: "string",
+              fuga: 3,
+              piyo: true,
+            }, {
+              done: (res) => {
+                return {
+                  message: {
+                    body: `piyo: ${res.data.req.piyo}`,
+                  },
+                }
+              }
+            });
+            console.log(data);
+          } catch (e) {
+            console.log(e);
+          }
+          unlock();
+        }}
+      >
+        fetch(hook) done
+      </Button>
+      <Button
+        onClick={async ({ unlock }) => {
+          try {
+            const data = await api.get("/api", {}, {
+              failed: (res) => {
+                console.log(res);
+                return {
+                  message: {
+                    // body: "hogehoge",
+                    // title: null,
+                  },
+                  messageClosed: async () => {
+                    console.log("msg closed");
+                  },
+                }
+              }
+            });
+            console.log(data);
+          } catch (e) {
+            console.log(e);
+          }
+          unlock();
+        }}
+      >
+        fetch(hook) failed
+      </Button>
+      <Form
+        onSubmit={async ({ getBindData }) => {
+          await api.get("/api", getBindData());
+        }}
+      >
+        <TextBox
+          name="hoge"
+        />
+        <NumberBox
+          name="fuga"
+        />
+        <ToggleSwitch
+          name="piyo"
+        />
+        <FormButton type="submit">
+          submit
+        </FormButton>
+        <FormButton type="reset">
+          reset
+        </FormButton>
+      </Form>
     </div>
   );
 };
