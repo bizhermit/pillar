@@ -2,7 +2,7 @@
 
 import { createContext, type ReactNode, use } from "react";
 import fetchApi, { FetchFailedResponse, FetchOptions, FetchResponse } from "../../utilities/fetch";
-import { MessageBoxAlertProps, MessageBoxConfirmProps, useMessageBox } from "../elements/message-box";
+import { $alert, $confirm, MessageBoxAlertProps, MessageBoxConfirmProps } from "../elements/message-box";
 
 type FetchHookMessageBoxOptions =
   | {
@@ -82,8 +82,6 @@ const getColor = (msgType: Api.Message["type"] | undefined): StyleColor => {
 };
 
 export const FetchApiProvider = (props: FetchApiProviderProps) => {
-  const msgBox = useMessageBox();
-
   const impl = async <U extends ApiPath, M extends Api.Methods>(
     url: U,
     method: M,
@@ -103,14 +101,14 @@ export const FetchApiProvider = (props: FetchApiProviderProps) => {
 
         if (msg) {
           if (ret?.messageBox === "confirm") {
-            msgBox.confirm({
+            $confirm({
               ...msg,
               color: msg.color ?? getColor(msg.type),
             }).then((v) => {
               ret?.messageClosed?.(v);
-            })
+            });
           } else {
-            msgBox.alert({
+            $alert({
               ...msg,
               color: msg.color ?? getColor(msg.type),
             }).finally(() => {
@@ -138,8 +136,8 @@ export const FetchApiProvider = (props: FetchApiProviderProps) => {
         showMsgBox(undefined, opts?.failed?.());
         reject(e);
       }
-    })
-  }
+    });
+  };
 
   return (
     <FetchApiContext.Provider value={{

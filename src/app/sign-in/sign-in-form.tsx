@@ -6,7 +6,7 @@ import { FormButton } from "@/react/elements/form/form-button";
 import { useFormItem } from "@/react/elements/form/hooks";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
-import { useMessageBox } from "@/react/elements/message-box";
+import { $alert } from "@/react/elements/message-box";
 import useRouter from "@/react/hooks/router";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -17,7 +17,6 @@ type Props = {
 };
 
 export const SignInForm = (props: Props) => {
-  const msgBox = useMessageBox();
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = useFormItem();
@@ -43,7 +42,7 @@ export const SignInForm = (props: Props) => {
             }
             router.push(props.redirectUrl);
           } catch (e) {
-            msgBox.alert({
+            $alert({
               body: "SignIn Error",
               color: "danger",
             }).finally(() => {
