@@ -5,9 +5,9 @@ type Options = {
 };
 
 export type LoadableArray<T extends { [v: string | number | symbol]: any } = { [v: string | number | symbol]: any }> =
-  Array<T> | Readonly<Array<T>> | (() => Array<T>) | (() => Promise<Array<T>>);
+  Readonlyable<Array<T>> | (() => Array<T>) | (() => Promise<Array<T>>);
 
-const isArray = <T extends { [v: string | number | symbol]: any } | Promise<any> = { [v: string | number | symbol]: any }>(array: LoadableArray<T> | Promise<Array<T>> | null | undefined): array is (Array<T> | Readonly<Array<T>>) => {
+const isArray = <T extends { [v: string | number | symbol]: any } | Promise<any> = { [v: string | number | symbol]: any }>(array: LoadableArray<T> | Promise<Array<T>> | null | undefined): array is (Readonlyable<Array<T>>) => {
   return Array.isArray(array);
 };
 

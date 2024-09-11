@@ -9,7 +9,7 @@ import { $timeParse } from "./time/parse";
 
 export const parseBasedOnDataItem = (
   data: { [v: string]: any } | Array<any>,
-  dataItems: Array<DataItem.$object> | Readonly<Array<DataItem.$object>>,
+  dataItems: Readonlyable<Array<DataItem.$object>>,
   parentName?: string
 ) => {
   const results: Array<DataItem.ValidationResult> = [];

@@ -18,6 +18,10 @@
           [
             "@",
             "src/components"
+          ],
+          [
+            "$",
+            "src/app"
           ]
         ],
         "extensions": [

@@ -107,20 +107,20 @@ const update = <U extends ApiPath, M extends Api.Methods>(url: U, method: M, par
   return impl<Api.Response<U, M>>(ctx.pathname, { method, ...convertToRequestInit(ctx.data, options) });
 };
 
-const Fetch = {
-  get: <U extends ApiPath>(url: U, params: Api.Request<U, "get"> | FormData, options?: FetchOptions) => {
-    const ctx = getDynamicPathnameContext(url, params, { appendQuery: true });
+const fetchApi = {
+  get: <U extends ApiPath>(url: U, params?: Api.Request<U, "get"> | FormData | null, options?: FetchOptions) => {
+    const ctx = getDynamicPathnameContext(url, params as any, { appendQuery: true });
     return impl<Api.Response<U, "get">>(ctx.pathname, { method: "get", ...convertToRequestInit(ctx.data, options, true) });
   },
-  put: <U extends ApiPath>(url: U, params: Api.Request<U, "put"> | FormData, options?: FetchOptions) => {
+  put: <U extends ApiPath>(url: U, params?: Api.Request<U, "put"> | FormData | null, options?: FetchOptions) => {
     return update(url, "put", params, options);
   },
-  post: <U extends ApiPath>(url: U, params: Api.Request<U, "post"> | FormData, options?: FetchOptions) => {
+  post: <U extends ApiPath>(url: U, params?: Api.Request<U, "post"> | FormData | null, options?: FetchOptions) => {
     return update(url, "post", params, options);
   },
-  delete: <U extends ApiPath>(url: U, params: Api.Request<U, "delete"> | FormData, options?: FetchOptions) => {
+  delete: <U extends ApiPath>(url: U, params?: Api.Request<U, "delete"> | FormData | null, options?: FetchOptions) => {
     return update(url, "delete", params, options);
   },
 };
 
-export default Fetch;
+export default fetchApi;
