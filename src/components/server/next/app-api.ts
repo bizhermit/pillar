@@ -17,17 +17,23 @@ export class ApiError extends Error {
 
 }
 
+interface Handler<Req extends Readonlyable<Array<DataItem.$object>>, Res extends { [v: string]: any } | void> {
+  (req: NextRequest, arg: { params: { [v: string]: string | Array<string> } }): Promise<NextResponse<any>>;
+  req: DataItem.Props<Req>;
+  res: Res;
+}
+
 export const apiMethodHandler = <
-  Req extends Array<DataItem.$object> = Array<DataItem.$object>,
+  Req extends Readonlyable<Array<DataItem.$object>>,
   Res extends { [v: string]: any } | void = void
 >(process?: (context: {
   req: NextRequest;
-  getParams: (dataItems: Req) => Promise<DataItem.Props<Req>>;
+  getParams: (dataItems: Readonlyable<Req>) => Promise<DataItem.Props<Req>>;
   addValidationResults: (results: Array<DataItem.ValidationResult>) => void;
   hasValidationError: () => boolean;
   throwIfHasValidationError: () => void;
 }) => Promise<Res>) => {
-  return async (req: NextRequest, { params }: { params: { [v: string]: string | Array<string> } }) => {
+  return (async (req: NextRequest, { params }: { params: { [v: string]: string | Array<string> } }) => {
     if (process == null) {
       return NextResponse.json({}, { status: 404 });
     }
@@ -113,5 +119,5 @@ export const apiMethodHandler = <
         data,
       }, { status: status ?? 500 });
     }
-  };
+  }) as Handler<Req, Res>;
 };
