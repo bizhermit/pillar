@@ -4,6 +4,7 @@ import { createContext, useEffect, useMemo, useReducer, useRef, type Dispatch, t
 import { clone } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
+import { LoadingBar } from "../loading";
 
 type FormItemState = {
   id: string;
@@ -322,6 +323,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       getValue: getValue,
       setValue: setValue,
     }}>
+      {(formState === "submit" || formState === "init") && <LoadingBar />}
       <form
         {...props}
         ref={$ref}
