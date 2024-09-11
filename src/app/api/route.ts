@@ -1,25 +1,29 @@
 import { $bool } from "@/data-items/bool";
 import { $num } from "@/data-items/number";
+import { $optional, $required } from "@/data-items/overwrite";
 import { $str } from "@/data-items/string";
 import { apiMethodHandler } from "@/server/next/app-api";
 
+const hoge = $str({ name: "hoge", required: true });
+const fuga = $num({ name: "fuga", required: false });
+const piyo = $bool({ name: "piyo", required: true });
+
 const GET_ARGS = [
-  $str({ name: "hoge", required: true }),
-  $num({ name: "fuga", required: false }),
-  $bool({ name: "piyo", required: true }),
+  $optional(hoge),
+  fuga,
+  piyo,
 ];
 
 export const GET = apiMethodHandler(async (props) => {
-  const data = await props.getParams(GET_ARGS);
-  // const data = await props.getParams([
-  //   $str({ name: "hoge", required: true }),
-  //   $num({ name: "fuga", required: false }),
-  //   $bool({ name: "piyo", required: true }),
-  // ] as const);
+  // const data = await props.getParams(GET_ARGS);
+  const data = await props.getParams([
+    $optional(hoge),
+    $required(fuga),
+    piyo,
+  ]);
   // eslint-disable-next-line no-console
   console.log(data);
-  // data.fuga
-  data.fuga;
+  data.hoge;
   props.throwIfHasValidationError();
   // const count = await db.user.count();
   return {

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 "use client";
 
 import { Button } from "@/react/elements/button";
@@ -16,6 +17,7 @@ const Page = () => {
         onClick={async ({ unlock }) => {
           const res = await fetchApi.get("/api");
           console.log(res);
+          res.data?.req.hoge;
           res.data?.req.fuga;
           if (res.ok) {
             res.data.count;
