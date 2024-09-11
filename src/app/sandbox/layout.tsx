@@ -26,6 +26,13 @@ const Layout = (props: { children: ReactNode; }) => {
       >
         <NavigationMenu>
           <NavMenuLink
+            url="/"
+            icon={<HomeIcon />}
+            selected="match"
+          >
+            index
+          </NavMenuLink>
+          <NavMenuLink
             url="/sandbox"
             icon={<HomeIcon />}
             selected="match"
