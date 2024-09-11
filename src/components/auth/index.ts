@@ -49,10 +49,17 @@ export const {
   ],
   callbacks: {
     authorized: async ({ auth, request: { nextUrl } }) => {
-      if (nextUrl.pathname === "/" || /^\/(sign-in|sandbox)(\/|$)/.test(nextUrl.pathname)) return true;
+      if (/^(\/|\/api)$/.test(nextUrl.pathname) || /^\/(sign-in|sandbox)(\/|$)/.test(nextUrl.pathname)) return true;
       if (auth?.user != null) return true;
       const url = new URL(signInPageUrl, nextUrl);
       url.searchParams.set(authErrorCallbackUrlQueryName, nextUrl.href);
+      if (/.*\/api(\/|$)/.test(nextUrl.pathname)) return NextResponse.json({
+        message: {
+          type: "e",
+          title: "認証エラー",
+          body: "サインインしてください。",
+        } as const satisfies Api.Message
+      }, { status: 401 });
       return NextResponse.redirect(url);
     },
   },

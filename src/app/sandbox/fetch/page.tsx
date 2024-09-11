@@ -23,13 +23,8 @@ const Page = () => {
     <div>
       <Button
         onClick={async ({ unlock }) => {
-          const res = await fetchApi.get("/api");
+          const res = await fetchApi.get("/sandbox/fetch/api");
           console.log(res);
-          if (res.ok) {
-            res.data?.req.hoge;
-            res.data?.req.fuga;
-            res.data.count;
-          }
           unlock();
         }}
       >
@@ -85,6 +80,19 @@ const Page = () => {
         }}
       >
         fetch(hook) failed
+      </Button>
+      <Button
+        onClick={async ({ unlock }) => {
+          try {
+            const ret = await api.get("/home/api");
+            console.log(ret.datetime);
+          } catch (e) {
+            console.log(e);
+          }
+          unlock();
+        }}
+      >
+        fetch (auth)
       </Button>
       <Form
         onSubmit={async ({ getBindData }) => {
