@@ -5,7 +5,7 @@ const defaultLabel = "値";
 export const $boolValidations = (dataItem: DataItem.ArgObject<DataItem.$boolAny>) => {
   const validations: Array<DataItem.Validation<DataItem.$boolAny>> = [];
 
-  const label = dataItem.label || defaultLabel;
+  const label = dataItem.label || dataItem.name || defaultLabel;
 
   validations.push((p) => {
     if (equals(p.value, p.dataItem.trueValue)) return undefined;

@@ -3,7 +3,7 @@ import { parseNum } from "../../objects/number";
 const defaultLabel = "値";
 
 export const $numParse = <V extends number>({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$num<V> | DataItem.$boolNum<V, V>>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
-  const label = dataItem.label || defaultLabel;
+  const label = dataItem.label || dataItem.name || defaultLabel;
 
   try {
     if (Array.isArray(value) && value.length > 1) {

@@ -10,7 +10,7 @@ export const $timeParse = ({ value, dataItem, fullName }: DataItem.ParseProps<Da
   if (value == null || value === "") return [undefined];
   if (typeof value === "number") return [value];
 
-  const label = dataItem.label || defaultLabel;
+  const label = dataItem.label || dataItem.name || defaultLabel;
   try {
     if (typeof value === "string" && /^\d*$/.test(value)) {
       const num = parseNum(value);

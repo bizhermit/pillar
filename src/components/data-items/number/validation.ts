@@ -5,7 +5,7 @@ const defaultLabel = "値";
 export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$num>> => {
   const validations: Array<DataItem.Validation<DataItem.$num>> = [];
 
-  const label = dataItem.label || defaultLabel;
+  const label = dataItem.label || dataItem.name || defaultLabel;
 
   if (dataItem.required) {
     validations.push((p) => {
