@@ -144,11 +144,12 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     validation: ({ dataItem, iterator }) => {
       const funcs = $dateValidations(dataItem, { skipRequired: allowMissing });
       return (v, p) => {
+        const label = p.dataItem.label || p.dataItem.name || "値";
         if (allowMissing) {
           const required = typeof p.dataItem.required === "function" ? p.dataItem.required(p) : p.dataItem.required;
           if (required) {
             if (v?.y == null && v?.m == null && (p.dataItem.type === "month" || v?.d == null)) {
-              return { type: "e", code: "required", fullName: p.fullName, msg: `${p.dataItem.label || "値"}を入力してください。` };
+              return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を入力してください。` };
             }
           }
         } else {
@@ -158,7 +159,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             if (v.m == null) parts.push("月");
             if (v.d == null) parts.push("日");
             if (parts.length > 0) {
-              return { type: "e", code: "lack", fullName: p.fullName, msg: `${p.dataItem.label ?? "値"}に${parts.join("と")}を入力してください。` };
+              return { type: "e", code: "lack", fullName: p.fullName, msg: `${label}に${parts.join("と")}を入力してください。` };
             }
           }
         }

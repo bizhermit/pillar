@@ -112,7 +112,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
           default: return [
             ({ value, dataItem, fullName }) => {
               if (value != null && value !== "") return undefined;
-              return { type: "e", code: "required", fullName, msg: `${dataItem.label || "値"}を選択してください。` };
+              return { type: "e", code: "required", fullName, msg: `${dataItem.label || dataItem.name || "値"}を選択してください。` };
             }
           ] as Array<DataItem.Validation<any>>;
         }

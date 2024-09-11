@@ -153,7 +153,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           default: return [
             ({ value, dataItem, fullName }) => {
               if (value != null && value !== "") return undefined;
-              return { type: "e", code: "required", fullName, msg: `${dataItem.label || "値"}を選択してください。` };
+              return { type: "e", code: "required", fullName, msg: `${dataItem.label || dataItem.name || "値"}を選択してください。` };
             }
           ] as Array<DataItem.Validation<any>>;
         }
