@@ -58,7 +58,7 @@ export const {
           type: "e",
           title: "認証エラー",
           body: "サインインしてください。",
-        } as const satisfies Api.Message
+        } as const satisfies Api.Message,
       }, { status: 401 });
       return NextResponse.redirect(url);
     },

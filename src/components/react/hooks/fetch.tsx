@@ -149,7 +149,12 @@ export const useFetch = <EndPoint extends ApiPath>() => {
 
         const ret = opts?.failed?.(res, callbackCtx);
         if (unmountedAbort(ret)) return;
-        showMsgBox(res.message, ret);
+        showMsgBox({
+          type: "e",
+          title: `${res.status} | ${res.statusText}`,
+          body: "操作をやり直してください。",
+          ...res.message,
+        }, ret);
         reject(res.statusText);
       } catch (e) {
         const ret = opts?.failed?.(undefined, {
