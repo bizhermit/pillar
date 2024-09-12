@@ -34,6 +34,15 @@ const Page = () => {
       </Button>
       <Button
         onClick={async ({ unlock }) => {
+          const res = await $fetch.post("/sandbox/fetch/api", { hoge: 1 });
+          console.log(res);
+          unlock();
+        }}
+      >
+        fetch (post)
+      </Button>
+      <Button
+        onClick={async ({ unlock }) => {
           try {
             const data = await api.get("/api", {
               hoge: "string",
