@@ -1,4 +1,4 @@
-import { $str } from "@/data-items/string";
+import { $str } from "../data-items/string";
 
 export const signInPageUrl: PagePath = "/sign-in";
 
