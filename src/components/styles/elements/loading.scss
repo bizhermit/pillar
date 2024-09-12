@@ -10,7 +10,7 @@ $bar2Width: 15%;
     overflow: hidden;
     filter: drop-shadow(0 0 2px var(--sdw));
     position: fixed;
-    top: var(--header-height, initial);
+    top: var(--header-height, 0);
     left: initial;
     z-index: 9999;
 
