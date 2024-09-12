@@ -156,7 +156,10 @@ export const useFetch = <EndPoint extends ApiPath>() => {
           unmounted: !mounted.current,
         });
         if (unmountedAbort(ret)) return;
-        showMsgBox(undefined, ret);
+        showMsgBox({
+          type: "e",
+          body: "Fetch Error",
+        }, ret);
         reject(e);
       }
     });
