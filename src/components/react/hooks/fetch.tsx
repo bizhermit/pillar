@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, type ReactNode, use } from "react";
-import $fetch, { FetchFailedResponse, FetchOptions, FetchResponse, optimizeHeader } from "../../utilities/fetch";
-import { $alert, $confirm, MessageBoxAlertProps, MessageBoxConfirmProps } from "../elements/message-box";
+import { createContext, type ReactNode, use, useEffect, useRef } from "react";
+import $fetch, { type FetchFailedResponse, type FetchOptions, type FetchResponse, optimizeHeader } from "../../utilities/fetch";
+import { $alert, $confirm, type MessageBoxAlertProps, type MessageBoxConfirmProps } from "../elements/message-box";
 
 type FetchHookMessageBoxOptions =
   | {
@@ -19,12 +19,18 @@ type FetchHookMessageBoxOptions =
 
 type FetchHookCallbackReturnType = {
   quiet?: boolean;
+  unmountedContinue?: boolean;
 } & FetchHookMessageBoxOptions;
 
+type FetchHookCallbackCtx = {
+  unmounted: boolean;
+};
+
 type FetchHookOptions<U extends ApiPath, M extends Api.Methods> = FetchOptions & {
-  done?: (res: FetchResponse<Api.Response<U, M>>) => (FetchHookCallbackReturnType | void);
-  failed?: (res?: FetchFailedResponse) => (FetchHookCallbackReturnType | void);
+  done?: (res: FetchResponse<Api.Response<U, M>>, ctx: FetchHookCallbackCtx) => (FetchHookCallbackReturnType | void);
+  failed?: (res: FetchFailedResponse | undefined, ctx: FetchHookCallbackCtx) => (FetchHookCallbackReturnType | void);
   quiet?: boolean;
+  unmountedContinue?: boolean;
 };
 
 type FetchContextProps = {
@@ -58,6 +64,14 @@ export const FetchProvider = (props: FetchProviderProps) => {
 
 export const useFetch = <EndPoint extends ApiPath>() => {
   const ctx = use(FetchContext);
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   const impl = async <U extends ApiPath, M extends Api.Methods>(
     url: U,
@@ -66,13 +80,20 @@ export const useFetch = <EndPoint extends ApiPath>() => {
     opts?: FetchHookOptions<U, M>
   ) => {
     return new Promise<FetchResponse<Api.Response<U, M>>>(async (resolve, reject) => {
+      const unmountedAbort = (ret: FetchHookCallbackReturnType | undefined | void) => {
+        if (mounted.current || ret?.unmountedContinue) return false;
+        if (opts?.unmountedContinue && ret?.unmountedContinue !== false) return false;
+        // eslint-disable-next-line no-console
+        console.warn(`abort fetched process cause unmounted.`);
+        return true;
+      };
+
       const showMsgBox = (message: Api.Message | undefined, ret: FetchHookCallbackReturnType | undefined | void) => {
         if (ret?.quiet) return;
         if (opts?.quiet && ret?.quiet !== false) return;
 
         const msg = (message || ret?.message) ? {
           ...message,
-          notEffectUnmount: true,
           ...ret?.message,
         } : undefined;
 
@@ -82,7 +103,7 @@ export const useFetch = <EndPoint extends ApiPath>() => {
               ...(msg.buttonText ? {
                 positiveButtonProps: {
                   children: msg.buttonText,
-                }
+                },
               } : null),
               ...msg,
               color: msg.color ?? getColor(msg.type),
@@ -114,16 +135,28 @@ export const useFetch = <EndPoint extends ApiPath>() => {
           },
         });
 
+        const callbackCtx: FetchHookCallbackCtx = {
+          unmounted: !mounted.current,
+        };
+
         if (res.ok) {
-          showMsgBox(res.message, opts?.done?.(res as FetchResponse<Api.Response<U, M>>));
+          const ret = opts?.done?.(res as FetchResponse<Api.Response<U, M>>, callbackCtx);
+          if (unmountedAbort(ret)) return;
+          showMsgBox(res.message, ret);
           resolve(res as FetchResponse<Api.Response<U, M>>);
           return;
         }
 
-        showMsgBox(res.message, opts?.failed?.(res));
-        reject();
+        const ret = opts?.failed?.(res, callbackCtx);
+        if (unmountedAbort(ret)) return;
+        showMsgBox(res.message, ret);
+        reject(res.statusText);
       } catch (e) {
-        showMsgBox(undefined, opts?.failed?.());
+        const ret = opts?.failed?.(undefined, {
+          unmounted: !mounted.current,
+        });
+        if (unmountedAbort(ret)) return;
+        showMsgBox(undefined, ret);
         reject(e);
       }
     });

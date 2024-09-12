@@ -8,6 +8,7 @@ import { NumberBox } from "@/react/elements/form/items/number-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { useFetch } from "@/react/hooks/fetch";
+import useRouter from "@/react/hooks/router";
 import $fetch from "@/utilities/fetch";
 
 type Req = TypeofAppApi["/api"]["GET"]["req"];
@@ -18,6 +19,7 @@ type Res = TypeofAppApi["/api"]["GET"]["res"];
 
 const Page = () => {
   const api = useFetch();
+  const router = useRouter();
 
   return (
     <div>
@@ -93,6 +95,34 @@ const Page = () => {
         }}
       >
         fetch (auth)
+      </Button>
+      <Button
+        onClick={async ({ unlock }) => {
+          try {
+            api.get("/api", {}, {
+              failed: (res) => {
+                console.log(res);
+                return {
+                  message: {
+                    // body: "hogehoge",
+                    // title: null,
+                  },
+                  messageClosed: async () => {
+                    console.log("msg closed");
+                  },
+                };
+              }
+            }).then((data) => {
+              console.log(data);
+            });
+            router.push("/sandbox");
+          } catch (e) {
+            console.log(e);
+          }
+          unlock();
+        }}
+      >
+        fetch (transition)
       </Button>
       <Form
         onSubmit={async ({ getBindData }) => {
