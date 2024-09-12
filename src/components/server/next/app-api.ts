@@ -1,20 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { $arrayValidations } from "../../data-items/array/validation";
-import { $boolParse } from "../../data-items/bool/parse";
-import { $boolValidations } from "../../data-items/bool/validation";
-import { $dateParse } from "../../data-items/date/parse";
-import { $dateValidations } from "../../data-items/date/validation";
-import { $fileParse } from "../../data-items/file/parse";
-import { $fileValidations } from "../../data-items/file/validation";
-import { $numParse } from "../../data-items/number/parse";
-import { $numValidations } from "../../data-items/number/validation";
-import { $strParse } from "../../data-items/string/parse";
-import { $strValidations } from "../../data-items/string/validation";
-import { $structValidations } from "../../data-items/struct/validation";
-import { $timeParse } from "../../data-items/time/parse";
-import { $timeValidations } from "../../data-items/time/validation";
-import { getObjectType } from "../../objects";
-import { append, get, set } from "../../objects/struct";
+import { parseBasedOnDataItem } from "../../data-items/parse";
+import { validationBasedOnDataItem } from "../../data-items/validation";
+import { append } from "../../objects/struct";
 
 export class ApiError extends Error {
 
@@ -30,197 +17,17 @@ export class ApiError extends Error {
 
 }
 
-const convertParams = (params: { [v: string]: any } | Array<any>, dataItems: Array<DataItem.$object> | Readonly<Array<DataItem.$object>>, parentName?: string) => {
-  const results: Array<DataItem.ValidationResult> = [];
-
-  const hasError = () => results.some(r => r.type === "e");
-
-  const getDataName = (dataItem: DataItem.$object, index?: number) => {
-    return index == null ? dataItem.name : `${dataItem.name}.${index}`;
-  };
-
-  const replace = <D extends DataItem.$object>(dataItem: D, parse: (parseProps: DataItem.ParseProps<D>) => DataItem.ParseResult<any>, index: number | undefined): { value: (DataItem.ValueType<D> | null | undefined); name: string; } => {
-    const name = getDataName(dataItem, index);
-    const value = get(params, name)[0];
-    const props = {
-      value,
-      dataItem,
-      fullName: parentName ? `${parentName}.${name}` : name,
-      data: params,
-    } as const satisfies DataItem.ParseProps<D>;
-    const [v, r] = parse(props);
-    set(params, name, v);
-    if (r) results.push(r);
-    return { value: v, name };
-  };
-
-  const impl = (dataItem: DataItem.$object, index?: number) => {
-    switch (dataItem.type) {
-      case "str":
-        replace(dataItem, p => $strParse(p), index);
-        return;
-      case "num":
-        replace(dataItem, p => $numParse(p), index);
-        return;
-      case "bool":
-      case "b-num":
-      case "b-str":
-        replace(dataItem, p => $boolParse(p), index);
-        return;
-      case "date":
-      case "month":
-        replace(dataItem, p => $dateParse(p), index);
-        return;
-      case "time":
-        replace(dataItem, p => $timeParse(p), index);
-        return;
-      case "file":
-        replace(dataItem, p => $fileParse(p), index);
-        return;
-      case "array": {
-        const { value, name } = replace(dataItem, ({ value, fullName }) => {
-          if (value == null || getObjectType(value) === "Array") return [value];
-          return [undefined, { type: "e", code: "parse", fullName, msg: `${dataItem.label}に配列を設定してください。` }];
-        }, index);
-        if (!hasError() && value) {
-          const item = dataItem.item;
-          if (Array.isArray(item)) {
-            results.push(...convertParams(value, item, name));
-          } else {
-            switch (item.type) {
-              case "struct":
-                results.push(...convertParams(value, item, name));
-                break;
-              default:
-                value.forEach((_, i) => {
-                  impl(dataItem, i);
-                });
-                break;
-            }
-          }
-        }
-        return;
-      }
-      case "struct": {
-        const { value, name } = replace(dataItem, ({ value, fullName }) => {
-          if (value == null || getObjectType(value) === "Object") return [value];
-          return [undefined, { type: "e", code: "parse", fullName, msg: `${dataItem.label}に連想配列を設定してください。` }];
-        }, index);
-        if (!hasError() && value) results.push(...convertParams(value, dataItem.item, name));
-        return;
-      }
-      default:
-        return;
-    }
-  };
-
-  dataItems.forEach(dataItem => {
-    impl(dataItem);
-  });
-
-  return results;
-};
-
-const validationParams = (params: { [v: string]: any } | Array<any>, dataItems: Array<DataItem.$object> | Readonly<Array<DataItem.$object>>, parentName?: string) => {
-  const results: Array<DataItem.ValidationResult> = [];
-
-  const getDataName = (dataItem: DataItem.$object, index?: number) => {
-    return index == null ? dataItem.name : `${dataItem.name}.${index}`;
-  };
-
-  const isValid = <D extends DataItem.$object>(dataItem: D, validations: Array<DataItem.Validation<any>>, index: number | undefined): { ok: boolean; value: DataItem.ValueType<D>; name: string; } => {
-    const name = getDataName(dataItem, index);
-    const value = get(params, name)[0];
-
-    let r: DataItem.ValidationResult | null | undefined;
-    for (const func of validations) {
-      r = func({
-        value,
-        data: params,
-        dataItem: dataItem,
-        siblings: dataItems,
-        fullName: parentName ? `${parentName}.${name}` : name,
-      });
-      if (r) {
-        results.push(r);
-        return { ok: false, value, name };
-      }
-    }
-    return { ok: true, value, name };
-  };
-
-  const impl = (dataItem: DataItem.$object, index?: number) => {
-    switch (dataItem.type) {
-      case "str":
-        isValid(dataItem, $strValidations(dataItem), index);
-        return;
-      case "num":
-        isValid(dataItem, $numValidations(dataItem), index);
-        return;
-      case "bool":
-      case "b-num":
-      case "b-str":
-        isValid(dataItem, $boolValidations(dataItem), index);
-        return;
-      case "date":
-      case "month":
-        isValid(dataItem, $dateValidations(dataItem), index);
-        return;
-      case "time":
-        isValid(dataItem, $timeValidations(dataItem), index);
-        return;
-      case "file":
-        isValid(dataItem, $fileValidations(dataItem), index);
-        return;
-      case "array": {
-        const { value, name } = isValid(dataItem, $arrayValidations(dataItem), index);
-        if (value) {
-          const item = dataItem.item;
-          if (Array.isArray(item)) {
-            results.push(...validationParams(value, item, name));
-          } else {
-            switch (item.type) {
-              case "struct":
-                results.push(...validationParams(value, item, name));
-                break;
-              default:
-                value.forEach((_, i) => {
-                  impl(dataItem, i);
-                });
-                break;
-            }
-          }
-        }
-        return;
-      }
-      case "struct": {
-        const { value, name } = isValid(dataItem, $structValidations(dataItem), index);
-        if (value) results.push(...validationParams(value, dataItem.item, name));
-        return;
-      }
-      default:
-        return;
-    }
-  };
-
-  dataItems.forEach(dataItem => {
-    impl(dataItem);
-  });
-
-  return results;
-};
-
 export const apiMethodHandler = <
-  Req extends Array<DataItem.$object> = Array<DataItem.$object>,
-  Res extends { [v: string]: any } | void = void
->(process?: (context: {
+  Req extends Readonlyable<Array<DataItem.$object>>,
+  Res extends Readonlyable<{ [v: string]: any }> | void
+>(process: (context: {
   req: NextRequest;
-  getParams: (dataItems: Req) => Promise<DataItem.Props<Req>>;
+  getParams: <$Req extends Readonlyable<Array<DataItem.$object>> = Req>(dataItems: $Req) => Promise<DataItem.Props<$Req>>;
   addValidationResults: (results: Array<DataItem.ValidationResult>) => void;
   hasValidationError: () => boolean;
   throwIfHasValidationError: () => void;
 }) => Promise<Res>) => {
-  return async (req: NextRequest, { params }: { params: { [v: string]: string | Array<string> } }) => {
+  return (async (req, { params }) => {
     if (process == null) {
       return NextResponse.json({}, { status: 404 });
     }
@@ -260,10 +67,10 @@ export const apiMethodHandler = <
             ...bodyParams,
           };
 
-          validationResults.push(...convertParams(p, dataItems));
-          validationResults.push(...validationParams(p, dataItems));
+          validationResults.push(...parseBasedOnDataItem(p, dataItems));
+          validationResults.push(...validationBasedOnDataItem(p, dataItems));
 
-          return p as DataItem.Props<Req>;
+          return p as DataItem.Props<typeof dataItems>;
         },
         addValidationResults: (results) => {
           validationResults.push(...results.filter(item => item != null));
@@ -284,6 +91,7 @@ export const apiMethodHandler = <
             type: "e",
             title: "バリデーションエラー",
             body: validationError.map(item => item.msg).join("\n"),
+            buttonText: "閉じる",
           }, { validationResults });
         },
       });
@@ -306,5 +114,9 @@ export const apiMethodHandler = <
         data,
       }, { status: status ?? 500 });
     }
+  }) as {
+    (req: NextRequest, arg: { params: { [v: string]: string | Array<string> } }): Promise<NextResponse<any>>;
+    req: DataItem.Props<Req>;
+    res: Res;
   };
 };

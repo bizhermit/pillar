@@ -9,7 +9,7 @@ type Options = {
 export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | DataItem.$month>, opts?: Options): Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> => {
   const validations: Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> = [];
 
-  const label = dataItem.label || defaultLabel;
+  const label = dataItem.label || dataItem.name || defaultLabel;
   const dateFormatPattern = dataItem.type === "month" ? "yyyy/MM" : "yyyy/MM/dd";
 
   if (dataItem.required && !opts?.skipRequired) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { preventScroll } from "../../dom/prevent-scroll";
 import { Button, type ButtonProps } from "./button";
@@ -11,7 +11,8 @@ type MessageBoxChildrenProps = {
 
 type MessageBoxShowOptions = {
   classNames?: string;
-  notEffectUnmount?: boolean;
+  mount?: (ctx: MessageBoxContext) => void;
+  unmount?: (ctx: MessageBoxContext) => void;
 };
 
 type MessageBoxControllers = {
@@ -135,18 +136,18 @@ type MessageBoxBaseProps = Pick<MessageBoxProps,
   | "color"
 >
 
-type MessageBoxCustomProps<T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps> = MessageBoxShowOptions & P & {
+export type MessageBoxCustomProps<T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps> = MessageBoxShowOptions & P & {
   component: (props: {
     props: Omit<P, keyof MessageBoxShowOptions>;
     close: (value: T) => Promise<void>;
   }) => MessageBoxProps;
 };
 
-type MessageBoxAlertProps = MessageBoxShowOptions & MessageBoxBaseProps & {
+export type MessageBoxAlertProps = MessageBoxShowOptions & MessageBoxBaseProps & {
   buttonProps?: MessageBoxButtonProps;
 };
 
-type MessageBoxConfirmProps = MessageBoxShowOptions & MessageBoxBaseProps & {
+export type MessageBoxConfirmProps = MessageBoxShowOptions & MessageBoxBaseProps & {
   positiveButtonProps?: MessageBoxButtonProps;
   negativeButtonProps?: MessageBoxButtonProps;
 };
@@ -171,107 +172,128 @@ const optimizeProps = <P extends MessageBoxBaseProps>(props: P | string): P => {
   } as P;
 };
 
-export const useMessageBox = () => {
-  const ctxs = useRef<Array<MessageBoxContext>>([]);
-
-  const unmountCtx = useCallback((ctx: MessageBoxContext) => {
-    const idx = ctxs?.current?.findIndex(c => c === ctx);
-    if (idx < 0) return;
-    ctxs.current.splice(idx, 1);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      ctxs.current.forEach(ctx => {
-        if (ctx.options?.notEffectUnmount) return;
-        if (ctx.state.closing || ctx.state.closed) return;
-        ctx.close();
-        ctx.controllers.reject();
-      });
-    };
-  }, []);
-
-  const show = <T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps>({
-    component,
-    notEffectUnmount,
-    classNames,
-    ...props
-  }: MessageBoxCustomProps<T, P>) => {
-    return new Promise<T>((resolve, reject) => {
-      const ctx = createAndOpenDialog(({ close }) => (
-        <MessageBox
-          {...component({
-            props: props as unknown as P,
-            close: async (v: T) => {
-              setTimeout(() => resolve(v), 0);
-              try {
-                await close();
-              } finally {
-                unmountCtx(ctx);
-              }
-            },
-          })}
-        />
-      ), {
-        resolve,
-        reject,
-      }, {
-        notEffectUnmount,
-        classNames,
-      });
-      ctxs.current.push(ctx);
+const $show = <T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps>({
+  component,
+  mount,
+  unmount,
+  classNames,
+  ...props
+}: MessageBoxCustomProps<T, P>) => {
+  return new Promise<T>((resolve, reject) => {
+    const ctx = createAndOpenDialog(({ close }) => (
+      <MessageBox
+        {...component({
+          props: props as unknown as P,
+          close: async (v: T) => {
+            setTimeout(() => resolve(v), 0);
+            try {
+              await close();
+            } finally {
+              unmount?.(ctx);
+            }
+          },
+        })}
+      />
+    ), {
+      resolve,
+      reject,
+    }, {
+      classNames,
     });
-  };
-
-  return {
-    show,
-    alert: (props: MessageBoxAlertProps | string) => {
-      return show<void, MessageBoxAlertProps>({
-        ...optimizeProps(props),
-        component: ({ close, props: { buttonProps, ...p } }) => {
-          return {
-            ...p,
-            buttons: [
-              {
-                children: "OK",
-                autoFocus: true,
-                ...buttonProps,
-                onClick: () => {
-                  close();
-                },
-              },
-            ]
-          };
-        }
-      });
-    },
-    confirm: (props: MessageBoxConfirmProps | string) => {
-      return show<boolean, MessageBoxConfirmProps>({
-        ...optimizeProps<MessageBoxConfirmProps>(props),
-        component: ({ close, props: { negativeButtonProps, positiveButtonProps, ...p } }) => {
-          return {
-            ...p,
-            buttons: [
-              {
-                children: "キャンセル",
-                outline: true,
-                autoFocus: true,
-                ...negativeButtonProps,
-                onClick: () => {
-                  close(false);
-                },
-              },
-              {
-                children: "OK",
-                ...positiveButtonProps,
-                onClick: () => {
-                  close(true);
-                },
-              },
-            ]
-          };
-        },
-      });
-    },
-  } as const;
+    mount?.(ctx);
+  });
 };
+
+export const $alert = (props: MessageBoxAlertProps | string) => {
+  return $show<void, MessageBoxAlertProps>({
+    ...optimizeProps(props),
+    component: ({ close, props: { buttonProps, ...p } }) => {
+      return {
+        ...p,
+        buttons: [
+          {
+            children: "OK",
+            autoFocus: true,
+            ...buttonProps,
+            onClick: () => {
+              close();
+            },
+          },
+        ]
+      };
+    }
+  });
+};
+
+export const $confirm = (props: MessageBoxConfirmProps | string) => {
+  return $show<boolean, MessageBoxConfirmProps>({
+    ...optimizeProps<MessageBoxConfirmProps>(props),
+    component: ({ close, props: { negativeButtonProps, positiveButtonProps, ...p } }) => {
+      return {
+        ...p,
+        buttons: [
+          {
+            children: "キャンセル",
+            outline: true,
+            autoFocus: true,
+            ...negativeButtonProps,
+            onClick: () => {
+              close(false);
+            },
+          },
+          {
+            children: "OK",
+            ...positiveButtonProps,
+            onClick: () => {
+              close(true);
+            },
+          },
+        ]
+      };
+    },
+  });
+};
+
+// export const useMessageBox = () => {
+//   const ctxs = useRef<Array<MessageBoxContext>>([]);
+
+//   const unmountCtx = useCallback((ctx: MessageBoxContext) => {
+//     const idx = ctxs?.current?.findIndex(c => c === ctx);
+//     if (idx < 0) return;
+//     ctxs.current.splice(idx, 1);
+//   }, []);
+
+//   useEffect(() => {
+//     return () => {
+//       ctxs.current.forEach(ctx => {
+//         if (ctx.state.closing || ctx.state.closed) return;
+//         ctx.close();
+//         ctx.controllers.reject();
+//       });
+//     };
+//   }, []);
+
+//   return {
+//     show: <T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps>(props: MessageBoxCustomProps<T, P>) => {
+//       return $show<T, P>({
+//         ...props,
+//         mount: (ctx) => ctxs.current.push(ctx),
+//         unmount: (ctx) => unmountCtx(ctx),
+//       });
+//     },
+//     alert: (props: MessageBoxAlertProps | string) => {
+//       return $alert({
+//         ...optimizeProps(props),
+//         mount: (ctx) => ctxs.current.push(ctx),
+//         unmount: (ctx) => unmountCtx(ctx),
+//       });
+//     },
+//     confirm: (props: MessageBoxConfirmProps | string) => {
+//       return $confirm({
+//         ...optimizeProps(props),
+//         mount: (ctx) => ctxs.current.push(ctx),
+//         unmount: (ctx) => unmountCtx(ctx),
+//       });
+//     },
+//   } as const;
+// };

@@ -71,9 +71,13 @@ const isValidBodyParams = (params?: any) => {
   return !(t === "string" || t === "bigint" || t === "number" || t === "boolean");
 };
 
-const convertToRequestInit = (params?: any, options?: FetchOptions, noBody?: boolean): RequestInit => {
-  const contentType = options?.contentType ?? "json";
-  const headers = typeof options?.headers === "function" ? options.headers() : options?.headers;
+export const optimizeHeader = (headers: FetchOptions["headers"]) => {
+  return typeof headers === "function" ? headers() : headers;
+};
+
+const convertToRequestInit = (params?: any, opts?: FetchOptions, noBody?: boolean): RequestInit => {
+  const contentType = opts?.contentType ?? "json";
+  const headers = optimizeHeader(opts?.headers);
   if (noBody) {
     return { headers };
   }
@@ -107,20 +111,20 @@ const update = <U extends ApiPath, M extends Api.Methods>(url: U, method: M, par
   return impl<Api.Response<U, M>>(ctx.pathname, { method, ...convertToRequestInit(ctx.data, options) });
 };
 
-const Fetch = {
-  get: <U extends ApiPath>(url: U, params: Api.Request<U, "get"> | FormData, options?: FetchOptions) => {
-    const ctx = getDynamicPathnameContext(url, params, { appendQuery: true });
+const $fetch = {
+  get: <U extends ApiPath>(url: U, params?: Api.Request<U, "get"> | FormData | null, options?: FetchOptions) => {
+    const ctx = getDynamicPathnameContext(url, params as any, { appendQuery: true });
     return impl<Api.Response<U, "get">>(ctx.pathname, { method: "get", ...convertToRequestInit(ctx.data, options, true) });
   },
-  put: <U extends ApiPath>(url: U, params: Api.Request<U, "put"> | FormData, options?: FetchOptions) => {
+  put: <U extends ApiPath>(url: U, params?: Api.Request<U, "put"> | FormData | null, options?: FetchOptions) => {
     return update(url, "put", params, options);
   },
-  post: <U extends ApiPath>(url: U, params: Api.Request<U, "post"> | FormData, options?: FetchOptions) => {
+  post: <U extends ApiPath>(url: U, params?: Api.Request<U, "post"> | FormData | null, options?: FetchOptions) => {
     return update(url, "post", params, options);
   },
-  delete: <U extends ApiPath>(url: U, params: Api.Request<U, "delete"> | FormData, options?: FetchOptions) => {
+  delete: <U extends ApiPath>(url: U, params?: Api.Request<U, "delete"> | FormData | null, options?: FetchOptions) => {
     return update(url, "delete", params, options);
   },
 };
 
-export default Fetch;
+export default $fetch;

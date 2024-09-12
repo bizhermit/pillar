@@ -1,4 +1,4 @@
-import { InterceptingRouteLinks } from "src/app/sandbox/intercepting-routes/links";
+import { InterceptingRouteLinks } from "$/sandbox/intercepting-routes/links";
 
 type Props = {
   params: { id: Array<string> };

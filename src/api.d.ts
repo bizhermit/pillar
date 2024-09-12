@@ -4,6 +4,7 @@ declare namespace Api {
     type: "e" | "w" | "i";
     title?: string;
     body?: string;
+    buttonText?: string;
   };
 
   type Methods = "get" | "put" | "post" | "delete";
@@ -50,7 +51,7 @@ declare namespace Api {
   type Response<U extends keyof Context, M extends Methods> =
     Context extends { [P in U]: infer Url } ? (
       Url extends { [P in M]: infer Method } ? (
-        Method extends { req: infer Res } ? Res : ResponseObject
+        Method extends { res: infer Res } ? Res : ResponseObject
       ) : ResponseObject
     ) : ResponseObject;
 

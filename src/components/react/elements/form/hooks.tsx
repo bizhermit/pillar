@@ -41,12 +41,7 @@ type FormItemCoreArgs<
 
 const getId = crypto.randomUUID?.bind(crypto) ?? generateUuidV4;
 
-export const useFormItemCore = <
-  SD extends DataItem.$object,
-  D extends SD | undefined,
-  V extends any,
-  IV extends any = V
->({
+export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V>({
   hook,
   name,
   label,

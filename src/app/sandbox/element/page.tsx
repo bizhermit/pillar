@@ -28,7 +28,7 @@ import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
 import { LoadingBar } from "@/react/elements/loading";
-import { useMessageBox } from "@/react/elements/message-box";
+import { $alert, $confirm } from "@/react/elements/message-box";
 import { TabContainer, TabContent, useTabContainer } from "@/react/elements/tab-container";
 import { LayoutContext } from "@/react/hooks/layout";
 import useRouter from "@/react/hooks/router";
@@ -60,13 +60,12 @@ export default function Home() {
   const modalDialog = useDialog();
   const modelessDialog = useDialog();
 
-  const msgBox = useMessageBox();
   const router = useRouter();
 
   return (
     <div>
       <LoadingBar
-        // mask
+      // mask
       />
       <TabContainer
         disabled={disabled.value}
@@ -239,7 +238,7 @@ export default function Home() {
             console.log("alert: start");
             // await msgBox.alert("ALERT");
             // await msgBox.alert("ALERT\nALERT\nALERT");
-            await msgBox.alert({
+            await $alert({
               title: "ALERT",
               body: "click OK",
               color: "danger",
@@ -255,7 +254,7 @@ export default function Home() {
             console.log("confirm: start");
             // const ret = await msgBox.confirm("CONFIRM");
             // const ret = await msgBox.confirm("CONFIRM\nCONFIRM\nCONFIRM");
-            const ret = await msgBox.confirm({
+            const ret = await $confirm({
               title: "CONFIRM",
               body: "CONFIRM\nCONFIRM\nCONFIRM",
               color: "secondary",
@@ -268,7 +267,7 @@ export default function Home() {
         </Button>
         <Button
           onClick={async () => {
-            await msgBox.alert("transition");
+            await $alert("transition");
             router.push("/sandbox");
           }}
         >
@@ -276,9 +275,8 @@ export default function Home() {
         </Button>
         <Button
           onClick={async () => {
-            msgBox.alert({
+            $alert({
               body: "transition (no block)",
-              notEffectUnmount: true,
             });
             router.push("/sandbox");
           }}

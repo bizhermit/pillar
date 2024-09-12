@@ -5,6 +5,7 @@ type AppRoutePath = "/"
   | "/home"
   | "/sandbox"
   | "/sandbox/element"
+  | "/sandbox/fetch"
   | "/sandbox/intercepting-routes"
   | "/sandbox/intercepting-routes/task/[[...id]]"
   | "/sandbox/intercepting-routes/tasks"
@@ -26,12 +27,16 @@ type AppRoutePath = "/"
   | "/sandbox/paralell-routes/hoge"
   | "/sign-in";
 
-type AppApiPath = "/api"
-  | "/api/auth/[...nextauth]";
+type AppApiPath = "/home/api"
+  | "/api"
+  | "/api/auth/[...nextauth]"
+  | "/sandbox/fetch/api";
 
 type TypeofAppApi = {
-  "/api": typeof import("app/api/route.ts");
-  "/api/auth/[...nextauth]": typeof import("app/api/auth/[...nextauth]/route.ts");
+  "/home/api": typeof import("src/app/(nav)/home/api/route.ts");
+  "/api": typeof import("src/app/api/route.ts");
+  "/api/auth/[...nextauth]": typeof import("src/app/api/auth/[...nextauth]/route.ts");
+  "/sandbox/fetch/api": typeof import("src/app/sandbox/fetch/api/route.ts");
 };
 
 type PagesRoutePath = "";

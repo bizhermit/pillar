@@ -5,7 +5,7 @@ const defaultLabel = "値";
 export const $arrayValidations = (dataItem: DataItem.ArgObject<DataItem.$array<any>>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$array<any>>> => {
   const validations: Array<DataItem.Validation<DataItem.$array<any>>> = [];
 
-  const label = dataItem.label || defaultLabel;
+  const label = dataItem.label || dataItem.name || defaultLabel;
 
   validations.push(({ value, fullName }) => {
     if (value == null || getObjectType(value) === "Array") return undefined;

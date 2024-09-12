@@ -107,7 +107,7 @@ export const Hidden = <V extends any, D extends DataItem.$object | undefined>({
                 funcs.push((p) => {
                   if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
                   if (p.value != null && p.value !== "") return undefined;
-                  return { type: "e", code: "required", fullName: p.fullName, msg: `${p.dataItem.label || "値"}を設定してください。` };
+                  return { type: "e", code: "required", fullName: p.fullName, msg: `${p.dataItem.label || p.dataItem.name || "値"}を設定してください。` };
                 });
               }
               if (dataItem.validations) funcs.push(...(dataItem as DataItem.$any).validations!);

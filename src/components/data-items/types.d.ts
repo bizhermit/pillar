@@ -8,7 +8,7 @@ declare namespace DataItem {
     D["required"] extends true ? { [P in D["name"]]: ValueType<D> } : { [P in D["name"]]?: ValueType<D> }
   ) : never;
 
-  type Props<A extends Array<$object>> = CrossProps<UnionToIntersection<Prop<A[number]>>>;
+  type Props<A extends Readonlyable<Array<$object>>> = CrossProps<UnionToIntersection<Prop<A[number]>>>;
 
   type NullValue = null | undefined;
 
@@ -49,7 +49,7 @@ declare namespace DataItem {
   type ValidationProps<D extends $object, V = ValueType<D>> = {
     value: V | null | undefined;
     data: { [v: string | number]: any } | null | undefined;
-    siblings: Array<ArgObject<$object>> | Readonly<Array<ArgObject<$object>>> | null | undefined;
+    siblings: Readonlyable<Array<ArgObject<$object>>> | null | undefined;
     dataItem: ArgObject<D>;
     fullName: string;
   };

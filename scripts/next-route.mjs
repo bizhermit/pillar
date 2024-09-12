@@ -128,7 +128,7 @@ type TypeofAppApi = {
 ${(() => {
     return appApiRoutes.map(pathName => {
       const pn = pickNextPathName(pathName)?.match(/(.*)\/route/)?.[1] || "/";
-      return `  "${pn}": typeof import("${appAlias}${pathName}");`;
+      return `  "${pn}": typeof import("src/${appAlias}${pathName}");`;
     }).join("\n");
   })()}
 };
@@ -157,7 +157,7 @@ type TypeofPagesApi = {
 ${(() => {
     return pagesApiRoutes.map(pathName => {
       const pn = pickNextPathNameAsPages(pathName);
-      return `  "${pn}": typeof import("${pageAlias}${pathName}");`;
+      return `  "${pn}": typeof import("src/${pageAlias}${pathName}");`;
     }).join("\n");
   })()}
 };

@@ -8,7 +8,7 @@ export const $fileParse = ({ value, dataItem, fullName }: DataItem.ParseProps<Da
   }
   if (value == null || value === "") return [undefined];
 
-  const label = dataItem.label || defaultLabel;
+  const label = dataItem.label || dataItem.name || defaultLabel;
   try {
     if (value instanceof File) return [value];
     if (value instanceof Blob) {
