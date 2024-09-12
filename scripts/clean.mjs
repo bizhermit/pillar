@@ -12,4 +12,3 @@ const removeDirContents = (rootDir) => {
 };
 
 removeDirContents(path.join(projectRoot, ".next"));
-removeDirContents(path.join(projectRoot, ".server"));

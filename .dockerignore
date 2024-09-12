@@ -11,8 +11,5 @@ next-env.d.ts
 .git
 .vscode
 .next
-.main
-.server
-.renderer
 
 /prisma/migrations

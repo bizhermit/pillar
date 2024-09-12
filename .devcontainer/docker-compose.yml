@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   node:
     container_name: 'next-app-template_dev'
@@ -16,16 +16,18 @@ services:
       - '../:/workspace:delegated'
       - 'next-app-template_dev_node_modules:/workspace/node_modules'
       - 'next-app-template_dev_next:/workspace/.next'
-      - 'next-app-template_dev_server:/workspace/.server'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     environment:
+      - 'TZ=${TZ:-UTC}'
       - 'WATCHPACK_POLLING=true'
       - 'LOCALHOST=${LOCALHOST:-host.docker.internal}'
-      - 'DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${LOCALHOST:-host.docker.internal}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-next-app-template}'
+      - 'DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@database:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-next-app-template}'
     ports:
       - '${NEXT_PORT:-3000}:${NEXT_PORT:-3000}'
     command: bash -c 'sh /workspace/.devcontainer/postCreatedCommand.sh && npm i && npm run migrate && npm run dev && bash'
+    networks:
+      - next-app-template_dev
     depends_on:
       - database
   database:
@@ -44,6 +46,7 @@ services:
       - 'next-app-template_dev_db:/var/lib/postgresql/data'
       - '../database/postgres/init:/docker-entrypoint-initdb.d'
     environment:
+      - 'TZ=${TZ:-UTC}'
       - 'POSTGRES_USER=${POSTGRES_USER:-postgres}'
       - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}'
       - 'POSTGRES_DB=${POSTGRES_DB:-next-app-template}'
@@ -56,8 +59,13 @@ services:
       timeout: 5s
       retries: 3
     command: 'postgres -c log_destination=stderr -c log_statement=all -c log_connections=on -c log_disconnections=on'
+    networks:
+      - next-app-template_dev
+networks:
+  next-app-template_dev:
+    name: next-app-template_dev
+    driver: bridge
 volumes:
   next-app-template_dev_node_modules:
   next-app-template_dev_next:
-  next-app-template_dev_server:
   next-app-template_dev_db:
