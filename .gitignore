@@ -45,8 +45,5 @@ next-env.d.ts
 !.vscode/extensions.json
 
 /.devcontainer/.env
-/.server
-/.main
-/.renderer
 /dist
 /resources/config.json
