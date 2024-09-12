@@ -293,12 +293,7 @@ export const Dialog = ({
   useEffect(() => {
     if (!showed) return;
 
-    let scrollTopBuf = document.documentElement.scrollTop;
-    let scrollLeftBuf = document.documentElement.scrollLeft;
-
     const resizeListener = throttle(() => {
-      scrollTopBuf = document.documentElement.scrollTop;
-      scrollLeftBuf = document.documentElement.scrollLeft;
       resetPosition();
     }, 40);
     window.addEventListener("resize", resizeListener);
