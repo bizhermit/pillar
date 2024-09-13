@@ -329,7 +329,7 @@
     }
   }
 
-  .ipt-dp {
+  :is(.ipt-dp, .ipt-tp) {
     overflow: hidden;
     display: flex;
     flex-flow: column nowrap;
@@ -440,7 +440,7 @@
     gap: 2px;
   }
 
-  .ipt-dp-cell {
+  :is(.ipt-dp-cell, .ipt-tp-cell) {
     display: grid;
     place-items: center;
     font-size: 1.4rem;
@@ -455,11 +455,11 @@
 
     &:not([data-disabled="true"]) {
       cursor: pointer;
-    }
 
-    @include mixins.hover {
-      background: var(--ipt-fg);
-      color: var(--ipt-bg);
+      @include mixins.hover {
+        background: var(--ipt-fg);
+        color: var(--ipt-bg);
+      }
     }
 
     &[data-selected="true"] {
@@ -478,6 +478,27 @@
         opacity: 0.2;
       }
     }
+  }
+
+  .ipt-tp {
+    width: min(calc(100dvw - 5rem), calc(var(--ipt-size) * 6));
+  }
+
+  .ipt-tp-main {
+    overflow: hidden;
+    flex: 1 1 0rem;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+  }
+
+  .ipt-tp-times {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex: 1 1 0rem;
   }
 
   :is(.ipt-dp-btns, .ipt-tp-btns) {
