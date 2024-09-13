@@ -1,4 +1,4 @@
-import { Time, TimeUtils } from "../../objects/time";
+import { formatTime, parseMilliseconds, TimeUtils } from "../../objects/time";
 
 const defaultLabel = "値";
 
@@ -16,11 +16,18 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
   }
 
   const formatPattern = dataItem.mode === "hm" ? "hh:mm" : dataItem.mode === "ms" ? "mm:ss" : "hh:mm:ss";
+  const unit = (() => {
+    switch (dataItem.mode) {
+      case "hms":
+      case "ms":
+        return "s";
+      default:
+        return "m";
+    }
+  })();
 
-  const minTime = new Time(dataItem.min);
-  const maxTime = new Time(dataItem.max);
-  const minStr = dataItem.min == null ? "" : minTime.format(formatPattern);
-  const maxStr = dataItem.max == null ? "" : maxTime.format(formatPattern);
+  const minStr = dataItem.min == null ? "" : formatTime(parseMilliseconds(dataItem.min, unit)!, formatPattern);
+  const maxStr = dataItem.max == null ? "" : formatTime(parseMilliseconds(dataItem.max, unit)!, formatPattern);
   if (dataItem.min != null && dataItem.max != null) {
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
