@@ -1,11 +1,12 @@
-import { $timeParse } from "@/data-items/time/parse";
-import { $timeValidations } from "@/data-items/time/validation";
-import { equals } from "@/objects";
-import { isEmpty } from "@/objects/string";
-import { set } from "@/objects/struct";
-import { getTimeUnit, parseTimeAsUnit, Time, TimeRadix } from "@/objects/time";
-import { ChangeEvent, FocusEvent, HTMLAttributes, KeyboardEvent, useMemo, useRef } from "react";
+import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, useMemo, useRef } from "react";
+import { $timeParse } from "../../../../data-items/time/parse";
+import { $timeValidations } from "../../../../data-items/time/validation";
+import { equals } from "../../../../objects";
+import { isEmpty } from "../../../../objects/string";
+import { set } from "../../../../objects/struct";
+import { getTimeUnit, parseTimeAsUnit, Time, TimeRadix } from "../../../../objects/time";
 import { Dialog, useDialog } from "../../dialog";
+import { DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -454,7 +455,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
             tabIndex={-1}
             data-showed={dialog.showed}
           >
-            {/* <TimeIcon /> */}
+            <DownFillIcon />
           </div>
         }
         {fi.clearButton(empty ? undefined : clear)}
