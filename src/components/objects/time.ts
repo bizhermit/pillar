@@ -58,7 +58,7 @@ export const parseTimeAsUnit = (milliseconds: number | null | undefined, unit: T
     case "m":
       return toMinute(milliseconds, true);
     case "s":
-      return toMinute(milliseconds, true);
+      return toSecond(milliseconds, true);
     default:
       return milliseconds;
   }
@@ -71,12 +71,12 @@ export const toHour = (milliseconds: number) => {
 };
 
 export const toMinute = (milliseconds: number, include?: boolean) => {
-  const n = Math[round(milliseconds)](milliseconds / TimeRadix.H);
+  const n = Math[round(milliseconds)](milliseconds / TimeRadix.M);
   return include ? n : n % 60;
 };
 
 export const toSecond = (milliseconds: number, include?: boolean) => {
-  const n = Math[round(milliseconds)](milliseconds / TimeRadix.M);
+  const n = Math[round(milliseconds)](milliseconds / TimeRadix.S);
   return include ? n : n % 60;
 };
 

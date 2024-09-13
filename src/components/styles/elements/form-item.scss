@@ -314,6 +314,28 @@
     }
   }
 
+  .ipt-time-h,
+  .ipt-time-m,
+  .ipt-time-s {
+    padding: 0;
+    text-align: center;
+    flex: none !important;
+    min-width: unset;
+    width: 2.2rem;
+
+    &:first-of-type {
+      margin-left: 0.6rem;
+    }
+
+    &:last-of-type {
+      margin-right: 0.6rem;
+    }
+
+    ~.ipt-pull {
+      margin-left: -0.4rem;
+    }
+  }
+
   .ipt-dp {
     overflow: hidden;
     display: flex;
@@ -956,7 +978,7 @@
       &:is([open], :popover-open) {
         display: grid;
         grid-template-rows: 0fr;
-  
+
         >.ipt-dp {
           height: 0;
         }

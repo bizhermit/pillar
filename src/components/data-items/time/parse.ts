@@ -10,8 +10,9 @@ export const $timeParse = ({ value, dataItem, fullName }: DataItem.ParseProps<Da
 
   const label = dataItem.label || dataItem.name || defaultLabel;
 
-  const time = parseMilliseconds(value);
-  const num = parseTimeAsUnit(time, getTimeUnit(dataItem.mode ?? "hm"));
+  const unit = getTimeUnit(dataItem.mode ?? "hm");
+  const time = parseMilliseconds(value, unit);
+  const num = parseTimeAsUnit(time, unit);
   if (num == null) {
     return [undefined, { type: "e", code: "parse", fullName, msg: `${label}を数値型に変換できません。[${value}]` }];
   }
