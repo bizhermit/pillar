@@ -57,10 +57,20 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
       }
       if (dataItem.pair?.position === "before") {
         if (value < pairTime) return undefined;
-        return { type: "e", code: "pair-after", fullName, msg: pairDataItem?.pair ? "" : `時間の前後関係が不適切です。${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)}` };
+        return {
+          type: "e",
+          code: "pair-after",
+          fullName,
+          msg: pairDataItem?.pair ? "" : `時間の前後関係が不適切です。${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)}`,
+        };
       }
       if (value > pairTime) return undefined;
-      return { type: "e", code: "pair-before", fullName, msg: `時間の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)}` };
+      return {
+        type: "e",
+        code: "pair-before",
+        fullName,
+        msg: `時間の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)}`,
+      };
     });
   }
 

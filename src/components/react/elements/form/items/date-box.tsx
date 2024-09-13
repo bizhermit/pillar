@@ -67,9 +67,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       yref.current.value = "";
       mref.current.value = "";
       if (dref.current) dref.current.value = "";
-      cache.current.y = undefined;
-      cache.current.m = undefined;
-      cache.current.d = undefined;
+      cache.current.y = cache.current.m = cache.current.d = undefined;
       return;
     }
     yref.current.value = String(cache.current.y = d.getFullYear());
