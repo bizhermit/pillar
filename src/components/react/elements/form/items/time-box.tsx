@@ -108,8 +108,11 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
     }
     cache.current.h = cache.current.m = cache.current.s = 0;
     if (href.current) href.current.value = String(cache.current.h = v.time.getHours());
-    if (mref.current) mref.current.value = String(cache.current.m = v.time.getMinutes(includeMinutes));
-    if (sref.current) sref.current.value = String(cache.current.s = v.time.getSeconds());
+    if (mref.current) {
+      cache.current.m = v.time.getMinutes(includeMinutes);
+      mref.current.value = includeMinutes ? String(cache.current.m) : `00${cache.current.m}`.slice(-2);
+    }
+    if (sref.current) sref.current.value = `00${cache.current.s = v.time.getSeconds()}`.slice(-2);
   };
 
   const minTime = useMemo(() => {
@@ -406,7 +409,10 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           autoComplete="off"
           inputMode="numeric"
           data-invalid={fi.attrs["data-invalid"]}
-          defaultValue={fi.value?.time?.getMinutes(includeMinutes)}
+          defaultValue={(() => {
+            const m = fi.value?.time?.getMinutes(includeMinutes);
+            return m == null ? undefined : includeMinutes ? m : `00${m}`.slice(-2);
+          })()}
           onClick={() => click("m")}
           onChange={changeM}
           onKeyDown={keydownM}
@@ -431,7 +437,10 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               autoComplete="off"
               inputMode="numeric"
               data-invalid={fi.attrs["data-invalid"]}
-              defaultValue={fi.value?.time?.getSeconds()}
+              defaultValue={(() => {
+                const s = fi.value?.time?.getSeconds();
+                return s == null ? undefined : `00${s}`.slice(-2);
+              })()}
               onClick={() => click("s")}
               onChange={changeS}
               onKeyDown={keydownS}

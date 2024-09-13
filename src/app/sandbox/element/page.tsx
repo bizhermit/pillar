@@ -438,6 +438,7 @@ export default function Home() {
               name="select"
               placeholder="セレクトボックス"
               required
+              defaultValue={4}
               initFocusValue={10}
               source={async () => {
                 // await sleep(3000);
@@ -579,7 +580,7 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
-              defaultValue={60}
+            // defaultValue={60}
             />
           </FormItemWrap>
           <FormItemWrap>
