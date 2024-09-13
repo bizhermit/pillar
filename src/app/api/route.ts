@@ -3,7 +3,6 @@ import { $num } from "@/data-items/number";
 import { $optional, $required } from "@/data-items/overwrite";
 import { $str } from "@/data-items/string";
 import { apiMethodHandler } from "@/server/next/app-api";
-import db from "@/server/prisma";
 import { sleep } from "@/utilities/sleep";
 
 const hoge = $str({ name: "hoge", required: true });
@@ -28,9 +27,9 @@ export const GET = apiMethodHandler(async (props) => {
   console.log(data);
   data.hoge;
   props.throwIfHasValidationError();
-  const count = await db.user.count();
+  // const count = await db.user.count();
   return {
     req: data,
-    count,
+    count: -1,
   };
 });
