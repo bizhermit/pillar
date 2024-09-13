@@ -54,7 +54,7 @@ declare namespace DataItem {
     fullName: string;
   };
 
-  type Validation<D extends $object, V = ValueType<D>> = (props: ValidationProps<D, v>) => (ValidationResult | null | undefined);
+  type Validation<D extends $object, V = ValueType<D>> = (props: ValidationProps<D, V>) => (ValidationResult | null | undefined);
 
   type ParseProps<D> = {
     value: any;
