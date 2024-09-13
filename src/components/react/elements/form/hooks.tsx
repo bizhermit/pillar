@@ -177,6 +177,34 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 
   const getValue = () => valRef.current as any;
 
+  const setValueImpl = ({ v, before, res, eq, edit, updateBind }: { v: any; before: any; res: DataItem.ValidationResult | null | undefined; eq: boolean; edit: boolean; updateBind: boolean; }) => {
+    if (!eq || updateBind) {
+      if (form.state !== "nothing") {
+        if (cp.setBind) {
+          cp.setBind({
+            value: v,
+            name: dataItem.name,
+            data: form.bind,
+            dataItem,
+          });
+        } else {
+          if (dataItem.name) set(form.bind, dataItem.name, v);
+        }
+      }
+      setVal(v);
+    }
+    form.change(id);
+
+    if (!eq) {
+      onChange?.(v, { before });
+      if (edit) {
+        onEdit?.(v, { before });
+        setInputted(true);
+      }
+    }
+    $.current.hook?.([v, res]);
+  };
+
   const setValue = ({ value, edit, effect, parse, init, mount, bind }: FormItemSetArg) => {
     let v: IV | null | undefined = value;
     let parseRes: DataItem.ValidationResult | null | undefined;
@@ -207,35 +235,9 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     const before = valRef.current;
     const eq = (cp.equals ?? equals)(before, v, { dataItem });
     if (!eq || mount || updateBind) {
-      const validRes = parseRes?.type === "e" ? undefined : doValidation(v);
-      const res = validRes ?? parseRes;
+      const res = parseRes?.type === "e" ? undefined : doValidation(v) ?? parseRes;
       setState(res);
-
-      if (!eq || updateBind) {
-        if (form.state !== "nothing") {
-          if (cp.setBind) {
-            cp.setBind({
-              value: v,
-              name: dataItem.name,
-              data: form.bind,
-              dataItem,
-            });
-          } else {
-            if (dataItem.name) set(form.bind, dataItem.name, v);
-          }
-        }
-        setVal(v);
-      }
-      form.change(id);
-
-      if (!eq) {
-        onChange?.(v, { before });
-        if (edit) {
-          onEdit?.(v, { before });
-          setInputted(true);
-        }
-      }
-      $.current.hook?.([v, res]);
+      setValueImpl({ v, before, edit: edit === true, eq, res, updateBind });
     }
     cp.effect({
       value: v,
@@ -349,13 +351,13 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   useEffect(() => {
     if (init.mount === 1) {
       init.mount++;
-      cp.effect({
-        value: valRef.current,
-        effect: true,
-        init: init.default ? "default" : true,
-        origin: init.val,
-        dataItem,
-        mount: true,
+      setValueImpl({
+        v: valRef.current,
+        before: undefined,
+        eq: (cp.equals ?? equals)(undefined, valRef.current, { dataItem }),
+        edit: false,
+        res: msg,
+        updateBind: true,
       });
       return;
     }

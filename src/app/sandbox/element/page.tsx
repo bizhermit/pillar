@@ -341,7 +341,7 @@ export default function Home() {
               placeholder="テキスト"
               name="text"
               label="テキスト"
-              defaultValue="hoge"
+              // defaultValue="hoge"
               required={(p) => {
                 // console.log((p.data?.slider ?? 0) > 50);
                 return (p.data?.slider ?? 0) > 50;
@@ -467,6 +467,7 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
+              defaultValue={60}
             />
           </FormItemWrap>
           <FormItemWrap>
@@ -578,6 +579,7 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
+              defaultValue={60}
             />
           </FormItemWrap>
           <FormItemWrap>
