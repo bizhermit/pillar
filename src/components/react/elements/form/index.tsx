@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useEffect, useMemo, useReducer, useRef, type Dispatch, type FormEvent, type FormHTMLAttributes, type MutableRefObject } from "react";
+import { createContext, useLayoutEffect, useMemo, useReducer, useRef, type Dispatch, type FormEvent, type FormHTMLAttributes, type MutableRefObject } from "react";
 import { clone } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
@@ -286,7 +286,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     };
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setFormState("");
   }, []);
 

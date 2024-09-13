@@ -467,7 +467,7 @@ export const useFormValue = <T extends any>(name: string) => {
     form.setValue(name, value);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { unmount } = form.mount({
       id,
       name,
