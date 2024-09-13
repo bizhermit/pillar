@@ -153,7 +153,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 
   const [msg, setMsg] = useState<DataItem.ValidationResult | null | undefined>(init.msg);
   const [val, setVal, valRef] = useRefState<IV | null | undefined>(init.val);
-  const [_inputted, setInputted, _inputtedRef] = useRefState(false);
+  // const [_inputted, setInputted, _inputtedRef] = useRefState(false);
 
   const getDynamicRequired = () => {
     if (typeof dataItem.required !== "function") return false;
@@ -199,7 +199,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       onChange?.(v, { before });
       if (edit) {
         onEdit?.(v, { before });
-        setInputted(true);
+        // setInputted(true);
       }
     }
     $.current.hook?.([v, res]);
@@ -321,11 +321,11 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   }, [dataItem, preventCollectForm]);
 
   useEffect(() => {
-    setInputted(false);
     if (init.mount === 0) {
       init.mount++;
       return;
     }
+    // setInputted(false);
     if (dataItem.name && form.state !== "nothing") {
       const [v, has] = get(form.bind, dataItem.name);
       if (has) {
