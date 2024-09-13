@@ -251,8 +251,7 @@
 
     &:has(.ipt-btn:active) {
 
-      >.ipt-num-spin-inc,
-      >.ipt-num-spin-dec {
+      >:is(.ipt-num-spin-inc, .ipt-num-spin-dec) {
         &:not(:active) {
           pointer-events: none;
         }
@@ -260,8 +259,7 @@
     }
   }
 
-  .ipt-num-spin-inc,
-  .ipt-num-spin-dec {
+  :is(.ipt-num-spin-inc, .ipt-num-spin-dec) {
     position: relative;
     min-height: 0;
     flex: 1 1 0rem;
@@ -287,9 +285,7 @@
     max-height: 100%;
   }
 
-  .ipt-date-y,
-  .ipt-date-m,
-  .ipt-date-d {
+  :is(.ipt-date-y, .ipt-date-m, .ipt-date-d) {
     padding: 0;
     text-align: center;
     flex: none !important;
@@ -301,8 +297,7 @@
     margin-left: 0.6rem;
   }
 
-  .ipt-date-m,
-  .ipt-date-d {
+  :is(.ipt-date-m, .ipt-date-d) {
     width: 2.2rem;
 
     &[data-last] {
@@ -314,9 +309,7 @@
     }
   }
 
-  .ipt-time-h,
-  .ipt-time-m,
-  .ipt-time-s {
+  :is(.ipt-time-h, .ipt-time-m, .ipt-time-s) {
     padding: 0;
     text-align: center;
     flex: none !important;
@@ -361,8 +354,7 @@
     -webkit-touch-callout: none;
   }
 
-  .ipt-dp-year,
-  .ipt-dp-month {
+  :is(.ipt-dp-year, .ipt-dp-month) {
     display: flex;
     flex-flow: row nowrap;
     height: var(--ipt-size);
@@ -373,8 +365,7 @@
       flex: 1 1 0rem;
     }
 
-    .ipt-prev,
-    .ipt-next {
+    :is(.ipt-prev, .ipt-next) {
       &[data-disabled="true"] {
         visibility: hidden;
         cursor: default;
@@ -489,7 +480,7 @@
     }
   }
 
-  .ipt-dp-btns {
+  :is(.ipt-dp-btns, .ipt-tp-btns) {
     border-top: 1px solid var(--ipt-bd);
     display: flex;
     flex-flow: row nowrap;
@@ -966,7 +957,7 @@
         overflow: auto;
       }
 
-      >.ipt-dp {
+      >:is(.ipt-dp, .ipt-tp) {
         height: min(100dvh, calc(var(--ipt-size) * 10));
       }
     }
@@ -979,7 +970,7 @@
         display: grid;
         grid-template-rows: 0fr;
 
-        >.ipt-dp {
+        >:is(.ipt-dp, .ipt-tp) {
           height: 0;
         }
       }

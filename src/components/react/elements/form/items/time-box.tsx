@@ -6,7 +6,7 @@ import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
 import { getTimeUnit, parseTimeAsUnit, Time, TimeRadix } from "../../../../objects/time";
 import { Dialog, useDialog } from "../../dialog";
-import { DownFillIcon } from "../../icon";
+import { CrossIcon, DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -522,7 +522,35 @@ export const TimePicker = (props: TimePickerProps) => {
       className="ipt-tp"
       data-dialog={props.dialog}
     >
-      timepicker
+      <div
+        className="ipt-tp-main"
+      >
+        <div
+          className="ipt-tp-time"
+        >
+        </div>
+        <div
+          className="ipt-tp-time"
+        >
+        </div>
+        <div
+          className="ipt-tp-time"
+        >
+        </div>
+      </div>
+      <div className="ipt-tp-btns">
+        {props.onCancel &&
+          <div
+            className="ipt-btn"
+            title="キャンセル"
+            onClick={() => {
+              props.onCancel!();
+            }}
+          >
+            <CrossIcon />
+          </div>
+        }
+      </div>
     </div>
   );
 };
