@@ -1,4 +1,4 @@
-import { parseMilliseconds, parseTimeAsUnit } from "../../objects/time";
+import { getTimeUnit, parseMilliseconds, parseTimeAsUnit } from "../../objects/time";
 
 const defaultLabel = "値";
 
@@ -11,15 +11,7 @@ export const $timeParse = ({ value, dataItem, fullName }: DataItem.ParseProps<Da
   const label = dataItem.label || dataItem.name || defaultLabel;
 
   const time = parseMilliseconds(value);
-  const num = parseTimeAsUnit(time, (() => {
-    switch (dataItem.mode) {
-      case "hms":
-      case "ms":
-        return "s";
-      default:
-        return "m";
-    }
-  })());
+  const num = parseTimeAsUnit(time, getTimeUnit(dataItem.mode ?? "hm"));
   if (num == null) {
     return [undefined, { type: "e", code: "parse", fullName, msg: `${label}を数値型に変換できません。[${value}]` }];
   }

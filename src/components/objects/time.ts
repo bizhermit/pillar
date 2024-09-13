@@ -107,6 +107,16 @@ export const formatTime = <
     .replace("S", String(Math.abs(toMillisecond(t)))) as FormattedString<T>;
 };
 
+export const getTimeUnit = (mode: "hm" | "hms" | "ms"): TimeUnit => {
+  switch (mode) {
+    case "hms":
+    case "ms":
+      return "s";
+    default:
+      return "m";
+  }
+};
+
 export class Time {
 
   protected time: number;

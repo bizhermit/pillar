@@ -24,6 +24,7 @@ import { Slider } from "@/react/elements/form/items/slider";
 import { InputTabContainer } from "@/react/elements/form/items/tab-container";
 import { TextArea } from "@/react/elements/form/items/text-area";
 import { TextBox } from "@/react/elements/form/items/text-box";
+import { TimeBox } from "@/react/elements/form/items/time-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
@@ -566,6 +567,14 @@ export default function Home() {
               label="年月"
               name="month-select"
               placeholder={["y", "m"]}
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <TimeBox
+              name="time"
               required
               disabled={disabled.value}
               readOnly={readOnly.value}

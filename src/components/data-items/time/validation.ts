@@ -1,4 +1,4 @@
-import { formatTime, parseMilliseconds, TimeUtils } from "../../objects/time";
+import { formatTime, getTimeUnit, parseMilliseconds, TimeUtils } from "../../objects/time";
 
 const defaultLabel = "値";
 
@@ -15,16 +15,8 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
     });
   }
 
-  const formatPattern = dataItem.mode === "hm" ? "hh:mm" : dataItem.mode === "ms" ? "mm:ss" : "hh:mm:ss";
-  const unit = (() => {
-    switch (dataItem.mode) {
-      case "hms":
-      case "ms":
-        return "s";
-      default:
-        return "m";
-    }
-  })();
+  const formatPattern = dataItem.mode === "hms" ? "hh:mm:ss" : dataItem.mode === "ms" ? "mm:ss" : "hh:mm";
+  const unit = getTimeUnit(dataItem.mode ?? "hm");
 
   const minStr = dataItem.min == null ? "" : formatTime(parseMilliseconds(dataItem.min, unit)!, formatPattern);
   const maxStr = dataItem.max == null ? "" : formatTime(parseMilliseconds(dataItem.max, unit)!, formatPattern);
