@@ -36,7 +36,6 @@ export const {
         },
       },
       authorize: async ({ email, password }) => {
-        console.log("signin:", email, password);
         if (isEmpty(password)) return null;
         return {
           id: "0",

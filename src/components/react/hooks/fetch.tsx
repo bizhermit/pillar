@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, type ReactNode, use, useEffect, useRef } from "react";
+import { createContext, type ReactNode, use, useLayoutEffect, useRef } from "react";
 import $fetch, { type FetchFailedResponse, type FetchOptions, type FetchResponse, optimizeHeader } from "../../utilities/fetch";
 import { $alert, $confirm, type MessageBoxAlertProps, type MessageBoxConfirmProps } from "../elements/message-box";
 
@@ -66,7 +66,7 @@ export const useFetch = <EndPoint extends ApiPath>() => {
   const ctx = use(FetchContext);
   const mounted = useRef(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     mounted.current = true;
     return () => {
       mounted.current = false;

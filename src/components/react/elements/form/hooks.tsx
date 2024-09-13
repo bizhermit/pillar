@@ -1,9 +1,8 @@
 "use client";
 
-import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { use, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
 import { equals } from "../../../objects";
-import { generateUuidV4 } from "../../../objects/string";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 import { CrossIcon } from "../icon";
@@ -39,8 +38,6 @@ type FormItemCoreArgs<
   focus: () => void;
 };
 
-const getId = crypto.randomUUID?.bind(crypto) ?? generateUuidV4;
-
 export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V>({
   hook,
   name,
@@ -62,9 +59,8 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 }: FormItemOptions<D, V, any>,
   cp: FormItemCoreArgs<SD, D, V, IV>
 ) => {
-  const id = useRef(getId());
+  const id = useId();
   const form = use(FormContext);
-  const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
   const $disabled = disabled || form.disabled;
   const $readOnly = readOnly || form.pending;
 
@@ -91,7 +87,12 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
         dataItem: $dataItem,
       }),
     } as SD;
-  }, [name, typeof required === "function" ? "" : required, ...cp.dataItemDeps, ...(refs ?? [])]);
+  }, [
+    name,
+    typeof required === "function" ? "" : required,
+    ...cp.dataItemDeps,
+    ...(refs ?? []),
+  ]);
 
   const { parseVal, validation } = useMemo(() => {
     return {
@@ -142,12 +143,16 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       data: form.bind,
     }, { bind: true });
     const validRes = parseRes?.type === "e" ? undefined : doValidation(val);
-    return { val, msg: validRes ?? parseRes, default: def && defaultValue != null && defaultValue !== "" };
+    return {
+      val,
+      msg: validRes ?? parseRes,
+      default: def && defaultValue != null && defaultValue !== "",
+      mount: 0,
+    };
   }, []);
 
   const [msg, setMsg] = useState<DataItem.ValidationResult | null | undefined>(init.msg);
   const [val, setVal, valRef] = useRefState<IV | null | undefined>(init.val);
-  const cache = useRef<IV | null | undefined>(init.default ? undefined : init.val);
   const [_inputted, setInputted, _inputtedRef] = useRefState(false);
 
   const getDynamicRequired = () => {
@@ -162,14 +167,8 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   };
   const [dyanmicRequired, setDyanmicRequired] = useState(getDynamicRequired);
 
-  const hasChanged = () => !(cp.equals ?? equals)(cache.current, valRef.current, { dataItem });
-  const mountValue = !preventCollectForm && hasChanged();
-
   const setState = (state: DataItem.ValidationResult | null | undefined) => {
-    form.setItemState({
-      id: id.current,
-      state,
-    });
+    form.setItemState({ id, state });
     setMsg(cur => {
       if (cur?.type === state?.type && cur?.msg === state?.msg) return cur;
       return state;
@@ -195,11 +194,11 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     let updateBind = false;
     switch (init) {
       case "default":
-        cache.current = undefined;
+        $.current.cache = undefined;
         updateBind = true;
         break;
       case true:
-        cache.current = v;
+        $.current.cache = v;
         updateBind = true;
         break;
       default: break;
@@ -227,7 +226,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
         }
         setVal(v);
       }
-      form.change(id.current);
+      form.change(id);
 
       if (!eq) {
         onChange?.(v, { before });
@@ -236,35 +235,79 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
           setInputted(true);
         }
       }
-      hookRef.current?.([v, res]);
+      $.current.hook?.([v, res]);
     }
-    cp.effect({ value: v, edit, effect, parse, init, origin: value, dataItem, mount });
+    cp.effect({
+      value: v,
+      edit,
+      effect,
+      parse,
+      init,
+      origin: value,
+      dataItem,
+      mount,
+    });
   };
 
-  const reset = (edit?: boolean) => setValue({ value: defaultValue, edit, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default" });
+  const reset = (edit?: boolean) => setValue({
+    value: defaultValue,
+    edit,
+    parse: true,
+    effect: true,
+    init: (defaultValue == null || defaultValue === "") ? true : "default",
+  });
 
-  const clear = (edit?: boolean) => setValue({ value: undefined, edit, parse: true, effect: true });
+  const clear = (edit?: boolean) => setValue({
+    value: undefined,
+    edit,
+    parse: true,
+    effect: true,
+  });
 
-  hookRef.current = hook ? hook({
+  const $ = useRef<{
+    cache: IV | null | undefined;
+    doValidation: typeof doValidation;
+    getDynamicRequired: typeof getDynamicRequired;
+    get: typeof getValue;
+    set: typeof setValue;
+    reset: typeof reset;
+    getTieInNames?: typeof cp["getTieInNames"];
+    hook: ReturnType<Exclude<typeof hook, undefined>> | null;
+    hasChanged: typeof hasChanged;
+  }>({
+    cache: init.default ? undefined : init.val,
+  } as any);
+
+  $.current.doValidation = doValidation;
+  $.current.getDynamicRequired = getDynamicRequired;
+  $.current.get = getValue;
+  $.current.set = setValue;
+  $.current.reset = reset;
+  $.current.getTieInNames = cp.getTieInNames;
+  $.current.hook = hook ? hook({
     get: getValue,
-    set: (p) => setValue({ ...p, parse: true }),
+    set: (p) => form.setValue(name!, p.value, true),
     clear,
     reset,
     focus: cp.focus,
   }) : null;
 
-  useEffect(() => {
+  const hasChanged = () => !(cp.equals ?? equals)($.current.cache, valRef.current, { dataItem });
+  const mountValue = !preventCollectForm && hasChanged();
+  $.current.hasChanged = hasChanged;
+
+  useLayoutEffect(() => {
     const { unmount } = form.mount({
-      id: id.current,
+      id,
       name: dataItem.name,
-      tieInNames: cp.getTieInNames?.({ dataItem }),
-      get: getValue,
-      set: setValue,
-      reset,
-      hasChanged,
+      tieInNames: $.current.getTieInNames?.({ dataItem }),
+      get: $.current.get,
+      set: $.current.set,
+      reset: $.current.reset,
+      hasChanged: $.current.hasChanged,
       changeRefs: () => {
-        setState(doValidation(valRef.current));
-        setDyanmicRequired(getDynamicRequired());
+        setState($.current.doValidation(valRef.current));
+        setDyanmicRequired($.current.getDynamicRequired());
       },
       dataItem,
       preventCollectForm,
@@ -277,22 +320,60 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 
   useEffect(() => {
     setInputted(false);
+    if (init.mount === 0) {
+      init.mount++;
+      return;
+    }
     if (dataItem.name && form.state !== "nothing") {
       const [v, has] = get(form.bind, dataItem.name);
       if (has) {
-        setValue({ value: v, parse: true, effect: true, init: true, bind: true });
+        setValue({
+          value: v,
+          parse: true,
+          effect: true,
+          init: true,
+          bind: true,
+        });
         return;
       }
     }
-    setValue({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default", bind: true });
+    setValue({
+      value: defaultValue,
+      parse: true,
+      effect: true,
+      init: (defaultValue == null || defaultValue === "") ? true : "default",
+      bind: true,
+    });
   }, [form.bind]);
 
   useEffect(() => {
-    if (cp.revert) {
-      setValue({ value: cp.revert(valRef.current), parse: true, mount: true, bind: true });
+    if (init.mount === 1) {
+      init.mount++;
+      cp.effect({
+        value: valRef.current,
+        effect: true,
+        init: init.default ? "default" : true,
+        origin: init.val,
+        dataItem,
+        mount: true,
+      });
       return;
     }
-    setValue({ value: valRef.current, parse: false, mount: true, bind: true });
+    if (cp.revert) {
+      setValue({
+        value: cp.revert(valRef.current),
+        parse: true,
+        mount: true,
+        bind: true,
+      });
+      return;
+    }
+    setValue({
+      value: valRef.current,
+      parse: false,
+      mount: true,
+      bind: true,
+    });
   }, [validation, parseVal]);
 
   const editable = !$readOnly && !$disabled && !form.pending;
@@ -378,7 +459,7 @@ export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
 };
 
 export const useFormValue = <T extends any>(name: string) => {
-  const id = useRef(getId());
+  const id = useId();
   const form = use(FormContext);
   const [value, setVal] = useState<T | undefined>(form.getValue(name));
 
@@ -386,9 +467,9 @@ export const useFormValue = <T extends any>(name: string) => {
     form.setValue(name, value);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { unmount } = form.mount({
-      id: id.current,
+      id,
       name,
       get: () => undefined as any,
       set: () => { },

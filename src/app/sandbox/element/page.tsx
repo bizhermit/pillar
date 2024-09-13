@@ -176,7 +176,7 @@ export default function Home() {
         </Button>
         <Button
           onClick={() => {
-            setBind({});
+            setBind({ num: 6, text: "", slider: 64 });
           }}
           outline
           round
@@ -315,7 +315,7 @@ export default function Home() {
           await sleep(3000);
         }}
       >
-        <ObservationFormValue name="slider" value={30} />
+        <ObservationFormValue name="slider" value={90} />
         <InputTabContainer
           name="tab"
         >
@@ -399,8 +399,9 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
-            // float={1}
-            // requiredIsNotZero
+              // float={1}
+              // requiredIsNotZero
+              defaultValue={3000}
             />
           </FormItemWrap>
           <FormItemWrap>

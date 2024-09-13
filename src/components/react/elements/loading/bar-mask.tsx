@@ -15,7 +15,7 @@ const LoadingBarWithMask = ({
     const releaseScroll = preventScroll();
     return () => {
       releaseScroll();
-      ref.current.close();
+      ref.current?.close();
     };
   }, []);
 

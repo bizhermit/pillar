@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { HTMLAttributes, ReactNode, useEffect, useRef } from "react";
+import { HTMLAttributes, ReactNode, useLayoutEffect, useRef } from "react";
 import { DownIcon } from "../icon";
 import Link from "../link";
 import { joinClassNames } from "../utilities";
@@ -120,7 +120,7 @@ export const NavMenuLink = ({
   })();
   const ref = useRef<HTMLLIElement>(null!);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (current) {
       let elem: HTMLElement = ref.current;
       while (elem != null) {

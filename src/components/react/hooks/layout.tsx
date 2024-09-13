@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, type Dispatch, type ReactNode, useEffect, useReducer, useState } from "react";
+import { createContext, type Dispatch, type ReactNode, useLayoutEffect, useReducer, useState } from "react";
 
 export type LayoutTheme = "auto" | "light" | "dark";
 
@@ -45,7 +45,7 @@ export const LayoutProvider = (props: Props) => {
   }, props.defaultLayoutTheme || defaultLayoutTheme);
   const [windowSize, setWindowSize] = useState<WindowSizeValue>(WindowSize.m);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const resizeWindow = () => {
       const cw = document.body.clientWidth;
       if (cw > 1200) {
