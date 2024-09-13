@@ -465,10 +465,55 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           mobile
           className="ipt-dialog"
         >
-          time picker
+          <TimePicker
+            mode={fi.dataItem.mode}
+            initValue={$initFocusTime}
+            minTime={minTime}
+            maxTime={maxTime}
+            dialog
+            preventSelectedRender
+            value={fi.value?.time?.getTime()}
+            onSelect={({ time }) => {
+              if (time == null) {
+                fi.clear(true);
+              } else {
+                fi.set({ value: { time: new Time(time), unitValue: parseTimeAsUnit(time, unit) }, edit: true, effect: true });
+              }
+              closeDialog(true);
+            }}
+            onCancel={() => {
+              closeDialog(true);
+            }}
+          />
         </Dialog>
       </div>
       {fi.messageComponent}
     </>
+  );
+};
+
+type TimePickerProps = {
+  mode?: DataItem.$time["mode"];
+  value?: number;
+  initValue?: Time;
+  minTime?: Time;
+  maxTime?: Time;
+  dialog?: boolean;
+  preventSelectedRender?: boolean;
+  onSelect?: (params: { time: number; action?: "clear"; }) => void;
+  onCancel?: () => void;
+};
+
+export const TimePicker = (props: TimePickerProps) => {
+  const mode = props.mode || "hm";
+  const value = props.value ?? props.initValue?.getTime();
+
+  return (
+    <div
+      className="ipt-tp"
+      data-dialog={props.dialog}
+    >
+      timepicker
+    </div>
   );
 };
