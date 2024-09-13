@@ -1,9 +1,8 @@
 "use client";
 
-import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { use, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
 import { equals } from "../../../objects";
-import { generateUuidV4 } from "../../../objects/string";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 import { CrossIcon } from "../icon";
@@ -39,8 +38,6 @@ type FormItemCoreArgs<
   focus: () => void;
 };
 
-const getId = crypto.randomUUID?.bind(crypto) ?? generateUuidV4;
-
 export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V>({
   hook,
   name,
@@ -62,7 +59,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 }: FormItemOptions<D, V, any>,
   cp: FormItemCoreArgs<SD, D, V, IV>
 ) => {
-  const id = useRef(getId());
+  const id = useId();
   const form = use(FormContext);
   const hookRef = useRef<ReturnType<FormItemHook<IV>["hook"]> | null>(null);
   const $disabled = disabled || form.disabled;
@@ -166,10 +163,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   const mountValue = !preventCollectForm && hasChanged();
 
   const setState = (state: DataItem.ValidationResult | null | undefined) => {
-    form.setItemState({
-      id: id.current,
-      state,
-    });
+    form.setItemState({ id, state });
     setMsg(cur => {
       if (cur?.type === state?.type && cur?.msg === state?.msg) return cur;
       return state;
@@ -227,7 +221,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
         }
         setVal(v);
       }
-      form.change(id.current);
+      form.change(id);
 
       if (!eq) {
         onChange?.(v, { before });
@@ -241,9 +235,20 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     cp.effect({ value: v, edit, effect, parse, init, origin: value, dataItem, mount });
   };
 
-  const reset = (edit?: boolean) => setValue({ value: defaultValue, edit, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default" });
+  const reset = (edit?: boolean) => setValue({
+    value: defaultValue,
+    edit,
+    parse: true,
+    effect: true,
+    init: (defaultValue == null || defaultValue === "") ? true : "default",
+  });
 
-  const clear = (edit?: boolean) => setValue({ value: undefined, edit, parse: true, effect: true });
+  const clear = (edit?: boolean) => setValue({
+    value: undefined,
+    edit,
+    parse: true,
+    effect: true,
+  });
 
   hookRef.current = hook ? hook({
     get: getValue,
@@ -255,7 +260,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 
   useEffect(() => {
     const { unmount } = form.mount({
-      id: id.current,
+      id,
       name: dataItem.name,
       tieInNames: cp.getTieInNames?.({ dataItem }),
       get: getValue,
@@ -284,7 +289,13 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
         return;
       }
     }
-    setValue({ value: defaultValue, parse: true, effect: true, init: (defaultValue == null || defaultValue === "") ? true : "default", bind: true });
+    setValue({
+      value: defaultValue,
+      parse: true,
+      effect: true,
+      init: (defaultValue == null || defaultValue === "") ? true : "default",
+      bind: true,
+    });
   }, [form.bind]);
 
   useEffect(() => {
@@ -378,7 +389,7 @@ export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
 };
 
 export const useFormValue = <T extends any>(name: string) => {
-  const id = useRef(getId());
+  const id = useId();
   const form = use(FormContext);
   const [value, setVal] = useState<T | undefined>(form.getValue(name));
 
@@ -388,7 +399,7 @@ export const useFormValue = <T extends any>(name: string) => {
 
   useEffect(() => {
     const { unmount } = form.mount({
-      id: id.current,
+      id,
       name,
       get: () => undefined as any,
       set: () => { },
