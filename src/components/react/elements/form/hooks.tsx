@@ -276,6 +276,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     getTieInNames?: typeof cp["getTieInNames"];
     hook: ReturnType<Exclude<typeof hook, undefined>> | null;
     hasChanged: typeof hasChanged;
+    bind: typeof form.bind;
   }>({
     cache: init.default ? undefined : init.val,
   } as any);
@@ -323,8 +324,11 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   useEffect(() => {
     if (init.mount === 0) {
       init.mount++;
+      $.current.bind = form.bind;
       return;
     }
+    if ($.current.bind === form.bind) return;
+    $.current.bind = form.bind;
     // setInputted(false);
     if (dataItem.name && form.state !== "nothing") {
       const [v, has] = get(form.bind, dataItem.name);

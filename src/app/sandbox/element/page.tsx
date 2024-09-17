@@ -28,7 +28,6 @@ import { TimeBox } from "@/react/elements/form/items/time-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
-import { LoadingBar } from "@/react/elements/loading";
 import { $alert, $confirm } from "@/react/elements/message-box";
 import { TabContainer, TabContent, useTabContainer } from "@/react/elements/tab-container";
 import { LayoutContext } from "@/react/hooks/layout";
@@ -65,9 +64,9 @@ export default function Home() {
 
   return (
     <div>
-      <LoadingBar
+      {/* <LoadingBar
       // mask
-      />
+      /> */}
       <TabContainer
         disabled={disabled.value}
         // defaultMount
@@ -303,7 +302,7 @@ export default function Home() {
           console.log("--- submit --- error:", hasError);
           console.log("--- form ---");
           const fd = getFormData();
-          fd.forEach((v, k) => console.log(k, v));
+          console.log(Array.from(fd.entries()));
           console.log("--- bind ---");
           console.log(getBindData({
             // appendNotChanged: true,
@@ -361,7 +360,7 @@ export default function Home() {
             name="hidden"
             required
             value={hiddenValue}
-          // defaultValue="fuga"
+            defaultValue="fuga"
           />
           <label>
             <span>Label:</span>
