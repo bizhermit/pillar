@@ -300,9 +300,9 @@ export default function Home() {
         // preventEnterSubmit
         onSubmit={async ({ hasError, getFormData, getBindData }) => {
           console.log("--- submit --- error:", hasError);
-          console.log("--- form ---");
-          const fd = getFormData();
-          fd.forEach((v, k) => console.log(k, v));
+          // console.log("--- form ---");
+          // const fd = getFormData();
+          // fd.forEach((v, k) => console.log(k, v));
           console.log("--- bind ---");
           console.log(getBindData({
             // appendNotChanged: true,
@@ -360,7 +360,7 @@ export default function Home() {
             name="hidden"
             required
             value={hiddenValue}
-          // defaultValue="fuga"
+            defaultValue="fuga"
           />
           <label>
             <span>Label:</span>
