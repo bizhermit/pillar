@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, useMemo, useRef } from "react";
+import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, ReactElement, useMemo, useRef } from "react";
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
 import { equals } from "../../../../objects";
@@ -96,7 +96,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   });
 
   const unit = getTimeUnit(fi.dataItem.mode!);
-  const includeMinutes = fi.dataItem.mode === "ms";
+  const includeHours = fi.dataItem.mode === "ms";
 
   const renderInputs = (v: TimeValue | null | undefined) => {
     if (v?.time == null) {
@@ -109,8 +109,8 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
     cache.current.h = cache.current.m = cache.current.s = 0;
     if (href.current) href.current.value = String(cache.current.h = v.time.getHours());
     if (mref.current) {
-      cache.current.m = v.time.getMinutes(includeMinutes);
-      mref.current.value = includeMinutes ? String(cache.current.m) : `00${cache.current.m}`.slice(-2);
+      cache.current.m = v.time.getMinutes(includeHours);
+      mref.current.value = includeHours ? String(cache.current.m) : `00${cache.current.m}`.slice(-2);
     }
     if (sref.current) sref.current.value = `00${cache.current.s = v.time.getSeconds()}`.slice(-2);
   };
@@ -233,7 +233,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
       cache.current.m = undefined;
     } else {
       cache.current.m = Number(v);
-      if (v.length === 2 || (includeMinutes && cache.current.m > 59)) sref.current?.focus();
+      if (v.length === 2 || (includeHours && cache.current.m > 59)) sref.current?.focus();
     }
     commitChange();
   };
@@ -252,14 +252,14 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   const updown = (h = 0, m = 0, s = 0) => {
     if (!fi.editable) return;
     let hours = cache.current.h == null ? $initFocusTime.getHours() : cache.current.h + h;
-    let minutes = cache.current.m == null ? $initFocusTime.getMinutes(includeMinutes) : cache.current.m + m;
+    let minutes = cache.current.m == null ? $initFocusTime.getMinutes(includeHours) : cache.current.m + m;
     let seconds = cache.current.s == null ? $initFocusTime.getSeconds() : cache.current.s + s;
     let time = new Time(hours * TimeRadix.H + minutes * TimeRadix.M + seconds * TimeRadix.S);
 
     if (minTime) {
       if (minTime.getTime() > time.getTime()) {
         hours = minTime.getHours();
-        minutes = minTime.getMinutes(includeMinutes);
+        minutes = minTime.getMinutes(includeHours);
         seconds = minTime.getSeconds();
         time = new Time(minTime);
       }
@@ -267,7 +267,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
     if (maxTime) {
       if (maxTime.getTime() < time.getTime()) {
         hours = maxTime.getHours();
-        minutes = maxTime.getMinutes(includeMinutes);
+        minutes = maxTime.getMinutes(includeHours);
         seconds = maxTime.getSeconds();
         time = new Time(maxTime);
       }
@@ -410,8 +410,8 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           inputMode="numeric"
           data-invalid={fi.attrs["data-invalid"]}
           defaultValue={(() => {
-            const m = fi.value?.time?.getMinutes(includeMinutes);
-            return m == null ? undefined : includeMinutes ? m : `00${m}`.slice(-2);
+            const m = fi.value?.time?.getMinutes(includeHours);
+            return m == null ? undefined : includeHours ? m : `00${m}`.slice(-2);
           })()}
           onClick={() => click("m")}
           onChange={changeM}
@@ -481,7 +481,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
             maxTime={maxTime}
             dialog
             preventSelectedRender
-            value={fi.value?.time?.getTime()}
+            value={fi.value?.time}
             onSelect={({ time }) => {
               if (time == null) {
                 fi.clear(true);
@@ -503,10 +503,10 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
 
 type TimePickerProps = {
   mode?: DataItem.$time["mode"];
-  value?: number;
-  initValue?: Time;
-  minTime?: Time;
-  maxTime?: Time;
+  value?: Time | null | undefined;
+  initValue?: Time | null | undefined;
+  minTime?: Time | null | undefined;
+  maxTime?: Time | null | undefined;
   dialog?: boolean;
   preventSelectedRender?: boolean;
   onSelect?: (params: { time: number; action?: "clear"; }) => void;
@@ -515,7 +515,56 @@ type TimePickerProps = {
 
 export const TimePicker = (props: TimePickerProps) => {
   const mode = props.mode || "hm";
-  const value = props.value ?? props.initValue?.getTime();
+  const includeHours = mode === "ms";
+  const value = props.value ?? props.initValue;
+
+  const hourCells = useMemo(() => {
+    const cells: Array<ReactElement> = [];
+    if (mode === "ms") return cells;
+    const isSelected = (h: number) => equals(value?.getHours(), h);
+    // let hasToday = false;
+    // const today = new Date();
+    // const isToday = (d: Date) => !hasToday && (hasToday = (today.getMonth() === d.getMonth() && today.getFullYear() === d.getFullYear()));
+    const minHour = props.minTime?.getHours();
+    let hasOverMinTime = minHour == null;
+    const overMaxTime = (h: number) => hasOverMinTime || (hasOverMinTime = minHour! >= h);
+    const maxHour = props.maxTime?.getHours() ?? 23;
+    let hasReachedMaxTime = false;
+    const reachedMaxTime = (h: number) => hasReachedMaxTime || (hasReachedMaxTime = maxHour < h);
+
+    // const cursorDate = new Date(yNum, 0, 1);
+    const getCellComponent = ({ hour, attrs }: { hour: number; attrs?: { [v: string]: string | undefined } }) => {
+      const selected = isSelected(hour);
+      // const str = formatDate(cursorDate);
+      console.log(hour, hasOverMinTime, hasReachedMaxTime);
+      const selectable = overMaxTime(hour) && !reachedMaxTime(hour);
+
+      return (
+        <div
+          {...attrs}
+          key={hour}
+          className="ipt-tp-cell"
+          data-selected={selected}
+          data-disabled={!selectable}
+        // data-current={isToday(cursorDate)}
+        // onClick={!selectable ? undefined : () => {
+        //   const date = parseDate(str)!;
+        //   props.onSelect?.({
+        //     date, str,
+        //     action: selected && props.multiple ? "clear" : undefined,
+        //   });
+        // }}
+        >
+          {hour}
+        </div>
+      );
+    };
+
+    for (let i = 0; i < 24; i++) {
+      cells.push(getCellComponent({ hour: i }));
+    }
+    return cells;
+  }, []);
 
   return (
     <div
@@ -525,18 +574,29 @@ export const TimePicker = (props: TimePickerProps) => {
       <div
         className="ipt-tp-main"
       >
+        {mode !== "ms" &&
+          <>
+            <div
+              className="ipt-tp-times"
+            >
+              {hourCells}
+            </div>
+            <span className="ipt-sep">:</span>
+          </>
+        }
         <div
-          className="ipt-tp-time"
+          className="ipt-tp-times"
         >
         </div>
-        <div
-          className="ipt-tp-time"
-        >
-        </div>
-        <div
-          className="ipt-tp-time"
-        >
-        </div>
+        {mode !== "hm" &&
+          <>
+            <span className="ipt-sep">:</span>
+            <div
+              className="ipt-tp-times"
+            >
+            </div>
+          </>
+        }
       </div>
       <div className="ipt-tp-btns">
         {props.onCancel &&
