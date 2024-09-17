@@ -304,10 +304,10 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       id,
       name: dataItem.name,
       tieInNames: $.current.getTieInNames?.({ dataItem }),
-      get: $.current.get,
-      set: $.current.set,
-      reset: $.current.reset,
-      hasChanged: $.current.hasChanged,
+      get: (...args) => $.current.get(...args),
+      set: (...args) => $.current.set(...args),
+      reset: (...args) => $.current.reset(...args),
+      hasChanged: (...args) => $.current.hasChanged(...args),
       changeRefs: () => {
         setState($.current.doValidation(valRef.current));
         setDyanmicRequired($.current.getDynamicRequired());
@@ -467,7 +467,7 @@ export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
 export const useFormValue = <T extends any>(name: string) => {
   const id = useId();
   const form = use(FormContext);
-  const [value, setVal] = useState<T | undefined>(form.getValue(name));
+  const [value, setVal] = useState<T | undefined>(() => form.getValue(name));
 
   const set = (value: T) => {
     form.setValue(name, value);
