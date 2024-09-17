@@ -320,8 +320,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       },
       setItemState,
       getMountedItems: () => items.current,
-      getValue: getValue,
-      setValue: setValue,
+      getValue,
+      setValue,
     }}>
       {(formState === "submit" || formState === "init") && <LoadingBar />}
       <form
