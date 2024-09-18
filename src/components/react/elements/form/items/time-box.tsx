@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, ReactElement, useMemo, useRef } from "react";
+import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, ReactElement, useMemo, useReducer, useRef } from "react";
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
 import { equals } from "../../../../objects";
@@ -120,7 +120,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   }, [fi.dataItem.min]);
 
   const maxTime = useMemo(() => {
-    if (fi.dataItem.max == null) return new Time(24 * TimeRadix.H);
+    if (fi.dataItem.max == null) return new Time(24 * TimeRadix.H - TimeRadix.S);
     return new Time(Math.max(fi.dataItem.max ?? 0, 0), unit);
   }, [fi.dataItem.max]);
 
@@ -507,6 +507,9 @@ type TimePickerProps = {
   initValue?: Time | null | undefined;
   minTime?: Time | null | undefined;
   maxTime?: Time | null | undefined;
+  hourStep?: number;
+  minuteStep?: number;
+  secondStep?: number;
   dialog?: boolean;
   preventSelectedRender?: boolean;
   onSelect?: (params: { time: number; action?: "clear"; }) => void;
@@ -517,26 +520,37 @@ export const TimePicker = (props: TimePickerProps) => {
   const mode = props.mode || "hm";
   const includeHours = mode === "ms";
   const value = props.value ?? props.initValue;
+  const hourStep = Math.max(1, props.hourStep ?? 1);
+  const minuteStep = Math.max(1, props.minuteStep ?? 5);
+  const secondStep = Math.max(1, props.secondStep ?? 10);
+  const minTime = props.minTime ?? new Time();
+  const maxTime = props.maxTime ?? new Time(24 * TimeRadix.H - TimeRadix.S);
+
+  const [dispTime, setDispTime] = useReducer((state: Time, { h, m, s, act }: { h?: number; m?: number; s?: number; act?: "select" | "effect"; }) => {
+    const newTime = new Time(state);
+    if (h != null) newTime.setHours(h);
+    if (m != null) newTime.setMinutes(m);
+    if (s != null) newTime.setSeconds(s);
+    return newTime;
+  }, value ?? minTime ?? new Time());
+  const hNum = mode === "ms" ? 0 : dispTime.getHours();
+  const mNum = dispTime.getMinutes(includeHours);
+  const sNum = mode === "hm" ? 0 : dispTime.getSeconds();
 
   const hourCells = useMemo(() => {
     const cells: Array<ReactElement> = [];
     if (mode === "ms") return cells;
-    const isSelected = (h: number) => equals(value?.getHours(), h);
-    // let hasToday = false;
-    // const today = new Date();
-    // const isToday = (d: Date) => !hasToday && (hasToday = (today.getMonth() === d.getMonth() && today.getFullYear() === d.getFullYear()));
-    const minHour = props.minTime?.getHours();
-    let hasOverMinTime = minHour == null;
-    const overMaxTime = (h: number) => hasOverMinTime || (hasOverMinTime = minHour! >= h);
-    const maxHour = props.maxTime?.getHours() ?? 23;
+
+    const curH = new Date().getHours();
+    const minHour = minTime.getHours();
+    const maxHour = maxTime.getHours();
+
+    let hasOverMinTime = false;
+    const overMaxTime = (h: number) => hasOverMinTime || (hasOverMinTime = minHour <= h);
     let hasReachedMaxTime = false;
     const reachedMaxTime = (h: number) => hasReachedMaxTime || (hasReachedMaxTime = maxHour < h);
 
-    // const cursorDate = new Date(yNum, 0, 1);
     const getCellComponent = ({ hour, attrs }: { hour: number; attrs?: { [v: string]: string | undefined } }) => {
-      const selected = isSelected(hour);
-      // const str = formatDate(cursorDate);
-      console.log(hour, hasOverMinTime, hasReachedMaxTime);
       const selectable = overMaxTime(hour) && !reachedMaxTime(hour);
 
       return (
@@ -544,27 +558,122 @@ export const TimePicker = (props: TimePickerProps) => {
           {...attrs}
           key={hour}
           className="ipt-tp-cell"
-          data-selected={selected}
+          data-selected={hour === hNum}
+          data-current={hour === curH}
           data-disabled={!selectable}
-        // data-current={isToday(cursorDate)}
-        // onClick={!selectable ? undefined : () => {
-        //   const date = parseDate(str)!;
-        //   props.onSelect?.({
-        //     date, str,
-        //     action: selected && props.multiple ? "clear" : undefined,
-        //   });
-        // }}
+          onClick={() => {
+            setDispTime({ h: hour });
+          }}
         >
           {hour}
         </div>
       );
     };
 
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < 24; i += hourStep) {
       cells.push(getCellComponent({ hour: i }));
     }
     return cells;
-  }, []);
+  }, [
+    hNum,
+    mode,
+    minTime,
+    maxTime,
+  ]);
+
+  const minuteCells = useMemo(() => {
+    const cells: Array<ReactElement> = [];
+
+    const today = new Date();
+    const curM = today.getMinutes() + (mode === "ms" ? today.getHours() * 60 : 0);
+
+    const hMinutes = hNum * 60;
+    const minMinute = minTime.getMinutes(true);
+    const maxMinute = maxTime.getMinutes(true);
+
+    let hasOverMinTime = false;
+    const overMinTime = (m: number) => hasOverMinTime || (hasOverMinTime = minMinute <= (m + hMinutes));
+    let hasReachedMaxTime = false;
+    const reachedMaxTime = (m: number) => hasReachedMaxTime || (hasReachedMaxTime = maxMinute < (m + hMinutes));
+
+    const getCellComponent = ({ minute, attrs }: { minute: number; attrs?: { [v: string]: string | undefined } }) => {
+      const selectable = overMinTime(minute) && !reachedMaxTime(minute);
+
+      return (
+        <div
+          {...attrs}
+          key={minute}
+          className="ipt-tp-cell"
+          data-selected={minute === mNum}
+          data-current={minute === curM}
+          data-disabled={!selectable}
+          onClick={() => {
+            setDispTime({ m: minute });
+          }}
+        >
+          {`00${minute}`.slice(-2)}
+        </div>
+      );
+    };
+
+    for (let i = 0, il = Math.max(60, maxTime.getMinutes(includeHours)); i < il; i += minuteStep) {
+      cells.push(getCellComponent({ minute: i }));
+    }
+    return cells;
+  }, [
+    hNum,
+    mNum,
+    minTime,
+    maxTime,
+  ]);
+
+  const secondCells = useMemo(() => {
+    const cells: Array<ReactElement> = [];
+    if (mode === "hm") return cells;
+
+    const curS = new Date().getSeconds();
+
+    const hmSeconds = (hNum * 60 + mNum) * 60;
+    const minSecond = minTime.getSeconds(true);
+    const maxSecond = maxTime.getSeconds(true);
+
+    let hasOverMinTime = false;
+    const overMinTime = (s: number) => hasOverMinTime || (hasOverMinTime = minSecond <= (s + hmSeconds));
+    let hasReachedMaxTime = false;
+    const reachedMaxTime = (s: number) => hasReachedMaxTime || (hasReachedMaxTime = maxSecond < (s + hmSeconds));
+
+    const getCellComponent = ({ second, attrs }: { second: number; attrs?: { [v: string]: string | undefined } }) => {
+      const selectable = overMinTime(second) && !reachedMaxTime(second);
+
+      return (
+        <div
+          {...attrs}
+          key={second}
+          className="ipt-tp-cell"
+          data-selected={second === sNum}
+          data-current={second === curS}
+          data-disabled={!selectable}
+          onClick={() => {
+            setDispTime({ s: second });
+          }}
+        >
+          {`00${second}`.slice(-2)}
+        </div>
+      );
+    };
+
+    for (let i = 0; i < 60; i += secondStep) {
+      cells.push(getCellComponent({ second: i }));
+    }
+    return cells;
+  }, [
+    hNum,
+    mNum,
+    sNum,
+    mode,
+    minTime,
+    maxTime,
+  ]);
 
   return (
     <div
@@ -587,6 +696,7 @@ export const TimePicker = (props: TimePickerProps) => {
         <div
           className="ipt-tp-times"
         >
+          {minuteCells}
         </div>
         {mode !== "hm" &&
           <>
@@ -594,6 +704,7 @@ export const TimePicker = (props: TimePickerProps) => {
             <div
               className="ipt-tp-times"
             >
+              {secondCells}
             </div>
           </>
         }
@@ -608,6 +719,18 @@ export const TimePicker = (props: TimePickerProps) => {
             }}
           >
             <CrossIcon />
+          </div>
+        }
+        {props.onSelect &&
+          <div
+            className="ipt-btn"
+            onClick={() => {
+              props.onSelect!({
+                time: dispTime.getTime(),
+              });
+            }}
+          >
+            OK
           </div>
         }
       </div>

@@ -499,6 +499,12 @@
     justify-content: flex-start;
     align-items: stretch;
     flex: 1 1 0rem;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .ipt-tp-cell {
+    height: var(--ipt-size);
   }
 
   :is(.ipt-dp-btns, .ipt-tp-btns) {
