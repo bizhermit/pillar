@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, ReactElement, useEffect, useMemo, useReducer, useRef } from "react";
+import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, ReactElement, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
 import { equals } from "../../../../objects";
@@ -45,6 +45,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   const sref = useRef<HTMLInputElement>(null!);
   const cache = useRef<{ h: number | undefined; m: number | undefined; s: number | undefined; }>({ h: undefined, m: undefined, s: undefined });
   const dialog = useDialog(true);
+  const [showed, setShowed] = useState(false);
 
   const focusInput = (target?: "h" | "m" | "s") => {
     switch (target) {
@@ -149,6 +150,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         y: "outer",
       },
       callbackBeforeAnimation: () => {
+        setShowed(true);
         if (opts?.focusTarget) {
           focusInput(opts.focusTarget);
         }
@@ -159,6 +161,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   const closeDialog = (focus?: boolean) => {
     if (focus) focusInput();
     dialog.close();
+    setShowed(false);
   };
 
   const click = (target?: "h" | "m" | "s") => {
@@ -178,7 +181,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
       }
       elem = elem.parentElement;
     }
-    closeDialog();
+    // closeDialog();
     renderInputs(fi.valueRef.current);
     props.onBlur?.(e);
   };
@@ -484,6 +487,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
             maxTime={maxTime}
             dialog
             preventSelectedRender
+            showed={showed}
             value={fi.value?.time}
             onSelect={({ time }) => {
               if (time == null) {
@@ -517,6 +521,7 @@ type TimePickerProps = {
   preventSelectedRender?: boolean;
   onSelect?: (params: { time: number; action?: "clear"; }) => void;
   onCancel?: () => void;
+  showed?: boolean;
 };
 
 const pickerListClassName = "ipt-tp-times";
@@ -695,12 +700,13 @@ export const TimePicker = (props: TimePickerProps) => {
   }, [props.value]);
 
   useEffect(() => {
+    if (props.showed === false) return;
     wref.current.querySelectorAll(`.${pickerListClassName}`).forEach(list => {
       const elem = list.querySelector(`.${pickerCellClassName}[data-selected="true"]`);
       if (elem == null) return;
       elem.scrollIntoView({ block: "center" });
     });
-  }, [effectRev]);
+  }, [effectRev, props.showed]);
 
   const inRange = minTime.getTime() <= dispTime.getTime() && dispTime.getTime() <= maxTime.getTime();
 

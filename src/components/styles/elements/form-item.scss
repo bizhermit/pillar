@@ -485,6 +485,7 @@
   }
 
   .ipt-tp-main {
+    position: relative;
     overflow: hidden;
     flex: 1 1 0rem;
     display: flex;
@@ -504,9 +505,10 @@
     justify-content: flex-start;
     align-items: stretch;
     flex: 1 1 0rem;
+    height: 100%;
     overflow: auto;
     overscroll-behavior: contain;
-    padding: 50% 0;
+    padding: max(50%, min(50dvh, calc(var(--ipt-size) * 4.5))) 0;
   }
 
   .ipt-tp-cell {
