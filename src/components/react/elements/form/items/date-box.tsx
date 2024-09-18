@@ -32,6 +32,9 @@ const isNumericOrEmpty = (value?: string): value is `${number}` => {
   return /^[0-9]+$/.test(value);
 };
 
+const defaultMinDate = new Date(1900, 0, 1);
+const defaultMaxDate = new Date(2100, 11, 31);
+
 export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>({
   type,
   min,
@@ -67,9 +70,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       yref.current.value = "";
       mref.current.value = "";
       if (dref.current) dref.current.value = "";
-      cache.current.y = undefined;
-      cache.current.m = undefined;
-      cache.current.d = undefined;
+      cache.current.y = cache.current.m = cache.current.d = undefined;
       return;
     }
     yref.current.value = String(cache.current.y = d.getFullYear());
@@ -113,7 +114,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   });
 
   const minDate = useMemo(() => {
-    const d = withoutTime(parseDate(fi.dataItem.min) ?? new Date(1900, 0, 1));
+    const d = withoutTime(parseDate(fi.dataItem.min) ?? defaultMinDate);
     if (fi.dataItem.type === "month") {
       return getFirstDateAtMonth(d);
     }
@@ -121,7 +122,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   }, [fi.dataItem.min]);
 
   const maxDate = useMemo(() => {
-    const d = withoutTime(parseDate(fi.dataItem.max) ?? new Date(2100, 11, 31));
+    const d = withoutTime(parseDate(fi.dataItem.max) ?? defaultMaxDate);
     if (fi.dataItem.type === "month") {
       return getLastDateAtMonth(d);
     }
@@ -501,6 +502,9 @@ type DatePickerProps = {
 export const DatePicker = (props: DatePickerProps) => {
   const type = props.type ?? "date";
   const values = props.values ?? (props.initValue ? [props.initValue] : []);
+  const minDate = props.minDate ?? defaultMinDate;
+  const maxDate = props.maxDate ?? defaultMaxDate;
+  const memorizedValue = (values ?? []).map(v => formatDate(v)).join("");
 
   const [dispDate, setDispDate] = useReducer((state: Date, { date, act }: { date: Date; act?: "select" | "effect"; }) => {
     if (state.getMonth() === date.getMonth() && state.getFullYear() === date.getFullYear()) return state;
@@ -510,11 +514,6 @@ export const DatePicker = (props: DatePickerProps) => {
   const yNum = dispDate.getFullYear();
   const mNum = dispDate.getMonth();
   const dNum = dispDate.getDate();
-
-  const memorizedValue = (values ?? []).map(v => formatDate(v)).join("");
-
-  const minDate = props.minDate ?? new Date(1900, 0, 1);
-  const maxDate = props.maxDate ?? new Date(2100, 11, 31);
 
   const weekCells = useMemo(() => {
     const cells = [];

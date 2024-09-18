@@ -19,51 +19,118 @@ export namespace TimeRadix {
 
 }
 
+export type TimeUnit = "h" | "m" | "s" | "S";
+
+export const parseMilliseconds = (time?: number | string | Date | Time | null | undefined, unit?: TimeUnit) => {
+  if (time == null) return undefined;
+  if (typeof time === "number") {
+    switch (unit) {
+      case "h":
+        return time * TimeRadix.H;
+      case "m":
+        return time * TimeRadix.M;
+      case "s":
+        return time * TimeRadix.S;
+      default:
+        return time;
+    }
+  }
+  if (time instanceof Date) return time.getTime();
+  if (time instanceof Time) return time.getTime();
+  if (/^[+-]?\d$/.test(time)) {
+    const num = Number(time);
+    if (isNaN(num)) return undefined;
+    return num;
+  }
+  let ctx = time.match(/^(\+|\-|)(\d{2}|$)(\d{2}|$)(\d{2}|$)(\d{3}|$)/);
+  if (!ctx) ctx = time.match(/^(\+|\-|)(\d+)?(?::|時|$)(\d+)?(?::|分|$)(\d+)?(?:.|秒|$)(\d+)?(?:.*|$)/);
+  if (ctx) {
+    return (Number(ctx[2] ?? "0") * TimeRadix.H + Number(ctx[3] ?? "0") * TimeRadix.M + Number(ctx[4] ?? "0") * TimeRadix.S + Number(ctx[5] ?? "0")) * (ctx[1] === "-" ? -1 : 1);
+  }
+  return undefined;
+};
+
+export const parseTimeAsUnit = (milliseconds: number | null | undefined, unit: TimeUnit = "m") => {
+  if (milliseconds == null) return undefined;
+  switch (unit) {
+    case "h":
+      return toHour(milliseconds);
+    case "m":
+      return toMinute(milliseconds, true);
+    case "s":
+      return toSecond(milliseconds, true);
+    default:
+      return milliseconds;
+  }
+};
+
+const round = (t: number) => t < 0 ? "ceil" : "floor";
+
+export const toHour = (milliseconds: number) => {
+  return Math[round(milliseconds)](milliseconds / TimeRadix.H);
+};
+
+export const toMinute = (milliseconds: number, include?: boolean) => {
+  const n = Math[round(milliseconds)](milliseconds / TimeRadix.M);
+  return include ? n : n % 60;
+};
+
+export const toSecond = (milliseconds: number, include?: boolean) => {
+  const n = Math[round(milliseconds)](milliseconds / TimeRadix.S);
+  return include ? n : n % 60;
+};
+
+export const toMillisecond = (milliseconds: number, include?: boolean) => {
+  return include ? milliseconds : milliseconds % TimeRadix.S;
+};
+
+export const roundTime = (num: number, roundUnit: number = 1) => {
+  return (Math.floor(num / roundUnit) * roundUnit) + ((num % roundUnit) * 2 > roundUnit ? roundUnit : 0);
+};
+
+type FormattedString<T extends number | string | Date | Time | null | undefined> = T extends Date ? string : T extends Time ? string : T extends undefined | null ? undefined : string | undefined;
+
+export const formatTime = <
+  T extends number | string | Date | Time | null | undefined = number | string | Date | Time | null | undefined
+>(milliseconds: number, pattern = "-hh:mm") => {
+  const t = parseMilliseconds(milliseconds);
+  if (t == null) return undefined as FormattedString<T>;
+  return pattern
+    .replace("+-", t < 0 ? "-" : "+")
+    .replace("-", t < 0 ? "-" : "")
+    .replace("hh", `0${Math.abs(toHour(t))}`.slice(-2))
+    .replace("h", String(Math.abs(toHour(t))))
+    .replace("mmm", String(Math.abs(toMinute(t, true))))
+    .replace("mm", `0${Math.abs(toMinute(t))}`.slice(-2))
+    .replace("m", String(Math.abs(toMinute(t))))
+    .replace("sss", String(Math.abs(toSecond(t, true))))
+    .replace("ss", `0${Math.abs(toSecond(t))}`.slice(-2))
+    .replace("s", String(Math.abs(toSecond(t))))
+    .replace("SSS", `00${Math.abs(toMillisecond(t))}`.slice(-3))
+    .replace("SS", `00${Math.abs(toMillisecond(t))}`.slice(-3).slice(2))
+    .replace("S", String(Math.abs(toMillisecond(t)))) as FormattedString<T>;
+};
+
+export const getTimeUnit = (mode: "hm" | "hms" | "ms"): TimeUnit => {
+  switch (mode) {
+    case "hms":
+    case "ms":
+      return "s";
+    default:
+      return "m";
+  }
+};
+
 export class Time {
 
   protected time: number;
 
-  constructor(time?: number | string | Date | Time | null) {
-    this.time = 0;
-    if (time == null) return this;
-    if (typeof time === "number") {
-      this.time = time;
-      return this;
-    }
-    if (typeof time === "string") {
-      if (/^\d$/.test(time)) {
-        this.time = Number(time);
-        if (isNaN(this.time)) this.time = 0;
-        return this;
-      }
-      let ctx = time.match(/^(\+|\-|)(\d{2}|$)(\d{2}|$)(\d{2}|$)(\d{3}|$)/);
-      if (!ctx) ctx = time.match(/^(\+|\-|)(\d+)?(?::|時|$)(\d+)?(?::|分|$)(\d+)?(?:.|秒|$)(\d+)?(?:.*|$)/);
-      if (ctx) {
-        this.time = (Number(ctx[2] ?? "0") * TimeRadix.H + Number(ctx[3] ?? "0") * TimeRadix.M + Number(ctx[4] ?? "0") * TimeRadix.S + Number(ctx[5] ?? "0")) * (ctx[1] === "-" ? -1 : 1);
-      }
-      return this;
-    }
-    if (typeof (time as any).time === "number") {
-      this.time = (time as Time).time;
-      return this;
-    }
-    this.time = ((time as Date).getTime() - (time as Date).getTimezoneOffset() * TimeRadix.M) % 86400000;
-    return this;
+  constructor(time?: number | string | Date | Time | null | undefined, unit?: TimeUnit) {
+    this.time = parseMilliseconds(time, unit) ?? 0;
   }
 
   public format(pattern = "-hh:mm:ss.SSS") {
-    return pattern
-      .replace("+-", this.time < 0 ? "-" : "+")
-      .replace("-", this.time < 0 ? "-" : "")
-      .replace("hh", `0${Math.abs(this.getHours())}`.slice(-2))
-      .replace("h", String(Math.abs(this.getHours())))
-      .replace("mm", `0${Math.abs(this.getMinutes())}`.slice(-2))
-      .replace("m", String(Math.abs(this.getMinutes())))
-      .replace("ss", `0${Math.abs(this.getSeconds())}`.slice(-2))
-      .replace("s", String(Math.abs(this.getSeconds())))
-      .replace("SSS", `00${Math.abs(this.getMilliseconds())}`.slice(-3))
-      .replace("SS", `00${Math.abs(this.getMilliseconds())}`.slice(-3).slice(2))
-      .replace("S", String(Math.abs(this.getMilliseconds())));
+    return formatTime(this.time, pattern);
   }
 
   public getTime() {
@@ -71,8 +138,7 @@ export class Time {
   }
 
   public getHours() {
-    if (this.time < 0) return Math.ceil(this.time / TimeRadix.H);
-    return Math.floor(this.time / TimeRadix.H);
+    return toHour(this.time);
   }
 
   public setHours(hours: number, minutes?: number, seconds?: number, milliseconds?: number) {
@@ -81,12 +147,7 @@ export class Time {
   }
 
   public getMinutes(include?: boolean) {
-    if (include) {
-      if (this.time < 0) return Math.ceil(this.time / TimeRadix.M);
-      return Math.floor(this.time / TimeRadix.M);
-    }
-    if (this.time < 0) return Math.ceil(this.time / TimeRadix.M) % 60;
-    return Math.floor(this.time / TimeRadix.M) % 60;
+    return toMinute(this.time, include);
   }
 
   public setMinutes(minutes: number, seconds?: number, milliseconds?: number) {
@@ -95,12 +156,7 @@ export class Time {
   }
 
   public getSeconds(include?: boolean) {
-    if (include) {
-      if (this.time < 0) return Math.ceil(this.time / TimeRadix.S);
-      return Math.floor(this.time / TimeRadix.S);
-    }
-    if (this.time < 0) return Math.ceil(this.time / TimeRadix.S) % 60;
-    return Math.floor(this.time / TimeRadix.S) % 60;
+    return toSecond(this.time, include);
   }
 
   public setSeconds(seconds: number, milliseconds?: number) {
@@ -109,8 +165,7 @@ export class Time {
   }
 
   public getMilliseconds(include?: boolean) {
-    if (include) return this.time;
-    return this.time % TimeRadix.S;
+    return toMillisecond(this.time, include);
   }
 
   public setMilliseconds(milliseconds: number) {
@@ -196,7 +251,7 @@ export namespace TimeUtils {
     return new Time(time1.getTime() + time2.getTime());
   };
 
-  export const adds = (...times: Array<Time | null |undefined>) => {
+  export const adds = (...times: Array<Time | null | undefined>) => {
     let t = 0;
     times.forEach(time => {
       if (time == null) return;
@@ -244,7 +299,7 @@ export namespace TimeUtils {
   };
 
   export const format = (millisecond: number, pattern?: string) => {
-    return new Time(millisecond).format(pattern);
+    return formatTime(millisecond, pattern);
   };
 
 }

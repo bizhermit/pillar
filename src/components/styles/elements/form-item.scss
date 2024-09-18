@@ -251,8 +251,7 @@
 
     &:has(.ipt-btn:active) {
 
-      >.ipt-num-spin-inc,
-      >.ipt-num-spin-dec {
+      >:is(.ipt-num-spin-inc, .ipt-num-spin-dec) {
         &:not(:active) {
           pointer-events: none;
         }
@@ -260,8 +259,7 @@
     }
   }
 
-  .ipt-num-spin-inc,
-  .ipt-num-spin-dec {
+  :is(.ipt-num-spin-inc, .ipt-num-spin-dec) {
     position: relative;
     min-height: 0;
     flex: 1 1 0rem;
@@ -287,9 +285,7 @@
     max-height: 100%;
   }
 
-  .ipt-date-y,
-  .ipt-date-m,
-  .ipt-date-d {
+  :is(.ipt-date-y, .ipt-date-m, .ipt-date-d) {
     padding: 0;
     text-align: center;
     flex: none !important;
@@ -301,8 +297,7 @@
     margin-left: 0.6rem;
   }
 
-  .ipt-date-m,
-  .ipt-date-d {
+  :is(.ipt-date-m, .ipt-date-d) {
     width: 2.2rem;
 
     &[data-last] {
@@ -314,7 +309,27 @@
     }
   }
 
-  .ipt-dp {
+  :is(.ipt-time-h, .ipt-time-m, .ipt-time-s) {
+    padding: 0;
+    text-align: center;
+    flex: none !important;
+    min-width: unset;
+    width: 2.2rem;
+
+    &:first-of-type {
+      margin-left: 0.6rem;
+    }
+
+    &:last-of-type {
+      margin-right: 0.6rem;
+    }
+
+    ~.ipt-pull {
+      margin-left: -0.4rem;
+    }
+  }
+
+  :is(.ipt-dp, .ipt-tp) {
     overflow: hidden;
     display: flex;
     flex-flow: column nowrap;
@@ -339,8 +354,7 @@
     -webkit-touch-callout: none;
   }
 
-  .ipt-dp-year,
-  .ipt-dp-month {
+  :is(.ipt-dp-year, .ipt-dp-month) {
     display: flex;
     flex-flow: row nowrap;
     height: var(--ipt-size);
@@ -351,8 +365,7 @@
       flex: 1 1 0rem;
     }
 
-    .ipt-prev,
-    .ipt-next {
+    :is(.ipt-prev, .ipt-next) {
       &[data-disabled="true"] {
         visibility: hidden;
         cursor: default;
@@ -427,7 +440,7 @@
     gap: 2px;
   }
 
-  .ipt-dp-cell {
+  :is(.ipt-dp-cell, .ipt-tp-cell) {
     display: grid;
     place-items: center;
     font-size: 1.4rem;
@@ -442,11 +455,11 @@
 
     &:not([data-disabled="true"]) {
       cursor: pointer;
-    }
 
-    @include mixins.hover {
-      background: var(--ipt-fg);
-      color: var(--ipt-bg);
+      @include mixins.hover {
+        background: var(--ipt-fg);
+        color: var(--ipt-bg);
+      }
     }
 
     &[data-selected="true"] {
@@ -467,13 +480,52 @@
     }
   }
 
-  .ipt-dp-btns {
+  .ipt-tp {
+    width: min(calc(100dvw - 5rem), calc(var(--ipt-size) * 6));
+  }
+
+  .ipt-tp-main {
+    position: relative;
+    overflow: hidden;
+    flex: 1 1 0rem;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+
+    .ipt-sep {
+      align-self: center;
+      padding: 0 .3rem;
+    }
+  }
+
+  .ipt-tp-times {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex: 1 1 0rem;
+    height: 100%;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: max(50%, min(50dvh, calc(var(--ipt-size) * 4.5))) 0;
+  }
+
+  .ipt-tp-cell {
+    height: var(--ipt-size);
+  }
+
+  :is(.ipt-dp-btns, .ipt-tp-btns) {
     border-top: 1px solid var(--ipt-bd);
     display: flex;
     flex-flow: row nowrap;
     justify-content: stretch;
     align-items: stretch;
     height: var(--ipt-size);
+
+    &:empty {
+      display: none;
+    }
 
     .ipt-btn {
       width: unset;
@@ -944,7 +996,7 @@
         overflow: auto;
       }
 
-      >.ipt-dp {
+      >:is(.ipt-dp, .ipt-tp) {
         height: min(100dvh, calc(var(--ipt-size) * 10));
       }
     }
@@ -956,8 +1008,8 @@
       &:is([open], :popover-open) {
         display: grid;
         grid-template-rows: 0fr;
-  
-        >.ipt-dp {
+
+        >:is(.ipt-dp, .ipt-tp) {
           height: 0;
         }
       }

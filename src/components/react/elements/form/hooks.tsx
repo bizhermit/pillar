@@ -142,10 +142,9 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       fullName: dataItem.name || "",
       data: form.bind,
     }, { bind: true });
-    const validRes = parseRes?.type === "e" ? undefined : doValidation(val);
     return {
       val,
-      msg: validRes ?? parseRes,
+      msg: (parseRes?.type === "e" ? undefined : doValidation(val)) ?? parseRes,
       default: def && defaultValue != null && defaultValue !== "",
       mount: 0,
     };
@@ -235,7 +234,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     const before = valRef.current;
     const eq = (cp.equals ?? equals)(before, v, { dataItem });
     if (!eq || mount || updateBind) {
-      const res = parseRes?.type === "e" ? undefined : doValidation(v) ?? parseRes;
+      const res = (parseRes?.type === "e" ? undefined : doValidation(v)) ?? parseRes;
       setState(res);
       setValueImpl({ v, before, edit: edit === true, eq, res, updateBind });
     }

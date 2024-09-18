@@ -1,4 +1,4 @@
-import { Time, TimeUtils } from "../../objects/time";
+import { formatTime, getTimeUnit, parseMilliseconds, TimeUtils } from "../../objects/time";
 
 const defaultLabel = "値";
 
@@ -15,12 +15,11 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
     });
   }
 
-  const formatPattern = dataItem.mode === "hm" ? "hh:mm" : dataItem.mode === "ms" ? "mm:ss" : "hh:mm:ss";
+  const formatPattern = dataItem.mode === "hms" ? "hh:mm:ss" : dataItem.mode === "ms" ? "mm:ss" : "hh:mm";
+  const unit = getTimeUnit(dataItem.mode ?? "hm");
 
-  const minTime = new Time(dataItem.min);
-  const maxTime = new Time(dataItem.max);
-  const minStr = dataItem.min == null ? "" : minTime.format(formatPattern);
-  const maxStr = dataItem.max == null ? "" : maxTime.format(formatPattern);
+  const minStr = dataItem.min == null ? "" : formatTime(parseMilliseconds(dataItem.min, unit)!, formatPattern);
+  const maxStr = dataItem.max == null ? "" : formatTime(parseMilliseconds(dataItem.max, unit)!, formatPattern);
   if (dataItem.min != null && dataItem.max != null) {
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
@@ -57,10 +56,20 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
       }
       if (dataItem.pair?.position === "before") {
         if (value < pairTime) return undefined;
-        return { type: "e", code: "pair-after", fullName, msg: pairDataItem?.pair ? "" : `時間の前後関係が不適切です。${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)}` };
+        return {
+          type: "e",
+          code: "pair-after",
+          fullName,
+          msg: pairDataItem?.pair ? "" : `時間の前後関係が不適切です。${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)}`,
+        };
       }
       if (value > pairTime) return undefined;
-      return { type: "e", code: "pair-before", fullName, msg: `時間の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)}` };
+      return {
+        type: "e",
+        code: "pair-before",
+        fullName,
+        msg: `時間の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)}`,
+      };
     });
   }
 

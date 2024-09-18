@@ -24,6 +24,7 @@ import { Slider } from "@/react/elements/form/items/slider";
 import { InputTabContainer } from "@/react/elements/form/items/tab-container";
 import { TextArea } from "@/react/elements/form/items/text-area";
 import { TextBox } from "@/react/elements/form/items/text-box";
+import { TimeBox } from "@/react/elements/form/items/time-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
@@ -339,7 +340,7 @@ export default function Home() {
               placeholder="テキスト"
               name="text"
               label="テキスト"
-              defaultValue="hoge"
+              // defaultValue="hoge"
               required={(p) => {
                 // console.log((p.data?.slider ?? 0) > 50);
                 return (p.data?.slider ?? 0) > 50;
@@ -436,6 +437,7 @@ export default function Home() {
               name="select"
               placeholder="セレクトボックス"
               required
+              defaultValue={4}
               initFocusValue={10}
               source={async () => {
                 // await sleep(3000);
@@ -465,6 +467,7 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
+              defaultValue={60}
             />
           </FormItemWrap>
           <FormItemWrap>
@@ -570,6 +573,21 @@ export default function Home() {
               readOnly={readOnly.value}
             />
           </FormItemWrap>
+          <FormItemWrap>
+            <TimeBox
+              name="time"
+              required
+              disabled={disabled.value}
+              readOnly={readOnly.value}
+              defaultValue={254}
+              minuteStep={5}
+            />
+          </FormItemWrap>
+          {/* <TimePicker
+            // minuteStep={10}
+            minTime={useMemo(() => new Time("6:45"), [])}
+            maxTime={useMemo(() => new Time("8:00"), [])}
+          /> */}
           <FormItemWrap>
             <TextArea
               label="テキストエリア"
