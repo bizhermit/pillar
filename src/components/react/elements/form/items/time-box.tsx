@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, ReactElement, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactElement, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
 import { equals } from "../../../../objects";
