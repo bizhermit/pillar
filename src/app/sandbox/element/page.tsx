@@ -579,7 +579,7 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
-              // defaultValue={60}
+              defaultValue={254}
               minuteStep={5}
             />
           </FormItemWrap>
