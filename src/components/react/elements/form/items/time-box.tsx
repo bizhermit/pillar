@@ -555,6 +555,13 @@ type TimePickerProps = {
   showed?: boolean;
 };
 
+type DispTimeDispatchParams = {
+  h?: number;
+  m?: number;
+  s?: number;
+  act?: "select" | "effect";
+};
+
 const pickerListClassName = "ipt-tp-times";
 const pickerCellClassName = "ipt-tp-cell";
 
@@ -570,7 +577,7 @@ export const TimePicker = (props: TimePickerProps) => {
   const minTime = props.minTime ?? defaultMinTime;
   const maxTime = props.maxTime ?? defaultMaxTime;
 
-  const [{ dispTime, effectRev }, setDispTime] = useReducer((state: { dispTime: Time; effectRev: number; }, { h, m, s, act }: { h?: number; m?: number; s?: number; act?: "select" | "effect"; }) => {
+  const [{ dispTime, effectRev }, setDispTime] = useReducer((state: { dispTime: Time; effectRev: number; }, { h, m, s, act }: DispTimeDispatchParams) => {
     const newTime = new Time(state.dispTime);
     if (h != null) newTime.setHours(h);
     if (m != null) newTime.setMinutes(m);
