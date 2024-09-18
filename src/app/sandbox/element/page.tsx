@@ -2,7 +2,6 @@
 "use client";
 
 import { get, set } from "@/objects/struct";
-import { Time } from "@/objects/time";
 import { Button } from "@/react/elements/button";
 import { Dialog, useDialog } from "@/react/elements/dialog";
 import { Form } from "@/react/elements/form";
@@ -25,7 +24,7 @@ import { Slider } from "@/react/elements/form/items/slider";
 import { InputTabContainer } from "@/react/elements/form/items/tab-container";
 import { TextArea } from "@/react/elements/form/items/text-area";
 import { TextBox } from "@/react/elements/form/items/text-box";
-import { TimeBox, TimePicker } from "@/react/elements/form/items/time-box";
+import { TimeBox } from "@/react/elements/form/items/time-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
@@ -34,7 +33,7 @@ import { TabContainer, TabContent, useTabContainer } from "@/react/elements/tab-
 import { LayoutContext } from "@/react/hooks/layout";
 import useRouter from "@/react/hooks/router";
 import { sleep } from "@/utilities/sleep";
-import { use, useMemo, useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 import css from "./page.module.css";
 
 export default function Home() {
@@ -580,14 +579,15 @@ export default function Home() {
               required
               disabled={disabled.value}
               readOnly={readOnly.value}
-            // defaultValue={60}
+              // defaultValue={60}
+              minuteStep={5}
             />
           </FormItemWrap>
-          <TimePicker
+          {/* <TimePicker
             // minuteStep={10}
             minTime={useMemo(() => new Time("6:45"), [])}
             maxTime={useMemo(() => new Time("8:00"), [])}
-          />
+          /> */}
           <FormItemWrap>
             <TextArea
               label="テキストエリア"

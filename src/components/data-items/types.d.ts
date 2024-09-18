@@ -189,6 +189,9 @@ declare namespace DataItem {
       position: "before" | "after";
       same?: boolean;
     };
+    hourStep?: number;
+    minuteStep?: number;
+    secondStep?: number;
   };
 
   type $file = $ & {

@@ -84,6 +84,10 @@ export const toMillisecond = (milliseconds: number, include?: boolean) => {
   return include ? milliseconds : milliseconds % TimeRadix.S;
 };
 
+export const roundTime = (num: number, roundUnit: number = 1) => {
+  return (Math.floor(num / roundUnit) * roundUnit) + ((num % roundUnit) * 2 > roundUnit ? roundUnit : 0);
+};
+
 type FormattedString<T extends number | string | Date | Time | null | undefined> = T extends Date ? string : T extends Time ? string : T extends undefined | null ? undefined : string | undefined;
 
 export const formatTime = <

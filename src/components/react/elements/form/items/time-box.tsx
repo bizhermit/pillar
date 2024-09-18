@@ -4,7 +4,7 @@ import { $timeValidations } from "../../../../data-items/time/validation";
 import { equals } from "../../../../objects";
 import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
-import { getTimeUnit, parseTimeAsUnit, Time, TimeRadix } from "../../../../objects/time";
+import { getTimeUnit, parseTimeAsUnit, roundTime, Time, TimeRadix } from "../../../../objects/time";
 import { Dialog, useDialog } from "../../dialog";
 import { CrossIcon, DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
@@ -20,6 +20,12 @@ type TimeBoxOptions<D extends DataItem.$time | undefined> =
     max?: number;
     pair?: DataItem.$time["pair"];
     initFocusTime?: number;
+    hourStep?: number;
+    minuteStep?: number;
+    secondStep?: number;
+    hourTimePickerStep?: number;
+    minuteTimePickerStep?: number;
+    secondTimePickerStep?: number;
   };
 
 type TimeBoxProps<D extends DataItem.$time | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TimeBoxOptions<D>>;
@@ -38,6 +44,12 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   max,
   pair,
   initFocusTime,
+  hourStep,
+  minuteStep,
+  secondStep,
+  hourTimePickerStep,
+  minuteTimePickerStep,
+  secondTimePickerStep,
   ...props
 }: TimeBoxProps<D>) => {
   const href = useRef<HTMLInputElement>(null!);
@@ -65,7 +77,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   };
 
   const fi = useFormItemCore<DataItem.$time, D, number, TimeValue>(props, {
-    dataItemDeps: [mode, min, max, pair?.name, pair?.position, pair?.same],
+    dataItemDeps: [mode, min, max, pair?.name, pair?.position, pair?.same, hourStep, minuteStep, secondStep],
     getDataItem: ({ dataItem, refs }) => {
       const $pair = pair ?? dataItem?.pair;
       return {
@@ -75,6 +87,9 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         max: dataItem?.max,
         pair: $pair,
         refs: $pair ? [$pair.name, ...(refs ?? [])] : refs,
+        hourStep: hourStep ?? dataItem?.hourStep,
+        minuteStep: minuteStep ?? dataItem?.minuteStep,
+        secondStep: secondStep ?? dataItem?.secondStep,
       };
     },
     parse: () => {
@@ -101,6 +116,9 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
 
   const unit = getTimeUnit(fi.dataItem.mode!);
   const includeHours = fi.dataItem.mode === "ms";
+  const hStep = fi.dataItem.hourStep ?? 1;
+  const mStep = fi.dataItem.minuteStep ?? 1;
+  const sStep = fi.dataItem.secondStep ?? 1;
 
   const renderInputs = (v: TimeValue | null | undefined) => {
     if (v?.time == null) {
@@ -181,7 +199,20 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
       }
       elem = elem.parentElement;
     }
-    // closeDialog();
+    closeDialog();
+    const time = fi.valueRef.current?.time;
+    if (time) {
+      const t = new Time();
+      t.setHours(roundTime(time.getHours(), hStep));
+      t.setMinutes(roundTime(time.getMinutes(), mStep));
+      t.setSeconds(roundTime(time.getSeconds(), sStep));
+      if (t.getTime() !== time.getTime()) {
+        fi.set({
+          value: { time: t, unitValue: parseTimeAsUnit(t.getTime(), unit) },
+          effect: true,
+        });
+      }
+    }
     renderInputs(fi.valueRef.current);
     props.onBlur?.(e);
   };
@@ -293,11 +324,11 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         closeDialog();
         break;
       case "ArrowUp":
-        updown(1, 0, 0);
+        updown(hStep, 0, 0);
         e.preventDefault();
         break;
       case "ArrowDown":
-        updown(-1, 0, 0);
+        updown(-hStep, 0, 0);
         e.preventDefault();
         break;
       default:
@@ -319,11 +350,11 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         if (e.currentTarget.value.length === 0) href.current?.focus();
         break;
       case "ArrowUp":
-        updown(0, 1, 0);
+        updown(0, mStep, 0);
         e.preventDefault();
         break;
       case "ArrowDown":
-        updown(0, -1, 0);
+        updown(0, -mStep, 0);
         e.preventDefault();
         break;
       default:
@@ -345,11 +376,11 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         if (e.currentTarget.value.length === 0) mref.current?.focus();
         break;
       case "ArrowUp":
-        updown(0, 0, 1);
+        updown(0, 0, sStep);
         e.preventDefault();
         break;
       case "ArrowDown":
-        updown(0, 0, -1);
+        updown(0, 0, -sStep);
         e.preventDefault();
         break;
       default:
@@ -488,6 +519,9 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
             dialog
             preventSelectedRender
             showed={showed}
+            hourStep={hourTimePickerStep ?? hStep}
+            minuteStep={minuteTimePickerStep ?? mStep}
+            secondStep={secondTimePickerStep ?? sStep}
             value={fi.value?.time}
             onSelect={({ time }) => {
               if (time == null) {
