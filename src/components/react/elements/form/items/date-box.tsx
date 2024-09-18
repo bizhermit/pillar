@@ -499,6 +499,9 @@ type DatePickerProps = {
 export const DatePicker = (props: DatePickerProps) => {
   const type = props.type ?? "date";
   const values = props.values ?? (props.initValue ? [props.initValue] : []);
+  const minDate = props.minDate ?? new Date(1900, 0, 1);
+  const maxDate = props.maxDate ?? new Date(2100, 11, 31);
+  const memorizedValue = (values ?? []).map(v => formatDate(v)).join("");
 
   const [dispDate, setDispDate] = useReducer((state: Date, { date, act }: { date: Date; act?: "select" | "effect"; }) => {
     if (state.getMonth() === date.getMonth() && state.getFullYear() === date.getFullYear()) return state;
@@ -508,11 +511,6 @@ export const DatePicker = (props: DatePickerProps) => {
   const yNum = dispDate.getFullYear();
   const mNum = dispDate.getMonth();
   const dNum = dispDate.getDate();
-
-  const memorizedValue = (values ?? []).map(v => formatDate(v)).join("");
-
-  const minDate = props.minDate ?? new Date(1900, 0, 1);
-  const maxDate = props.maxDate ?? new Date(2100, 11, 31);
 
   const weekCells = useMemo(() => {
     const cells = [];

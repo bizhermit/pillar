@@ -491,6 +491,11 @@
     flex-flow: row nowrap;
     justify-content: stretch;
     align-items: stretch;
+
+    .ipt-sep {
+      align-self: center;
+      padding: 0 .3rem;
+    }
   }
 
   .ipt-tp-times {
@@ -501,6 +506,7 @@
     flex: 1 1 0rem;
     overflow: auto;
     overscroll-behavior: contain;
+    padding: 50% 0;
   }
 
   .ipt-tp-cell {
@@ -514,6 +520,10 @@
     justify-content: stretch;
     align-items: stretch;
     height: var(--ipt-size);
+
+    &:empty {
+      display: none;
+    }
 
     .ipt-btn {
       width: unset;
