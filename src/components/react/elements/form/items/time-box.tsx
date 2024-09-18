@@ -190,11 +190,11 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
     e.currentTarget.select();
   };
 
-  const blur = (e: FocusEvent<HTMLDivElement>) => {
-    let elem = e.relatedTarget;
+  const blur = (e?: FocusEvent<HTMLDivElement>) => {
+    let elem = e?.relatedTarget;
     while (elem) {
-      if (elem === e.currentTarget) {
-        props.onBlur?.(e);
+      if (elem === e!.currentTarget) {
+        props.onBlur?.(e!);
         return;
       }
       elem = elem.parentElement;
@@ -214,7 +214,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
       }
     }
     renderInputs(fi.valueRef.current);
-    props.onBlur?.(e);
+    if (e) props.onBlur?.(e);
   };
 
   const commitChange = () => {
@@ -320,8 +320,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         showDialog({ focusTarget: "h" });
         break;
       case "Enter":
-        renderInputs(fi.value);
-        closeDialog();
+        blur();
         break;
       case "ArrowUp":
         updown(hStep, 0, 0);
@@ -343,8 +342,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         showDialog({ focusTarget: "m" });
         break;
       case "Enter":
-        renderInputs(fi.value);
-        closeDialog();
+        blur();
         break;
       case "Backspace":
         if (e.currentTarget.value.length === 0) href.current?.focus();
@@ -369,8 +367,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         showDialog({ focusTarget: "s" });
         break;
       case "Enter":
-        renderInputs(fi.value);
-        closeDialog();
+        blur();
         break;
       case "Backspace":
         if (e.currentTarget.value.length === 0) mref.current?.focus();
