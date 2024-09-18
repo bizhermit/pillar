@@ -38,6 +38,12 @@
       "command": "npm run route"
     },
     {
+      "label": "jest",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run jest"
+    },
+    {
       "label": "database migrate",
       "group": "none",
       "type": "shell",
