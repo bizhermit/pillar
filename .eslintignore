@@ -1,2 +1,3 @@
 next.config.mjs
 scripts/*
+jest.config.js
