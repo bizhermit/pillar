@@ -89,7 +89,7 @@ export class DateTime {
     return this.replaceTimezoneOffset(parseTimezoneOffset(tz));
   }
 
-  public getTime() {
+  public getOffsetTime() {
     return this.date.getTime();
   }
 
@@ -98,7 +98,7 @@ export class DateTime {
     if (datetime == null) {
       this.date.setTime(Date.now() + diff);
     } else if (datetime instanceof DateTime) {
-      this.date.setTime(datetime.getTime());
+      this.date.setTime(datetime.getOffsetTime());
       this.offset = datetime.getTimezoneOffset();
     } else {
       switch (typeof datetime) {
@@ -153,11 +153,16 @@ export class DateTime {
       .replace(/w/g, (week ?? Week.ja_s)[this.date.getDay()]);
   }
 
-  public toISOString() {
-    const buf = this.offset;
-    const r = this.setTimezoneOffset(0).toString();
-    this.setTimezoneOffset(buf);
+  private evacuateOffset<T>(func: () => T) {
+    const o = this.offset;
+    this.setTimezoneOffset(0);
+    const r = func();
+    this.setTimezoneOffset(o);
     return r;
+  }
+
+  public toISOString() {
+    return this.evacuateOffset(() => this.toString());
   }
 
   public toDateString() {
@@ -172,13 +177,27 @@ export class DateTime {
     return this.toISOString();
   }
 
-  public getYear() {
+  public setCurrent(removeTime = false) {
+    this.set(null);
+    if (removeTime) this.removeTime();
+    return this;
+  }
+
+  public getFullYear() {
     return this.date.getFullYear();
   }
 
-  public setYear(year: number, month?: number, date?: number) {
+  public setFullYear(year: number, month?: number, date?: number) {
     this.date.setFullYear(year, month ?? this.getMonth(), date ?? this.getDate());
     return this;
+  }
+
+  public getUTCFullYear() {
+    return this.evacuateOffset(() => this.getFullYear());
+  }
+
+  public setUTCFullYear(year: number, month?: number, date?: number) {
+    return this.evacuateOffset(() => this.setFullYear(year, month, date));
   }
 
   public getMonth() {
@@ -190,6 +209,14 @@ export class DateTime {
     return this;
   }
 
+  public getUTCMonth() {
+    return this.evacuateOffset(() => this.getMonth());
+  }
+
+  public setUTCMonth(month: number, date?: number) {
+    return this.evacuateOffset(() => this.setMonth(month, date));
+  }
+
   public getDate() {
     return this.date.getDate();
   }
@@ -199,8 +226,20 @@ export class DateTime {
     return this;
   }
 
+  public getUTCDate() {
+    return this.evacuateOffset(() => this.getDate());
+  }
+
+  public setUTCDate(date: number) {
+    return this.evacuateOffset(() => this.setDate(date));
+  }
+
   public getDay() {
     return this.date.getDay();
+  }
+
+  public getUTCDay() {
+    return this.evacuateOffset(() => this.getDay());
   }
 
   public getHours() {
@@ -208,35 +247,67 @@ export class DateTime {
   }
 
   public setHours(hours: number, min?: number, sec?: number, ms?: number) {
-    this.date.setHours(hours, min ?? this.getMin(), sec ?? this.getSec(), ms ?? this.getMs());
+    this.date.setHours(hours, min ?? this.getMinutes(), sec ?? this.getSeconds(), ms ?? this.getMilliseconds());
     return this;
   }
 
-  public getMin() {
+  public getUTCHours() {
+    return this.evacuateOffset(() => this.getHours());
+  }
+
+  public setUTCHours(hours: number, min?: number, sec?: number, ms?: number) {
+    return this.evacuateOffset(() => this.setHours(hours, min, sec, ms));
+  }
+
+  public getMinutes() {
     return this.date.getMinutes();
   }
 
-  public setMin(min: number, sec?: number, ms?: number) {
-    this.date.setMinutes(min, sec ?? this.getSec(), ms ?? this.getMs());
+  public setMinutes(min: number, sec?: number, ms?: number) {
+    this.date.setMinutes(min, sec ?? this.getSeconds(), ms ?? this.getMilliseconds());
     return this;
   }
 
-  public getSec() {
+  public getUTCMinutes() {
+    return this.evacuateOffset(() => this.getMinutes());
+  }
+
+  public setUTCMinutes(min: number, sec?: number, ms?: number) {
+    return this.evacuateOffset(() => this.setMinutes(min, sec, ms));
+  }
+
+  public getSeconds() {
     return this.date.getSeconds();
   }
 
-  public setSec(sec: number) {
+  public setSeconds(sec: number) {
     this.date.setSeconds(sec);
     return this;
   }
 
-  public getMs() {
+  public getUTCSeconds() {
+    return this.evacuateOffset(() => this.getSeconds());
+  }
+
+  public setUTCSeconds(sec: number, ms?: number) {
+    return this.evacuateOffset(() => this.setSeconds(sec, ms));
+  }
+
+  public getMilliseconds() {
     return this.date.getMilliseconds();
   }
 
-  public setMs(ms: number) {
+  public setMilliseconds(ms: number) {
     this.date.setMilliseconds(ms);
     return this;
+  }
+
+  public getUTCMilliseconds() {
+    return this.evacuateOffset(() => this.getMilliseconds());
+  }
+
+  public setUTCMilliseconds(ms: number) {
+    return this.evacuateOffset(() => this.setMilliseconds(ms));
   }
 
   public removeTime() {
@@ -244,7 +315,7 @@ export class DateTime {
   }
 
   public addYear(num: number) {
-    this.setYear(this.getYear() + num);
+    this.setFullYear(this.getFullYear() + num);
     return this;
   }
 
@@ -264,17 +335,17 @@ export class DateTime {
   }
 
   public addMin(num: number) {
-    this.setMin(this.getMin() + num);
+    this.setMinutes(this.getMinutes() + num);
     return this;
   }
 
   public addSec(num: number) {
-    this.setSec(this.getSec() + num);
+    this.setSeconds(this.getSeconds() + num);
     return this;
   }
 
   public addMs(num: number) {
-    this.setMs(this.getMs() + num);
+    this.setMilliseconds(this.getMilliseconds() + num);
     return this;
   }
 
@@ -284,7 +355,7 @@ export class DateTime {
   }
 
   public setLastDateAtYear() {
-    this.date.setFullYear(this.getYear() + 1, 0, 0);
+    this.date.setFullYear(this.getFullYear() + 1, 0, 0);
     return this;
   }
 

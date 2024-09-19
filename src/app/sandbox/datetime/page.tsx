@@ -12,6 +12,7 @@ const Page = () => {
   return (
     <div style={{ fontSize: "1.2rem" }}>
       <span>timezone: {new DateTime().getTimezone()}</span>
+      <span>{process.env.TZ}</span>
       <ul>
         <li>{f(new DateTime())}</li>
         <li>{f(new DateTime().set(null))}</li>
