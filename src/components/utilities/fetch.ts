@@ -1,4 +1,5 @@
 import type { RequestInit } from "next/dist/server/web/spec-extension/request";
+import { DateTime } from "../objects/datetime";
 import { convertFormDataToStruct, convertStructToFormData } from "../objects/form-data";
 import { getDynamicPathnameContext } from "../objects/url";
 
@@ -79,7 +80,10 @@ export const optimizeHeader = (headers: FetchOptions["headers"]) => {
 
 const convertToRequestInit = (params?: any, opts?: FetchOptions, noBody?: boolean): RequestInit => {
   const contentType = opts?.contentType ?? "json";
-  const headers = optimizeHeader(opts?.headers);
+  const headers = {
+    "tz-offset": DateTime.timezoneOffset(),
+    ...optimizeHeader(opts?.headers),
+  };
   if (noBody) {
     return { headers };
   }

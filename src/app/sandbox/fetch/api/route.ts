@@ -1,11 +1,12 @@
 import { formatDate } from "@/objects/date";
 import { apiMethodHandler } from "@/server/next/app-api";
 
-export const GET = apiMethodHandler(async () => {
+export const GET = apiMethodHandler(async ({ tzOffset }) => {
   // eslint-disable-next-line no-console
   console.log("[api]: /sandbox/fetch/api [GET]");
   return {
     datetime: formatDate(new Date(), "yyyy-MM-dd hh:mm:ss.SSS"),
+    tzOffset,
   };
 });
 

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { parseBasedOnDataItem } from "../../data-items/parse";
 import { validationBasedOnDataItem } from "../../data-items/validation";
+import { DateTime } from "../../objects/datetime";
 import { append } from "../../objects/struct";
 
 export class ApiError extends Error {
@@ -22,6 +23,7 @@ export const apiMethodHandler = <
   Res extends Readonlyable<{ [v: string]: any }> | void
 >(process: (context: {
   req: NextRequest;
+  tzOffset: number;
   getParams: <$Req extends Readonlyable<Array<DataItem.$object>> = Req>(dataItems: $Req) => Promise<DataItem.Props<$Req>>;
   addValidationResults: (results: Array<DataItem.ValidationResult>) => void;
   hasValidationError: () => boolean;
@@ -39,8 +41,10 @@ export const apiMethodHandler = <
     const validationResults: Array<DataItem.ValidationResult> = [];
 
     try {
+      const tzOffset = Number(req.headers.get("tz-offset") || DateTime.timezoneOffset());
       const data = await process({
         req,
+        tzOffset,
         getParams: async (dataItems) => {
           const { searchParams } = new URL(req.url);
           const queryParams: { [v: string]: any } = {};
