@@ -106,7 +106,7 @@ export class DateTime {
           this.date.setTime(datetime + diff);
           break;
         case "string":
-          const a = datetime.match(/^(\d{1,4})[-|\/|年]?(\d{1,2}|$)[-|\/|月]?(\d{1,2}|$)[日]?[\s|T]?(\d{1,2}|$)[:]?(\d{1,2}|$)[:]?(\d{1,2}|$)[.]?([\d]{0,3}|$)?(.*)/);
+          const a = datetime.match(/^(\d{1,4})[-|\/|年]?(\d{1,2}|$)[-|\/|月]?(\d{1,2}|$)[日]?[\s|T]?(\d{1,2}|$)[:]?(\d{1,2}|$)[:]?(\d{1,2}|$)[.]?(\d{0,3}|$)?(.*)/);
           if (a) {
             const tz = a[8];
             if (tz) {
@@ -176,8 +176,8 @@ export class DateTime {
     return this.date.getFullYear();
   }
 
-  public setYear(year: number) {
-    this.date.setFullYear(year);
+  public setYear(year: number, month?: number, date?: number) {
+    this.date.setFullYear(year, month ?? this.getMonth(), date ?? this.getDate());
     return this;
   }
 
@@ -185,8 +185,8 @@ export class DateTime {
     return this.date.getMonth();
   }
 
-  public setMonth(month: number) {
-    this.date.setMonth(month);
+  public setMonth(month: number, date?: number) {
+    this.date.setMonth(month, date ?? this.getDate());
     return this;
   }
 
@@ -207,34 +207,34 @@ export class DateTime {
     return this.date.getHours();
   }
 
-  public setHours(hours: number) {
-    this.date.setHours(hours);
+  public setHours(hours: number, min?: number, sec?: number, ms?: number) {
+    this.date.setHours(hours, min ?? this.getMin(), sec ?? this.getSec(), ms ?? this.getMs());
     return this;
   }
 
-  public getMinutes() {
+  public getMin() {
     return this.date.getMinutes();
   }
 
-  public setMinutes(min: number) {
-    this.date.setMinutes(min);
+  public setMin(min: number, sec?: number, ms?: number) {
+    this.date.setMinutes(min, sec ?? this.getSec(), ms ?? this.getMs());
     return this;
   }
 
-  public getSeconds() {
+  public getSec() {
     return this.date.getSeconds();
   }
 
-  public setSeconds(sec: number) {
+  public setSec(sec: number) {
     this.date.setSeconds(sec);
     return this;
   }
 
-  public getMilliseconds() {
+  public getMs() {
     return this.date.getMilliseconds();
   }
 
-  public setMilliseconds(ms: number) {
+  public setMs(ms: number) {
     this.date.setMilliseconds(ms);
     return this;
   }
@@ -263,18 +263,18 @@ export class DateTime {
     return this;
   }
 
-  public addMinutes(num: number) {
-    this.setMinutes(this.getMinutes() + num);
+  public addMin(num: number) {
+    this.setMin(this.getMin() + num);
     return this;
   }
 
-  public addSeconds(num: number) {
-    this.setSeconds(this.getSeconds() + num);
+  public addSec(num: number) {
+    this.setSec(this.getSec() + num);
     return this;
   }
 
-  public addMilliseconds(num: number) {
-    this.setMilliseconds(this.getMilliseconds() + num);
+  public addMs(num: number) {
+    this.setMs(this.getMs() + num);
     return this;
   }
 

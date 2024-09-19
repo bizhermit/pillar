@@ -55,6 +55,42 @@ describe("datetime", () => {
       expect(dt.toDateString()).toBe("2024-03-07");
       expect(dt.toTimeString()).toBe("00:00:00");
     });
+
+    it("yyyy-MM-ddThh", () => {
+      const dt = new DateTime("2024-04-23T04");
+      expect(dt.toDateString()).toBe("2024-04-23");
+      expect(dt.toTimeString()).toBe("04:00:00");
+    });
+
+    it("yyyy-MM-ddThh:mm", () => {
+      const dt = new DateTime("2024-05-21T07:31");
+      expect(dt.toDateString()).toBe("2024-05-21");
+      expect(dt.toTimeString()).toBe("07:31:00");
+    });
+
+    it("yyyy-MM-ddThh:mm:ss", () => {
+      const dt = new DateTime("2024-05-21T09:59:01");
+      expect(dt.toDateString()).toBe("2024-05-21");
+      expect(dt.toTimeString()).toBe("09:59:01");
+    });
+
+    it("yyyy-MM-ddT:hh:mm:ss.SSS", () => {
+      const dt = new DateTime("2024-06-19T12:34:56.789");
+      expect(dt.toString("yyyy-MM-dd hh:mm:ss.SSS")).toBe("2024-06-19 12:34:56.789");
+    });
+
+    it("yyyy-MM-ddThh:mm:ss.SSSZ", () => {
+      const dt = new DateTime("2024-01-01T12:34:56.789Z");
+      expect(dt.toString()).toBe("2024-01-01T12:34:56.789Z");
+      expect(dt.getTimezoneOffset()).toBe(0);
+    });
+
+    it("yyyy-MM-ddThh:mm:ss.SSS+09:00", () => {
+      const dt = new DateTime("2024-01-01T12:34:56.789+09:00");
+      expect(dt.toString()).toBe("2024-01-01T12:34:56.789+09:00");
+      expect(dt.getTimezoneOffset()).toBe(-540);
+      expect(dt.toISOString()).toBe("2024-01-01T03:34:56.789Z");
+    });
   });
 
   describe("timezone", () => {
