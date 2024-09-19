@@ -61,6 +61,14 @@ export class DateTime {
     }
   }
 
+  public static timezoneOffset() {
+    return new Date().getTimezoneOffset();
+  }
+
+  public static timezone() {
+    return parseOffsetString(DateTime.timezoneOffset());
+  }
+
   public getTimezoneOffset() {
     return this.offset;
   }
