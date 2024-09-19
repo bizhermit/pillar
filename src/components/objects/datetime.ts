@@ -236,4 +236,39 @@ export class DateTime {
     return this.setHours(0, 0, 0, 0);
   }
 
+  public addYear(num: number) {
+    this.date.setFullYear(this.date.getFullYear() + num);
+    return this;
+  }
+
+  public addMonth(num: number) {
+    this.date.setMonth(this.date.getMonth() + num);
+    return this;
+  }
+
+  public addDate(num: number) {
+    this.date.setDate(this.date.getDate() + num);
+    return this;
+  }
+
+  public addHours(num: number) {
+    this.date.setHours(this.date.getHours() + num);
+    return this;
+  }
+
+  public addMinutes(num: number) {
+    this.date.setMinutes(this.date.getMinutes() + num);
+    return this;
+  }
+
+  public addSeconds(num: number) {
+    this.date.setSeconds(this.date.getSeconds() + num);
+    return this;
+  }
+
+  public addMilliseconds(num: number) {
+    this.date.setMilliseconds(this.date.getMilliseconds() + num);
+    return this;
+  }
+
 }
