@@ -207,7 +207,7 @@ export class DateTime {
     return this.date.getHours();
   }
 
-  public setHours(hours: number, min: number, sec?: number, ms?: number) {
+  public setHours(hours: number, min?: number, sec?: number, ms?: number) {
     this.date.setHours(hours, min, sec, ms);
     return this;
   }
@@ -244,37 +244,79 @@ export class DateTime {
   }
 
   public addYear(num: number) {
-    this.date.setFullYear(this.date.getFullYear() + num);
+    this.setYear(this.getYear() + num);
     return this;
   }
 
   public addMonth(num: number) {
-    this.date.setMonth(this.date.getMonth() + num);
+    this.setMonth(this.date.getMonth() + num);
     return this;
   }
 
   public addDate(num: number) {
-    this.date.setDate(this.date.getDate() + num);
+    this.setDate(this.getDate() + num);
     return this;
   }
 
   public addHours(num: number) {
-    this.date.setHours(this.date.getHours() + num);
+    this.setHours(this.getHours() + num);
     return this;
   }
 
   public addMinutes(num: number) {
-    this.date.setMinutes(this.date.getMinutes() + num);
+    this.setMinutes(this.getMinutes() + num);
     return this;
   }
 
   public addSeconds(num: number) {
-    this.date.setSeconds(this.date.getSeconds() + num);
+    this.setSeconds(this.getSeconds() + num);
     return this;
   }
 
   public addMilliseconds(num: number) {
-    this.date.setMilliseconds(this.date.getMilliseconds() + num);
+    this.setMilliseconds(this.getMilliseconds() + num);
+    return this;
+  }
+
+  public setFirstDateAtYear() {
+    this.setMonth(0, 1);
+    return this;
+  }
+
+  public setLastDateAtYear() {
+    this.setYear(this.getYear() + 1, 0, 0);
+    return this;
+  }
+
+  public setFirstDateAtMonth() {
+    this.setDate(1);
+    return this;
+  }
+
+  public setLastDateAtMonth() {
+    this.setMonth(this.getMonth() + 1, 0);
+    return this;
+  }
+
+  public setPrevWeek() {
+    return this.addDate(-7);
+  }
+
+  public setNextWeek() {
+    return this.addDate(7);
+  }
+
+  public setPrevMonth() {
+    const d = this.getDate();
+    this.addMonth(-1);
+    if (d !== this.getDate()) this.addDate(-this.getDate());
+    return this;
+  }
+
+  public setNextMonth() {
+    const d = this.getDate();
+    this.addMonth(1);
+    if (d !== this.getDate()) this.addDate(-this.getDate());
     return this;
   }
 
