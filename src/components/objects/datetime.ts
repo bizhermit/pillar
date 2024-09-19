@@ -280,8 +280,8 @@ export class DateTime {
     return this.date.getSeconds();
   }
 
-  public setSeconds(sec: number) {
-    this.date.setSeconds(sec);
+  public setSeconds(sec: number, ms?: number) {
+    this.date.setSeconds(sec, ms ?? this.getMilliseconds());
     return this;
   }
 
