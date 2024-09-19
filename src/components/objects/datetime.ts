@@ -108,6 +108,8 @@ export class DateTime {
               else diff = (offset - this.date.getTimezoneOffset()) * 60000;
             }
             this.date.setTime(new Date(Number(a[1]), Number(a[2] || 1) - 1, Number(a[3] || 1), Number(a[4] || 0), Number(a[5] || 0), Number(a[6] || 0), Number(a[7] || 0)).getTime() + diff);
+          } else {
+            this.date.setTime(new Date(datetime).getTime() + diff);
           }
           break;
         default:
@@ -228,6 +230,10 @@ export class DateTime {
   public setMilliseconds(ms: number) {
     this.date.setMilliseconds(ms);
     return this;
+  }
+
+  public removeTime() {
+    return this.setHours(0, 0, 0, 0);
   }
 
 }
