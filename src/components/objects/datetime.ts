@@ -89,10 +89,17 @@ export class DateTime {
     return this.replaceTimezoneOffset(parseTimezoneOffset(tz));
   }
 
-  public set(datetime: string | number | Date | null | undefined, resetOffset?: boolean) {
+  public getTime() {
+    return this.date.getTime();
+  }
+
+  public set(datetime: string | number | Date | DateTime | null | undefined, resetOffset?: boolean) {
     let diff = (this.date.getTimezoneOffset() - this.offset) * 60000;
     if (datetime == null) {
       this.date.setTime(Date.now() + diff);
+    } else if (datetime instanceof DateTime) {
+      this.date.setTime(datetime.getTime());
+      this.offset = datetime.getTimezoneOffset();
     } else {
       switch (typeof datetime) {
         case "number":
