@@ -53,7 +53,7 @@ export class DateTime {
   private date: Date;
   private offset: number;
 
-  constructor(datetime?: string | number | Date | null | undefined) {
+  constructor(datetime?: string | number | Date | DateTime | null | undefined) {
     this.date = new Date();
     this.offset = this.date.getTimezoneOffset();
     if (datetime != null) {
