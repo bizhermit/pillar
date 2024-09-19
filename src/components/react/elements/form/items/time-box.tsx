@@ -451,6 +451,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           onChange={changeM}
           onKeyDown={keydownM}
           onFocus={focus}
+          data-last={fi.dataItem.mode === "hm" ? "" : undefined}
         />
         {fi.dataItem.mode !== "hm" &&
           <>
@@ -479,6 +480,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               onChange={changeS}
               onKeyDown={keydownS}
               onFocus={focus}
+              data-last=""
             />
           </>
         }
