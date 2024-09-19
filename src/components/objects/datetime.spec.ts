@@ -75,4 +75,67 @@ describe("datetime", () => {
       expect(dt.toString()).toBe("2024-01-01T04:00:00.000-08:00");
     });
   });
+
+  describe("calc", () => {
+    it("first date at year", () => {
+      const dt = new DateTime("2024-05-12");
+      dt.setFirstDateAtYear();
+      expect(dt.toDateString()).toBe("2024-01-01");
+    });
+
+    it("last date at year", () => {
+      const dt = new DateTime("2024-05-12");
+      dt.setLastDateAtYear();
+      expect(dt.toDateString()).toBe("2024-12-31");
+    });
+
+    it("fist date at month", () => {
+      const dt = new DateTime("2024-08-11");
+      dt.setFirstDateAtMonth();
+      expect(dt.toDateString()).toBe("2024-08-01");
+    });
+
+    it("last date at month", () => {
+      const dt = new DateTime("2024-08-11");
+      dt.setLastDateAtMonth();
+      expect(dt.toDateString()).toBe("2024-08-31");
+    });
+
+    it("prev year", () => {
+      const dt = new DateTime("2024-02-29");
+      dt.setPrevYear();
+      expect(dt.toDateString()).toBe("2023-02-28");
+      dt.setPrevYear();
+      expect(dt.toDateString()).toBe("2022-02-28");
+    });
+
+    it("next year", () => {
+      const dt = new DateTime("2024-02-29");
+      dt.setNextYear();
+      expect(dt.toDateString()).toBe("2025-02-28");
+      dt.setNextYear();
+      expect(dt.toDateString()).toBe("2026-02-28");
+    });
+
+    it("prev month", () => {
+      const dt = new DateTime("2024-03-31");
+      dt.setPrevMonth();
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.setPrevMonth();
+      expect(dt.toDateString()).toBe("2024-01-29");
+      dt.setPrevMonth();
+      expect(dt.toDateString()).toBe("2023-12-29");
+    });
+
+    it("next month", () => {
+      const dt = new DateTime("2024-01-31");
+      dt.setNextMonth();
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.setNextMonth();
+      expect(dt.toDateString()).toBe("2024-03-29");
+      dt.setMonth(11);
+      dt.setNextMonth();
+      expect(dt.toDateString()).toBe("2025-01-29");
+    });
+  });
 });

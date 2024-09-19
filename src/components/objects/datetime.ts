@@ -176,8 +176,8 @@ export class DateTime {
     return this.date.getFullYear();
   }
 
-  public setYear(year: number, month?: number, date?: number) {
-    this.date.setFullYear(year, month, date);
+  public setYear(year: number) {
+    this.date.setFullYear(year);
     return this;
   }
 
@@ -185,8 +185,8 @@ export class DateTime {
     return this.date.getMonth();
   }
 
-  public setMonth(month: number, date?: number) {
-    this.date.setMonth(month, date);
+  public setMonth(month: number) {
+    this.date.setMonth(month);
     return this;
   }
 
@@ -207,8 +207,8 @@ export class DateTime {
     return this.date.getHours();
   }
 
-  public setHours(hours: number, min?: number, sec?: number, ms?: number) {
-    this.date.setHours(hours, min, sec, ms);
+  public setHours(hours: number) {
+    this.date.setHours(hours);
     return this;
   }
 
@@ -216,8 +216,8 @@ export class DateTime {
     return this.date.getMinutes();
   }
 
-  public setMinutes(min: number, sec?: number, ms?: number) {
-    this.date.setMinutes(min, sec, ms);
+  public setMinutes(min: number) {
+    this.date.setMinutes(min);
     return this;
   }
 
@@ -225,8 +225,8 @@ export class DateTime {
     return this.date.getSeconds();
   }
 
-  public setSeconds(sec: number, ms?: number) {
-    this.date.setSeconds(sec, ms);
+  public setSeconds(sec: number) {
+    this.date.setSeconds(sec);
     return this;
   }
 
@@ -240,7 +240,7 @@ export class DateTime {
   }
 
   public removeTime() {
-    return this.setHours(0, 0, 0, 0);
+    return this.date.setHours(0, 0, 0, 0);
   }
 
   public addYear(num: number) {
@@ -249,7 +249,7 @@ export class DateTime {
   }
 
   public addMonth(num: number) {
-    this.setMonth(this.date.getMonth() + num);
+    this.setMonth(this.getMonth() + num);
     return this;
   }
 
@@ -279,12 +279,12 @@ export class DateTime {
   }
 
   public setFirstDateAtYear() {
-    this.setMonth(0, 1);
+    this.date.setMonth(0, 1);
     return this;
   }
 
   public setLastDateAtYear() {
-    this.setYear(this.getYear() + 1, 0, 0);
+    this.date.setFullYear(this.getYear() + 1, 0, 0);
     return this;
   }
 
@@ -294,7 +294,7 @@ export class DateTime {
   }
 
   public setLastDateAtMonth() {
-    this.setMonth(this.getMonth() + 1, 0);
+    this.date.setMonth(this.getMonth() + 1, 0);
     return this;
   }
 
@@ -306,17 +306,31 @@ export class DateTime {
     return this.addDate(7);
   }
 
+  public setPrevYear() {
+    const d = this.getDate();
+    this.addYear(-1);
+    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
+    return this;
+  }
+
+  public setNextYear() {
+    const d = this.getDate();
+    this.addYear(1);
+    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
+    return this;
+  }
+
   public setPrevMonth() {
     const d = this.getDate();
     this.addMonth(-1);
-    if (d !== this.getDate()) this.addDate(-this.getDate());
+    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
     return this;
   }
 
   public setNextMonth() {
     const d = this.getDate();
     this.addMonth(1);
-    if (d !== this.getDate()) this.addDate(-this.getDate());
+    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
     return this;
   }
 
