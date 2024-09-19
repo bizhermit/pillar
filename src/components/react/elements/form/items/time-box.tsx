@@ -6,7 +6,7 @@ import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
 import { getTimeUnit, parseTimeAsUnit, roundTime, Time, TimeRadix } from "../../../../objects/time";
 import { Dialog, useDialog } from "../../dialog";
-import { CrossIcon, DownFillIcon } from "../../icon";
+import { ClockIcon, CrossIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -498,7 +498,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
             tabIndex={-1}
             data-showed={dialog.showed}
           >
-            <DownFillIcon />
+            <ClockIcon />
           </div>
         }
         {fi.clearButton(empty ? undefined : clear)}
