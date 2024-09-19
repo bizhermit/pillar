@@ -4,6 +4,7 @@
 type AppRoutePath = "/"
   | "/home"
   | "/sandbox"
+  | "/sandbox/datetime"
   | "/sandbox/element"
   | "/sandbox/fetch"
   | "/sandbox/intercepting-routes"

@@ -1,4 +1,4 @@
-import { CloudIcon, ExLinkIcon, HomeIcon, TextBoxIcon } from "@/react/elements/icon";
+import { CalendarIcon, CloudIcon, ExLinkIcon, HomeIcon, TextBoxIcon } from "@/react/elements/icon";
 import Link from "@/react/elements/link";
 import { Navigation } from "@/react/elements/navigation";
 import { NavigationMenu, NavMenuLink, NavMenuNest } from "@/react/elements/navigation/menu";
@@ -91,6 +91,12 @@ const Layout = (props: { children: ReactNode; }) => {
             icon={<CloudIcon />}
           >
             Fetch API
+          </NavMenuLink>
+          <NavMenuLink
+            url="/sandbox/datetime"
+            icon={<CalendarIcon />}
+          >
+            DateTime
           </NavMenuLink>
         </NavigationMenu>
         <ul style={{ wordBreak: "keep-all", whiteSpace: "nowrap" }}>
