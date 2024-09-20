@@ -129,6 +129,8 @@ describe("datetime", () => {
         tzOffset: "Z",
       });
       expect(dt.toString()).toBe("2024-09-21T00:00:00.000Z");
+      dt.setTimezone("Asia/Tokyo");
+      expect(dt.toString()).toBe("2024-09-21T09:00:00.000+09:00");
     });
 
     it("date / time (no timeUnit)", () => {
@@ -138,6 +140,8 @@ describe("datetime", () => {
         tzOffset: "Z",
       });
       expect(dt.toString()).toBe("2024-09-21T12:00:00.000Z");
+      dt.setTimezone("America/Los_Angeles");
+      expect(dt.toString()).toBe("2024-09-21T04:00:00.000-08:00");
     });
   });
 
