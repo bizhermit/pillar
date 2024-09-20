@@ -80,7 +80,7 @@ describe("datetime", () => {
     });
 
     it("yyyy-MM-ddThh:mm:ss.SSSZ", () => {
-      const dt = new DateTime("2024-01-01T12:34:56.789Z");
+      const dt = new DateTime("2024-01-01T12:34:56.789Z", true);
       expect(dt.toString()).toBe("2024-01-01T12:34:56.789Z");
       expect(dt.getTimezoneOffset()).toBe(0);
     });

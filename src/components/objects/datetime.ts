@@ -53,11 +53,11 @@ export class DateTime {
   private date: Date;
   private offset: number;
 
-  constructor(datetime?: string | number | Date | DateTime | null | undefined) {
+  constructor(datetime?: string | number | Date | DateTime | null | undefined, reflectOffset?: boolean) {
     this.date = new Date();
     this.offset = this.date.getTimezoneOffset();
     if (datetime != null) {
-      this.set(datetime, true);
+      this.set(datetime, reflectOffset);
     }
   }
 
@@ -101,7 +101,11 @@ export class DateTime {
     return this.date.getTime();
   }
 
-  public set(datetime: string | number | Date | DateTime | null | undefined, resetOffset?: boolean) {
+  public getTime() {
+    return this.evacuateOffset(() => this.date.getTime());
+  }
+
+  public set(datetime: string | number | Date | DateTime | null | undefined, reflectOffset?: boolean) {
     let diff = (this.date.getTimezoneOffset() - this.offset) * 60000;
     if (datetime == null) {
       this.date.setTime(Date.now() + diff);
@@ -119,7 +123,7 @@ export class DateTime {
             const tz = a[8];
             if (tz) {
               const offset = parseTimezoneOffset(tz as TimeZone);
-              if (resetOffset) this.offset = offset;
+              if (reflectOffset) this.offset = offset;
               else diff = (offset - this.date.getTimezoneOffset()) * 60000;
             }
             this.date.setTime(new Date(Number(a[1]), Number(a[2] || 1) - 1, Number(a[3] || 1), Number(a[4] || 0), Number(a[5] || 0), Number(a[6] || 0), Number(a[7] || 0)).getTime() + diff);
@@ -162,10 +166,11 @@ export class DateTime {
   }
 
   private evacuateOffset<T>(func: () => T) {
+    const b = this.offset === this.date.getTimezoneOffset();
     const o = this.offset;
-    this.setTimezoneOffset(0);
+    if (b) this.setTimezoneOffset(0);
     const r = func();
-    this.setTimezoneOffset(o);
+    if (b) this.setTimezoneOffset(o);
     return r;
   }
 
