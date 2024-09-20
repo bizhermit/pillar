@@ -74,6 +74,7 @@ export class DateTime {
   }
 
   public setTimezoneOffset(offset: number) {
+    if (this.offset === offset) return this;
     const diff = (this.offset - offset) * 60000;
     this.offset = offset;
     this.date.setTime(this.date.getTime() + diff);
