@@ -162,8 +162,8 @@ declare namespace DataItem {
   type $date = $ & {
     type: "date";
     validations?: Array<Validation<$date, Date>>;
-    min?: string;
-    max?: string;
+    min?: string | number | Date | import("../objects/datetime").DateTime;
+    max?: string | number | Date | import("../objects/datetime").DateTime;
     pair?: {
       name: string;
       position: "before" | "after";
@@ -175,8 +175,8 @@ declare namespace DataItem {
   type $month = $ & {
     type: "month";
     validations?: Array<Validation<$month, Date>>;
-    min?: string;
-    max?: string;
+    min?: string | number | Date | import("../objects/datetime").DateTime;
+    max?: string | number | Date | import("../objects/datetime").DateTime;
     pair?: {
       name: string;
       position: "before" | "after";
@@ -189,8 +189,8 @@ declare namespace DataItem {
     type: "time";
     mode?: "hms" | "hm" | "ms";
     validations?: Array<Validation<$time>>;
-    min?: number;
-    max?: number;
+    min?: number | Date | string | import("../objects/datetime").DateTime;
+    max?: number | Date | string | import("../objects/datetime").DateTime;
     pair?: {
       name: string;
       position: "before" | "after";

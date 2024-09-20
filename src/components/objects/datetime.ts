@@ -103,12 +103,8 @@ export class DateTime {
     return this.replaceTimezoneOffset(parseTimezoneOffset(tz));
   }
 
-  public getOffsetTime() {
-    return this.date.getTime();
-  }
-
   public getTime() {
-    return this.evacuateOffset(() => this.date.getTime());
+    return this.date.getTime();
   }
 
   public set(datetime: string | number | Date | DateTime | null | undefined, reflectOffset?: boolean) {
@@ -116,7 +112,7 @@ export class DateTime {
     if (datetime == null) {
       this.date.setTime(Date.now() + diff);
     } else if (datetime instanceof DateTime) {
-      this.date.setTime(datetime.getOffsetTime());
+      this.date.setTime(datetime.getTime());
       this.offset = datetime.getTimezoneOffset();
     } else {
       switch (typeof datetime) {

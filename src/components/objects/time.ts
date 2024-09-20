@@ -1,5 +1,7 @@
 // const
 
+import { DateTime } from "./datetime";
+
 export namespace TimeRadix {
 
   /**
@@ -34,20 +36,26 @@ const parseMillisecondsAsUnit = (time: number, unit?: TimeUnit) => {
   }
 };
 
-export const parseMilliseconds = (time?: number | string | Date | Time | null | undefined, unit?: TimeUnit) => {
+export const parseMilliseconds = (time?: number | string | Date | Time | DateTime | null | undefined, unit?: TimeUnit) => {
   if (time == null) return undefined;
-  if (time instanceof Date) return time.getTime();
   if (time instanceof Time) return time.getTime();
+  if (time instanceof DateTime || time instanceof Date) {
+    return (time.getTime() - time.getTimezoneOffset() * TimeRadix.M) % (TimeRadix.H * 24);
+  }
   if (typeof time === "number") return parseMillisecondsAsUnit(time, unit);
-  if (/[+-]?\d*/.test(time)) {
+  if (/^[+-]?\d*$/.test(time)) {
     const num = Number(time);
     if (isNaN(num)) return undefined;
     return parseMillisecondsAsUnit(num, unit);
   }
-  let ctx = time.match(/^(\+|\-|)(\d{2}|$)(\d{2}|$)(\d{2}|$)(\d{3}|$)/);
-  if (!ctx) ctx = time.match(/^(\+|\-|)(\d+)?(?::|時|$)(\d+)?(?::|分|$)(\d+)?(?:.|秒|$)(\d+)?(?:.*|$)/);
-  if (ctx) {
-    return (Number(ctx[2] ?? "0") * TimeRadix.H + Number(ctx[3] ?? "0") * TimeRadix.M + Number(ctx[4] ?? "0") * TimeRadix.S + Number(ctx[5] ?? "0")) * (ctx[1] === "-" ? -1 : 1);
+  const a = time.match(/^(\+|-)?(\d{1,2}|$)[:]?(\d{1,2}|$)[:]?(\d{1,2}|$)[.]?(\d{0,3}|$)?(.*)/);
+  if (a) {
+    return (a[1] === "-" ? -1 : 1) * (
+      Number(a[2] || 0) * TimeRadix.H +
+      Number(a[3] || 0) * TimeRadix.M +
+      Number(a[4] || 0) * TimeRadix.S +
+      Number(a[5] || 0)
+    );
   }
   return undefined;
 };
@@ -127,7 +135,7 @@ export class Time {
 
   protected time: number;
 
-  constructor(time?: number | string | Date | Time | null | undefined, unit?: TimeUnit) {
+  constructor(time?: number | string | Date | Time | DateTime | null | undefined, unit?: TimeUnit) {
     this.time = parseMilliseconds(time, unit) ?? 0;
   }
 

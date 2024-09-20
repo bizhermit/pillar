@@ -1,5 +1,7 @@
 // const
 
+import { DateTime } from "./datetime";
+
 export namespace Month {
 
   export const en = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] as const;
@@ -20,10 +22,10 @@ export namespace Week {
 
 // base
 
-type ParsedDate<T extends string | number | Date | null | undefined> = T extends null | undefined ? undefined : T extends Date ? Date : Date | undefined;
+type ParsedDate<T extends string | number | Date | DateTime | null | undefined> = T extends null | undefined ? undefined : T extends DateTime ? Date : T extends Date ? Date : Date | undefined;
 
 export const parseDate = <
-  T extends string | number | Date | null | undefined = string | number | Date | null | undefined
+  T extends string | number | Date | DateTime | null | undefined = string | number | Date | null | undefined
 >(date: T) => {
   if (date == null) return undefined as ParsedDate<T>;
   if (typeof date === "string") {

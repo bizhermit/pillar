@@ -1,6 +1,7 @@
 "use client";
 
 import { DateTime } from "@/objects/datetime";
+import { parseMilliseconds, Time } from "@/objects/time";
 import { Button } from "@/react/elements/button";
 import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
@@ -14,6 +15,15 @@ import { DateTimeList } from "./components";
 export const DatetimeFetchButton = () => {
   const api = useFetch();
   const dt = new DateTime();
+  const [datetime, setDatetime] = useState("");
+  useEffect(() => {
+    console.log(
+      dt.toTimeString(),
+      parseMilliseconds(dt.toTimeString()),
+      new Time(dt.toTimeString()).getMinutes(true)
+    );
+    setDatetime(dt.toTimeString());
+  }, []);
 
   return (
     <div>
@@ -32,6 +42,7 @@ export const DatetimeFetchButton = () => {
       >
         fetch
       </Button>
+      <span>{datetime}</span>
       <Form
         onSubmit={async ({ getFormData }) => {
           const res = await api.get("/sandbox/datetime/api", getFormData());
@@ -49,7 +60,7 @@ export const DatetimeFetchButton = () => {
           <FormItemWrap>
             <TimeBox
               name="time"
-              defaultValue={540}
+              defaultValue={dt}
             />
           </FormItemWrap>
         </FormItemRow>

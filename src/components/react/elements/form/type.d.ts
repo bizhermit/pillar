@@ -24,6 +24,7 @@ type FormItemOptions<
   D extends DataItem.$object | undefined = undefined,
   V extends any,
   IV extends any = V,
+  DV extends any = V
 > = {
   name?: string;
   label?: string;
@@ -34,7 +35,7 @@ type FormItemOptions<
   hideClearButton?: boolean;
   hideMessage?: boolean;
   tabIndex?: number;
-  defaultValue?: V | DataItem.NullValue;
+  defaultValue?: V | DV | DataItem.NullValue;
   dataItem?: D;
   preventCollectForm?: boolean;
   autoFocus?: boolean;

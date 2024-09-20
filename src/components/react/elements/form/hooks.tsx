@@ -42,7 +42,7 @@ const env: DataItem.Env = {
   tzOffset: new Date().getTimezoneOffset(),
 };
 
-export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V>({
+export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V, DV extends any = V>({
   hook,
   name,
   label,
@@ -60,7 +60,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   onChange,
   onEdit,
   ...props
-}: FormItemOptions<D, V, any>,
+}: FormItemOptions<D, V, any, DV>,
   cp: FormItemCoreArgs<SD, D, V, IV>
 ) => {
   const id = useId();
