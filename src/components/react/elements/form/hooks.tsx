@@ -428,7 +428,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       "data-changed": mountValue,
     },
     // message: msg,
-    messageComponent: (!hideMessage && msg && !$disabled &&
+    messageComponent: (!hideMessage && msg?.type === "e" && !$disabled &&
       <span
         className="ipt-msg"
         data-state={msg.type}

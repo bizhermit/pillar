@@ -1,17 +1,19 @@
 "use client";
 
+import { DateTime } from "@/objects/datetime";
 import { Button } from "@/react/elements/button";
 import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { DateBox } from "@/react/elements/form/items/date-box";
 import { TimeBox } from "@/react/elements/form/items/time-box";
-import { FormItemWrap } from "@/react/elements/form/wrap";
+import { FormItemRow, FormItemWrap } from "@/react/elements/form/wrap";
 import { useFetch } from "@/react/hooks/fetch";
 import { useEffect, useState } from "react";
 import { DateTimeList } from "./components";
 
 export const DatetimeFetchButton = () => {
   const api = useFetch();
+  const dt = new DateTime();
 
   return (
     <div>
@@ -37,14 +39,24 @@ export const DatetimeFetchButton = () => {
           console.log(res.data);
         }}
       >
-        <FormItemWrap>
-          <DateBox name="date" />
-        </FormItemWrap>
-        <FormItemWrap>
-          <TimeBox name="time" />
-        </FormItemWrap>
-        <FormButton type="submit">submit</FormButton>
-        <FormButton type="reset">reset</FormButton>
+        <FormItemRow>
+          <FormItemWrap>
+            <DateBox
+              name="date"
+              defaultValue={dt.toDateString()}
+            />
+          </FormItemWrap>
+          <FormItemWrap>
+            <TimeBox
+              name="time"
+              defaultValue={540}
+            />
+          </FormItemWrap>
+        </FormItemRow>
+        <FormItemRow>
+          <FormButton type="submit">submit</FormButton>
+          <FormButton type="reset">reset</FormButton>
+        </FormItemRow>
       </Form>
     </div>
   );
