@@ -1,8 +1,8 @@
-import { formatDate } from "@/objects/date";
+import { DateTime } from "@/objects/datetime";
 import { apiMethodHandler } from "@/server/next/app-api";
 
 export const GET = apiMethodHandler(async () => {
   return {
-    datetime: formatDate(new Date(), "yyyy-MM-dd hh:mm:ss.SSS"),
+    datetime: new DateTime().setTimezone("Asia/Tokyo").toString(),
   };
 });
