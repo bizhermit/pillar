@@ -1,4 +1,4 @@
-import { formatTime, getTimeUnit, parseMilliseconds, TimeUtils } from "../../objects/time";
+import { formatTime, getTimeUnit, parseMilliseconds, parseTimeAsUnit, TimeUtils } from "../../objects/time";
 
 const defaultLabel = "値";
 
@@ -18,26 +18,28 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
   const formatPattern = dataItem.mode === "hms" ? "hh:mm:ss" : dataItem.mode === "ms" ? "mm:ss" : "hh:mm";
   const unit = getTimeUnit(dataItem.mode ?? "hm");
 
+  const min = dataItem.min == null ? 0 : parseTimeAsUnit(parseMilliseconds(dataItem.min, unit), unit);
+  const max = dataItem.max == null ? 0 : parseTimeAsUnit(parseMilliseconds(dataItem.max, unit), unit);
   const minStr = dataItem.min == null ? "" : formatTime(parseMilliseconds(dataItem.min, unit)!, formatPattern);
   const maxStr = dataItem.max == null ? "" : formatTime(parseMilliseconds(dataItem.max, unit)!, formatPattern);
   if (dataItem.min != null && dataItem.max != null) {
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
-      if (dataItem.min! <= value && value <= dataItem.max!) return undefined;
+      if (min! <= value && value <= max!) return undefined;
       return { type: "e", code: "range", fullName, msg: `${label}は${minStr}～${maxStr}の範囲で入力してください。` };
     });
   } else {
     if (dataItem.min != null) {
       validations.push(({ value, fullName }) => {
         if (value == null) return undefined;
-        if (dataItem.min! <= value) return undefined;
+        if (min! <= value) return undefined;
         return { type: "e", code: "min", fullName, msg: `${label}は${minStr}以降を入力してください。` };
       });
     }
     if (dataItem.max != null) {
       validations.push(({ value, fullName }) => {
         if (value == null) return undefined;
-        if (value <= dataItem.max!) return undefined;
+        if (value <= max!) return undefined;
         return { type: "e", code: "max", fullName, msg: `${label}は${maxStr}以前を入力してください。` };
       });
     }
