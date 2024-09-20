@@ -6,6 +6,7 @@ import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
+import { DateTime } from "../../../../objects/datetime";
 import { isEmpty } from "../../../../objects/string";
 import { get, set } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
@@ -22,12 +23,12 @@ type DataValue = {
 };
 
 type DateSelectBoxOptions<D extends DataItem.$date | DataItem.$month | undefined> =
-  FormItemOptions<D, D extends DataItem.$date | DataItem.$month ? DataItem.ValueType<D> : string, DataValue> & {
+  FormItemOptions<D, D extends DataItem.$date | DataItem.$month ? DataItem.ValueType<D> : string, DataValue, Date | string | number | DateTime> & {
     type?: "date" | "month";
-    min?: string;
-    max?: string;
+    min?: DataItem.$date["min"];
+    max?: DataItem.$date["max"];
     pair?: DataItem.$date["pair"];
-    initFocusDate?: string;
+    initFocusDate?: Date | string | number | DateTime;
     placeholder?: string | [string, string] | [string, string, string];
     splitDataNames?: [string, string] | [string, string, string];
     allowMissing?: boolean;
@@ -102,7 +103,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     if (dref.current) dref.current.value = String(cache.current.d);
   };
 
-  const fi = useFormItemCore<DataItem.$date | DataItem.$month, D, string, DataValue>(props, {
+  const fi = useFormItemCore<DataItem.$date | DataItem.$month, D, string, DataValue, Date | string | number | DateTime>(props, {
     dataItemDeps: [type, min, max, pair?.name, pair?.position, pair?.same, allowMissing, ...(splitDataNames ?? [])],
     getDataItem: ({ dataItem, refs }) => {
       const $pair = pair ?? dataItem?.pair;

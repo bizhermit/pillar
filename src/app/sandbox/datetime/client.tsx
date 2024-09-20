@@ -17,6 +17,7 @@ export const DatetimeFetchButton = () => {
   const dt = new DateTime();
   const [datetime, setDatetime] = useState("");
   useEffect(() => {
+    // eslint-disable-next-line no-console
     console.log(
       dt.toTimeString(),
       parseMilliseconds(dt.toTimeString()),
@@ -54,7 +55,7 @@ export const DatetimeFetchButton = () => {
           <FormItemWrap>
             <DateBox
               name="date"
-              defaultValue={dt.toDateString()}
+              defaultValue={dt}
             />
           </FormItemWrap>
           <FormItemWrap>

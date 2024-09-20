@@ -7,9 +7,9 @@ import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
 type SliderOptions<D extends DataItem.$num | undefined> = Omit<FormItemOptions<D, D extends DataItem.$num ? DataItem.ValueType<D> : number>, "hideClearButton"> & {
-  min?: number;
-  max?: number;
-  requiredIsNotZero?: boolean;
+  min?: DataItem.$num["min"];
+  max?: DataItem.$num["max"];
+  requiredIsNotZero?: DataItem.$num["requiredIsNotZero"];
   step?: number;
 };
 

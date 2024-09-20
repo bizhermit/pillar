@@ -8,9 +8,9 @@ import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
 type TextAreaOptions<D extends DataItem.$str | undefined> = FormItemOptions<D, D extends DataItem.$str ? DataItem.ValueType<D> : string> & {
-  length?: number;
-  minLength?: number;
-  maxLength?: number;
+  length?: DataItem.$str["length"];
+  minLength?: DataItem.$str["minLength"];
+  maxLength?: DataItem.$str["maxLength"];
   charType?: DataItem.$str["charType"];
   inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
   autoComplete?: string;
