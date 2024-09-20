@@ -2,13 +2,14 @@ import { get } from "../objects/struct";
 import { $arrayValidations } from "./array/validation";
 import { $boolValidations } from "./bool/validation";
 import { $dateValidations } from "./date/validation";
+import { $datetimeValidations } from "./datetime/validation";
 import { $fileValidations } from "./file/validation";
 import { $numValidations } from "./number/validation";
 import { $strValidations } from "./string/validation";
 import { $structValidations } from "./struct/validation";
 import { $timeValidations } from "./time/validation";
 
-export const validationBasedOnDataItem = (data: { [v: string]: any } | Array<any>, dataItems: Readonlyable<Array<DataItem.$object>>, parentName?: string) => {
+export const validationBasedOnDataItem = (data: { [v: string]: any } | Array<any>, dataItems: Readonlyable<Array<DataItem.$object>>, env: DataItem.Env, parentName?: string) => {
   const results: Array<DataItem.ValidationResult> = [];
 
   const getDataName = (dataItem: DataItem.$object, index?: number) => {
@@ -27,6 +28,7 @@ export const validationBasedOnDataItem = (data: { [v: string]: any } | Array<any
         dataItem,
         siblings: dataItems,
         fullName: parentName ? `${parentName}.${name}` : name,
+        env,
       });
       if (r) {
         results.push(r);
@@ -56,6 +58,9 @@ export const validationBasedOnDataItem = (data: { [v: string]: any } | Array<any
       case "time":
         isValid(dataItem, $timeValidations(dataItem), index);
         return;
+      case "datetime":
+        isValid(dataItem, $datetimeValidations(dataItem), index);
+        return;
       case "file":
         isValid(dataItem, $fileValidations(dataItem), index);
         return;
@@ -64,11 +69,11 @@ export const validationBasedOnDataItem = (data: { [v: string]: any } | Array<any
         if (value) {
           const item = dataItem.item;
           if (Array.isArray(item)) {
-            results.push(...validationBasedOnDataItem(value, item, name));
+            results.push(...validationBasedOnDataItem(value, item, env, name));
           } else {
             switch (item.type) {
               case "struct":
-                results.push(...validationBasedOnDataItem(value, item, name));
+                results.push(...validationBasedOnDataItem(value, item, env, name));
                 break;
               default:
                 value.forEach((_, i) => {
@@ -82,7 +87,7 @@ export const validationBasedOnDataItem = (data: { [v: string]: any } | Array<any
       }
       case "struct": {
         const { value, name } = isValid(dataItem, $structValidations(dataItem), index);
-        if (value) results.push(...validationBasedOnDataItem(value, dataItem.item, name));
+        if (value) results.push(...validationBasedOnDataItem(value, dataItem.item, env, name));
         return;
       }
       default:

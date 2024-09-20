@@ -25,6 +25,7 @@ declare namespace DataItem {
         T extends "date" ? string :
         T extends "month" ? string :
         T extends "time" ? number :
+        T extends "datetime" ? InstanceType<typeof import("../objects/datetime")["DateTime"]> :
         T extends "file" ? File :
         T extends "array" ? Array<D["item"] extends Array<$object> ? Props<D["item"]> : ValueType<D["item"]>> :
         T extends "struct" ? D["item"] extends Array<$object> ? Props<D["item"]> : never :
@@ -42,6 +43,10 @@ declare namespace DataItem {
     fullName: string;
   };
 
+  type Env = {
+    tzOffset: number;
+  };
+
   type OmitableProps = "name";
 
   type ArgObject<D extends $object> = PickPartial<D, OmitableProps>;
@@ -52,6 +57,7 @@ declare namespace DataItem {
     siblings: Readonlyable<Array<ArgObject<$object>>> | null | undefined;
     dataItem: ArgObject<D>;
     fullName: string;
+    env: Env;
   };
 
   type Validation<D extends $object, V = ValueType<D>> = (props: ValidationProps<D, V>) => (ValidationResult | null | undefined);
@@ -61,6 +67,7 @@ declare namespace DataItem {
     dataItem: ArgObject<D>;
     fullName: string;
     data: { [v: string | number]: any };
+    env: Env;
   };
 
   type ParseResult<V> = [parsedValue: V | NullValue, result?: ValidationResult];
@@ -194,6 +201,13 @@ declare namespace DataItem {
     secondStep?: number;
   };
 
+  type $datetime = $ & {
+    type: "datetime";
+    validations?: Array<Validation<$datetime>>;
+    date: $date;
+    time: $time;
+  };
+
   type $file = $ & {
     type: "file";
     validations?: Array<Validation<$file>>;
@@ -226,6 +240,7 @@ declare namespace DataItem {
     | $date
     | $month
     | $time
+    | $datetime
     | $file
     ;
 

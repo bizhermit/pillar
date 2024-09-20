@@ -73,5 +73,9 @@ export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): 
     });
   }
 
+  if (dataItem.validations) {
+    validations.push(...dataItem.validations);
+  }
+
   return validations;
 };

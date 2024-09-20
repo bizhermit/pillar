@@ -141,8 +141,8 @@ export class DateTime {
   }
 
   public setDateTime({ date, time, timeUnit, tzOffset }: {
-    date: string;
-    time?: number;
+    date: string | Date | number;
+    time?: number | null | undefined;
     timeUnit?: "h" | "m" | "s" | "S";
     tzOffset?: TimeZone | number;
   }) {

@@ -3,12 +3,13 @@ import { convertBase64ToFile, convertBlobToFile } from "@/objects/file";
 const defaultLabel = "値";
 
 export const $fileParse = ({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$file>): DataItem.ParseResult<File> => {
+  const label = dataItem.label || dataItem.name || defaultLabel;
+
   if (Array.isArray(value) && value.length > 1) {
-    return [undefined, { type: "e", code: "multiple", fullName, msg: `${dataItem.label || defaultLabel}が複数設定されています。` }];
+    return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];
   }
   if (value == null || value === "") return [undefined];
 
-  const label = dataItem.label || dataItem.name || defaultLabel;
   try {
     if (value instanceof File) return [value];
     if (value instanceof Blob) {

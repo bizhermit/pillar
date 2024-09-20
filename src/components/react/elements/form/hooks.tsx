@@ -38,6 +38,10 @@ type FormItemCoreArgs<
   focus: () => void;
 };
 
+const env: DataItem.Env = {
+  tzOffset: new Date().getTimezoneOffset(),
+};
+
 export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V>({
   hook,
   name,
@@ -123,6 +127,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       dataItem,
       siblings: getSiblings(),
       fullName: dataItem.name || "",
+      env,
     });
   };
 
@@ -141,6 +146,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       dataItem,
       fullName: dataItem.name || "",
       data: form.bind,
+      env,
     }, { bind: true });
     return {
       val,
@@ -162,6 +168,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       dataItem,
       fullName: dataItem.name || "",
       siblings: getSiblings(),
+      env,
     });
   };
   const [dyanmicRequired, setDyanmicRequired] = useState(getDynamicRequired);
@@ -213,6 +220,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
         dataItem,
         fullName: dataItem.name || "",
         data: form.bind,
+        env,
       }, { bind: bind ?? false });
       v = val;
       parseRes = msg;
