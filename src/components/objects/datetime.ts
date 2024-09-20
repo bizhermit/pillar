@@ -48,6 +48,8 @@ export namespace Week {
 
 type WeekArray = [string, string, string, string, string, string, string];
 
+const env_tz = process.env.TZ?.trim() as TimeZone | undefined;
+
 export class DateTime {
 
   private date: Date;
@@ -58,6 +60,9 @@ export class DateTime {
     this.offset = this.date.getTimezoneOffset();
     if (datetime != null) {
       this.set(datetime, reflectOffset);
+    }
+    if (env_tz && !reflectOffset) {
+      this.setTimezone(env_tz);
     }
   }
 

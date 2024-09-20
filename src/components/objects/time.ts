@@ -21,26 +21,28 @@ export namespace TimeRadix {
 
 export type TimeUnit = "h" | "m" | "s" | "S";
 
+const parseMillisecondsAsUnit = (time: number, unit?: TimeUnit) => {
+  switch (unit) {
+    case "h":
+      return time * TimeRadix.H;
+    case "m":
+      return time * TimeRadix.M;
+    case "s":
+      return time * TimeRadix.S;
+    default:
+      return time;
+  }
+};
+
 export const parseMilliseconds = (time?: number | string | Date | Time | null | undefined, unit?: TimeUnit) => {
   if (time == null) return undefined;
-  if (typeof time === "number") {
-    switch (unit) {
-      case "h":
-        return time * TimeRadix.H;
-      case "m":
-        return time * TimeRadix.M;
-      case "s":
-        return time * TimeRadix.S;
-      default:
-        return time;
-    }
-  }
   if (time instanceof Date) return time.getTime();
   if (time instanceof Time) return time.getTime();
-  if (/^[+-]?\d$/.test(time)) {
+  if (typeof time === "number") return parseMillisecondsAsUnit(time, unit);
+  if (/[+-]?\d*/.test(time)) {
     const num = Number(time);
     if (isNaN(num)) return undefined;
-    return num;
+    return parseMillisecondsAsUnit(num, unit);
   }
   let ctx = time.match(/^(\+|\-|)(\d{2}|$)(\d{2}|$)(\d{2}|$)(\d{3}|$)/);
   if (!ctx) ctx = time.match(/^(\+|\-|)(\d+)?(?::|時|$)(\d+)?(?::|分|$)(\d+)?(?:.|秒|$)(\d+)?(?:.*|$)/);
