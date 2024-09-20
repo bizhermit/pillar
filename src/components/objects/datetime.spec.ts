@@ -112,6 +112,14 @@ describe("datetime", () => {
     });
   });
 
+  describe("set", () => {
+    it("set Date", () => {
+      const dt = new DateTime("2024-04-04T12:00:00.000-08:00", true);
+      dt.set(new Date(2024, 6, 10, 12, 0, 0, 0));
+      expect(dt.toString()).toBe("2024-07-10T12:00:00.000-08:00");
+    });
+  });
+
   describe("set date / time", () => {
     it("date / time fullset", () => {
       const dt = new DateTime().setDateTime({

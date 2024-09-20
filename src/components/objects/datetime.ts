@@ -66,6 +66,10 @@ export class DateTime {
     }
   }
 
+  public getCloneDate() {
+    return new Date(this.date.getTime());
+  }
+
   public static timezoneOffset() {
     return new Date().getTimezoneOffset();
   }
@@ -103,6 +107,10 @@ export class DateTime {
     return this.replaceTimezoneOffset(parseTimezoneOffset(tz));
   }
 
+  public setDefaultTimezone() {
+    this.setTimezoneOffset(this.date.getTimezoneOffset());
+  }
+
   public getTime() {
     return this.date.getTime();
   }
@@ -115,6 +123,10 @@ export class DateTime {
       this.date.setTime(datetime.getTime());
       this.offset = datetime.getTimezoneOffset();
     } else {
+      const optimizeDiff = (newOffset: number) => {
+        if (reflectOffset) this.offset = newOffset;
+        else diff = (newOffset - this.date.getTimezoneOffset()) * 60000;
+      };
       switch (typeof datetime) {
         case "number":
           this.date.setTime(datetime + diff);
@@ -125,16 +137,18 @@ export class DateTime {
             const tz = a[8];
             if (tz) {
               const offset = parseTimezoneOffset(tz as TimeZone);
-              if (reflectOffset) this.offset = offset;
-              else diff = (offset - this.date.getTimezoneOffset()) * 60000;
+              optimizeDiff(offset);
             }
             this.date.setTime(new Date(Number(a[1]), Number(a[2] || 1) - 1, Number(a[3] || 1), Number(a[4] || 0), Number(a[5] || 0), Number(a[6] || 0), Number(a[7] || 0)).getTime() + diff);
           } else {
-            this.date.setTime(new Date(datetime).getTime() + diff);
+            const d = new Date(datetime);
+            optimizeDiff(d.getTimezoneOffset());
+            this.date.setTime(d.getTime() + diff);
           }
           break;
         default:
-          this.date.setTime(datetime.getTime() + diff);
+          optimizeDiff(datetime.getTimezoneOffset());
+          this.date.setTime(datetime.getTime() - diff);
           break;
       }
     }
