@@ -145,14 +145,14 @@ export class DateTime {
     return this;
   }
 
-  public setDateTime({ date, time, timeUnit, tzOffset }: {
+  public setDateTime({ date, time, timeUnit, timezone }: {
     date: string | Date | number;
     time?: number | null | undefined;
     timeUnit?: "h" | "m" | "s" | "S";
-    tzOffset?: TimeZone | number;
+    timezone?: TimeZone | number;
   }) {
-    this.removeTime();
     this.set(date);
+    this.removeTime();
     if (time != null) {
       switch (timeUnit) {
         case "S":
@@ -172,8 +172,8 @@ export class DateTime {
           break;
       }
     }
-    if (tzOffset != null) {
-      this.offset = typeof tzOffset === "number" ? tzOffset : parseTimezoneOffset(tzOffset);
+    if (timezone != null) {
+      this.offset = typeof timezone === "number" ? timezone : parseTimezoneOffset(timezone);
     }
     return this;
   }

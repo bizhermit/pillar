@@ -34,7 +34,7 @@ export const $datetimeParse = ({ value, dataItem, fullName, data, env }: DataIte
       date: dateVal as string,
       time: timeValue,
       timeUnit: getTimeUnit(dataItem.time.mode ?? "hm"),
-      tzOffset: env.tzOffset,
+      timezone: dataItem.tz ?? env.tzOffset,
     });
     return [dt, { type: "i", code: "parse", fullName, msg: `${label}を日付型に変換しました。` }];
   }

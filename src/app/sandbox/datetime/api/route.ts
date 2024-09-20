@@ -12,6 +12,7 @@ const datetime = $datetime({
   time: $time({
     name: "time",
   }),
+  // tz: "America/Los_Angeles",
 });
 
 export const GET = apiMethodHandler(async ({ getParams }) => {

@@ -118,7 +118,7 @@ describe("datetime", () => {
         date: "2024-09-12",
         time: 540,
         timeUnit: "m",
-        tzOffset: "Asia/Tokyo",
+        timezone: "Asia/Tokyo",
       });
       expect(dt.toString()).toBe("2024-09-12T09:00:00.000+09:00");
     });
@@ -126,7 +126,7 @@ describe("datetime", () => {
     it("date", () => {
       const dt = new DateTime().setDateTime({
         date: "2024-09-21",
-        tzOffset: "Z",
+        timezone: "Z",
       });
       expect(dt.toString()).toBe("2024-09-21T00:00:00.000Z");
       dt.setTimezone("Asia/Tokyo");
@@ -137,7 +137,7 @@ describe("datetime", () => {
       const dt = new DateTime().setDateTime({
         date: "2024-09-21",
         time: 720,
-        tzOffset: "Z",
+        timezone: "Z",
       });
       expect(dt.toString()).toBe("2024-09-21T12:00:00.000Z");
       dt.setTimezone("America/Los_Angeles");

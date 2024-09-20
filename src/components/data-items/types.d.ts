@@ -25,7 +25,7 @@ declare namespace DataItem {
         T extends "date" ? string :
         T extends "month" ? string :
         T extends "time" ? number :
-        T extends "datetime" ? InstanceType<typeof import("../objects/datetime")["DateTime"]> :
+        T extends "datetime" ? import("../objects/datetime").DateTime :
         T extends "file" ? File :
         T extends "array" ? Array<D["item"] extends Array<$object> ? Props<D["item"]> : ValueType<D["item"]>> :
         T extends "struct" ? D["item"] extends Array<$object> ? Props<D["item"]> : never :
@@ -206,6 +206,7 @@ declare namespace DataItem {
     validations?: Array<Validation<$datetime>>;
     date: $date;
     time: $time;
+    tz?: import("../objects/datetime").TimeZone | number;
   };
 
   type $file = $ & {

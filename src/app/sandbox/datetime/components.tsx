@@ -1,4 +1,4 @@
-import { DateTime } from "@/objects/datetime";
+import { DateTime, parseOffsetString } from "@/objects/datetime";
 
 const f = (dt: DateTime) => {
   return `${dt.toString()}  / ${dt.getTimezone()}`;
@@ -11,8 +11,11 @@ const fs = (p: string) => {
 export const DateTimeList = () => {
   return (
     <div>
-      <span>timezone: {new DateTime().getTimezone()}</span>
-      {/* <span>{process.env.TZ}</span> */}
+      <span>env.TZ: {process.env.TZ || "null"}</span>
+      <br />
+      <span>DateTime timezone: {new DateTime().getTimezone()}</span>
+      <br />
+      <span>system timezone: {parseOffsetString(new Date().getTimezoneOffset())}</span>
       <ul>
         <li>{f(new DateTime())}</li>
         <li>{f(new DateTime().set(null))}</li>
