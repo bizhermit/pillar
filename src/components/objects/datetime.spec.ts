@@ -112,6 +112,35 @@ describe("datetime", () => {
     });
   });
 
+  describe("set date / time", () => {
+    it("date / time fullset", () => {
+      const dt = new DateTime().setDateTime({
+        date: "2024-09-12",
+        time: 540,
+        timeUnit: "m",
+        tzOffset: "Asia/Tokyo",
+      });
+      expect(dt.toString()).toBe("2024-09-12T09:00:00.000+09:00");
+    });
+
+    it("date", () => {
+      const dt = new DateTime().setDateTime({
+        date: "2024-09-21",
+        tzOffset: "Z",
+      });
+      expect(dt.toString()).toBe("2024-09-21T00:00:00.000Z");
+    });
+
+    it("date / time (no timeUnit)", () => {
+      const dt = new DateTime().setDateTime({
+        date: "2024-09-21",
+        time: 720,
+        tzOffset: "Z",
+      });
+      expect(dt.toString()).toBe("2024-09-21T12:00:00.000Z");
+    });
+  });
+
   describe("calc", () => {
     it("first date at year", () => {
       const dt = new DateTime("2024-05-12");

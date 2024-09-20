@@ -140,6 +140,39 @@ export class DateTime {
     return this;
   }
 
+  public setDateTime({ date, time, timeUnit, tzOffset }: {
+    date: string;
+    time?: number;
+    timeUnit?: "h" | "m" | "s" | "S";
+    tzOffset?: TimeZone | number;
+  }) {
+    this.removeTime();
+    this.set(date);
+    if (time != null) {
+      switch (timeUnit) {
+        case "S":
+          this.setMilliseconds(time);
+          break;
+        case "s":
+          this.setSeconds(time);
+          break;
+        case "m":
+          this.setMinutes(time);
+          break;
+        case "h":
+          this.setHours(time);
+          break;
+        default:
+          this.setMinutes(time);
+          break;
+      }
+    }
+    if (tzOffset != null) {
+      this.offset = typeof tzOffset === "number" ? tzOffset : parseTimezoneOffset(tzOffset);
+    }
+    return this;
+  }
+
   public toString(pattern: string = "yyyy-MM-ddThh:mm:ss.SSSt", week?: WeekArray) {
     return pattern
       .replace(/yyyy/g, String(this.date.getFullYear()))
