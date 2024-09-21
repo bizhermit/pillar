@@ -133,9 +133,24 @@ export const DateTimeList = () => {
       <h3>to string</h3>
       <ul>
         <li>---------------------------</li>
-        <li>json: {JSON.stringify({ d: new Date(), dt: new DateTime() })}</li>
-        <li>string: {JSON.stringify({ d: new Date().toString(), dt: new DateTime().toString() })}</li>
-        <li>iso: {JSON.stringify({ d: new Date().toISOString(), dt: new DateTime().toISOString() })}</li>
+        <li>
+          to json:
+          <pre>
+            {JSON.stringify({ "d ": new Date(), dt: new DateTime() }, null, 2)}
+          </pre>
+        </li>
+        <li>
+          to string:
+          <pre>
+            {JSON.stringify({ "d ": new Date().toString(), dt: new DateTime().toString() }, null, 2)}
+          </pre>
+        </li>
+        <li>
+          to iso string:
+          <pre>
+            {JSON.stringify({ "d ": new Date().toISOString(), dt: new DateTime().toISOString() }, null, 2)}
+          </pre>
+        </li>
         <li>---------------------------</li>
         <li>{new DateTime().toDateString()}</li>
         <li>{new DateTime().toTimeString()}</li>

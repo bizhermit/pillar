@@ -190,6 +190,10 @@ export class DateTime {
     return this.date.getTime();
   }
 
+  public getUTCTime() {
+    return this.evacuateOffset(() => this.getTime());
+  }
+
   public toString(pattern: string = "yyyy-MM-ddThh:mm:ss.SSSt", week?: WeekArray) {
     return pattern
       .replace(/yyyy/g, String(this.date.getFullYear()))
@@ -217,11 +221,10 @@ export class DateTime {
   }
 
   private evacuateOffset<T>(func: () => T) {
-    const b = this.offset === this.date.getTimezoneOffset();
     const o = this.offset;
-    if (b) this.setTimezoneOffset(0);
+    this.setTimezoneOffset(0);
     const r = func();
-    if (b) this.setTimezoneOffset(o);
+    this.setTimezoneOffset(o);
     return r;
   }
 
