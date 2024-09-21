@@ -80,7 +80,7 @@ describe("datetime", () => {
     });
 
     it("yyyy-MM-ddThh:mm:ss.SSSZ", () => {
-      const dt = new DateTime("2024-01-01T12:34:56.789Z", true);
+      const dt = new DateTime("2024-01-01T12:34:56.789Z", "UTC");
       expect(dt.toString()).toBe("2024-01-01T12:34:56.789Z");
       expect(dt.getTimezoneOffset()).toBe(0);
     });
@@ -114,9 +114,10 @@ describe("datetime", () => {
 
   describe("set", () => {
     it("set Date", () => {
-      const dt = new DateTime("2024-04-04T12:00:00.000-08:00", true);
-      dt.set(new Date(2024, 6, 10, 12, 0, 0, 0));
-      expect(dt.toString()).toBe("2024-07-10T12:00:00.000-08:00");
+      const dt = new DateTime("2024-04-04T12:00:00.000-08:00", "-08:00");
+      expect(dt.toString()).toBe("2024-04-04T12:00:00.000-08:00");
+      dt.set(new Date("2024-07-10T12:00:00.000Z"));
+      expect(dt.toString()).toBe("2024-07-10T04:00:00.000-08:00");
     });
   });
 

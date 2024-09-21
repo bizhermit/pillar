@@ -1,8 +1,10 @@
+
 export type TimeZone =
   | "Z"
   | "UTC"
   | "Asia/Tokyo"
   | "America/Los_Angeles"
+  | "America/Argentina/Buenos_Aires"
   | `+${number}:${number}`
   | `+${number}${number}`
   | `-${number}:${number}`
@@ -16,6 +18,7 @@ export const parseTimezoneOffset = (tz: TimeZone) => {
     case "UTC": return 0;
     case "Asia/Tokyo": return -540;
     case "America/Los_Angeles": return 480;
+    case "America/Argentina/Buenos_Aires": return 180;
     default:
       throw new Error(`not supported timezone: [${tz}]`);
   }
@@ -49,21 +52,93 @@ export namespace Week {
 type WeekArray = [string, string, string, string, string, string, string];
 
 const env_tz = process.env.TZ?.trim() as TimeZone | undefined;
+const env_offset = env_tz ? parseTimezoneOffset(env_tz) : new Date().getTimezoneOffset();
 
 export class DateTime {
 
   private date: Date;
   private offset: number;
 
-  constructor(datetime?: string | number | Date | DateTime | null | undefined, reflectOffset?: boolean) {
+  constructor(datetime?: string | number | Date | DateTime | null | undefined, timezone?: number | TimeZone) {
     this.date = new Date();
     this.offset = this.date.getTimezoneOffset();
-    if (datetime != null) {
-      this.set(datetime, reflectOffset);
+    this.set(datetime, timezone ?? env_offset);
+  }
+
+  public set(datetime: string | number | Date | DateTime | null | undefined, timezone?: number | TimeZone) {
+    const offset = (() => {
+      if (timezone == null) return this.offset;
+      if (typeof timezone === "number") return timezone;
+      return parseTimezoneOffset(timezone);
+    })();
+
+    if (datetime == null) {
+      this.date.setTime(Date.now() - (offset - this.date.getTimezoneOffset()) * 60000);
+    } else if (datetime instanceof DateTime) {
+      this.date.setTime(datetime.getTime() - (- datetime.getTimezoneOffset()) * 60000);
+    } else if (datetime instanceof Date) {
+      this.date.setTime(datetime.getTime() - (offset - datetime.getTimezoneOffset()) * 60000);
+    } else {
+      if (typeof datetime === "number") {
+        this.date.setTime(datetime + this.date.getTimezoneOffset() * 60000);
+      } else {
+        const a = datetime.match(/^(\d{1,4})[-|\/|年]?(\d{1,2}|$)[-|\/|月]?(\d{1,2}|$)[日]?[\s|T]?(\d{1,2}|$)[:]?(\d{1,2}|$)[:]?(\d{1,2}|$)[.]?(\d{0,3}|$)?(.*)/);
+        if (a) {
+          const tz = a[8];
+          const d = new Date(
+            Number(a[1]),
+            Number(a[2] || 1) - 1,
+            Number(a[3] || 1),
+            Number(a[4] || 0),
+            Number(a[5] || 0),
+            Number(a[6] || 0),
+            Number(a[7] || 0)
+          );
+          if (!tz) {
+            this.date.setTime(d.getTime());
+          } else {
+            this.date.setTime(d.getTime() - (offset - parseTimezoneOffset(tz as TimeZone)) * 60000);
+          }
+        } else {
+
+        }
+      }
     }
-    if (env_tz && !reflectOffset) {
-      this.setTimezone(env_tz);
+    this.offset = offset;
+    return this;
+  }
+
+  public setDateTime({ date, time, timeUnit, timezone }: {
+    date: string | Date | number;
+    time?: number | null | undefined;
+    timeUnit?: "h" | "m" | "s" | "S";
+    timezone?: TimeZone | number;
+  }) {
+    this.set(date);
+    this.removeTime();
+    if (time != null) {
+      switch (timeUnit) {
+        case "S":
+          this.setMilliseconds(time);
+          break;
+        case "s":
+          this.setSeconds(time);
+          break;
+        case "m":
+          this.setMinutes(time);
+          break;
+        case "h":
+          this.setHours(time);
+          break;
+        default:
+          this.setMinutes(time);
+          break;
+      }
     }
+    if (timezone != null) {
+      this.offset = typeof timezone === "number" ? timezone : parseTimezoneOffset(timezone);
+    }
+    return this;
   }
 
   public getCloneDate() {
@@ -113,79 +188,6 @@ export class DateTime {
 
   public getTime() {
     return this.date.getTime();
-  }
-
-  public set(datetime: string | number | Date | DateTime | null | undefined, reflectOffset?: boolean) {
-    let diff = (this.date.getTimezoneOffset() - this.offset) * 60000;
-    if (datetime == null) {
-      this.date.setTime(Date.now() + diff);
-    } else if (datetime instanceof DateTime) {
-      this.date.setTime(datetime.getTime());
-      this.offset = datetime.getTimezoneOffset();
-    } else {
-      const optimizeDiff = (newOffset: number) => {
-        if (reflectOffset) this.offset = newOffset;
-        else diff = (newOffset - this.date.getTimezoneOffset()) * 60000;
-      };
-      switch (typeof datetime) {
-        case "number":
-          this.date.setTime(datetime + diff);
-          break;
-        case "string":
-          const a = datetime.match(/^(\d{1,4})[-|\/|年]?(\d{1,2}|$)[-|\/|月]?(\d{1,2}|$)[日]?[\s|T]?(\d{1,2}|$)[:]?(\d{1,2}|$)[:]?(\d{1,2}|$)[.]?(\d{0,3}|$)?(.*)/);
-          if (a) {
-            const tz = a[8];
-            if (tz) {
-              const offset = parseTimezoneOffset(tz as TimeZone);
-              optimizeDiff(offset);
-            }
-            this.date.setTime(new Date(Number(a[1]), Number(a[2] || 1) - 1, Number(a[3] || 1), Number(a[4] || 0), Number(a[5] || 0), Number(a[6] || 0), Number(a[7] || 0)).getTime() + diff);
-          } else {
-            const d = new Date(datetime);
-            optimizeDiff(d.getTimezoneOffset());
-            this.date.setTime(d.getTime() + diff);
-          }
-          break;
-        default:
-          optimizeDiff(datetime.getTimezoneOffset());
-          this.date.setTime(datetime.getTime() - diff);
-          break;
-      }
-    }
-    return this;
-  }
-
-  public setDateTime({ date, time, timeUnit, timezone }: {
-    date: string | Date | number;
-    time?: number | null | undefined;
-    timeUnit?: "h" | "m" | "s" | "S";
-    timezone?: TimeZone | number;
-  }) {
-    this.set(date);
-    this.removeTime();
-    if (time != null) {
-      switch (timeUnit) {
-        case "S":
-          this.setMilliseconds(time);
-          break;
-        case "s":
-          this.setSeconds(time);
-          break;
-        case "m":
-          this.setMinutes(time);
-          break;
-        case "h":
-          this.setHours(time);
-          break;
-        default:
-          this.setMinutes(time);
-          break;
-      }
-    }
-    if (timezone != null) {
-      this.offset = typeof timezone === "number" ? timezone : parseTimezoneOffset(timezone);
-    }
-    return this;
   }
 
   public toString(pattern: string = "yyyy-MM-ddThh:mm:ss.SSSt", week?: WeekArray) {
