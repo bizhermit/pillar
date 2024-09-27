@@ -179,6 +179,60 @@ describe("datetime", () => {
       expect(dt.toDateString()).toBe("2024-08-31");
     });
 
+    it("add year", () => {
+      const dt = new DateTime("2024-02-29");
+      dt.addYear(1);
+      expect(dt.toDateString()).toBe("2025-02-28");
+      dt.set("2024-02-29");
+      dt.addYear(2);
+      expect(dt.toDateString()).toBe("2026-02-28");
+      dt.set("2024-02-29");
+      dt.addYear(4);
+      expect(dt.toDateString()).toBe("2028-02-29");
+      dt.set("2024-02-29");
+      dt.addYear(-1);
+      expect(dt.toDateString()).toBe("2023-02-28");
+      dt.set("2024-02-29");
+      dt.addYear(-2);
+      expect(dt.toDateString()).toBe("2022-02-28");
+      dt.set("2024-02-29");
+      dt.addYear(-4);
+      expect(dt.toDateString()).toBe("2020-02-29");
+      dt.set("2024-01-31");
+      dt.addYear(3);
+      expect(dt.toDateString()).toBe("2027-01-31");
+      dt.set("2024-01-31");
+      dt.addYear(-6);
+      expect(dt.toDateString()).toBe("2018-01-31");
+    });
+
+    it("add month", () => {
+      const dt = new DateTime("2024-01-31");
+      dt.addMonth(1);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2024-03-31");
+      dt.addMonth(-1);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2023-12-31");
+      dt.addMonth(2);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2024-04-30");
+      dt.addMonth(-2);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2024-04-30");
+      dt.addMonth(-3);
+      expect(dt.toDateString()).toBe("2024-01-30");
+      dt.set("2024-08-31");
+      dt.addMonth(-6);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2024-01-31");
+      dt.addMonth(2);
+      expect(dt.toDateString()).toBe("2024-03-31");
+      dt.set("2024-01-31");
+      dt.addMonth(3);
+      expect(dt.toDateString()).toBe("2024-04-30");
+    });
+
     it("prev year", () => {
       const dt = new DateTime("2024-02-29");
       dt.setPrevYear();

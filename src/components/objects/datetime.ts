@@ -382,12 +382,16 @@ export class DateTime {
   }
 
   public addYear(num: number) {
+    const d = this.getDate();
     this.setFullYear(this.getFullYear() + num);
+    if (d !== this.getDate()) this.date.setDate(0);
     return this;
   }
 
   public addMonth(num: number) {
+    const d = this.getDate();
     this.setMonth(this.getMonth() + num);
+    if (d !== this.getDate()) this.date.setDate(0);
     return this;
   }
 
@@ -445,31 +449,19 @@ export class DateTime {
   }
 
   public setPrevYear() {
-    const d = this.getDate();
-    this.addYear(-1);
-    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
-    return this;
+    return this.addYear(-1);
   }
 
   public setNextYear() {
-    const d = this.getDate();
-    this.addYear(1);
-    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
-    return this;
+    return this.addYear(1);
   }
 
   public setPrevMonth() {
-    const d = this.getDate();
-    this.addMonth(-1);
-    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
-    return this;
+    return this.addMonth(-1);
   }
 
   public setNextMonth() {
-    const d = this.getDate();
-    this.addMonth(1);
-    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
-    return this;
+    return this.addMonth(1);
   }
 
 }
