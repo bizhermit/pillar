@@ -164,6 +164,7 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
+    pointer-events: none;
 
     >.nav-btn-wrap {
       background: var(--nav-bg);
@@ -202,6 +203,7 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     color: var(--nav-fg);
     box-shadow: 0 1.1px 1px -1px var(--sdw) inset, 1px 0px 1px -1px var(--sdw);
     z-index: 1;
+    pointer-events: all;
   }
 
   .nav-contents {
@@ -225,6 +227,7 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     opacity #{$opacityTransDuration};
     user-select: none;
     z-index: 0;
+    pointer-events: all;
   }
 
   .nav-open {
@@ -388,7 +391,8 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     grid-template-rows: 0fr;
     overflow: hidden;
     padding-left: var(---nav-menu-nest, 0);
-    transition: grid-template-rows 0.3s, padding-left #{$transDuration};
+    transition: grid-template-rows 0.3s,
+    padding-left #{$transDuration};
   }
 
   .nav-menu-check {
