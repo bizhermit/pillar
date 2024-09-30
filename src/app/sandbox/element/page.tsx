@@ -637,7 +637,10 @@ export default function Home() {
               gap: 4,
             }}
           >
-            <FormButton type="submit">
+            <FormButton
+              type="submit"
+            // preventObserveError
+            >
               submit
             </FormButton>
             <FormButton type="reset">

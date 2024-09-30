@@ -470,28 +470,13 @@ export const useFormValue = <T extends any>(name: string) => {
   const form = use(FormContext);
   const [value, setVal] = useState<T | undefined>(() => form.getValue(name));
 
-  const set = (value: T) => {
-    form.setValue(name, value);
-  };
-
   useLayoutEffect(() => {
-    const { unmount } = form.mount({
+    const { unmount } = form.mountObserver({
       id,
-      name,
-      get: () => undefined as any,
-      set: () => { },
-      reset: () => { },
-      hasChanged: () => false,
-      getState: () => null,
-      changeRefs: () => {
-        setVal(form.getValue<T>(name));
+      changeValue: (params) => {
+        if (params.name !== name) return;
+        setVal(form.getValue(name));
       },
-      dataItem: {
-        type: "any",
-        refs: [name],
-      },
-      preventCollectForm: true,
-      noInput: true,
     });
     setVal(form.getValue(name));
     return () => {
@@ -501,7 +486,32 @@ export const useFormValue = <T extends any>(name: string) => {
 
   return {
     value,
-    setValue: set,
+    setValue: (value: T) => form.setValue(name, value),
     initialized: form.process !== "init",
-  };
+  } as const;
+};
+
+export const useFormError = () => {
+  const id = useId();
+  const form = use(FormContext);
+  const [error, setError] = useState(false);
+
+  useLayoutEffect(() => {
+    const { unmount } = form.mountObserver({
+      id,
+      changeValue: () => {
+        setError(form.hasError());
+      },
+    });
+    return () => {
+      unmount();
+    };
+  }, []);
+
+  return {
+    disabled: form.disabled,
+    process: form.process,
+    processing: form.processing,
+    error,
+  } as const;
 };

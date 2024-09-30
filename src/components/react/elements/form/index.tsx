@@ -6,6 +6,8 @@ import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 import { LoadingBar } from "../loading";
 
+type FormProcessState = "init" | "submit" | "reset" | "" | "nothing";
+
 type FormItemMountProps = {
   id: string;
   name: string | undefined;
@@ -22,7 +24,10 @@ type FormItemMountProps = {
   autoFocus?: boolean;
 };
 
-type FormProcessState = "init" | "submit" | "reset" | "" | "nothing";
+type FormObserveItemProps = {
+  id: string;
+  changeValue?: (params: { name: string | undefined; }) => void;
+};
 
 type FormContextProps = {
   bind: { [v: string]: any };
@@ -36,6 +41,9 @@ type FormContextProps = {
   mount: (props: FormItemMountProps) => {
     unmount: () => void;
   };
+  mountObserver: (props: FormObserveItemProps) => {
+    unmount: () => void;
+  },
   getValue: <T>(name: string) => T;
   setValue: (name: string, value: any, edit?: boolean) => void;
 };
@@ -51,6 +59,11 @@ export const FormContext = createContext<FormContextProps>({
   },
   change: () => { },
   mount: () => {
+    return {
+      unmount: () => { },
+    };
+  },
+  mountObserver: () => {
     return {
       unmount: () => { },
     };
@@ -124,6 +137,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     if (id == null) return undefined;
     return items.current[id];
   };
+
+  const observers = useRef<{ [id: string]: FormObserveItemProps }>({});
 
   const hasError = () => {
     return Object.keys(items.current).some(id => items.current[id].getState()?.type === "e");
@@ -273,13 +288,17 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       hasError,
       change: (id) => {
         const self = items.current[id];
-        if (!self.name) return;
-        const refs = [self.name, ...(self?.dataItem.refs ?? [])];
-        Object.keys(items.current).forEach(iid => {
-          if (iid === id) return;
-          const item = items.current[iid];
-          if (!item.dataItem.refs?.some(ref => refs.some(r => ref === r))) return;
-          item.changeRefs(self);
+        if (self.name) {
+          const refs = [self.name, ...(self?.dataItem.refs ?? [])];
+          Object.keys(items.current).forEach(iid => {
+            if (iid === id) return;
+            const item = items.current[iid];
+            if (!item.dataItem.refs?.some(ref => refs.some(r => ref === r))) return;
+            item.changeRefs(self);
+          });
+        }
+        Object.keys(observers.current).forEach(oid => {
+          observers.current[oid].changeValue?.({ name: self.name });
         });
       },
       mount: (p) => {
@@ -287,6 +306,14 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
         return {
           unmount: () => {
             delete items.current[p.id];
+          },
+        };
+      },
+      mountObserver: (p) => {
+        observers.current[p.id] = p;
+        return {
+          unmount: () => {
+            delete observers.current[p.id];
           },
         };
       },
