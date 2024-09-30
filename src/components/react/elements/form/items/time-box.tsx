@@ -399,9 +399,10 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
+        data-disabled={fi.disabled}
+        data-invalid={fi.iptAria["aria-invalid"]}
       >
         {fi.dataItem.mode !== "ms" &&
           <>
@@ -416,13 +417,13 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               maxLength={2}
               autoComplete="off"
               inputMode="numeric"
-              data-invalid={fi.attrs["data-invalid"]}
               defaultValue={fi.value?.time?.getHours()}
               onClick={() => click("h")}
               onChange={changeH}
               onKeyDown={keydownH}
               onFocus={focus}
               aria-haspopup="dialog"
+              {...fi.iptAria}
             />
             <span
               className="ipt-sep"
@@ -443,7 +444,6 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           maxLength={2}
           autoComplete="off"
           inputMode="numeric"
-          data-invalid={fi.attrs["data-invalid"]}
           defaultValue={(() => {
             const m = fi.value?.time?.getMinutes(includeHours);
             return m == null ? undefined : includeHours ? m : `00${m}`.slice(-2);
@@ -454,6 +454,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           onFocus={focus}
           data-last={fi.dataItem.mode === "hm" ? "" : undefined}
           aria-haspopup="dialog"
+          {...fi.iptAria}
         />
         {fi.dataItem.mode !== "hm" &&
           <>
@@ -473,7 +474,6 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               maxLength={2}
               autoComplete="off"
               inputMode="numeric"
-              data-invalid={fi.attrs["data-invalid"]}
               defaultValue={(() => {
                 const s = fi.value?.time?.getSeconds();
                 return s == null ? undefined : `00${s}`.slice(-2);
@@ -484,6 +484,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               onFocus={focus}
               data-last=""
               aria-haspopup="dialog"
+              {...fi.iptAria}
             />
           </>
         }

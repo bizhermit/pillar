@@ -655,10 +655,11 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         onBlur={blurWrap}
       >
         <div
-          {...fi.attrs}
           className="ipt-field"
           onClick={() => click("y")}
           onBlur={(e) => blur(e, "y")}
+          data-disabled={fi.disabled}
+          data-invalid={fi.iptAria["aria-invalid"]}
         >
           <input
             ref={yref}
@@ -676,7 +677,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             onChange={changeY}
             onKeyDown={keydownY}
             onFocus={focus}
-            data-invalid={fi.attrs["data-invalid"]}
+            {...fi.iptAria}
             aria-haspopup="listbox"
           />
           {fi.showButtons &&
@@ -709,10 +710,11 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         </div>
         <span className="ipt-sep">年</span>
         <div
-          {...fi.attrs}
           className="ipt-field"
           onClick={() => click("m")}
           onBlur={(e) => blur(e, "m")}
+          data-disabled={fi.disabled}
+          data-invalid={fi.iptAria["aria-invalid"]}
         >
           <input
             ref={mref}
@@ -733,7 +735,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             onChange={changeM}
             onKeyDown={keydownM}
             onFocus={focus}
-            data-invalid={fi.attrs["data-invalid"]}
+            {...fi.iptAria}
             aria-haspopup="listbox"
           />
           {fi.showButtons &&
@@ -768,10 +770,11 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         {fi.dataItem.type === "date" &&
           <>
             <div
-              {...fi.attrs}
               className="ipt-field"
               onClick={() => click("d")}
               onBlur={(e) => blur(e, "d")}
+              data-disabled={fi.disabled}
+              data-invalid={fi.iptAria["aria-invalid"]}
             >
               <input
                 ref={dref}
@@ -788,7 +791,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                 onChange={changeD}
                 onKeyDown={keydownD}
                 onFocus={focus}
-                data-invalid={fi.attrs["data-invalid"]}
+                {...fi.iptAria}
                 aria-haspopup="listbox"
               />
               {fi.showButtons &&

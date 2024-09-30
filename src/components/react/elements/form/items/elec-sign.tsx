@@ -233,7 +233,6 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-elec-sign", props.className)}
       >
         <canvas
@@ -245,6 +244,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
           height={height || 200}
           tabIndex={fi.disabled ? undefined : (fi.tabIndex ?? 0)}
           autoFocus={fi.autoFocus}
+          {...fi.iptAria}
         />
         {fi.editable &&
           <div className="ipt-elec-sign-btns">

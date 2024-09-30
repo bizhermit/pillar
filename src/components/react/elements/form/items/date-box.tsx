@@ -356,9 +356,10 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
+        data-disabled={fi.disabled}
+        data-invalid={fi.iptAria["aria-invalid"]}
       >
         <input
           ref={yref}
@@ -377,7 +378,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           onChange={changeY}
           onKeyDown={keydownY}
           onFocus={focus}
-          data-invalid={fi.attrs["data-invalid"]}
+          {...fi.iptAria}
           aria-haspopup="dialog"
         />
         <span
@@ -406,7 +407,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           onChange={changeM}
           onKeyDown={keydownM}
           onFocus={focus}
-          data-invalid={fi.attrs["data-invalid"]}
+          {...fi.iptAria}
           data-last={fi.dataItem.type === "month" ? "" : undefined}
           aria-haspopup="dialog"
         />
@@ -434,7 +435,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
               onChange={changeD}
               onKeyDown={keydownD}
               onFocus={focus}
-              data-invalid={fi.attrs["data-invalid"]}
+              {...fi.iptAria}
               data-last=""
               aria-haspopup="dialog"
             />

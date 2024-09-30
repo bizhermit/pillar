@@ -326,10 +326,10 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
-        data-readonly={fi.attrs["data-readonly"] || loading}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
+        data-disabled={fi.disabled}
+        data-invalid={fi.iptAria["aria-invalid"]}
       >
         <input
           ref={iref}
@@ -341,11 +341,11 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           tabIndex={fi.tabIndex}
           autoFocus={fi.autoFocus}
           autoComplete="off"
-          data-invalid={fi.attrs["data-invalid"]}
           onClick={clickInput}
           onKeyDown={keydown}
           onChange={change}
           aria-haspopup="listbox"
+          {...fi.iptAria}
         />
         {fi.mountValue &&
           <>

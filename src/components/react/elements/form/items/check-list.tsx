@@ -144,7 +144,6 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-items", props.className)}
         ref={ref}
       >
@@ -170,7 +169,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
                 tabIndex={fi.tabIndex}
                 autoFocus={i === 0 && fi.autoFocus}
                 checked={!empty && selected}
-                data-invalid={fi.attrs["data-invalid"]}
+                {...fi.iptAria}
                 onChange={e => {
                   if (readonly || disabled || loading) return;
                   const arr = [...fi.valueRef.current ?? []];
