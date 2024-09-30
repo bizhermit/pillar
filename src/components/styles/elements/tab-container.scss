@@ -37,13 +37,13 @@
       transition: background-color .2s;
     }
 
-    &[data-current="true"] {
+    &[aria-selected="true"] {
       &::before {
         background: var(--c-primary);
       }
     }
 
-    &:not([data-current="true"]):not([data-disabled="true"]) {
+    &:not([aria-selected="true"]):not([aria-disabled="true"]) {
       cursor: pointer;
 
       @include mixins.hover {
@@ -69,13 +69,13 @@
     opacity: 0;
     transition: opacity .2s, display .2s allow-discrete, overlay .2s allow-discrete;
 
-    &[data-current="true"] {
+    &[aria-expanded="true"] {
       display: unset;
       opacity: 1;
       z-index: 1;
     }
 
-    &:not([data-current="true"]) {
+    &:not([aria-expanded="true"]) {
       position: absolute;
       left: 0;
       top: 0;
@@ -85,7 +85,7 @@
   @starting-style {
 
     .tab-cont {
-      &[data-current="true"] {
+      &[aria-expanded="true"] {
         opacity: 0;
         z-index: 1;
       }

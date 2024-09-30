@@ -2,7 +2,7 @@
 
 import { type HTMLAttributes, type ReactNode, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { clone } from "../../objects";
-import { joinClassNames } from "./utilities";
+import { ifStr, joinClassNames } from "./utilities";
 
 type TabContainerHookConnectionParams = {
   get: () => string;
@@ -132,6 +132,7 @@ export const TabContainer = ({
     >
       <div
         ref={tabsRef}
+        role="tablist"
         className="tabs"
       >
         {$children.map(c => {
@@ -139,11 +140,12 @@ export const TabContainer = ({
             <div
               key={c.key}
               className="tab-item"
-              data-key={c.key}
-              data-current={c.key === key}
+              role="tab"
+              aria-label={(c.props as TabContentProps)["aria-label"] ?? ifStr((c.props as TabContentProps).label)}
+              aria-selected={c.key === key}
+              aria-disabled={disabled}
               tabIndex={0}
               onClick={() => select(c.key!)}
-              data-disabled={disabled}
               onKeyDown={e => {
                 if (e.key === "Enter" || e.key === " ") {
                   select(c.key!);
@@ -164,6 +166,7 @@ export const TabContainer = ({
             keepMount,
             className,
             default: defaultSelect,
+            "aria-label": _,
             ...cprops
           } = c.props as TabContentProps;
 
@@ -172,10 +175,10 @@ export const TabContainer = ({
               {...cprops}
               key={c.key}
               className={joinClassNames("tab-cont", className)}
-              data-current={key === c.key}
+              aria-expanded={key === c.key}
               onTransitionEnd={e => {
                 if (e.currentTarget !== e.target || e.propertyName === "display") return;
-                if (e.currentTarget.getAttribute("data-current") === "true") return;
+                if (e.currentTarget.getAttribute("aria-expanded") === "true") return;
                 switchMount({ action: "unmount", key: c.key!, keepMount });
               }}
             >
