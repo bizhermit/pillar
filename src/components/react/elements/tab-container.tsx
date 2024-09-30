@@ -174,6 +174,7 @@ export const TabContainer = ({
             <div
               {...cprops}
               key={c.key}
+              role="tabpanel"
               className={joinClassNames("tab-cont", className)}
               data-current={key === c.key}
               onTransitionEnd={e => {
