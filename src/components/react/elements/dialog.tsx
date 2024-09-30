@@ -346,9 +346,8 @@ export const Dialog = ({
         }
         props.onKeyDown?.(e);
       }}
+      aria-modal={!modeless}
       data-pos={showOpts?.anchor != null}
-      data-modal={modeless ? undefined : ""}
-      data-modeless={modeless ? "" : undefined}
       data-mobile={mobile ? "" : undefined}
       data-transparent={transparent ? "" : undefined}
       popover={modeless ? "manual" : undefined}
