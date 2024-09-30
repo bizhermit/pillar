@@ -557,14 +557,14 @@ export const DatePicker = (props: DatePickerProps) => {
       const selectable = overMaxDate(cursorDate) && !reachedMaxDate(cursorDate);
 
       return (
-        <div
+        <button
           {...attrs}
           key={key}
           className="ipt-dp-cell"
-          role="button"
+          type="button"
           aria-current={selected}
-          aria-disabled={!selectable}
-          data-today={isToday(cursorDate)}
+          disabled={!selectable}
+          data-target={isToday(cursorDate)}
           onClick={!selectable ? undefined : () => {
             const date = parseDate(str)!;
             props.onSelect?.({
@@ -574,7 +574,7 @@ export const DatePicker = (props: DatePickerProps) => {
           }}
         >
           {Month.ja[cursorDate.getMonth()]}
-        </div>
+        </button>
       );
     };
 
@@ -612,13 +612,14 @@ export const DatePicker = (props: DatePickerProps) => {
       const selectable = overMaxDate(cursorDate) && !reachedMaxDate(cursorDate);
 
       return (
-        <div
+        <button
           {...attrs}
           key={key}
           className="ipt-dp-cell"
+          type="button"
           aria-current={selected}
-          aria-disabled={!selectable}
-          data-today={isToday(cursorDate)}
+          disabled={!selectable}
+          data-target={isToday(cursorDate)}
           onClick={!selectable ? undefined : () => {
             const date = parseDate(str)!;
             props.onSelect?.({
@@ -632,7 +633,7 @@ export const DatePicker = (props: DatePickerProps) => {
           }}
         >
           {cursorDate.getDate()}
-        </div>
+        </button>
       );
     };
 

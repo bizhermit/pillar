@@ -615,19 +615,21 @@ export const TimePicker = (props: TimePickerProps) => {
       const selectable = overMaxTime(hour) && !reachedMaxTime(hour);
 
       return (
-        <div
+        <button
           {...attrs}
           key={hour}
           className={pickerCellClassName}
-          data-selected={hour === hNum}
-          data-current={hour === curH}
-          data-disabled={!selectable}
+          role="listitem"
+          type="button"
+          aria-current={hour === hNum}
+          data-target={hour === curH}
+          disabled={!selectable}
           onClick={() => {
             setDispTime({ h: hour });
           }}
         >
           {hour}
-        </div>
+        </button>
       );
     };
 
@@ -660,19 +662,21 @@ export const TimePicker = (props: TimePickerProps) => {
       const selectable = overMinTime(minute) && !reachedMaxTime(minute);
 
       return (
-        <div
+        <button
           {...attrs}
           key={minute}
           className={pickerCellClassName}
-          data-selected={minute === mNum}
-          data-current={minute === curM}
-          data-disabled={!selectable}
+          role="listitem"
+          type="button"
+          aria-current={minute === mNum}
+          data-target={minute === curM}
+          disabled={!selectable}
           onClick={() => {
             setDispTime({ m: minute });
           }}
         >
           {`00${minute}`.slice(-2)}
-        </div>
+        </button>
       );
     };
 
@@ -704,19 +708,21 @@ export const TimePicker = (props: TimePickerProps) => {
       const selectable = overMinTime(second) && !reachedMaxTime(second);
 
       return (
-        <div
+        <button
           {...attrs}
           key={second}
           className={pickerCellClassName}
-          data-selected={second === sNum}
-          data-current={second === curS}
-          data-disabled={!selectable}
+          role="listitem"
+          type="button"
+          aria-current={second === sNum}
+          data-target={second === curS}
+          disabled={!selectable}
           onClick={() => {
             setDispTime({ s: second });
           }}
         >
           {`00${second}`.slice(-2)}
-        </div>
+        </button>
       );
     };
 
@@ -746,7 +752,7 @@ export const TimePicker = (props: TimePickerProps) => {
   useEffect(() => {
     if (props.showed === false) return;
     wref.current.querySelectorAll(`.${pickerListClassName}`).forEach(list => {
-      const elem = list.querySelector(`.${pickerCellClassName}[data-selected="true"]`);
+      const elem = list.querySelector(`.${pickerCellClassName}[aria-current="true"]`);
       if (elem == null) return;
       elem.scrollIntoView({ block: "center" });
     });
@@ -763,19 +769,28 @@ export const TimePicker = (props: TimePickerProps) => {
       <div className="ipt-tp-main">
         {mode !== "ms" &&
           <>
-            <div className={pickerListClassName}>
+            <div
+              className={pickerListClassName}
+              role="listbox"
+            >
               {hourCells}
             </div>
             <span className="ipt-sep">:</span>
           </>
         }
-        <div className={pickerListClassName}>
+        <div
+          className={pickerListClassName}
+          role="listbox"
+        >
           {minuteCells}
         </div>
         {mode !== "hm" &&
           <>
             <span className="ipt-sep">:</span>
-            <div className={pickerListClassName}>
+            <div
+              className={pickerListClassName}
+              role="listbox"
+            >
               {secondCells}
             </div>
           </>

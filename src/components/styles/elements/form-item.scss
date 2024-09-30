@@ -455,13 +455,16 @@
     user-select: none;
     border-radius: 2px;
     transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+    font-family: inherit;
+    background: transparent;
+    border: none;
 
-    &[aria-disabled="true"] {
+    &:disabled {
       opacity: 0.3;
       cursor: not-allowed;
     }
 
-    &:not([aria-disabled="true"]) {
+    &:not(:disabled) {
       cursor: pointer;
 
       @include mixins.hover {
@@ -475,14 +478,14 @@
       color: var(--c-primary_)
     }
 
-    &[data-today="true"] {
+    &[data-target="true"] {
       border: 1px solid var(--ipt-bd);
     }
 
     &:is([data-prev], [data-next]) {
       opacity: 0.6;
 
-      &[aria-disabled="true"] {
+      &:disabled {
         opacity: 0.2;
       }
     }
@@ -963,22 +966,26 @@
     cursor: pointer;
     transition: background-color 0.1s, color 0.1s;
     border-radius: 2px;
+    font-size: inherit;
+    font-family: inherit;
+    border: none;
+    background: transparent;
 
     @include mixins.hover {
       background: var(--ipt-fg);
       color: var(--ipt-bg);
     }
 
-    &[data-selected="true"] {
+    &[aria-current="true"] {
       color: var(--c-primary_);
       background: var(--c-primary);
     }
 
-    &[data-disabled="true"] {
-      opacity: 0.6;
+    &:disabled {
+      opacity: .6;
     }
 
-    &[data-current="true"] {
+    &[data-target="true"] {
       border: 1px solid var(--ipt-bd);
     }
   }

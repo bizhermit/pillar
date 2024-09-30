@@ -104,6 +104,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           <button
             className="ipt-btn"
             type="button"
+            tabIndex={-1}
             disabled={!fi.editable}
             onClick={toggle}
           >

@@ -175,7 +175,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   const findSelectedOrFirstItemElem = () => {
     const pElem = iref.current.parentElement;
     if (!pElem) return;
-    const elem = pElem.querySelector(`dialog .${listItemClassName}[data-selected="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`);
+    const elem = pElem.querySelector(`dialog .${listItemClassName}[aria-current="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`);
     if (!elem) return;
     return elem as HTMLDivElement;
   };
@@ -388,7 +388,10 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           className="ipt-dialog ipt-dialog-list"
         >
           <div className="ipt-mask" data-show={loading} />
-          <div className="ipt-list">
+          <div
+            className="ipt-list"
+            role="listbox"
+          >
             {$emptyItem &&
               <ListItem
                 loading={loading}
@@ -458,7 +461,7 @@ const ListItem = ({
 }: ListItemProps) => {
   const selected = (!empty && equals(value, currentValue)) || (empty ? equals(initFocusValue, value) : false);
 
-  const keydown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const keydown = (e: KeyboardEvent<HTMLButtonElement>) => {
     e.preventDefault();
     switch (e.key) {
       case "Enter":
@@ -491,15 +494,17 @@ const ListItem = ({
   };
 
   return (
-    <div
+    <button
       className={listItemClassName}
+      type="button"
+      role="listitem"
       tabIndex={-1}
       autoFocus={selected}
-      data-selected={selected}
+      aria-current={selected}
       onClick={onSelect}
       onKeyDown={keydown}
     >
       {children}
-    </div>
+    </button>
   );
 };
