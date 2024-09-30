@@ -76,7 +76,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
   const change = (e: ChangeEvent<HTMLInputElement>) => {
     if (!fi.editable) return;
     const file = e.currentTarget.files?.item(0);
-    if (fi.form.state !== "nothing" && fileName) {
+    if (fi.form.process !== "nothing" && fileName) {
       fi.form.setValue(fileName, undefined, true);
     }
     fi.set({ value: file, edit: true });
@@ -84,7 +84,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
 
   const clear = () => {
     if (!fi.editable || empty) return;
-    if (fi.form.state !== "nothing" && fileName) {
+    if (fi.form.process !== "nothing" && fileName) {
       fi.form.setValue(fileName, undefined, true);
     }
     fi.clear(true);
