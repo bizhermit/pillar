@@ -25,6 +25,7 @@ declare namespace DataItem {
         T extends "date" ? string :
         T extends "month" ? string :
         T extends "time" ? number :
+        T extends "datetime" ? import("../objects/datetime").DateTime :
         T extends "file" ? File :
         T extends "array" ? Array<D["item"] extends Array<$object> ? Props<D["item"]> : ValueType<D["item"]>> :
         T extends "struct" ? D["item"] extends Array<$object> ? Props<D["item"]> : never :
@@ -42,6 +43,10 @@ declare namespace DataItem {
     fullName: string;
   };
 
+  type Env = {
+    tzOffset: number;
+  };
+
   type OmitableProps = "name";
 
   type ArgObject<D extends $object> = PickPartial<D, OmitableProps>;
@@ -52,6 +57,7 @@ declare namespace DataItem {
     siblings: Readonlyable<Array<ArgObject<$object>>> | null | undefined;
     dataItem: ArgObject<D>;
     fullName: string;
+    env: Env;
   };
 
   type Validation<D extends $object, V = ValueType<D>> = (props: ValidationProps<D, V>) => (ValidationResult | null | undefined);
@@ -61,6 +67,7 @@ declare namespace DataItem {
     dataItem: ArgObject<D>;
     fullName: string;
     data: { [v: string | number]: any };
+    env: Env;
   };
 
   type ParseResult<V> = [parsedValue: V | NullValue, result?: ValidationResult];
@@ -155,8 +162,8 @@ declare namespace DataItem {
   type $date = $ & {
     type: "date";
     validations?: Array<Validation<$date, Date>>;
-    min?: string;
-    max?: string;
+    min?: string | number | Date | import("../objects/datetime").DateTime;
+    max?: string | number | Date | import("../objects/datetime").DateTime;
     pair?: {
       name: string;
       position: "before" | "after";
@@ -168,8 +175,8 @@ declare namespace DataItem {
   type $month = $ & {
     type: "month";
     validations?: Array<Validation<$month, Date>>;
-    min?: string;
-    max?: string;
+    min?: string | number | Date | import("../objects/datetime").DateTime;
+    max?: string | number | Date | import("../objects/datetime").DateTime;
     pair?: {
       name: string;
       position: "before" | "after";
@@ -182,8 +189,8 @@ declare namespace DataItem {
     type: "time";
     mode?: "hms" | "hm" | "ms";
     validations?: Array<Validation<$time>>;
-    min?: number;
-    max?: number;
+    min?: number | Date | string | import("../objects/datetime").DateTime;
+    max?: number | Date | string | import("../objects/datetime").DateTime;
     pair?: {
       name: string;
       position: "before" | "after";
@@ -192,6 +199,14 @@ declare namespace DataItem {
     hourStep?: number;
     minuteStep?: number;
     secondStep?: number;
+  };
+
+  type $datetime = $ & {
+    type: "datetime";
+    validations?: Array<Validation<$datetime>>;
+    date: $date;
+    time: $time;
+    tz?: import("../objects/datetime").TimeZone | number;
   };
 
   type $file = $ & {
@@ -226,6 +241,7 @@ declare namespace DataItem {
     | $date
     | $month
     | $time
+    | $datetime
     | $file
     ;
 

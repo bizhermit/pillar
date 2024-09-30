@@ -38,7 +38,11 @@ type FormItemCoreArgs<
   focus: () => void;
 };
 
-export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V>({
+const env: DataItem.Env = {
+  tzOffset: new Date().getTimezoneOffset(),
+};
+
+export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V, DV extends any = V>({
   hook,
   name,
   label,
@@ -56,7 +60,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   onChange,
   onEdit,
   ...props
-}: FormItemOptions<D, V, any>,
+}: FormItemOptions<D, V, any, DV>,
   cp: FormItemCoreArgs<SD, D, V, IV>
 ) => {
   const id = useId();
@@ -123,6 +127,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       dataItem,
       siblings: getSiblings(),
       fullName: dataItem.name || "",
+      env,
     });
   };
 
@@ -141,6 +146,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       dataItem,
       fullName: dataItem.name || "",
       data: form.bind,
+      env,
     }, { bind: true });
     return {
       val,
@@ -162,6 +168,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       dataItem,
       fullName: dataItem.name || "",
       siblings: getSiblings(),
+      env,
     });
   };
   const [dyanmicRequired, setDyanmicRequired] = useState(getDynamicRequired);
@@ -213,6 +220,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
         dataItem,
         fullName: dataItem.name || "",
         data: form.bind,
+        env,
       }, { bind: bind ?? false });
       v = val;
       parseRes = msg;
@@ -420,7 +428,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       "data-changed": mountValue,
     },
     // message: msg,
-    messageComponent: (!hideMessage && msg && !$disabled &&
+    messageComponent: (!hideMessage && msg?.type === "e" && !$disabled &&
       <span
         className="ipt-msg"
         data-state={msg.type}

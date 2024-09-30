@@ -3,12 +3,13 @@ import { parseDate } from "../../objects/date";
 const defaultLabel = "値";
 
 export const $dateParse = ({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$date | DataItem.$month>): DataItem.ParseResult<Date> => {
+  const label = dataItem.label || dataItem.name || defaultLabel;
+
   if (Array.isArray(value) && value.length > 1) {
-    return [undefined, { type: "e", code: "multiple", fullName, msg: `${dataItem.label || defaultLabel}が複数設定されています。` }];
+    return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];
   }
   if (value == null || value === "") return [undefined];
 
-  const label = dataItem.label || dataItem.name || defaultLabel;
   try {
     if (value instanceof Date) {
       if (dataItem.type === "month") value.setDate(1);

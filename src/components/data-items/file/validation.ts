@@ -5,7 +5,7 @@ const defaultLabel = "ファイル";
 export const $fileValidations = (dataItem: DataItem.ArgObject<DataItem.$file>): Array<DataItem.Validation<DataItem.$file>> => {
   const validations: Array<DataItem.Validation<DataItem.$file>> = [];
 
-  const label = dataItem.label || defaultLabel;
+  const label = dataItem.label || dataItem.name || defaultLabel;
 
   validations.push(({ value, fullName }) => {
     if (value == null || value instanceof File) return undefined;

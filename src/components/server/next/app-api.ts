@@ -22,6 +22,7 @@ export const apiMethodHandler = <
   Res extends Readonlyable<{ [v: string]: any }> | void
 >(process: (context: {
   req: NextRequest;
+  env: DataItem.Env;
   getParams: <$Req extends Readonlyable<Array<DataItem.$object>> = Req>(dataItems: $Req) => Promise<DataItem.Props<$Req>>;
   addValidationResults: (results: Array<DataItem.ValidationResult>) => void;
   hasValidationError: () => boolean;
@@ -39,8 +40,13 @@ export const apiMethodHandler = <
     const validationResults: Array<DataItem.ValidationResult> = [];
 
     try {
+      const env: DataItem.Env = {
+        tzOffset: Number(req.headers.get("tz-offset") || new Date().getTimezoneOffset()),
+      };
+
       const data = await process({
         req,
+        env,
         getParams: async (dataItems) => {
           const { searchParams } = new URL(req.url);
           const queryParams: { [v: string]: any } = {};
@@ -67,8 +73,8 @@ export const apiMethodHandler = <
             ...bodyParams,
           };
 
-          validationResults.push(...parseBasedOnDataItem(p, dataItems));
-          validationResults.push(...validationBasedOnDataItem(p, dataItems));
+          validationResults.push(...parseBasedOnDataItem(p, dataItems, env));
+          validationResults.push(...validationBasedOnDataItem(p, dataItems, env));
 
           return p as DataItem.Props<typeof dataItems>;
         },

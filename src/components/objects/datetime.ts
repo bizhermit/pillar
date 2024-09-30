@@ -1,8 +1,10 @@
+
 export type TimeZone =
   | "Z"
   | "UTC"
   | "Asia/Tokyo"
   | "America/Los_Angeles"
+  | "America/Argentina/Buenos_Aires"
   | `+${number}:${number}`
   | `+${number}${number}`
   | `-${number}:${number}`
@@ -16,6 +18,7 @@ export const parseTimezoneOffset = (tz: TimeZone) => {
     case "UTC": return 0;
     case "Asia/Tokyo": return -540;
     case "America/Los_Angeles": return 480;
+    case "America/Argentina/Buenos_Aires": return 180;
     default:
       throw new Error(`not supported timezone: [${tz}]`);
   }
@@ -48,17 +51,106 @@ export namespace Week {
 
 type WeekArray = [string, string, string, string, string, string, string];
 
+const env_tz = process.env.TZ?.trim() as TimeZone | undefined;
+const env_offset = env_tz ? parseTimezoneOffset(env_tz) : new Date().getTimezoneOffset();
+
 export class DateTime {
 
   private date: Date;
   private offset: number;
 
-  constructor(datetime?: string | number | Date | DateTime | null | undefined) {
+  constructor(datetime?: string | number | Date | DateTime | null | undefined, timezone?: number | TimeZone) {
     this.date = new Date();
     this.offset = this.date.getTimezoneOffset();
-    if (datetime != null) {
-      this.set(datetime, true);
+    this.set(datetime, timezone ?? env_offset);
+  }
+
+  public set(datetime: string | number | Date | DateTime | null | undefined, timezone?: number | TimeZone) {
+    const offset = (() => {
+      if (timezone == null) return this.offset;
+      if (typeof timezone === "number") return timezone;
+      return parseTimezoneOffset(timezone);
+    })();
+
+    if (datetime == null) {
+      this.date.setTime(Date.now() - (offset - this.date.getTimezoneOffset()) * 60000);
+    } else if (datetime instanceof DateTime) {
+      this.date.setTime(datetime.getTime() - (- datetime.getTimezoneOffset()) * 60000);
+    } else if (datetime instanceof Date) {
+      this.date.setTime(datetime.getTime() - (offset - datetime.getTimezoneOffset()) * 60000);
+    } else {
+      if (typeof datetime === "number") {
+        this.date.setTime(datetime + this.date.getTimezoneOffset() * 60000);
+      } else {
+        const a = datetime.match(/^(\d{1,4})[-|\/|年]?(\d{1,2}|$)[-|\/|月]?(\d{1,2}|$)[日]?[\s|T]?(\d{1,2}|$)[:]?(\d{1,2}|$)[:]?(\d{1,2}|$)[.]?(\d{0,3}|$)?(.*)/);
+        if (a) {
+          const tz = a[8];
+          const d = new Date(
+            Number(a[1]),
+            Number(a[2] || 1) - 1,
+            Number(a[3] || 1),
+            Number(a[4] || 0),
+            Number(a[5] || 0),
+            Number(a[6] || 0),
+            Number(a[7] || 0)
+          );
+          if (!tz) {
+            this.date.setTime(d.getTime());
+          } else {
+            this.date.setTime(d.getTime() - (offset - parseTimezoneOffset(tz as TimeZone)) * 60000);
+          }
+        } else {
+
+        }
+      }
     }
+    this.offset = offset;
+    return this;
+  }
+
+  public setDateTime({ date, time, timeUnit, timezone }: {
+    date: string | Date | number;
+    time?: number | null | undefined;
+    timeUnit?: "h" | "m" | "s" | "S";
+    timezone?: TimeZone | number;
+  }) {
+    this.set(date);
+    this.removeTime();
+    if (time != null) {
+      switch (timeUnit) {
+        case "S":
+          this.setMilliseconds(time);
+          break;
+        case "s":
+          this.setSeconds(time);
+          break;
+        case "m":
+          this.setMinutes(time);
+          break;
+        case "h":
+          this.setHours(time);
+          break;
+        default:
+          this.setMinutes(time);
+          break;
+      }
+    }
+    if (timezone != null) {
+      this.offset = typeof timezone === "number" ? timezone : parseTimezoneOffset(timezone);
+    }
+    return this;
+  }
+
+  public getCloneDate() {
+    return new Date(this.date.getTime());
+  }
+
+  public static timezoneOffset() {
+    return new Date().getTimezoneOffset();
+  }
+
+  public static timezone() {
+    return parseOffsetString(DateTime.timezoneOffset());
   }
 
   public getTimezoneOffset() {
@@ -66,6 +158,7 @@ export class DateTime {
   }
 
   public setTimezoneOffset(offset: number) {
+    if (this.offset === offset) return this;
     const diff = (this.offset - offset) * 60000;
     this.offset = offset;
     this.date.setTime(this.date.getTime() + diff);
@@ -89,42 +182,16 @@ export class DateTime {
     return this.replaceTimezoneOffset(parseTimezoneOffset(tz));
   }
 
+  public setDefaultTimezone() {
+    this.setTimezoneOffset(this.date.getTimezoneOffset());
+  }
+
   public getTime() {
     return this.date.getTime();
   }
 
-  public set(datetime: string | number | Date | DateTime | null | undefined, resetOffset?: boolean) {
-    let diff = (this.date.getTimezoneOffset() - this.offset) * 60000;
-    if (datetime == null) {
-      this.date.setTime(Date.now() + diff);
-    } else if (datetime instanceof DateTime) {
-      this.date.setTime(datetime.getTime());
-      this.offset = datetime.getTimezoneOffset();
-    } else {
-      switch (typeof datetime) {
-        case "number":
-          this.date.setTime(datetime + diff);
-          break;
-        case "string":
-          const a = datetime.match(/^(\d{1,4})[-|\/|年]?(\d{1,2}|$)[-|\/|月]?(\d{1,2}|$)[日]?[\s|T]?(\d{1,2}|$)[:]?(\d{1,2}|$)[:]?(\d{1,2}|$)[.]?(\d{0,3}|$)?(.*)/);
-          if (a) {
-            const tz = a[8];
-            if (tz) {
-              const offset = parseTimezoneOffset(tz as TimeZone);
-              if (resetOffset) this.offset = offset;
-              else diff = (offset - this.date.getTimezoneOffset()) * 60000;
-            }
-            this.date.setTime(new Date(Number(a[1]), Number(a[2] || 1) - 1, Number(a[3] || 1), Number(a[4] || 0), Number(a[5] || 0), Number(a[6] || 0), Number(a[7] || 0)).getTime() + diff);
-          } else {
-            this.date.setTime(new Date(datetime).getTime() + diff);
-          }
-          break;
-        default:
-          this.date.setTime(datetime.getTime() + diff);
-          break;
-      }
-    }
-    return this;
+  public getUTCTime() {
+    return this.evacuateOffset(() => this.getTime());
   }
 
   public toString(pattern: string = "yyyy-MM-ddThh:mm:ss.SSSt", week?: WeekArray) {
@@ -153,11 +220,16 @@ export class DateTime {
       .replace(/w/g, (week ?? Week.ja_s)[this.date.getDay()]);
   }
 
-  public toISOString() {
-    const buf = this.offset;
-    const r = this.setTimezoneOffset(0).toString();
-    this.setTimezoneOffset(buf);
+  private evacuateOffset<T>(func: () => T) {
+    const o = this.offset;
+    this.setTimezoneOffset(0);
+    const r = func();
+    this.setTimezoneOffset(o);
     return r;
+  }
+
+  public toISOString() {
+    return this.evacuateOffset(() => this.toString());
   }
 
   public toDateString() {
@@ -172,13 +244,27 @@ export class DateTime {
     return this.toISOString();
   }
 
-  public getYear() {
+  public setCurrent(removeTime = false) {
+    this.set(null);
+    if (removeTime) this.removeTime();
+    return this;
+  }
+
+  public getFullYear() {
     return this.date.getFullYear();
   }
 
-  public setYear(year: number, month?: number, date?: number) {
+  public setFullYear(year: number, month?: number, date?: number) {
     this.date.setFullYear(year, month ?? this.getMonth(), date ?? this.getDate());
     return this;
+  }
+
+  public getUTCFullYear() {
+    return this.evacuateOffset(() => this.getFullYear());
+  }
+
+  public setUTCFullYear(year: number, month?: number, date?: number) {
+    return this.evacuateOffset(() => this.setFullYear(year, month, date));
   }
 
   public getMonth() {
@@ -190,6 +276,14 @@ export class DateTime {
     return this;
   }
 
+  public getUTCMonth() {
+    return this.evacuateOffset(() => this.getMonth());
+  }
+
+  public setUTCMonth(month: number, date?: number) {
+    return this.evacuateOffset(() => this.setMonth(month, date));
+  }
+
   public getDate() {
     return this.date.getDate();
   }
@@ -199,8 +293,20 @@ export class DateTime {
     return this;
   }
 
+  public getUTCDate() {
+    return this.evacuateOffset(() => this.getDate());
+  }
+
+  public setUTCDate(date: number) {
+    return this.evacuateOffset(() => this.setDate(date));
+  }
+
   public getDay() {
     return this.date.getDay();
+  }
+
+  public getUTCDay() {
+    return this.evacuateOffset(() => this.getDay());
   }
 
   public getHours() {
@@ -208,35 +314,67 @@ export class DateTime {
   }
 
   public setHours(hours: number, min?: number, sec?: number, ms?: number) {
-    this.date.setHours(hours, min ?? this.getMin(), sec ?? this.getSec(), ms ?? this.getMs());
+    this.date.setHours(hours, min ?? this.getMinutes(), sec ?? this.getSeconds(), ms ?? this.getMilliseconds());
     return this;
   }
 
-  public getMin() {
+  public getUTCHours() {
+    return this.evacuateOffset(() => this.getHours());
+  }
+
+  public setUTCHours(hours: number, min?: number, sec?: number, ms?: number) {
+    return this.evacuateOffset(() => this.setHours(hours, min, sec, ms));
+  }
+
+  public getMinutes() {
     return this.date.getMinutes();
   }
 
-  public setMin(min: number, sec?: number, ms?: number) {
-    this.date.setMinutes(min, sec ?? this.getSec(), ms ?? this.getMs());
+  public setMinutes(min: number, sec?: number, ms?: number) {
+    this.date.setMinutes(min, sec ?? this.getSeconds(), ms ?? this.getMilliseconds());
     return this;
   }
 
-  public getSec() {
+  public getUTCMinutes() {
+    return this.evacuateOffset(() => this.getMinutes());
+  }
+
+  public setUTCMinutes(min: number, sec?: number, ms?: number) {
+    return this.evacuateOffset(() => this.setMinutes(min, sec, ms));
+  }
+
+  public getSeconds() {
     return this.date.getSeconds();
   }
 
-  public setSec(sec: number) {
-    this.date.setSeconds(sec);
+  public setSeconds(sec: number, ms?: number) {
+    this.date.setSeconds(sec, ms ?? this.getMilliseconds());
     return this;
   }
 
-  public getMs() {
+  public getUTCSeconds() {
+    return this.evacuateOffset(() => this.getSeconds());
+  }
+
+  public setUTCSeconds(sec: number, ms?: number) {
+    return this.evacuateOffset(() => this.setSeconds(sec, ms));
+  }
+
+  public getMilliseconds() {
     return this.date.getMilliseconds();
   }
 
-  public setMs(ms: number) {
+  public setMilliseconds(ms: number) {
     this.date.setMilliseconds(ms);
     return this;
+  }
+
+  public getUTCMilliseconds() {
+    return this.evacuateOffset(() => this.getMilliseconds());
+  }
+
+  public setUTCMilliseconds(ms: number) {
+    return this.evacuateOffset(() => this.setMilliseconds(ms));
   }
 
   public removeTime() {
@@ -244,12 +382,16 @@ export class DateTime {
   }
 
   public addYear(num: number) {
-    this.setYear(this.getYear() + num);
+    const d = this.getDate();
+    this.setFullYear(this.getFullYear() + num);
+    if (d !== this.getDate()) this.date.setDate(0);
     return this;
   }
 
   public addMonth(num: number) {
+    const d = this.getDate();
     this.setMonth(this.getMonth() + num);
+    if (d !== this.getDate()) this.date.setDate(0);
     return this;
   }
 
@@ -264,17 +406,17 @@ export class DateTime {
   }
 
   public addMin(num: number) {
-    this.setMin(this.getMin() + num);
+    this.setMinutes(this.getMinutes() + num);
     return this;
   }
 
   public addSec(num: number) {
-    this.setSec(this.getSec() + num);
+    this.setSeconds(this.getSeconds() + num);
     return this;
   }
 
   public addMs(num: number) {
-    this.setMs(this.getMs() + num);
+    this.setMilliseconds(this.getMilliseconds() + num);
     return this;
   }
 
@@ -284,7 +426,7 @@ export class DateTime {
   }
 
   public setLastDateAtYear() {
-    this.date.setFullYear(this.getYear() + 1, 0, 0);
+    this.date.setFullYear(this.getFullYear() + 1, 0, 0);
     return this;
   }
 
@@ -307,31 +449,19 @@ export class DateTime {
   }
 
   public setPrevYear() {
-    const d = this.getDate();
-    this.addYear(-1);
-    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
-    return this;
+    return this.addYear(-1);
   }
 
   public setNextYear() {
-    const d = this.getDate();
-    this.addYear(1);
-    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
-    return this;
+    return this.addYear(1);
   }
 
   public setPrevMonth() {
-    const d = this.getDate();
-    this.addMonth(-1);
-    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
-    return this;
+    return this.addMonth(-1);
   }
 
   public setNextMonth() {
-    const d = this.getDate();
-    this.addMonth(1);
-    if (d !== this.getDate()) this.addDate(this.getDate() * -1);
-    return this;
+    return this.addMonth(1);
   }
 
 }

@@ -16,9 +16,9 @@ type SourceTempData<V = any> = { value: V; label: any; } & { [v: string]: any };
 
 type CheckListOptions<D extends DataItem.$array<DataItem.$str | DataItem.$num | DataItem.$boolAny> | undefined, S extends SourceData = SourceTempData<D extends DataItem.$array<DataItem.$str | DataItem.$num | DataItem.$boolAny> ? Array<DataItem.ValueType<D>> : Array<any>>> =
   Omit<FormItemOptions<D, D extends DataItem.$array<DataItem.$str | DataItem.$num | DataItem.$boolAny> ? Array<DataItem.ValueType<D>> : Array<any>, Array<S>>, "hideClearButton"> & {
-    length?: number;
-    minLength?: number;
-    maxLength?: number;
+    length?: DataItem.$array<any>["length"];
+    minLength?: DataItem.$array<any>["minLength"];
+    maxLength?: DataItem.$array<any>["maxLength"];
     labelDataName?: string;
     valueDataName?: string;
     stateDataName?: string;

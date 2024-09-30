@@ -3,12 +3,12 @@ import { getTimeUnit, parseMilliseconds, parseTimeAsUnit, roundTime, Time } from
 const defaultLabel = "値";
 
 export const $timeParse = ({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$time>): DataItem.ParseResult<number> => {
+  const label = dataItem.label || dataItem.name || defaultLabel;
+
   if (Array.isArray(value) && value.length > 1) {
-    return [undefined, { type: "e", code: "multiple", fullName, msg: `${dataItem.label || defaultLabel}が複数設定されています。` }];
+    return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];
   }
   if (value == null || value === "") return [undefined];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
 
   const unit = getTimeUnit(dataItem.mode ?? "hm");
   const time = parseMilliseconds(value, unit);

@@ -2,6 +2,7 @@ import { getObjectType } from "../objects";
 import { get, set } from "../objects/struct";
 import { $boolParse } from "./bool/parse";
 import { $dateParse } from "./date/parse";
+import { $datetimeParse } from "./datetime/parse";
 import { $fileParse } from "./file/parse";
 import { $numParse } from "./number/parse";
 import { $strParse } from "./string/parse";
@@ -10,6 +11,7 @@ import { $timeParse } from "./time/parse";
 export const parseBasedOnDataItem = (
   data: { [v: string]: any } | Array<any>,
   dataItems: Readonlyable<Array<DataItem.$object>>,
+  env: DataItem.Env,
   parentName?: string
 ) => {
   const results: Array<DataItem.ValidationResult> = [];
@@ -28,6 +30,7 @@ export const parseBasedOnDataItem = (
       data,
       dataItem,
       fullName: parentName ? `${parentName}.${name}` : name,
+      env,
     } as const satisfies DataItem.ParseProps<D>;
     const [v, r] = parse(props);
     set(data, name, v);
@@ -55,6 +58,9 @@ export const parseBasedOnDataItem = (
       case "time":
         replace(dataItem, p => $timeParse(p), index);
         return;
+      case "datetime":
+        replace(dataItem, p => $datetimeParse(p), index);
+        return;
       case "file":
         replace(dataItem, p => $fileParse(p), index);
         return;
@@ -66,11 +72,11 @@ export const parseBasedOnDataItem = (
         if (!hasError() && value) {
           const item = dataItem.item;
           if (Array.isArray(item)) {
-            results.push(...parseBasedOnDataItem(value, item, name));
+            results.push(...parseBasedOnDataItem(value, item, env, name));
           } else {
             switch (item.type) {
               case "struct":
-                results.push(...parseBasedOnDataItem(value, item, name));
+                results.push(...parseBasedOnDataItem(value, item, env, name));
                 break;
               default:
                 value.forEach((_, i) => {
@@ -87,7 +93,7 @@ export const parseBasedOnDataItem = (
           if (value == null || getObjectType(value) === "Object") return [value];
           return [undefined, { type: "e", code: "parse", fullName, msg: `${dataItem.label}に連想配列を設定してください。` }];
         }, index);
-        if (!hasError() && value) results.push(...parseBasedOnDataItem(value, dataItem.item, name));
+        if (!hasError() && value) results.push(...parseBasedOnDataItem(value, dataItem.item, env, name));
         return;
       }
       default:

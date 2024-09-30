@@ -79,7 +79,10 @@ export const optimizeHeader = (headers: FetchOptions["headers"]) => {
 
 const convertToRequestInit = (params?: any, opts?: FetchOptions, noBody?: boolean): RequestInit => {
   const contentType = opts?.contentType ?? "json";
-  const headers = optimizeHeader(opts?.headers);
+  const headers = {
+    "tz-offset": new Date().getTimezoneOffset(),
+    ...optimizeHeader(opts?.headers),
+  };
   if (noBody) {
     return { headers };
   }

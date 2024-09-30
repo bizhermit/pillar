@@ -2,6 +2,7 @@ import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEv
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
 import { equals } from "../../../../objects";
+import { DateTime } from "../../../../objects/datetime";
 import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
 import { getTimeUnit, parseTimeAsUnit, roundTime, Time, TimeRadix } from "../../../../objects/time";
@@ -13,19 +14,19 @@ import { useFormItemCore } from "../hooks";
 type TimeValue = { time: Time | null | undefined; unitValue: number | null | undefined; };
 
 type TimeBoxOptions<D extends DataItem.$time | undefined> =
-  FormItemOptions<D, D extends DataItem.$time ? DataItem.ValueType<D> : number, TimeValue> &
+  FormItemOptions<D, D extends DataItem.$time ? DataItem.ValueType<D> : number, TimeValue, number | string | Date | DateTime> &
   {
     mode?: DataItem.$time["mode"];
-    min?: number;
-    max?: number;
+    min?: DataItem.$time["min"];
+    max?: DataItem.$time["max"];
     pair?: DataItem.$time["pair"];
-    initFocusTime?: number;
-    hourStep?: number;
-    minuteStep?: number;
-    secondStep?: number;
+    hourStep?: DataItem.$time["hourStep"];
+    minuteStep?: DataItem.$time["minuteStep"];
+    secondStep?: DataItem.$time["secondStep"];
     hourTimePickerStep?: number;
     minuteTimePickerStep?: number;
     secondTimePickerStep?: number;
+    initFocusTime?: number | Date | string | DateTime;
   };
 
 type TimeBoxProps<D extends DataItem.$time | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TimeBoxOptions<D>>;
@@ -76,7 +77,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
     }
   };
 
-  const fi = useFormItemCore<DataItem.$time, D, number, TimeValue>(props, {
+  const fi = useFormItemCore<DataItem.$time, D, number, TimeValue, number | string | Date | DateTime>(props, {
     dataItemDeps: [mode, min, max, pair?.name, pair?.position, pair?.same, hourStep, minuteStep, secondStep],
     getDataItem: ({ dataItem, refs }) => {
       const $pair = pair ?? dataItem?.pair;
@@ -138,16 +139,15 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   };
 
   const minTime = useMemo(() => {
-    return new Time(Math.max(fi.dataItem.min ?? 0, 0), unit);
+    return new Time(fi.dataItem.min ?? defaultMinTime, unit);
   }, [fi.dataItem.min]);
 
   const maxTime = useMemo(() => {
-    if (fi.dataItem.max == null) return defaultMaxTime;
-    return new Time(Math.max(fi.dataItem.max ?? 0, 0), unit);
+    return new Time(fi.dataItem.max ?? defaultMaxTime, unit);
   }, [fi.dataItem.max]);
 
   const $initFocusTime = useMemo(() => {
-    return new Time(Math.max(initFocusTime ?? 0), unit);
+    return new Time(initFocusTime, unit);
   }, [initFocusTime]);
 
   const empty = fi.value?.unitValue == null;

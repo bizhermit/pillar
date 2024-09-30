@@ -7,9 +7,9 @@ import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
 type FileDropOptions<D extends DataItem.$file | undefined> = FormItemOptions<D, D extends DataItem.$file ? DataItem.ValueType<D> : File> & {
-  accept?: string;
-  fileSize?: number;
-  fileName?: string;
+  accept?: DataItem.$file["accept"];
+  fileSize?: DataItem.$file["fileSize"];
+  fileName?: DataItem.$file["fileName"];
   hideFileName?: boolean;
   preventClick?: boolean;
   showAlways?: boolean;

@@ -45,3 +45,12 @@ export const FormItemRange = ({
     </div>
   );
 };
+
+export const FormItemRow = (props: Props) => {
+  return (
+    <div
+      {...props}
+      className={joinClassNames("form-row", props.className)}
+    />
+  );
+};

@@ -14,6 +14,14 @@
 
 @layer base {
 
+  .form-row {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1.2rem;
+  }
+
   .ipt-wrap {
     display: flex;
     flex-flow: column nowrap;

@@ -31,12 +31,14 @@ type AppRoutePath = "/"
 type AppApiPath = "/home/api"
   | "/api"
   | "/api/auth/[...nextauth]"
+  | "/sandbox/datetime/api"
   | "/sandbox/fetch/api";
 
 type TypeofAppApi = {
   "/home/api": typeof import("src/app/(nav)/home/api/route.ts");
   "/api": typeof import("src/app/api/route.ts");
   "/api/auth/[...nextauth]": typeof import("src/app/api/auth/[...nextauth]/route.ts");
+  "/sandbox/datetime/api": typeof import("src/app/sandbox/datetime/api/route.ts");
   "/sandbox/fetch/api": typeof import("src/app/sandbox/fetch/api/route.ts");
 };
 

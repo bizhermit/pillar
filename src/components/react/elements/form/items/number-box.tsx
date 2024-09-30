@@ -9,11 +9,11 @@ import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
 type NumberBoxOptions<D extends DataItem.$num | undefined> = FormItemOptions<D, D extends DataItem.$num ? DataItem.ValueType<D> : number> & {
-  min?: number;
-  max?: number;
-  maxLength?: number;
-  float?: number;
-  requiredIsNotZero?: boolean;
+  min?: DataItem.$num["min"];
+  max?: DataItem.$num["max"];
+  maxLength?: DataItem.$num["maxLength"];
+  float?: DataItem.$num["float"];
+  requiredIsNotZero?: DataItem.$num["requiredIsNotZero"];
   preventThousandSeparate?: boolean;
   step?: number;
   hideSpinButtons?: boolean;

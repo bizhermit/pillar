@@ -25,7 +25,6 @@ export const GET = apiMethodHandler(async (props) => {
   ]);
   // eslint-disable-next-line no-console
   console.log(data);
-  data.hoge;
   props.throwIfHasValidationError();
   // const count = await db.user.count();
   return {

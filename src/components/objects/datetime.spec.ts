@@ -80,7 +80,7 @@ describe("datetime", () => {
     });
 
     it("yyyy-MM-ddThh:mm:ss.SSSZ", () => {
-      const dt = new DateTime("2024-01-01T12:34:56.789Z");
+      const dt = new DateTime("2024-01-01T12:34:56.789Z", "UTC");
       expect(dt.toString()).toBe("2024-01-01T12:34:56.789Z");
       expect(dt.getTimezoneOffset()).toBe(0);
     });
@@ -112,6 +112,48 @@ describe("datetime", () => {
     });
   });
 
+  describe("set", () => {
+    it("set Date", () => {
+      const dt = new DateTime("2024-04-04T12:00:00.000-08:00", "-08:00");
+      expect(dt.toString()).toBe("2024-04-04T12:00:00.000-08:00");
+      dt.set(new Date("2024-07-10T12:00:00.000Z"));
+      expect(dt.toString()).toBe("2024-07-10T04:00:00.000-08:00");
+    });
+  });
+
+  describe("set date / time", () => {
+    it("date / time fullset", () => {
+      const dt = new DateTime().setDateTime({
+        date: "2024-09-12",
+        time: 540,
+        timeUnit: "m",
+        timezone: "Asia/Tokyo",
+      });
+      expect(dt.toString()).toBe("2024-09-12T09:00:00.000+09:00");
+    });
+
+    it("date", () => {
+      const dt = new DateTime().setDateTime({
+        date: "2024-09-21",
+        timezone: "Z",
+      });
+      expect(dt.toString()).toBe("2024-09-21T00:00:00.000Z");
+      dt.setTimezone("Asia/Tokyo");
+      expect(dt.toString()).toBe("2024-09-21T09:00:00.000+09:00");
+    });
+
+    it("date / time (no timeUnit)", () => {
+      const dt = new DateTime().setDateTime({
+        date: "2024-09-21",
+        time: 720,
+        timezone: "Z",
+      });
+      expect(dt.toString()).toBe("2024-09-21T12:00:00.000Z");
+      dt.setTimezone("America/Los_Angeles");
+      expect(dt.toString()).toBe("2024-09-21T04:00:00.000-08:00");
+    });
+  });
+
   describe("calc", () => {
     it("first date at year", () => {
       const dt = new DateTime("2024-05-12");
@@ -135,6 +177,60 @@ describe("datetime", () => {
       const dt = new DateTime("2024-08-11");
       dt.setLastDateAtMonth();
       expect(dt.toDateString()).toBe("2024-08-31");
+    });
+
+    it("add year", () => {
+      const dt = new DateTime("2024-02-29");
+      dt.addYear(1);
+      expect(dt.toDateString()).toBe("2025-02-28");
+      dt.set("2024-02-29");
+      dt.addYear(2);
+      expect(dt.toDateString()).toBe("2026-02-28");
+      dt.set("2024-02-29");
+      dt.addYear(4);
+      expect(dt.toDateString()).toBe("2028-02-29");
+      dt.set("2024-02-29");
+      dt.addYear(-1);
+      expect(dt.toDateString()).toBe("2023-02-28");
+      dt.set("2024-02-29");
+      dt.addYear(-2);
+      expect(dt.toDateString()).toBe("2022-02-28");
+      dt.set("2024-02-29");
+      dt.addYear(-4);
+      expect(dt.toDateString()).toBe("2020-02-29");
+      dt.set("2024-01-31");
+      dt.addYear(3);
+      expect(dt.toDateString()).toBe("2027-01-31");
+      dt.set("2024-01-31");
+      dt.addYear(-6);
+      expect(dt.toDateString()).toBe("2018-01-31");
+    });
+
+    it("add month", () => {
+      const dt = new DateTime("2024-01-31");
+      dt.addMonth(1);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2024-03-31");
+      dt.addMonth(-1);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2023-12-31");
+      dt.addMonth(2);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2024-04-30");
+      dt.addMonth(-2);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2024-04-30");
+      dt.addMonth(-3);
+      expect(dt.toDateString()).toBe("2024-01-30");
+      dt.set("2024-08-31");
+      dt.addMonth(-6);
+      expect(dt.toDateString()).toBe("2024-02-29");
+      dt.set("2024-01-31");
+      dt.addMonth(2);
+      expect(dt.toDateString()).toBe("2024-03-31");
+      dt.set("2024-01-31");
+      dt.addMonth(3);
+      expect(dt.toDateString()).toBe("2024-04-30");
     });
 
     it("prev year", () => {
