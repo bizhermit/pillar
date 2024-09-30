@@ -69,13 +69,13 @@
     opacity: 0;
     transition: opacity .2s, display .2s allow-discrete, overlay .2s allow-discrete;
 
-    &[aria-expanded="true"] {
+    &[data-current="true"] {
       display: unset;
       opacity: 1;
       z-index: 1;
     }
 
-    &:not([aria-expanded="true"]) {
+    &:not([data-current="true"]) {
       position: absolute;
       left: 0;
       top: 0;
@@ -85,7 +85,7 @@
   @starting-style {
 
     .tab-cont {
-      &[aria-expanded="true"] {
+      &[data-current="true"] {
         opacity: 0;
         z-index: 1;
       }

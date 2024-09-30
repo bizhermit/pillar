@@ -175,10 +175,10 @@ export const TabContainer = ({
               {...cprops}
               key={c.key}
               className={joinClassNames("tab-cont", className)}
-              aria-expanded={key === c.key}
+              data-current={key === c.key}
               onTransitionEnd={e => {
                 if (e.currentTarget !== e.target || e.propertyName === "display") return;
-                if (e.currentTarget.getAttribute("aria-expanded") === "true") return;
+                if (e.currentTarget.getAttribute("data-current") === "true") return;
                 switchMount({ action: "unmount", key: c.key!, keepMount });
               }}
             >
