@@ -128,6 +128,7 @@ export const FileDrop = <D extends DataItem.$file | undefined>({
       >
         {(showAlways || empty) &&
           <div
+            role="button"
             className="ipt-file-drop-area"
             tabIndex={fi.disabled ? undefined : (fi.tabIndex ?? 0)}
             autoFocus={fi.autoFocus}
