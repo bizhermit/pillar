@@ -677,17 +677,19 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             onKeyDown={keydownY}
             onFocus={focus}
             data-invalid={fi.attrs["data-invalid"]}
+            aria-haspopup="listbox"
           />
           {fi.showButtons &&
-            <div
+            <button
               className="ipt-btn ipt-pull"
-              data-disabled={!fi.editable || yDialog.showed}
+              type="button"
+              disabled={!fi.editable || yDialog.showed}
               tabIndex={-1}
               data-showed={yDialog.showed}
               data-slim
             >
               <DownFillIcon />
-            </div>
+            </button>
           }
           <Dialog
             modeless
@@ -730,17 +732,19 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             onKeyDown={keydownM}
             onFocus={focus}
             data-invalid={fi.attrs["data-invalid"]}
+            aria-haspopup="listbox"
           />
           {fi.showButtons &&
-            <div
+            <button
               className="ipt-btn ipt-pull"
-              data-disabled={!fi.editable || mDialog.showed}
+              type="button"
+              disabled={!fi.editable || mDialog.showed}
               tabIndex={-1}
               data-showed={mDialog.showed}
               data-slim
             >
               <DownFillIcon />
-            </div>
+            </button>
           }
           <Dialog
             modeless
@@ -781,17 +785,19 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                 onKeyDown={keydownD}
                 onFocus={focus}
                 data-invalid={fi.attrs["data-invalid"]}
+                aria-haspopup="listbox"
               />
               {fi.showButtons &&
-                <div
+                <button
                   className="ipt-btn ipt-pull"
-                  data-disabled={!fi.editable || dDialog.showed}
+                  type="button"
+                  disabled={!fi.editable || dDialog.showed}
                   tabIndex={-1}
                   data-showed={dDialog.showed}
                   data-slim
                 >
                   <DownFillIcon />
-                </div>
+                </button>
               }
               <Dialog
                 modeless

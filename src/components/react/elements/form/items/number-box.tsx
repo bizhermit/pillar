@@ -202,22 +202,24 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
         {!hideSpinButtons && fi.showButtons &&
           <>
             <div className="ipt-num-spins">
-              <div
+              <button
                 className="ipt-btn ipt-num-spin-inc"
-                data-disabled={!fi.editable}
+                type="button"
+                disabled={!fi.editable}
                 tabIndex={-1}
                 onMouseDown={() => mousedown("up")}
               >
                 <UpFillIcon />
-              </div>
-              <div
+              </button>
+              <button
                 className="ipt-btn ipt-num-spin-dec"
-                data-disabled={!fi.editable}
+                type="button"
+                disabled={!fi.editable}
                 tabIndex={-1}
                 onMouseDown={() => mousedown("down")}
               >
                 <DownFillIcon />
-              </div>
+              </button>
             </div>
           </>
         }

@@ -131,6 +131,8 @@ export const Slider = <D extends DataItem.$num | undefined>({
         autoFocus={fi.autoFocus}
         onKeyDown={keydown}
         onClick={click}
+        role="slider"
+        aria-valuenow={fi.value ?? undefined}
       >
         <div
           className="ipt-slider-bar"

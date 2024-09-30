@@ -170,11 +170,11 @@
       width: calc(var(--ipt-size) * 0.8);
     }
 
-    &[data-disabled="true"] {
-      opacity: 0.3;
+    &:disabled {
+      opacity: .6;
     }
 
-    &:not([data-disabled="true"]) {
+    &:not(:disabled) {
       cursor: pointer;
 
       @include mixins.hover {
@@ -193,7 +193,7 @@
         transition: background-color 0.1s, transform 0.2s;
       }
 
-      &:not([data-disabled="true"]) {
+      &:not(:disabled) {
         @include mixins.hover {
 
           &::before,
@@ -278,7 +278,7 @@
       height: 50%;
     }
 
-    &:not([data-disabled="true"]) {
+    &:not(:disabled) {
       &:active {
         background: var(--ipt-fg) !important;
         color: var(--ipt-bg) !important;
@@ -374,7 +374,7 @@
     }
 
     :is(.ipt-prev, .ipt-next) {
-      &[data-disabled="true"] {
+      &:disabled {
         visibility: hidden;
         cursor: default;
       }
@@ -456,12 +456,12 @@
     border-radius: 2px;
     transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 
-    &[data-disabled="true"] {
+    &[aria-disabled="true"] {
       opacity: 0.3;
       cursor: not-allowed;
     }
 
-    &:not([data-disabled="true"]) {
+    &:not([aria-disabled="true"]) {
       cursor: pointer;
 
       @include mixins.hover {
@@ -470,19 +470,19 @@
       }
     }
 
-    &[data-selected="true"] {
+    &[aria-current="true"] {
       background: var(--c-primary);
       color: var(--c-primary_)
     }
 
-    &[data-current="true"] {
+    &[data-today="true"] {
       border: 1px solid var(--ipt-bd);
     }
 
     &:is([data-prev], [data-next]) {
       opacity: 0.6;
 
-      &[data-disabled="true"] {
+      &[aria-disabled="true"] {
         opacity: 0.2;
       }
     }

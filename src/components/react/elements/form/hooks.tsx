@@ -432,14 +432,15 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     ),
     clearButton: (clear: (() => void) | undefined) => (
       !hideClearButton && showButtons &&
-      <div
+      <button
         className="ipt-btn ipt-clear"
+        type="button"
         tabIndex={-1}
-        data-disabled={!editable || !clear}
+        disabled={!editable || !clear}
         onClick={clear}
       >
         <CrossIcon />
-      </div>
+      </button>
     ),
   } as const;
 };

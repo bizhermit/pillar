@@ -101,13 +101,14 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           data-invalid={fi.attrs["data-invalid"]}
         />
         {!hideToggleButton && fi.showButtons &&
-          <div
+          <button
             className="ipt-btn"
-            data-disabled={!fi.editable}
+            type="button"
+            disabled={!fi.editable}
             onClick={toggle}
           >
             {type === "text" ? <CircleFillIcon /> : <CircleIcon />}
-          </div>
+          </button>
         }
         {fi.clearButton(empty ? undefined : clear)}
       </div>

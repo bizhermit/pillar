@@ -345,6 +345,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           onClick={clickInput}
           onKeyDown={keydown}
           onChange={change}
+          aria-haspopup="listbox"
         />
         {fi.mountValue &&
           <>
@@ -368,15 +369,16 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           </>
         }
         {fi.showButtons &&
-          <div
+          <button
             className="ipt-btn ipt-pull"
-            data-disabled={!fi.editable || loading}
+            type="button"
+            disabled={!fi.editable || loading}
             onClick={clickPull}
             tabIndex={-1}
             data-showed={dialog.showed}
           >
             <DownFillIcon />
-          </div>
+          </button>
         }
         {fi.clearButton(empty || loading ? undefined : clear)}
         <Dialog

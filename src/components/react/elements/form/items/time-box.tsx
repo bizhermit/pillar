@@ -422,6 +422,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               onChange={changeH}
               onKeyDown={keydownH}
               onFocus={focus}
+              aria-haspopup="dialog"
             />
             <span
               className="ipt-sep"
@@ -452,6 +453,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           onKeyDown={keydownM}
           onFocus={focus}
           data-last={fi.dataItem.mode === "hm" ? "" : undefined}
+          aria-haspopup="dialog"
         />
         {fi.dataItem.mode !== "hm" &&
           <>
@@ -481,6 +483,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               onKeyDown={keydownS}
               onFocus={focus}
               data-last=""
+              aria-haspopup="dialog"
             />
           </>
         }
@@ -493,15 +496,16 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           />
         }
         {fi.showButtons &&
-          <div
+          <button
             className="ipt-btn"
-            data-disabled={!fi.editable || dialog.showed}
+            type="button"
+            disabled={!fi.editable || dialog.showed}
             onClick={clickPull}
             tabIndex={-1}
             data-showed={dialog.showed}
           >
             <ClockIcon />
-          </div>
+          </button>
         }
         {fi.clearButton(empty ? undefined : clear)}
         <Dialog
@@ -779,19 +783,21 @@ export const TimePicker = (props: TimePickerProps) => {
       </div>
       <div className="ipt-tp-btns">
         {props.onCancel &&
-          <div
+          <button
             className="ipt-btn"
+            type="button"
             title="キャンセル"
             onClick={() => {
               props.onCancel!();
             }}
           >
             <CrossIcon />
-          </div>
+          </button>
         }
         {props.onSelect &&
-          <div
+          <button
             className="ipt-btn"
+            type="button"
             data-disabled={!inRange}
             onClick={() => {
               if (!inRange) return;
@@ -801,7 +807,7 @@ export const TimePicker = (props: TimePickerProps) => {
             }}
           >
             OK
-          </div>
+          </button>
         }
       </div>
     </div>

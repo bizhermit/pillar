@@ -249,51 +249,57 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
         {fi.editable &&
           <div className="ipt-elec-sign-btns">
             {preventAutoSave &&
-              <div
+              <button
+                className="ipt-btn"
+                type="button"
                 tabIndex={-1}
                 onClick={save}
-                data-disabled={!fi.editable}
+                disabled={!fi.editable}
                 title="保存"
               >
                 <SaveIcon />
-              </div>
+              </button>
             }
-            <div
+            <button
               className="ipt-btn"
-              data-disabled={!fi.editable || !canUndo}
+              type="button"
+              disabled={!fi.editable || !canUndo}
               tabIndex={-1}
               onClick={undo}
               title="元に戻す"
             >
               <UndoIcon />
-            </div>
-            <div
+            </button>
+            <button
               className="ipt-btn"
-              data-disabled={!fi.editable || !canRedo}
+              type="button"
+              disabled={!fi.editable || !canRedo}
               tabIndex={-1}
               onClick={redo}
               title="やり直し"
             >
               <RedoIcon />
-            </div>
-            <div
+            </button>
+            <button
               className="ipt-btn"
-              data-disabled={!fi.editable || empty}
+              type="button"
+              disabled={!fi.editable || empty}
               tabIndex={-1}
               onClick={() => clearCanvas()}
               title="キャンパスをクリアする"
             >
               <CrossIcon />
-            </div>
-            <div
+            </button>
+            <button
               className="ipt-btn"
+              type="button"
               tabIndex={-1}
-              data-disabled={!canClearHist}
+              disabled={!canClearHist}
               onClick={() => clearCanvas(true)}
               title="キャンパスと履歴クリアする"
             >
               <ClearAllIcon />
-            </div>
+            </button>
           </div>
         }
         {fi.mountValue &&
