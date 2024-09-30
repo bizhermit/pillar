@@ -13,7 +13,7 @@ type NavigationMenuListOptions = {
 type NavigationMenuListProps = OverwriteAttrs<HTMLAttributes<HTMLUListElement>, NavigationMenuListOptions>;
 
 export const NavigationMenu = (props: NavigationMenuListProps) => {
-  return <NavMenuList {...props} />;
+  return <NavMenuList role="menu" {...props} />;
 };
 
 const NavMenuList = (props: NavigationMenuListProps) => {
@@ -62,6 +62,7 @@ export const NavMenuNest = ({
     <li
       {...props}
       className={joinClassNames("nav-menu-item-wrap", props.className)}
+      role="menuitem"
     >
       <label>
         <input
@@ -70,6 +71,7 @@ export const NavMenuNest = ({
         />
         <div
           className="nav-menu-item"
+          role="button"
           tabIndex={0}
           onKeyDown={toggleEvent}
         >
@@ -142,11 +144,12 @@ export const NavMenuLink = ({
       {...props}
       ref={ref}
       className={joinClassNames("nav-menu-item-wrap", className)}
+      role="menuitem"
     >
       <Link
         href={url}
         className="nav-menu-item"
-        data-selected={current}
+        aria-selected={current}
       >
         {icon && <NavMenuIcon>{icon}</NavMenuIcon>}
         {children}
