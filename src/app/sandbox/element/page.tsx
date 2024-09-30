@@ -349,7 +349,7 @@ export default function Home() {
               refs={["slider"]}
               disabled={disabled.value}
               readOnly={readOnly.value}
-            // hook={formItem.hook}
+              hook={formItem.hook}
             />
           </FormItemWrap>
           <FormItemWrap>
