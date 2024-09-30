@@ -82,7 +82,8 @@ const createAndOpenDialog = (node: (props: MessageBoxChildrenProps) => ReactNode
   const elem = document.createElement("dialog");
   elem.classList.add("dialog", "msgbox");
   if (opts?.classNames) elem.classList.add(opts.classNames);
-  elem.setAttribute("aria-modal", "true");
+  elem.role = "alert";
+  elem.ariaModal = "true";
   elem.setAttribute("data-transparent", "");
   elem.setAttribute("data-pos", "true");
   const root = createRoot(elem);
