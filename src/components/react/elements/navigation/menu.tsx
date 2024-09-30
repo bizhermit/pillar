@@ -82,7 +82,15 @@ export const NavMenuNest = ({
             <DownIcon />
           </div>
         </div>
-        <div className="nav-menu-children">
+        <div
+          className="nav-menu-children"
+          onTransitionStart={(e) => {
+            if (e.target !== e.currentTarget) return;
+            const checkElem = e.currentTarget.parentElement?.querySelector(`:scope > input[type="checkbox"]`) as HTMLInputElement;
+            if (!checkElem) return;
+            e.currentTarget.inert = !checkElem.checked;
+          }}
+        >
           <NavMenuList>
             {children}
           </NavMenuList>
