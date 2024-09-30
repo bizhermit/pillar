@@ -1,15 +1,10 @@
 "use client";
 
-import { createContext, useLayoutEffect, useMemo, useReducer, useRef, type Dispatch, type FormEvent, type FormHTMLAttributes, type MutableRefObject } from "react";
+import { createContext, useLayoutEffect, useMemo, useRef, type FormEvent, type FormHTMLAttributes, type MutableRefObject } from "react";
 import { clone } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
 import { LoadingBar } from "../loading";
-
-type FormItemState = {
-  id: string;
-  state: DataItem.ValidationResult | null | undefined;
-};
 
 type FormItemMountProps = {
   id: string;
@@ -18,6 +13,7 @@ type FormItemMountProps = {
   get: <T>() => T;
   set: (arg: FormItemSetArg<any>) => void;
   reset: (edit: boolean) => void;
+  getState: () => (DataItem.ValidationResult | null | undefined);
   changeRefs: (item: FormItemMountProps) => void;
   hasChanged: () => boolean;
   dataItem: PickPartial<DataItem.$object, DataItem.OmitableProps>;
@@ -26,16 +22,15 @@ type FormItemMountProps = {
   autoFocus?: boolean;
 };
 
-type FormState = "init" | "submit" | "reset" | "" | "nothing";
+type FormProcessState = "init" | "submit" | "reset" | "" | "nothing";
 
 type FormContextProps = {
   bind: { [v: string]: any };
   disabled?: boolean;
-  state: FormState;
-  pending: boolean;
+  process: FormProcessState;
+  processing: boolean;
   method?: string;
-  hasError: boolean;
-  setItemState: Dispatch<FormItemState>;
+  hasError: () => boolean;
   getMountedItems: () => { [id: string]: FormItemMountProps };
   change: (id: string) => void;
   mount: (props: FormItemMountProps) => {
@@ -48,10 +43,9 @@ type FormContextProps = {
 export const FormContext = createContext<FormContextProps>({
   bind: {},
   disabled: false,
-  state: "nothing",
-  pending: false,
-  hasError: false,
-  setItemState: () => { },
+  process: "nothing",
+  processing: false,
+  hasError: () => false,
   getMountedItems: () => {
     return {};
   },
@@ -119,7 +113,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     return bind;
   }, [bind]);
 
-  const [formState, setFormState, formStateRef] = useRefState<FormState>("init");
+  const [process, setProcess, processRef] = useRefState<FormProcessState>("init");
 
   const items = useRef<{ [id: string]: FormItemMountProps }>({});
   const findItem = (name: string) => {
@@ -131,30 +125,9 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     return items.current[id];
   };
 
-  const [itemState, setItemState] = useReducer((cur: { [id: string]: Exclude<FormItemState["state"], null | undefined> }, { id, state }: FormItemState) => {
-    const buf = cur[id];
-    if (state == null) {
-      if (buf == null) return cur;
-      const ret = { ...cur };
-      delete ret[id];
-      return ret;
-    }
-    if (buf == null) {
-      return {
-        ...cur,
-        [id]: state,
-      };
-    }
-    if (buf.type === state.type && buf.msg === state.msg) return cur;
-    return {
-      ...cur,
-      [id]: state,
-    };
-  }, {});
-
-  const hasError = useMemo(() => {
-    return Object.keys(itemState).some(k => itemState[k].type === "e");
-  }, [itemState]);
+  const hasError = () => {
+    return Object.keys(items.current).some(id => items.current[id].getState()?.type === "e");
+  };
 
   const getFormData = () => new FormData($ref.current!);
 
@@ -180,14 +153,14 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.stopPropagation();
-    if (disabled || formStateRef.current) {
+    if (disabled || processRef.current) {
       e.preventDefault();
       return;
     }
-    setFormState("submit");
+    setProcess("submit");
     if (onSubmit === false) {
       e.preventDefault();
-      setFormState("");
+      setProcess("");
       return;
     }
     if (onSubmit == null || onSubmit === true) return;
@@ -196,29 +169,29 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       let keepLock = false;
       const ret = onSubmit({
         event: e,
-        hasError,
+        hasError: hasError(),
         keepLock: () => {
           keepLock = true;
-          return () => setFormState("");
+          return () => setProcess("");
         },
         getFormData,
         getBindData,
       });
       if (ret == null || ret === false) {
         e.preventDefault();
-        if (!keepLock) setFormState("");
+        if (!keepLock) setProcess("");
         return;
       }
       if (ret === true) return;
       e.preventDefault();
       if (ret instanceof Promise) {
         ret.finally(() => {
-          if (!keepLock) setFormState("");
+          if (!keepLock) setProcess("");
         });
       }
     } catch {
       e.preventDefault();
-      setFormState("");
+      setProcess("");
     }
   };
 
@@ -232,14 +205,14 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   const reset = (e: FormEvent<HTMLFormElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    if (disabled || formStateRef.current) return;
-    setFormState("reset");
+    if (disabled || processRef.current) return;
+    setProcess("reset");
     if (onReset == null || onReset === true) {
-      resetItems(() => setFormState(""));
+      resetItems(() => setProcess(""));
       return;
     }
     if (onReset === false) {
-      setFormState("");
+      setProcess("");
       return;
     }
 
@@ -250,27 +223,27 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
         getBindData,
       });
       if (ret == null || ret === true) {
-        resetItems(() => setFormState(""));
+        resetItems(() => setProcess(""));
         return;
       }
       if (ret === false) {
-        setFormState("");
+        setProcess("");
         return;
       }
       if (ret instanceof Promise) {
         ret
           .then((r) => {
             if (r === false) {
-              setFormState("");
+              setProcess("");
               return;
             }
-            resetItems(() => setFormState(""));
+            resetItems(() => setProcess(""));
           }).catch(() => {
-            setFormState("");
+            setProcess("");
           });
       }
     } catch {
-      setFormState("");
+      setProcess("");
     }
   };
 
@@ -287,7 +260,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   }
 
   useLayoutEffect(() => {
-    setFormState("");
+    setProcess("");
   }, []);
 
   return (
@@ -295,8 +268,8 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       method: props.method,
       bind: $bind,
       disabled,
-      state: formState,
-      pending: ["submit", "reset", "init"].includes(formState),
+      process,
+      processing: ["submit", "reset", "init"].includes(process),
       hasError,
       change: (id) => {
         const self = items.current[id];
@@ -314,16 +287,14 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
         return {
           unmount: () => {
             delete items.current[p.id];
-            setItemState({ id: p.id, state: null });
           },
         };
       },
-      setItemState,
       getMountedItems: () => items.current,
       getValue,
       setValue,
     }}>
-      {(formState === "submit" || formState === "init") && <LoadingBar />}
+      {(process === "submit" || process === "init") && <LoadingBar />}
       <form
         {...props}
         ref={$ref}
@@ -336,6 +307,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
           props.onKeyDown?.(e);
         } : props.onKeyDown}
       />
+      {process}
     </FormContext.Provider>
   );
 };

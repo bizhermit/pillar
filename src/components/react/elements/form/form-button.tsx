@@ -17,8 +17,8 @@ export const FormButton = ({
   return (
     <Button
       {...props}
-      disabled={disabled || form.disabled || form.pending}
-      processing={form.pending}
+      disabled={disabled || form.disabled || form.processing || form.hasError()}
+      processing={form.processing}
       outline={props.outline ?? props.type === "reset"}
     />
   );

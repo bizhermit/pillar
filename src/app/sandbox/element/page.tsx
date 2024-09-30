@@ -315,6 +315,7 @@ export default function Home() {
           await sleep(3000);
         }}
       >
+        <RenderCheck />
         <ObservationFormValue name="slider" value={90} />
         <InputTabContainer
           name="tab"
@@ -348,7 +349,7 @@ export default function Home() {
               refs={["slider"]}
               disabled={disabled.value}
               readOnly={readOnly.value}
-              hook={formItem.hook}
+            // hook={formItem.hook}
             />
           </FormItemWrap>
           <FormItemWrap>
@@ -766,5 +767,12 @@ const ObservationFormValue = (props: {
         set value
       </Button>
     </div>
+  );
+};
+
+const RenderCheck = () => {
+  console.log("render");
+  return (
+    <span></span>
   );
 };

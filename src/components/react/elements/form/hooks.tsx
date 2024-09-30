@@ -66,7 +66,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   const id = useId();
   const form = use(FormContext);
   const $disabled = disabled || form.disabled;
-  const $readOnly = readOnly || form.pending;
+  const $readOnly = readOnly || form.processing;
 
   const dataItem = useMemo(() => {
     const $name = name || $dataItem?.name;
@@ -134,7 +134,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   const init = useMemo(() => {
     let def = false;
     const v = (() => {
-      if (dataItem.name && form.state !== "nothing") {
+      if (dataItem.name && form.process !== "nothing") {
         const [v, has] = get(form.bind, dataItem.name);
         if (has) return v;
       }
@@ -156,7 +156,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     };
   }, []);
 
-  const [msg, setMsg] = useState<DataItem.ValidationResult | null | undefined>(init.msg);
+  const [msg, setMsg, msgRef] = useRefState<DataItem.ValidationResult | null | undefined>(init.msg);
   const [val, setVal, valRef] = useRefState<IV | null | undefined>(init.val);
   // const [_inputted, setInputted, _inputtedRef] = useRefState(false);
 
@@ -174,18 +174,13 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   const [dyanmicRequired, setDyanmicRequired] = useState(getDynamicRequired);
 
   const setState = (state: DataItem.ValidationResult | null | undefined) => {
-    form.setItemState({ id, state });
-    setMsg(cur => {
-      if (cur?.type === state?.type && cur?.msg === state?.msg) return cur;
-      return state;
-    });
+    if (msgRef.current?.type === state?.type && msgRef.current?.msg === state?.msg) return;
+    setMsg(state);
   };
-
-  const getValue = () => valRef.current as any;
 
   const setValueImpl = ({ v, before, res, eq, edit, updateBind }: { v: any; before: any; res: DataItem.ValidationResult | null | undefined; eq: boolean; edit: boolean; updateBind: boolean; }) => {
     if (!eq || updateBind) {
-      if (form.state !== "nothing") {
+      if (form.process !== "nothing") {
         if (cp.setBind) {
           cp.setBind({
             value: v,
@@ -277,7 +272,6 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     cache: IV | null | undefined;
     doValidation: typeof doValidation;
     getDynamicRequired: typeof getDynamicRequired;
-    get: typeof getValue;
     set: typeof setValue;
     reset: typeof reset;
     getTieInNames?: typeof cp["getTieInNames"];
@@ -290,12 +284,11 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 
   $.current.doValidation = doValidation;
   $.current.getDynamicRequired = getDynamicRequired;
-  $.current.get = getValue;
   $.current.set = setValue;
   $.current.reset = reset;
   $.current.getTieInNames = cp.getTieInNames;
   $.current.hook = hook ? hook({
-    get: getValue,
+    get: () => valRef.current,
     set: (p) => form.setValue(name!, p.value, true),
     clear,
     reset,
@@ -311,10 +304,11 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       id,
       name: dataItem.name,
       tieInNames: $.current.getTieInNames?.({ dataItem }),
-      get: (...args) => $.current.get(...args),
+      get: () => valRef.current as any,
       set: (...args) => $.current.set(...args),
       reset: (...args) => $.current.reset(...args),
       hasChanged: (...args) => $.current.hasChanged(...args),
+      getState: () => msgRef.current,
       changeRefs: () => {
         setState($.current.doValidation(valRef.current));
         setDyanmicRequired($.current.getDynamicRequired());
@@ -337,7 +331,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     if ($.current.bind === form.bind) return;
     $.current.bind = form.bind;
     // setInputted(false);
-    if (dataItem.name && form.state !== "nothing") {
+    if (dataItem.name && form.process !== "nothing") {
       const [v, has] = get(form.bind, dataItem.name);
       if (has) {
         setValue({
@@ -389,7 +383,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     });
   }, [validation, parseVal]);
 
-  const editable = !$readOnly && !$disabled && !form.pending;
+  const editable = !$readOnly && !$disabled && !form.processing;
   const $required = typeof dataItem.required === "function" ? dyanmicRequired : dataItem.required;
   const showButtons = !$disabled;
 
@@ -422,7 +416,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     attrs: {
       "data-required": $required,
       "data-disabled": disabled || form.disabled,
-      "data-readonly": readOnly || form.pending,
+      "data-readonly": readOnly || form.processing,
       "data-invalid": editable && msg?.type === "e",
       "data-label": $dataItem?.label,
       "data-changed": mountValue,
@@ -488,6 +482,7 @@ export const useFormValue = <T extends any>(name: string) => {
       set: () => { },
       reset: () => { },
       hasChanged: () => false,
+      getState: () => null,
       changeRefs: () => {
         setVal(form.getValue<T>(name));
       },
@@ -507,6 +502,6 @@ export const useFormValue = <T extends any>(name: string) => {
   return {
     value,
     setValue: set,
-    initialized: form.state !== "init",
+    initialized: form.process !== "init",
   };
 };
