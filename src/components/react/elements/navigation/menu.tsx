@@ -5,6 +5,7 @@ import { HTMLAttributes, ReactNode, useLayoutEffect, useRef } from "react";
 import { DownIcon } from "../icon";
 import Link from "../link";
 import { joinClassNames } from "../utilities";
+import { closeNav } from "./client-components";
 
 type NavigationMenuListOptions = {
   children?: ReactNode;
@@ -149,7 +150,10 @@ export const NavMenuLink = ({
       <Link
         href={url}
         className="nav-menu-item"
-        aria-selected={current}
+        aria-current={current}
+        onClick={() => {
+          closeNav();
+        }}
       >
         {icon && <NavMenuIcon>{icon}</NavMenuIcon>}
         {children}
