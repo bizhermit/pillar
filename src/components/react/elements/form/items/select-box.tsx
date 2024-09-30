@@ -375,7 +375,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             disabled={!fi.editable || loading}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.showed}
+            aria-haspopup="listbox"
+            aria-expanded={dialog.showed}
           >
             <DownFillIcon />
           </button>

@@ -502,7 +502,8 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
             disabled={!fi.editable || dialog.showed}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.showed}
+            aria-haspopup="dialog"
+            aria-expanded={dialog.showed}
           >
             <ClockIcon />
           </button>

@@ -685,7 +685,8 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
               type="button"
               disabled={!fi.editable || yDialog.showed}
               tabIndex={-1}
-              data-showed={yDialog.showed}
+              aria-haspopup="listbox"
+              aria-expanded={yDialog.showed}
               data-slim
             >
               <DownFillIcon />
@@ -741,7 +742,8 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
               type="button"
               disabled={!fi.editable || mDialog.showed}
               tabIndex={-1}
-              data-showed={mDialog.showed}
+              aria-haspopup="listbox"
+              aria-expanded={mDialog.showed}
               data-slim
             >
               <DownFillIcon />
@@ -795,7 +797,8 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                   type="button"
                   disabled={!fi.editable || dDialog.showed}
                   tabIndex={-1}
-                  data-showed={dDialog.showed}
+                  aria-haspopup="listbox"
+                  aria-expanded={dDialog.showed}
                   data-slim
                 >
                   <DownFillIcon />

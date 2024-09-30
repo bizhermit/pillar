@@ -455,7 +455,8 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
             disabled={!fi.editable || dialog.showed}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.showed}
+            aria-haspopup="dialog"
+            aria-expanded={dialog.showed}
           >
             <CalendarIcon />
           </button>

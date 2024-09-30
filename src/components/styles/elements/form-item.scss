@@ -209,7 +209,7 @@
         transform: rotateX(0deg);
       }
 
-      &[data-showed="true"] {
+      &[aria-expanded="true"] {
         .icon {
           transform: rotateX(180deg);
         }
