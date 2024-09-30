@@ -258,9 +258,10 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     transition: width #{$transDuration},
     opacity #{$opacityTransDuration};
     overflow: hidden;
+    background: transparent;
 
     @include mixins.hover {
-      opacity: 0.7;
+      opacity: .6;
     }
   }
 
