@@ -437,7 +437,7 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     user-select: none;
     transition: opacity .2s, background-color .2s, color .2s;
 
-    &[aria-selected="true"] {
+    &[aria-current="true"] {
       background: var(--c-primary);
       color: var(--c-primary_);
     }
