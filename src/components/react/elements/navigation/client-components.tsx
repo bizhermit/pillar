@@ -33,7 +33,7 @@ export const NavMinBtn = (props: { children: ReactNode }) => {
     >
       {props.children}
     </button>
-  )
+  );
 };
 
 export const NavOpenBtn = (props: { children: ReactNode }) => {
