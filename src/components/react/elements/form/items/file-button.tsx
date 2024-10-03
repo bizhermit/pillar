@@ -95,7 +95,6 @@ export const FileButton = <D extends DataItem.$file | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-row", props.className)}
       >
         <Button
@@ -103,6 +102,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
           onClick={click}
           disabled={!fi.editable}
           autoFocus={fi.autoFocus}
+          {...fi.iptAria}
         >
           {props.children ?? "ファイルを選択"}
         </Button>

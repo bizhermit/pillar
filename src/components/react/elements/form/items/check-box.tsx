@@ -86,10 +86,11 @@ export const CheckBox = <True extends boolean | number | string, False extends b
     <>
       <label
         {...fi.props}
-        {...fi.attrs}
         tabIndex={fi.editable ? -1 : undefined}
         className={joinClassNames("ipt-lbl", props.className)}
         data-children={props.children != null}
+        data-disabled={fi.disabled}
+        data-readonly={fi.readOnly}
       >
         <input
           ref={iref}
@@ -104,7 +105,7 @@ export const CheckBox = <True extends boolean | number | string, False extends b
             if (!fi.editable) return;
             fi.set({ value: e.target.checked ? fi.dataItem.trueValue : fi.dataItem.falseValue, edit: true });
           }}
-          data-invalid={fi.attrs["data-invalid"]}
+          {...fi.iptAria}
         />
         {fi.name && fi.mountValue &&
           <input

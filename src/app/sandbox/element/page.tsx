@@ -28,6 +28,7 @@ import { TimeBox } from "@/react/elements/form/items/time-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
+import Link from "@/react/elements/link";
 import { $alert, $confirm } from "@/react/elements/message-box";
 import { TabContainer, TabContent, useTabContainer } from "@/react/elements/tab-container";
 import { LayoutContext } from "@/react/hooks/layout";
@@ -151,6 +152,14 @@ export default function Home() {
         >
           リンク
         </a>
+        <Link
+          href="https://bizhermit.com"
+          target="_blank"
+          disabled
+          button
+        >
+          リンク(next link)
+        </Link>
         <Button
           ref={ref}
           onClick={() => {

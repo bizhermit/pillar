@@ -123,11 +123,14 @@ export const FileDrop = <D extends DataItem.$file | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-file-drop", props.className)}
+        {...fi.iptAria}
+        aria-disabled={fi.disabled}
+        aria-readonly={fi.readOnly}
       >
         {(showAlways || empty) &&
           <div
+            role="button"
             className="ipt-file-drop-area"
             tabIndex={fi.disabled ? undefined : (fi.tabIndex ?? 0)}
             autoFocus={fi.autoFocus}

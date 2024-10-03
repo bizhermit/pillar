@@ -37,13 +37,13 @@
       transition: background-color .2s;
     }
 
-    &[data-current="true"] {
+    &[aria-selected="true"] {
       &::before {
         background: var(--c-primary);
       }
     }
 
-    &:not([data-current="true"]):not([data-disabled="true"]) {
+    &:not([aria-selected="true"]):not([aria-disabled="true"]) {
       cursor: pointer;
 
       @include mixins.hover {

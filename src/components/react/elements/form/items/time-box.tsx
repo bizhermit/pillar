@@ -399,9 +399,10 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
+        data-disabled={fi.disabled}
+        data-invalid={fi.iptAria["aria-invalid"]}
       >
         {fi.dataItem.mode !== "ms" &&
           <>
@@ -416,12 +417,13 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               maxLength={2}
               autoComplete="off"
               inputMode="numeric"
-              data-invalid={fi.attrs["data-invalid"]}
               defaultValue={fi.value?.time?.getHours()}
               onClick={() => click("h")}
               onChange={changeH}
               onKeyDown={keydownH}
               onFocus={focus}
+              aria-haspopup="dialog"
+              {...fi.iptAria}
             />
             <span
               className="ipt-sep"
@@ -442,7 +444,6 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           maxLength={2}
           autoComplete="off"
           inputMode="numeric"
-          data-invalid={fi.attrs["data-invalid"]}
           defaultValue={(() => {
             const m = fi.value?.time?.getMinutes(includeHours);
             return m == null ? undefined : includeHours ? m : `00${m}`.slice(-2);
@@ -452,6 +453,8 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           onKeyDown={keydownM}
           onFocus={focus}
           data-last={fi.dataItem.mode === "hm" ? "" : undefined}
+          aria-haspopup="dialog"
+          {...fi.iptAria}
         />
         {fi.dataItem.mode !== "hm" &&
           <>
@@ -471,7 +474,6 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               maxLength={2}
               autoComplete="off"
               inputMode="numeric"
-              data-invalid={fi.attrs["data-invalid"]}
               defaultValue={(() => {
                 const s = fi.value?.time?.getSeconds();
                 return s == null ? undefined : `00${s}`.slice(-2);
@@ -481,6 +483,8 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
               onKeyDown={keydownS}
               onFocus={focus}
               data-last=""
+              aria-haspopup="dialog"
+              {...fi.iptAria}
             />
           </>
         }
@@ -493,15 +497,17 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
           />
         }
         {fi.showButtons &&
-          <div
+          <button
             className="ipt-btn"
-            data-disabled={!fi.editable || dialog.showed}
+            type="button"
+            disabled={!fi.editable || dialog.showed}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.showed}
+            aria-haspopup="dialog"
+            aria-expanded={dialog.showed}
           >
             <ClockIcon />
-          </div>
+          </button>
         }
         {fi.clearButton(empty ? undefined : clear)}
         <Dialog
@@ -611,19 +617,21 @@ export const TimePicker = (props: TimePickerProps) => {
       const selectable = overMaxTime(hour) && !reachedMaxTime(hour);
 
       return (
-        <div
+        <button
           {...attrs}
           key={hour}
           className={pickerCellClassName}
-          data-selected={hour === hNum}
-          data-current={hour === curH}
-          data-disabled={!selectable}
+          role="listitem"
+          type="button"
+          aria-current={hour === hNum}
+          data-target={hour === curH}
+          disabled={!selectable}
           onClick={() => {
             setDispTime({ h: hour });
           }}
         >
           {hour}
-        </div>
+        </button>
       );
     };
 
@@ -656,19 +664,21 @@ export const TimePicker = (props: TimePickerProps) => {
       const selectable = overMinTime(minute) && !reachedMaxTime(minute);
 
       return (
-        <div
+        <button
           {...attrs}
           key={minute}
           className={pickerCellClassName}
-          data-selected={minute === mNum}
-          data-current={minute === curM}
-          data-disabled={!selectable}
+          role="listitem"
+          type="button"
+          aria-current={minute === mNum}
+          data-target={minute === curM}
+          disabled={!selectable}
           onClick={() => {
             setDispTime({ m: minute });
           }}
         >
           {`00${minute}`.slice(-2)}
-        </div>
+        </button>
       );
     };
 
@@ -700,19 +710,21 @@ export const TimePicker = (props: TimePickerProps) => {
       const selectable = overMinTime(second) && !reachedMaxTime(second);
 
       return (
-        <div
+        <button
           {...attrs}
           key={second}
           className={pickerCellClassName}
-          data-selected={second === sNum}
-          data-current={second === curS}
-          data-disabled={!selectable}
+          role="listitem"
+          type="button"
+          aria-current={second === sNum}
+          data-target={second === curS}
+          disabled={!selectable}
           onClick={() => {
             setDispTime({ s: second });
           }}
         >
           {`00${second}`.slice(-2)}
-        </div>
+        </button>
       );
     };
 
@@ -742,7 +754,7 @@ export const TimePicker = (props: TimePickerProps) => {
   useEffect(() => {
     if (props.showed === false) return;
     wref.current.querySelectorAll(`.${pickerListClassName}`).forEach(list => {
-      const elem = list.querySelector(`.${pickerCellClassName}[data-selected="true"]`);
+      const elem = list.querySelector(`.${pickerCellClassName}[aria-current="true"]`);
       if (elem == null) return;
       elem.scrollIntoView({ block: "center" });
     });
@@ -759,19 +771,28 @@ export const TimePicker = (props: TimePickerProps) => {
       <div className="ipt-tp-main">
         {mode !== "ms" &&
           <>
-            <div className={pickerListClassName}>
+            <div
+              className={pickerListClassName}
+              role="listbox"
+            >
               {hourCells}
             </div>
             <span className="ipt-sep">:</span>
           </>
         }
-        <div className={pickerListClassName}>
+        <div
+          className={pickerListClassName}
+          role="listbox"
+        >
           {minuteCells}
         </div>
         {mode !== "hm" &&
           <>
             <span className="ipt-sep">:</span>
-            <div className={pickerListClassName}>
+            <div
+              className={pickerListClassName}
+              role="listbox"
+            >
               {secondCells}
             </div>
           </>
@@ -779,19 +800,21 @@ export const TimePicker = (props: TimePickerProps) => {
       </div>
       <div className="ipt-tp-btns">
         {props.onCancel &&
-          <div
+          <button
             className="ipt-btn"
+            type="button"
             title="キャンセル"
             onClick={() => {
               props.onCancel!();
             }}
           >
             <CrossIcon />
-          </div>
+          </button>
         }
         {props.onSelect &&
-          <div
+          <button
             className="ipt-btn"
+            type="button"
             data-disabled={!inRange}
             onClick={() => {
               if (!inRange) return;
@@ -801,7 +824,7 @@ export const TimePicker = (props: TimePickerProps) => {
             }}
           >
             OK
-          </div>
+          </button>
         }
       </div>
     </div>

@@ -5,6 +5,7 @@ import { HTMLAttributes, ReactNode, useLayoutEffect, useRef } from "react";
 import { DownIcon } from "../icon";
 import Link from "../link";
 import { joinClassNames } from "../utilities";
+import { closeNav } from "./client-components";
 
 type NavigationMenuListOptions = {
   children?: ReactNode;
@@ -13,7 +14,7 @@ type NavigationMenuListOptions = {
 type NavigationMenuListProps = OverwriteAttrs<HTMLAttributes<HTMLUListElement>, NavigationMenuListOptions>;
 
 export const NavigationMenu = (props: NavigationMenuListProps) => {
-  return <NavMenuList {...props} />;
+  return <NavMenuList role="menu" {...props} />;
 };
 
 const NavMenuList = (props: NavigationMenuListProps) => {
@@ -62,6 +63,7 @@ export const NavMenuNest = ({
     <li
       {...props}
       className={joinClassNames("nav-menu-item-wrap", props.className)}
+      role="menuitem"
     >
       <label>
         <input
@@ -70,6 +72,7 @@ export const NavMenuNest = ({
         />
         <div
           className="nav-menu-item"
+          role="button"
           tabIndex={0}
           onKeyDown={toggleEvent}
         >
@@ -79,7 +82,15 @@ export const NavMenuNest = ({
             <DownIcon />
           </div>
         </div>
-        <div className="nav-menu-children">
+        <div
+          className="nav-menu-children"
+          onTransitionStart={(e) => {
+            if (e.target !== e.currentTarget) return;
+            const checkElem = e.currentTarget.parentElement?.querySelector(`:scope > input[type="checkbox"]`) as HTMLInputElement;
+            if (!checkElem) return;
+            e.currentTarget.inert = !checkElem.checked;
+          }}
+        >
           <NavMenuList>
             {children}
           </NavMenuList>
@@ -142,11 +153,15 @@ export const NavMenuLink = ({
       {...props}
       ref={ref}
       className={joinClassNames("nav-menu-item-wrap", className)}
+      role="menuitem"
     >
       <Link
         href={url}
         className="nav-menu-item"
-        data-selected={current}
+        aria-current={current}
+        onClick={() => {
+          closeNav();
+        }}
       >
         {icon && <NavMenuIcon>{icon}</NavMenuIcon>}
         {children}

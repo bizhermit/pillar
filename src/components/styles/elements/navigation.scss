@@ -258,9 +258,10 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     transition: width #{$transDuration},
     opacity #{$opacityTransDuration};
     overflow: hidden;
+    background: transparent;
 
     @include mixins.hover {
-      opacity: 0.7;
+      opacity: .6;
     }
   }
 
@@ -437,7 +438,7 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     user-select: none;
     transition: opacity .2s, background-color .2s, color .2s;
 
-    &[data-selected="true"] {
+    &[aria-current="true"] {
       background: var(--c-primary);
       color: var(--c-primary_);
     }

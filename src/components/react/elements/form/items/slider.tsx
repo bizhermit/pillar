@@ -125,12 +125,15 @@ export const Slider = <D extends DataItem.$num | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-slider")}
         tabIndex={fi.disabled ? undefined : (fi.tabIndex ?? 0)}
         autoFocus={fi.autoFocus}
         onKeyDown={keydown}
         onClick={click}
+        role="slider"
+        aria-valuenow={fi.value ?? undefined}
+        {...fi.iptAria}
+        aria-disabled={fi.disabled}
       >
         <div
           className="ipt-slider-bar"

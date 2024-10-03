@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useLayoutEffect, useMemo, useRef, type FormEvent, type FormHTMLAttributes, type MutableRefObject } from "react";
+import { createContext, useLayoutEffect, useMemo, useRef, type FormEvent, type FormHTMLAttributes, type KeyboardEvent, type MutableRefObject } from "react";
 import { clone } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
@@ -94,7 +94,6 @@ type FormOptions<T extends { [v: string]: any } = { [v: string]: any }> = {
   encType?: "application/x-www-form-urlencoded" | "multipart/form-data" | "text/plain";
   disabled?: boolean;
   bind?: { [v: string | number | symbol]: any };
-  preventEnterSubmit?: boolean;
   onSubmit?: ((props: {
     event: FormEvent<HTMLFormElement>;
     hasError: boolean;
@@ -115,7 +114,6 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   ref,
   disabled,
   bind,
-  preventEnterSubmit,
   onSubmit,
   onReset,
   ...props
@@ -262,6 +260,23 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
     }
   };
 
+  const keydown = (e: KeyboardEvent<HTMLFormElement>) => {
+    if ((e.target as HTMLElement).tagName !== "BUTTON") {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (e.ctrlKey) {
+          e.currentTarget.dispatchEvent(
+            new Event("submit", {
+              bubbles: true,
+              cancelable: true,
+            })
+          );
+        }
+      }
+    }
+    props.onKeyDown?.(e);
+  };
+
   if (ref) {
     ref.current = {
       getElement: () => $ref.current,
@@ -327,12 +342,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
         ref={$ref}
         onSubmit={submit}
         onReset={reset}
-        onKeyDown={preventEnterSubmit ? (e) => {
-          if (e.key === "Enter" && (e.target as HTMLElement).tagName !== "BUTTON") {
-            e.preventDefault();
-          }
-          props.onKeyDown?.(e);
-        } : props.onKeyDown}
+        onKeyDown={keydown}
       />
     </FormContext.Provider>
   );

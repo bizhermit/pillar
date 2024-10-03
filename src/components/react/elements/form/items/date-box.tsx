@@ -356,9 +356,10 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
+        data-disabled={fi.disabled}
+        data-invalid={fi.iptAria["aria-invalid"]}
       >
         <input
           ref={yref}
@@ -377,7 +378,8 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           onChange={changeY}
           onKeyDown={keydownY}
           onFocus={focus}
-          data-invalid={fi.attrs["data-invalid"]}
+          {...fi.iptAria}
+          aria-haspopup="dialog"
         />
         <span
           className="ipt-sep"
@@ -405,8 +407,9 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           onChange={changeM}
           onKeyDown={keydownM}
           onFocus={focus}
-          data-invalid={fi.attrs["data-invalid"]}
+          {...fi.iptAria}
           data-last={fi.dataItem.type === "month" ? "" : undefined}
+          aria-haspopup="dialog"
         />
         {fi.dataItem.type !== "month" &&
           <>
@@ -432,8 +435,9 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
               onChange={changeD}
               onKeyDown={keydownD}
               onFocus={focus}
-              data-invalid={fi.attrs["data-invalid"]}
+              {...fi.iptAria}
               data-last=""
+              aria-haspopup="dialog"
             />
           </>
         }
@@ -446,15 +450,17 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
           />
         }
         {fi.showButtons &&
-          <div
+          <button
             className="ipt-btn"
-            data-disabled={!fi.editable || dialog.showed}
+            type="button"
+            disabled={!fi.editable || dialog.showed}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.showed}
+            aria-haspopup="dialog"
+            aria-expanded={dialog.showed}
           >
             <CalendarIcon />
-          </div>
+          </button>
         }
         {fi.clearButton(empty ? undefined : clear)}
         <Dialog
@@ -553,13 +559,14 @@ export const DatePicker = (props: DatePickerProps) => {
       const selectable = overMaxDate(cursorDate) && !reachedMaxDate(cursorDate);
 
       return (
-        <div
+        <button
           {...attrs}
           key={key}
           className="ipt-dp-cell"
-          data-selected={selected}
-          data-disabled={!selectable}
-          data-current={isToday(cursorDate)}
+          type="button"
+          aria-current={selected}
+          disabled={!selectable}
+          data-target={isToday(cursorDate)}
           onClick={!selectable ? undefined : () => {
             const date = parseDate(str)!;
             props.onSelect?.({
@@ -569,7 +576,7 @@ export const DatePicker = (props: DatePickerProps) => {
           }}
         >
           {Month.ja[cursorDate.getMonth()]}
-        </div>
+        </button>
       );
     };
 
@@ -607,13 +614,14 @@ export const DatePicker = (props: DatePickerProps) => {
       const selectable = overMaxDate(cursorDate) && !reachedMaxDate(cursorDate);
 
       return (
-        <div
+        <button
           {...attrs}
           key={key}
           className="ipt-dp-cell"
-          data-selected={selected}
-          data-disabled={!selectable}
-          data-current={isToday(cursorDate)}
+          type="button"
+          aria-current={selected}
+          disabled={!selectable}
+          data-target={isToday(cursorDate)}
           onClick={!selectable ? undefined : () => {
             const date = parseDate(str)!;
             props.onSelect?.({
@@ -627,7 +635,7 @@ export const DatePicker = (props: DatePickerProps) => {
           }}
         >
           {cursorDate.getDate()}
-        </div>
+        </button>
       );
     };
 
@@ -753,45 +761,49 @@ export const DatePicker = (props: DatePickerProps) => {
           className="ipt-dp-year"
           data-type={type}
         >
-          <div
+          <button
             className="ipt-btn ipt-prev"
+            type="button"
             onClick={prevYear}
-            data-disabled={prevYearDisabled}
+            disabled={prevYearDisabled}
           >
             <LeftIcon />
-          </div>
+          </button>
           <span>
             {yNum}
           </span>
-          <div
+          <button
             className="ipt-btn ipt-next"
+            type="button"
             onClick={nextYear}
-            data-disabled={nextYearDisabled}
+            disabled={nextYearDisabled}
           >
             <RightIcon />
-          </div>
+          </button>
         </div>
         {type === "date" &&
           <>
             <span className="ipt-dp-sep">/</span>
             <div className="ipt-dp-month">
-              <div
+              <button
                 className="ipt-btn ipt-prev"
+                type="button"
                 onClick={prevMonth}
-                data-disabled={prevMonthDisabled}
+                disabled={prevMonthDisabled}
               >
                 <LeftIcon />
-              </div>
+              </button>
               <span>
                 {mNum + 1}
               </span>
-              <div
+              <button
                 className="ipt-btn ipt-next"
+                type="button"
                 onClick={nextMonth}
-                data-disabled={nextMonthDisabled}
+                disabled={nextMonthDisabled}
               >
                 <RightIcon />
-              </div>
+              </button>
             </div>
             <div className="ipt-dp-week">
               {weekCells}
@@ -812,25 +824,28 @@ export const DatePicker = (props: DatePickerProps) => {
       </div>
       <div className="ipt-dp-btns">
         {props.onCancel &&
-          <div
+          <button
             className="ipt-btn"
+            type="button"
             title="キャンセル"
             onClick={() => {
               props.onCancel!();
             }}
           >
             <CrossIcon />
-          </div>
+          </button>
         }
-        <div
+        <button
           className="ipt-btn"
+          type="button"
           title="今日"
           onClick={selectToday}
         >
           <TodayIcon />
-        </div>
-        <div
+        </button>
+        <button
           className="ipt-btn"
+          type="button"
           title="選択中を表示する"
           onClick={() => {
             setDispDate({
@@ -840,7 +855,7 @@ export const DatePicker = (props: DatePickerProps) => {
           }}
         >
           <UndoIcon />
-        </div>
+        </button>
       </div>
     </div>
   );

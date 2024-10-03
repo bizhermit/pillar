@@ -170,11 +170,11 @@
       width: calc(var(--ipt-size) * 0.8);
     }
 
-    &[data-disabled="true"] {
-      opacity: 0.3;
+    &:disabled {
+      opacity: .6;
     }
 
-    &:not([data-disabled="true"]) {
+    &:not(:disabled) {
       cursor: pointer;
 
       @include mixins.hover {
@@ -193,7 +193,7 @@
         transition: background-color 0.1s, transform 0.2s;
       }
 
-      &:not([data-disabled="true"]) {
+      &:not(:disabled) {
         @include mixins.hover {
 
           &::before,
@@ -209,7 +209,7 @@
         transform: rotateX(0deg);
       }
 
-      &[data-showed="true"] {
+      &[aria-expanded="true"] {
         .icon {
           transform: rotateX(180deg);
         }
@@ -278,7 +278,7 @@
       height: 50%;
     }
 
-    &:not([data-disabled="true"]) {
+    &:not(:disabled) {
       &:active {
         background: var(--ipt-fg) !important;
         color: var(--ipt-bg) !important;
@@ -374,7 +374,7 @@
     }
 
     :is(.ipt-prev, .ipt-next) {
-      &[data-disabled="true"] {
+      &:disabled {
         visibility: hidden;
         cursor: default;
       }
@@ -455,13 +455,16 @@
     user-select: none;
     border-radius: 2px;
     transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+    font-family: inherit;
+    background: transparent;
+    border: none;
 
-    &[data-disabled="true"] {
+    &:disabled {
       opacity: 0.3;
       cursor: not-allowed;
     }
 
-    &:not([data-disabled="true"]) {
+    &:not(:disabled) {
       cursor: pointer;
 
       @include mixins.hover {
@@ -470,19 +473,19 @@
       }
     }
 
-    &[data-selected="true"] {
+    &[aria-current="true"] {
       background: var(--c-primary);
       color: var(--c-primary_)
     }
 
-    &[data-current="true"] {
+    &[data-target="true"] {
       border: 1px solid var(--ipt-bd);
     }
 
     &:is([data-prev], [data-next]) {
       opacity: 0.6;
 
-      &[data-disabled="true"] {
+      &:disabled {
         opacity: 0.2;
       }
     }
@@ -562,11 +565,11 @@
       outline-style: solid;
     }
 
-    &[data-disabled="true"] {
+    &[aria-disabled="true"] {
       opacity: 0.6;
     }
 
-    &[data-invalid="true"] {
+    &[aria-invalid="true"] {
       &>.ipt-slider-bar {
         border-color: var(--ipt-bd-err);
         background: var(--ipt-bg-err);
@@ -717,7 +720,7 @@
       }
     }
 
-    &[data-invalid="true"] {
+    &[aria-invalid="true"] {
       &::before {
         background: var(--ipt-bg-err);
         border-color: var(--ipt-bd-err);
@@ -760,7 +763,7 @@
       transition: opacity 0.1s;
     }
 
-    &[data-invalid="true"] {
+    &[aria-invalid="true"] {
       &::before {
         background: var(--ipt-bg-err);
         border-color: var(--ipt-bd-err);
@@ -824,7 +827,7 @@
       flex: 1 1 0rem;
     }
 
-    &:not([data-disabled="true"], [data-readonly="true"]) {
+    &:not([aria-disabled="true"], [aria-readonly="true"]) {
       .ipt-file-drop-area {
         &[data-click="true"] {
           cursor: pointer;
@@ -844,11 +847,11 @@
       }
     }
 
-    &[data-disabled="true"] {
+    &[aria-disabled="true"] {
       opacity: 0.6;
     }
 
-    &[data-invalid="true"] {
+    &[aria-invalid="true"] {
       .ipt-file-drop-area {
         background: var(--ipt-bg-err);
         border-color: var(--ipt-bd-err);
@@ -880,13 +883,6 @@
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
-
-    &[data-invalid="true"] {
-      &>.ipt-canvas {
-        border-color: var(--ipt-bd-err);
-        box-shadow: inset 0 0 0 3px var(--ipt-bd-err);
-      }
-    }
   }
 
   .ipt-canvas {
@@ -901,6 +897,11 @@
 
     &:focus {
       outline-style: solid;
+    }
+
+    &[aria-invalid="true"] {
+      border-color: var(--ipt-bd-err);
+      box-shadow: inset 0 0 0 3px var(--ipt-bd-err);
     }
   }
 
@@ -963,22 +964,26 @@
     cursor: pointer;
     transition: background-color 0.1s, color 0.1s;
     border-radius: 2px;
+    font-size: inherit;
+    font-family: inherit;
+    border: none;
+    background: transparent;
 
     @include mixins.hover {
       background: var(--ipt-fg);
       color: var(--ipt-bg);
     }
 
-    &[data-selected="true"] {
+    &[aria-current="true"] {
       color: var(--c-primary_);
       background: var(--c-primary);
     }
 
-    &[data-disabled="true"] {
-      opacity: 0.6;
+    &:disabled {
+      opacity: .6;
     }
 
-    &[data-current="true"] {
+    &[data-target="true"] {
       border: 1px solid var(--ipt-bd);
     }
   }

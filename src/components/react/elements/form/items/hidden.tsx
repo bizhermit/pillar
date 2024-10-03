@@ -132,13 +132,13 @@ export const Hidden = <V extends any, D extends DataItem.$object | undefined>({
     <>
       <input
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-hidden", props.className)}
         type="hidden"
         name={fi.name}
         disabled={fi.disabled}
         readOnly={fi.readOnly}
         value={empty ? "" : String(fi.value)}
+        {...fi.iptAria}
       />
       {fi.messageComponent}
     </>

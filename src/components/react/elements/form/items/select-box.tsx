@@ -175,7 +175,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   const findSelectedOrFirstItemElem = () => {
     const pElem = iref.current.parentElement;
     if (!pElem) return;
-    const elem = pElem.querySelector(`dialog .${listItemClassName}[data-selected="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`);
+    const elem = pElem.querySelector(`dialog .${listItemClassName}[aria-current="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`);
     if (!elem) return;
     return elem as HTMLDivElement;
   };
@@ -326,10 +326,10 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
-        data-readonly={fi.attrs["data-readonly"] || loading}
         className={joinClassNames("ipt-field", props.className)}
         onBlur={blur}
+        data-disabled={fi.disabled}
+        data-invalid={fi.iptAria["aria-invalid"]}
       >
         <input
           ref={iref}
@@ -341,10 +341,11 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           tabIndex={fi.tabIndex}
           autoFocus={fi.autoFocus}
           autoComplete="off"
-          data-invalid={fi.attrs["data-invalid"]}
           onClick={clickInput}
           onKeyDown={keydown}
           onChange={change}
+          aria-haspopup="listbox"
+          {...fi.iptAria}
         />
         {fi.mountValue &&
           <>
@@ -368,15 +369,17 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           </>
         }
         {fi.showButtons &&
-          <div
+          <button
             className="ipt-btn ipt-pull"
-            data-disabled={!fi.editable || loading}
+            type="button"
+            disabled={!fi.editable || loading}
             onClick={clickPull}
             tabIndex={-1}
-            data-showed={dialog.showed}
+            aria-haspopup="listbox"
+            aria-expanded={dialog.showed}
           >
             <DownFillIcon />
-          </div>
+          </button>
         }
         {fi.clearButton(empty || loading ? undefined : clear)}
         <Dialog
@@ -386,7 +389,10 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           className="ipt-dialog ipt-dialog-list"
         >
           <div className="ipt-mask" data-show={loading} />
-          <div className="ipt-list">
+          <div
+            className="ipt-list"
+            role="listbox"
+          >
             {$emptyItem &&
               <ListItem
                 loading={loading}
@@ -456,7 +462,7 @@ const ListItem = ({
 }: ListItemProps) => {
   const selected = (!empty && equals(value, currentValue)) || (empty ? equals(initFocusValue, value) : false);
 
-  const keydown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const keydown = (e: KeyboardEvent<HTMLButtonElement>) => {
     e.preventDefault();
     switch (e.key) {
       case "Enter":
@@ -489,15 +495,17 @@ const ListItem = ({
   };
 
   return (
-    <div
+    <button
       className={listItemClassName}
+      type="button"
+      role="listitem"
       tabIndex={-1}
       autoFocus={selected}
-      data-selected={selected}
+      aria-current={selected}
       onClick={onSelect}
       onKeyDown={keydown}
     >
       {children}
-    </div>
+    </button>
   );
 };

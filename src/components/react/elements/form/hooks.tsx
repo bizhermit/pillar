@@ -387,6 +387,8 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   const $required = typeof dataItem.required === "function" ? dyanmicRequired : dataItem.required;
   const showButtons = !$disabled;
 
+  const errMsgId = (!hideMessage && msg?.type === "e" && !$disabled) ? `${id}_err` : undefined;
+
   return {
     name: dataItem.name,
     label,
@@ -413,33 +415,34 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     clear,
     autoFocus,
     props,
-    attrs: {
-      "data-required": $required,
-      "data-disabled": disabled || form.disabled,
-      "data-readonly": readOnly || form.processing,
-      "data-invalid": editable && msg?.type === "e",
-      "data-label": $dataItem?.label,
-      "data-changed": mountValue,
+    iptAria: {
+      "aria-label": $dataItem?.label,
+      "aria-invalid": editable && msg?.type === "e",
+      "aria-errormessage": errMsgId,
+      "aria-required": $required,
     },
     // message: msg,
-    messageComponent: (!hideMessage && msg?.type === "e" && !$disabled &&
+    messageComponent: (errMsgId &&
       <span
         className="ipt-msg"
-        data-state={msg.type}
+        data-state={msg!.type}
+        id={errMsgId}
       >
-        {msg.msg}
+        {msg!.msg}
       </span>
     ),
+    errMsgId,
     clearButton: (clear: (() => void) | undefined) => (
       !hideClearButton && showButtons &&
-      <div
+      <button
         className="ipt-btn ipt-clear"
+        type="button"
         tabIndex={-1}
-        data-disabled={!editable || !clear}
+        disabled={!editable || !clear}
         onClick={clear}
       >
         <CrossIcon />
-      </div>
+      </button>
     ),
   } as const;
 };

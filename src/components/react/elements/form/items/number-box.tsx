@@ -169,8 +169,9 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
     <>
       <div
         {...fi.props}
-        {...fi.attrs}
         className={joinClassNames("ipt-field", props.className)}
+        data-disabled={fi.disabled}
+        data-invalid={fi.iptAria["aria-invalid"]}
       >
         <input
           ref={iref}
@@ -189,7 +190,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           onKeyDown={keydown}
           onFocus={focus}
           onBlur={blur}
-          data-invalid={fi.attrs["data-invalid"]}
+          {...fi.iptAria}
         />
         {fi.mountValue &&
           <input
@@ -202,22 +203,24 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
         {!hideSpinButtons && fi.showButtons &&
           <>
             <div className="ipt-num-spins">
-              <div
+              <button
                 className="ipt-btn ipt-num-spin-inc"
-                data-disabled={!fi.editable}
+                type="button"
+                disabled={!fi.editable}
                 tabIndex={-1}
                 onMouseDown={() => mousedown("up")}
               >
                 <UpFillIcon />
-              </div>
-              <div
+              </button>
+              <button
                 className="ipt-btn ipt-num-spin-dec"
-                data-disabled={!fi.editable}
+                type="button"
+                disabled={!fi.editable}
                 tabIndex={-1}
                 onMouseDown={() => mousedown("down")}
               >
                 <DownFillIcon />
-              </div>
+              </button>
             </div>
           </>
         }

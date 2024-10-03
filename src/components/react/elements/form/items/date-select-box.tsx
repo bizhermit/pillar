@@ -214,7 +214,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
       }
     })();
     if (!pElem) return;
-    const elem = pElem.querySelector(`dialog .${listItemClassName}[data-selected="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`);
+    const elem = pElem.querySelector(`dialog .${listItemClassName}[aria-current="true"]`) ?? pElem.querySelector(`dialog .${listItemClassName}`);
     if (!elem) return;
     return elem as HTMLDivElement;
   };
@@ -655,10 +655,11 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         onBlur={blurWrap}
       >
         <div
-          {...fi.attrs}
           className="ipt-field"
           onClick={() => click("y")}
           onBlur={(e) => blur(e, "y")}
+          data-disabled={fi.disabled}
+          data-invalid={fi.iptAria["aria-invalid"]}
         >
           <input
             ref={yref}
@@ -676,18 +677,21 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             onChange={changeY}
             onKeyDown={keydownY}
             onFocus={focus}
-            data-invalid={fi.attrs["data-invalid"]}
+            {...fi.iptAria}
+            aria-haspopup="listbox"
           />
           {fi.showButtons &&
-            <div
+            <button
               className="ipt-btn ipt-pull"
-              data-disabled={!fi.editable || yDialog.showed}
+              type="button"
+              disabled={!fi.editable || yDialog.showed}
               tabIndex={-1}
-              data-showed={yDialog.showed}
+              aria-haspopup="listbox"
+              aria-expanded={yDialog.showed}
               data-slim
             >
               <DownFillIcon />
-            </div>
+            </button>
           }
           <Dialog
             modeless
@@ -697,6 +701,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
           >
             <div
               className="ipt-list"
+              role="listbox"
               data-align="center"
             >
               {yearItems}
@@ -705,10 +710,11 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         </div>
         <span className="ipt-sep">年</span>
         <div
-          {...fi.attrs}
           className="ipt-field"
           onClick={() => click("m")}
           onBlur={(e) => blur(e, "m")}
+          data-disabled={fi.disabled}
+          data-invalid={fi.iptAria["aria-invalid"]}
         >
           <input
             ref={mref}
@@ -729,18 +735,21 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
             onChange={changeM}
             onKeyDown={keydownM}
             onFocus={focus}
-            data-invalid={fi.attrs["data-invalid"]}
+            {...fi.iptAria}
+            aria-haspopup="listbox"
           />
           {fi.showButtons &&
-            <div
+            <button
               className="ipt-btn ipt-pull"
-              data-disabled={!fi.editable || mDialog.showed}
+              type="button"
+              disabled={!fi.editable || mDialog.showed}
               tabIndex={-1}
-              data-showed={mDialog.showed}
+              aria-haspopup="listbox"
+              aria-expanded={mDialog.showed}
               data-slim
             >
               <DownFillIcon />
-            </div>
+            </button>
           }
           <Dialog
             modeless
@@ -750,6 +759,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
           >
             <div
               className="ipt-list"
+              role="listbox"
               data-align="center"
             >
               {monthItems}
@@ -760,10 +770,11 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
         {fi.dataItem.type === "date" &&
           <>
             <div
-              {...fi.attrs}
               className="ipt-field"
               onClick={() => click("d")}
               onBlur={(e) => blur(e, "d")}
+              data-disabled={fi.disabled}
+              data-invalid={fi.iptAria["aria-invalid"]}
             >
               <input
                 ref={dref}
@@ -780,18 +791,21 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
                 onChange={changeD}
                 onKeyDown={keydownD}
                 onFocus={focus}
-                data-invalid={fi.attrs["data-invalid"]}
+                {...fi.iptAria}
+                aria-haspopup="listbox"
               />
               {fi.showButtons &&
-                <div
+                <button
                   className="ipt-btn ipt-pull"
-                  data-disabled={!fi.editable || dDialog.showed}
+                  type="button"
+                  disabled={!fi.editable || dDialog.showed}
                   tabIndex={-1}
-                  data-showed={dDialog.showed}
+                  aria-haspopup="listbox"
+                  aria-expanded={dDialog.showed}
                   data-slim
                 >
                   <DownFillIcon />
-                </div>
+                </button>
               }
               <Dialog
                 modeless
@@ -801,6 +815,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
               >
                 <div
                   className="ipt-list"
+                  role="listbox"
                   data-align="center"
                 >
                   {dayItems}
@@ -873,7 +888,7 @@ const ListItem = ({
 }: ListItemProps) => {
   const selected = (!empty && equals(value, currentValue)) || (empty ? equals(initFocusValue, value) : false);
 
-  const keydown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const keydown = (e: KeyboardEvent<HTMLButtonElement>) => {
     e.preventDefault();
     switch (e.key) {
       case "Enter":
@@ -903,13 +918,15 @@ const ListItem = ({
   };
 
   return (
-    <div
+    <button
       className={listItemClassName}
+      role="listitem"
+      type="button"
       tabIndex={-1}
       autoFocus={selected}
-      data-selected={selected}
-      data-disabled={disabled}
-      data-current={today}
+      aria-current={selected}
+      disabled={disabled}
+      data-target={today}
       onClick={(e) => {
         e.stopPropagation();
         onSelect();
@@ -917,6 +934,6 @@ const ListItem = ({
       onKeyDown={keydown}
     >
       {children}
-    </div>
+    </button>
   );
 };

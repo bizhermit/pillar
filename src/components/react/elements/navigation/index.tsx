@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { CrossIcon, MenuIcon, MenuLeftIcon, MenuRightIcon } from "../icon";
 import { joinClassNames } from "../utilities";
-import { NavSizeAutoButton } from "./client-components";
+import { NavCloseBtn, NavMinBtn, NavOpenBtn, NavSizeAutoButton, NavVisBtn } from "./client-components";
 import { navMinId, navOpenId, navToggleRadioName, navVisId } from "./consts";
 
 type NavigationProps = {
@@ -41,16 +41,10 @@ export const Navigation = (props: NavigationProps) => {
       />
       <nav className="nav-wrap">
         <div className="nav-btn-wrap nav-toggle">
-          <label className="nav-btn nav-vis" htmlFor={navVisId}>
-            <MenuRightIcon />
-          </label>
+          <NavVisBtn><MenuRightIcon /></NavVisBtn>
           <NavSizeAutoButton />
-          <label className="nav-btn nav-close" htmlFor={navOpenId}>
-            <CrossIcon />
-          </label>
-          <label className="nav-btn nav-min" htmlFor={navMinId}>
-            <MenuLeftIcon />
-          </label>
+          <NavCloseBtn><CrossIcon /></NavCloseBtn>
+          <NavMinBtn><MenuLeftIcon /></NavMinBtn>
         </div>
         <div className="nav">
           <div className={joinClassNames("nav-contents", props.navClassName)}>
@@ -60,9 +54,7 @@ export const Navigation = (props: NavigationProps) => {
       </nav>
       <header className="header-wrap">
         <div className="nav-btn-wrap nav-open">
-          <label className="nav-btn" htmlFor={navOpenId}>
-            <MenuIcon />
-          </label>
+          <NavOpenBtn><MenuIcon /></NavOpenBtn>
         </div>
         <div className={joinClassNames("header", props.headerClassName)}>
           {props.header}
