@@ -19,3 +19,10 @@ export const analyzeHeaderAcceptLang = (str: string | null | undefined) => {
     .map(({ l }) => l)
     .join(",") || DEFAULT_LANG;
 };
+
+export const langLoadLogAtClient = (lang: LANG, key: string) => {
+  if (typeof window === "undefined") return;
+  if (process.env.APP_MODE !== "dev") return;
+  // eslint-disable-next-line no-console
+  console.info(`load lang: [${lang}]-[${key}]`);
+};

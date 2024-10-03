@@ -6,6 +6,9 @@ const nextConfig = {
   typescript: {
     tsconfigPath: './src/tsconfig.json',
   },
+  env: {
+    APP_MODE: appMode,
+  },
   ...(outputMode === 'dist' ? {
     output: 'export',
     distDir: 'dist/out',
