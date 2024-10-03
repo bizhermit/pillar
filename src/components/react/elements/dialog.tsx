@@ -101,6 +101,7 @@ export const Dialog = ({
       hookRef.current?.(false);
       if (modeless) dref.current.hidePopover();
       else dref.current.close();
+      dref.current.inert = true;
       opts?.callbackBeforeAnimation?.();
       onClose?.();
       return;
@@ -281,6 +282,7 @@ export const Dialog = ({
 
   useEffect(() => {
     if (!showed) return;
+    dref.current.inert = false;
     if (modeless) dref.current.showPopover();
     else dref.current.showModal();
     resetPosition();
@@ -328,6 +330,7 @@ export const Dialog = ({
     <dialog
       tabIndex={-1}
       {...props}
+      inert={true}
       open={undefined}
       className={joinClassNames("dialog", props.className)}
       ref={dref}
