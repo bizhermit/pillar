@@ -1,3 +1,5 @@
+import { LANG_KEY } from "@/i18n/consts";
+import { analyzeHeaderAcceptLang } from "@/i18n/utilities";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { NextResponse } from "next/server";
@@ -47,9 +49,20 @@ export const {
     }),
   ],
   callbacks: {
-    authorized: async ({ auth, request: { nextUrl } }) => {
-      if (/^(\/|\/api|\/api\/auth\/.*)$/.test(nextUrl.pathname) || /^\/(sign-in|sandbox)(\/|$)/.test(nextUrl.pathname)) return true;
-      if (auth?.user != null) return true;
+    authorized: async ({ auth, request: { nextUrl, cookies, headers } }) => {
+      const res = NextResponse.next();
+      if (!cookies.get(LANG_KEY)) {
+        const lang = analyzeHeaderAcceptLang(headers.get("accept-language"));
+        cookies.set(LANG_KEY, lang);
+        res.cookies.set({
+          name: LANG_KEY,
+          value: lang,
+          path: "/",
+          sameSite: "lax",
+        });
+      }
+      if (/^(\/|\/api|\/api\/auth\/.*)$/.test(nextUrl.pathname) || /^\/(sign-in|sandbox)(\/|$)/.test(nextUrl.pathname)) return res;
+      if (auth?.user != null) return res;
       const url = new URL(signInPageUrl, nextUrl);
       url.searchParams.set(authErrorCallbackUrlQueryName, nextUrl.href);
       if (/.*\/api(\/|$)/.test(nextUrl.pathname)) return NextResponse.json({
