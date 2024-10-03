@@ -11,6 +11,6 @@ export const clearLang = (preventReload?: boolean) => {
   if (!preventReload) window.location.reload();
 };
 
-export const getLang = () => {
+export const getLangs = () => {
   return getCookie(LANG_KEY);
 };

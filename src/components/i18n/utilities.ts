@@ -15,5 +15,7 @@ export const analyzeHeaderAcceptLang = (str: string | null | undefined) => {
       };
     })
     .sort((l1, l2) => l2.q - l1.q)
-    .find(({ l }) => LANGS.find(L => L === l))?.l ?? DEFAULT_LANG;
+    .filter(({ l }) => LANGS.find(L => L === l))
+    .map(({ l }) => l)
+    .join(",") || DEFAULT_LANG;
 };

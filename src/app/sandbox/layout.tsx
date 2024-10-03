@@ -10,7 +10,7 @@ import { InputsAsServer } from "./inputs-server";
 import css from "./layout.module.scss";
 
 const Layout = (props: { children: ReactNode; }) => {
-  const lang = cookies().get("lang")?.value;
+  const langs = cookies().get("lang")?.value;
 
   return (
     <FetchProvider>
@@ -18,7 +18,7 @@ const Layout = (props: { children: ReactNode; }) => {
         header={
           <h1>
             <Link href="/sandbox" noDecoration>Sandbox</Link>
-            <span> - {lang}</span>
+            <span> - {langs}</span>
           </h1>
         }
         content={props.children}
