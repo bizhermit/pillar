@@ -1,8 +1,9 @@
 import { getLangs } from "./client";
 import { DEFAULT_LANG, LANG_KEY } from "./consts";
 
-export const langFactory = () => {
-  const langs = (() => {
+export const langFactory = (langs?: Array<Lang>) => {
+  const $langs = (() => {
+    if (langs != null) return langs;
     if (typeof window === "undefined") {
       const { cookies } = require("next/headers");
       return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<Lang>;
@@ -17,8 +18,8 @@ export const langFactory = () => {
 
   return ((key, arg) => {
     const [kind, k] = key.split(".");
-    for (let i = 0, il = langs.length; i < il; i++) {
-      const lang = langs[i];
+    for (let i = 0, il = $langs.length; i < il; i++) {
+      const lang = $langs[i];
       if (cache[lang] == null) cache[lang] = {};
       if (!(kind in cache[lang]!)) {
         try {
