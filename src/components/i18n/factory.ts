@@ -5,7 +5,7 @@ export const langFactory = () => {
   const langs = (() => {
     if (typeof window === "undefined") {
       const { cookies } = require("next/headers");
-      return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<LANG>;
+      return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<Lang>;
     }
     return getLangs();
   })();
@@ -15,7 +15,7 @@ export const langFactory = () => {
     return (global as any).i18n;
   })();
 
-  return (key: `${string}.${string}`, arg?: { [v: string]: any }) => {
+  return ((key, arg) => {
     const [kind, k] = key.split(".");
     for (let i = 0, il = langs.length; i < il; i++) {
       const lang = langs[i];
@@ -30,7 +30,8 @@ export const langFactory = () => {
       }
       const func = cache[lang]![kind]?.[k];
       if (func == null) continue;
-      return func(arg);
+      if (typeof func === "function") return func(arg as any);
+      return func;
     }
     if (cache[DEFAULT_LANG] == null) cache[DEFAULT_LANG] = {};
     try {
@@ -38,6 +39,8 @@ export const langFactory = () => {
     } catch (e) {
       cache[DEFAULT_LANG]![kind] = null;
     }
-    return cache[DEFAULT_LANG]![kind]?.[k]?.(arg);
-  };
+    const func = cache[DEFAULT_LANG]![kind]?.[k];
+    if (typeof func === "function") return func(arg as any);
+    return func;
+  }) as LangAccessor;
 };

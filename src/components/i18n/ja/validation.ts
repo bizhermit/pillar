@@ -1,11 +1,11 @@
 import { langLoadLogAtClient } from "../utilities";
 
-const kind = "common";
+const kind = "validation";
 
 langLoadLogAtClient("ja", kind);
 
-const Common = {
-  halloWorld: "新世界へようこそ",
+const Validation = {
+  required: () => "入力してください。",
 } as const satisfies I18N_Langs[typeof kind];
 
-export default Common;
+export default Validation;

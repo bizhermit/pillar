@@ -43,6 +43,8 @@ const Page = () => {
         en
       </Button>
       <span>{lang("common.halloWorld")}</span>
+      <br />
+      <span>{lang("validation.required", { s: "hoge" })}</span>
     </div>
   );
 };

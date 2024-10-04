@@ -3,7 +3,7 @@
 import { deleteCookie, getCookie, setCookie } from "../utilities/cookie";
 import { DEFAULT_LANG, LANG_KEY } from "./consts";
 
-export const setLang = (lang: LANG) => {
+export const setLang = (lang: Lang) => {
   setCookie(LANG_KEY, lang, { path: "/" });
   window.location.reload();
 };
@@ -14,9 +14,9 @@ export const clearLang = (preventReload?: boolean) => {
 };
 
 export const getLangs = () => {
-  return (getCookie(LANG_KEY)?.split(",") as unknown as Array<LANG>) ?? [DEFAULT_LANG];
+  return (getCookie(LANG_KEY)?.split(",") as unknown as Array<Lang>) ?? [DEFAULT_LANG];
 };
 
-export const setLangs = (langs: Array<LANG>) => {
+export const setLangs = (langs: Array<Lang>) => {
   setCookie(LANG_KEY, langs.join(","), { path: "/" });
 };
