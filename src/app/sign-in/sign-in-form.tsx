@@ -23,6 +23,7 @@ export const SignInForm = (props: Props) => {
     <div className={css.wrap}>
       <Form
         className={css.form}
+        enterSubmit
         onSubmit={async ({ getBindData, keepLock }) => {
           try {
             const res = await signIn("credentials", {
