@@ -93,6 +93,7 @@ type FormOptions<T extends { [v: string]: any } = { [v: string]: any }> = {
   ref?: MutableRefObject<FormRef<T> | null>;
   encType?: "application/x-www-form-urlencoded" | "multipart/form-data" | "text/plain";
   disabled?: boolean;
+  enterSubmit?: boolean;
   bind?: { [v: string | number | symbol]: any };
   onSubmit?: ((props: {
     event: FormEvent<HTMLFormElement>;
@@ -113,6 +114,7 @@ type FormProps<T extends { [v: string]: any } = { [v: string]: any }> = Overwrit
 export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   ref,
   disabled,
+  enterSubmit,
   bind,
   onSubmit,
   onReset,
@@ -261,17 +263,15 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   };
 
   const keydown = (e: KeyboardEvent<HTMLFormElement>) => {
-    if ((e.target as HTMLElement).tagName !== "BUTTON") {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        if (e.ctrlKey) {
-          e.currentTarget.dispatchEvent(
-            new Event("submit", {
-              bubbles: true,
-              cancelable: true,
-            })
-          );
-        }
+    if (!enterSubmit && e.key === "Enter" && (e.target as HTMLElement).tagName !== "BUTTON") {
+      e.preventDefault();
+      if (e.ctrlKey) {
+        e.currentTarget.dispatchEvent(
+          new Event("submit", {
+            bubbles: true,
+            cancelable: true,
+          })
+        );
       }
     }
     props.onKeyDown?.(e);
