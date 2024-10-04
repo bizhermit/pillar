@@ -4,8 +4,8 @@ const kind = "validation";
 
 langLoadLogAtClient("ja", kind);
 
-const Validation = {
+const LangValidation = {
   required: () => "入力してください。",
 } as const satisfies I18N_Langs[typeof kind];
 
-export default Validation;
+export default LangValidation;

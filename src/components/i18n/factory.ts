@@ -5,8 +5,12 @@ export const langFactory = (langs?: Array<Lang>) => {
   const $langs = (() => {
     if (langs != null) return langs;
     if (typeof window === "undefined") {
-      const { cookies } = require("next/headers");
-      return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<Lang>;
+      try {
+        const { cookies } = require("next/headers");
+        return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<Lang>;
+      } catch {
+        return [DEFAULT_LANG] as Array<Lang>;
+      }
     }
     return getLangs();
   })();

@@ -4,10 +4,10 @@ const kind = "sandbox";
 
 langLoadLogAtClient("ja", kind);
 
-const Sandbox = {
+const LangSandbox = {
   sample_textLabel: "text",
   sample_numberLabel: "number",
   sample_boolLabel: "boolean",
 } as const satisfies I18N_Langs[typeof kind];
 
-export default Sandbox;
+export default LangSandbox;

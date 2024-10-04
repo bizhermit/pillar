@@ -4,8 +4,8 @@ const kind = "common";
 
 langLoadLogAtClient("en", "common");
 
-const Common = {
+const LangCommon = {
   halloWorld: () => "Hallo, World.",
 } as const satisfies Partial<I18N_Langs[typeof kind]>;
 
-export default Common;
+export default LangCommon;

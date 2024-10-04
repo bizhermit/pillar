@@ -1,6 +1,7 @@
 "use client";
 
 import { authErrorCallbackUrlQueryName, signIn_email, signIn_password } from "@/auth/consts";
+import { langFactory } from "@/i18n/factory";
 import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
@@ -18,6 +19,7 @@ type Props = {
 export const SignInForm = (props: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const lang = langFactory();
 
   return (
     <div className={css.wrap}>
@@ -41,7 +43,7 @@ export const SignInForm = (props: Props) => {
             router.push(props.redirectUrl);
           } catch (e) {
             $alert({
-              body: "SignIn Error",
+              body: lang("auth.authError"),
               color: "danger",
             });
           }
@@ -61,7 +63,7 @@ export const SignInForm = (props: Props) => {
           hideMessage
         />
         <FormButton type="submit">
-          SignIn
+          {lang("auth.signInBtn")}
         </FormButton>
       </Form>
     </div>

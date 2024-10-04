@@ -1,4 +1,5 @@
 import { LANG_KEY } from "@/i18n/consts";
+import { langFactory } from "@/i18n/factory";
 import { analyzeHeaderAcceptLang } from "@/i18n/utilities";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -65,13 +66,16 @@ export const {
       if (auth?.user != null) return res;
       const url = new URL(signInPageUrl, nextUrl);
       url.searchParams.set(authErrorCallbackUrlQueryName, nextUrl.href);
-      if (/.*\/api(\/|$)/.test(nextUrl.pathname)) return NextResponse.json({
-        message: {
-          type: "e",
-          title: "認証エラー",
-          body: "サインインしてください。",
-        } as const satisfies Api.Message,
-      }, { status: 401 });
+      if (/.*\/api(\/|$)/.test(nextUrl.pathname)) {
+        const lang = langFactory(cookies.get(LANG_KEY)?.value.split(",") as Array<Lang>);
+        return NextResponse.json({
+          message: {
+            type: "e",
+            title: lang("auth.authError"),
+            body: lang("auth.signIn"),
+          } as const satisfies Api.Message,
+        }, { status: 401 });
+      }
       return NextResponse.redirect(url);
     },
   },
