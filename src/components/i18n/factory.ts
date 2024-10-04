@@ -1,4 +1,4 @@
-import { getCookie } from "../utilities/cookie";
+import { getLangs } from "./client";
 import { DEFAULT_LANG, LANG_KEY } from "./consts";
 
 export const langFactory = () => {
@@ -7,7 +7,7 @@ export const langFactory = () => {
       const { cookies } = require("next/headers");
       return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<LANG>;
     }
-    return (getCookie(LANG_KEY)?.split(",") as unknown as Array<LANG>) ?? [DEFAULT_LANG];
+    return getLangs();
   })();
 
   const cache: Partial<LangCache> = (() => {

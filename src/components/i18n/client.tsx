@@ -14,7 +14,7 @@ export const clearLang = (preventReload?: boolean) => {
 };
 
 export const getLangs = () => {
-  return (getCookie(LANG_KEY)?.split(".") as unknown as Array<LANG>) ?? [DEFAULT_LANG];
+  return (getCookie(LANG_KEY)?.split(",") as unknown as Array<LANG>) ?? [DEFAULT_LANG];
 };
 
 export const setLangs = (langs: Array<LANG>) => {
