@@ -35,6 +35,7 @@ import { LayoutContext } from "@/react/hooks/layout";
 import useRouter from "@/react/hooks/router";
 import { sleep } from "@/utilities/sleep";
 import { use, useRef, useState } from "react";
+import { sample_bool, sample_number, sample_text } from "../data-items";
 import css from "./page.module.css";
 
 export default function Home() {
@@ -345,19 +346,23 @@ export default function Home() {
         </InputTabContainer>
         <div className={css.row}>
           {/* <div style={{ width: 150 }}> */}
+          <span>
+            {sample_text.label}
+          </span>
           <FormItemWrap>
             <TextBox
-              placeholder="テキスト"
-              name="text"
-              label="テキスト"
-              // defaultValue="hoge"
-              required={(p) => {
-                // console.log((p.data?.slider ?? 0) > 50);
-                return (p.data?.slider ?? 0) > 50;
-              }}
-              refs={["slider"]}
+              // placeholder="テキスト"
+              // name="text"
+              // label="テキスト"
+              // // defaultValue="hoge"
+              // required={(p) => {
+              //   // console.log((p.data?.slider ?? 0) > 50);
+              //   return (p.data?.slider ?? 0) > 50;
+              // }}
+              // refs={["slider"]}
               disabled={disabled.value}
               readOnly={readOnly.value}
+              dataItem={sample_text}
             // hook={formItem.hook}
             />
           </FormItemWrap>
@@ -391,10 +396,11 @@ export default function Home() {
             <span>Label:</span>
             <FormItemWrap>
               <CheckBox
-                label="チェックボックス"
-                name="check"
-                required
+                // label="チェックボックス"
+                // name="check"
+                // required
                 // requiredIsTrue
+                dataItem={sample_bool}
                 disabled={disabled.value}
                 readOnly={readOnly.value}
               >
@@ -404,9 +410,10 @@ export default function Home() {
           </label>
           <FormItemWrap style={{ width: 150 }}>
             <NumberBox
-              label="数値"
-              name="num"
-              required
+              // label="数値"
+              // name="num"
+              // required
+              dataItem={sample_number}
               disabled={disabled.value}
               readOnly={readOnly.value}
               // float={1}

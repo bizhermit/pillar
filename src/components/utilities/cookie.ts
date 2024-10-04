@@ -50,6 +50,6 @@ export const setCookie = (name: string, value: string, opts?: CookieOptions) => 
   document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)};${strs.join(";")}`;
 };
 
-export const deleteCookie = (name: string) => {
-  setCookie(name, "", { maxAge: 0 });
+export const deleteCookie = (name: string, opts?: Pick<CookieOptions, "path" | "domain">) => {
+  setCookie(name, "", { ...opts, maxAge: 0 });
 };

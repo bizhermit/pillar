@@ -9,7 +9,7 @@ export const setLang = (lang: Lang) => {
 };
 
 export const clearLang = (preventReload?: boolean) => {
-  deleteCookie(LANG_KEY);
+  deleteCookie(LANG_KEY, { path: "/" });
   if (!preventReload) window.location.reload();
 };
 
