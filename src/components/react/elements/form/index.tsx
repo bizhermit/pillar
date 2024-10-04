@@ -263,17 +263,15 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   };
 
   const keydown = (e: KeyboardEvent<HTMLFormElement>) => {
-    if ((e.target as HTMLElement).tagName !== "BUTTON") {
-      if (!enterSubmit && e.key === "Enter") {
-        e.preventDefault();
-        if (e.ctrlKey) {
-          e.currentTarget.dispatchEvent(
-            new Event("submit", {
-              bubbles: true,
-              cancelable: true,
-            })
-          );
-        }
+    if (!enterSubmit && e.key === "Enter" && (e.target as HTMLElement).tagName !== "BUTTON") {
+      e.preventDefault();
+      if (e.ctrlKey) {
+        e.currentTarget.dispatchEvent(
+          new Event("submit", {
+            bubbles: true,
+            cancelable: true,
+          })
+        );
       }
     }
     props.onKeyDown?.(e);
