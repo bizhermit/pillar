@@ -2,10 +2,13 @@
 "use client";
 
 import { clearLang, setLang } from "@/i18n/client";
+import { langFactory } from "@/i18n/factory";
 import { Button } from "@/react/elements/button";
 import { getCookie } from "@/utilities/cookie";
 
 const Page = () => {
+  const lang = langFactory();
+
   return (
     <div>
       <Button
@@ -39,6 +42,7 @@ const Page = () => {
       >
         en
       </Button>
+      <span>{lang("common.halloWorld")}</span>
     </div>
   );
 };
