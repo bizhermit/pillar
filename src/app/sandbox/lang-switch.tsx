@@ -1,14 +1,10 @@
-/* eslint-disable no-console */
 "use client";
 
 import { clearLang, setLang } from "@/i18n/client";
-import { langFactory } from "@/i18n/factory";
 import { Button } from "@/react/elements/button";
 import { getCookie } from "@/utilities/cookie";
 
-const Page = () => {
-  const lang = langFactory();
-
+export const LnagSwitch = () => {
   return (
     <div>
       <Button
@@ -42,11 +38,6 @@ const Page = () => {
       >
         en
       </Button>
-      <span>{lang("common.halloWorld")}</span>
-      <br />
-      <span>{lang("validation.required", { s: 1 })}</span>
     </div>
   );
 };
-
-export default Page;

@@ -1,5 +1,6 @@
 "use client";
 
+import { langFactory } from "@/i18n/factory";
 import { use, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
 import { equals } from "../../../objects";
@@ -40,6 +41,7 @@ type FormItemCoreArgs<
 
 const env: DataItem.Env = {
   tzOffset: new Date().getTimezoneOffset(),
+  lang: langFactory(),
 };
 
 export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V, DV extends any = V>({
@@ -71,7 +73,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   const dataItem = useMemo(() => {
     const $name = name || $dataItem?.name;
     const $required = required ?? $dataItem?.required;
-    const $label = label || $dataItem?.label;
+    const $label = label || ($dataItem?.labelLang ? env.lang($dataItem?.labelLang) : "") || $dataItem?.label;
     const $refs = (() => {
       const ret = [...(refs ?? []), ...($dataItem?.refs ?? [])];
       if (ret.length === 0) return undefined;

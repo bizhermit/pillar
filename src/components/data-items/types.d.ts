@@ -45,6 +45,7 @@ declare namespace DataItem {
 
   type Env = {
     tzOffset: number;
+    lang: LangAccessor;
   };
 
   type OmitableProps = "name";
@@ -75,6 +76,7 @@ declare namespace DataItem {
   type $ = {
     name: string;
     label?: string;
+    labelLang?: LangKey;
     required?: boolean | ((params: DataItem.ValidationProps<any>) => boolean);
     refs?: Array<string>;
   };

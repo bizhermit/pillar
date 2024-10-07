@@ -5,8 +5,7 @@ import { NavigationMenu, NavMenuLink, NavMenuNest } from "@/react/elements/navig
 import { FetchProvider } from "@/react/hooks/fetch";
 import { cookies } from "next/headers";
 import { ReactNode } from "react";
-import { InputsAsClient } from "./inputs-client";
-import { InputsAsServer } from "./inputs-server";
+import { LnagSwitch } from "./lang-switch";
 import css from "./layout.module.scss";
 
 const Layout = (props: { children: ReactNode; }) => {
@@ -103,16 +102,7 @@ const Layout = (props: { children: ReactNode; }) => {
             DateTime
           </NavMenuLink>
         </NavigationMenu>
-        <ul style={{ wordBreak: "keep-all", whiteSpace: "nowrap" }}>
-          <li>
-            server
-            <InputsAsServer />
-          </li>
-          <li>
-            client
-            <InputsAsClient />
-          </li>
-        </ul>
+        <LnagSwitch />
       </Navigation>
     </FetchProvider>
   );
