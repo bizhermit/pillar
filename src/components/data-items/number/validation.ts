@@ -1,11 +1,9 @@
 import { getFloatPosition } from "../../objects/number";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $numValidations = (dataItem: DataItem.ArgObject<DataItem.$num>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$num>> => {
+export const $numValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$num>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$num>> => {
   const validations: Array<DataItem.Validation<DataItem.$num>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env });
 
   if (dataItem.required) {
     validations.push((p) => {

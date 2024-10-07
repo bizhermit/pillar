@@ -1,3 +1,4 @@
+import { langFactory } from "@/i18n/factory";
 import { NextResponse, type NextRequest } from "next/server";
 import { parseBasedOnDataItem } from "../../data-items/parse";
 import { validationBasedOnDataItem } from "../../data-items/validation";
@@ -42,6 +43,7 @@ export const apiMethodHandler = <
     try {
       const env: DataItem.Env = {
         tzOffset: Number(req.headers.get("tz-offset") || new Date().getTimezoneOffset()),
+        lang: langFactory(),
       };
 
       const data = await process({

@@ -100,15 +100,15 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
     revert: (v) => v?.[vdn],
     equals: (v1, v2) => equals(v1?.[vdn], v2?.[vdn]),
     effect: () => { },
-    validation: ({ dataItem, iterator }) => {
+    validation: ({ dataItem, env, iterator }) => {
       const funcs = (() => {
         switch (dataItem.type) {
           case "bool":
           case "b-num":
           case "b-str":
-            return $boolValidations(dataItem as DataItem.$boolAny);
-          case "str": return $strValidations(dataItem as DataItem.$str, true);
-          case "num": return $numValidations(dataItem as DataItem.$num, true);
+            return $boolValidations({ dataItem: dataItem as DataItem.$boolAny, env });
+          case "str": return $strValidations({ dataItem: dataItem as DataItem.$str, env }, true);
+          case "num": return $numValidations({ dataItem: dataItem as DataItem.$num, env }, true);
           default: return [
             ({ value, dataItem, fullName }) => {
               if (value != null && value !== "") return undefined;

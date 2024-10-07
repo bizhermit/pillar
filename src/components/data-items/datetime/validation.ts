@@ -1,11 +1,9 @@
 import { DateTime } from "@/objects/datetime";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $datetimeValidations = (dataItem: DataItem.ArgObject<DataItem.$datetime>): Array<DataItem.Validation<DataItem.$datetime>> => {
+export const $datetimeValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$datetime>): Array<DataItem.Validation<DataItem.$datetime>> => {
   const validations: Array<DataItem.Validation<DataItem.$datetime, DateTime>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env });
 
   if (dataItem.required) {
     validations.push((p) => {

@@ -346,9 +346,6 @@ export default function Home() {
         </InputTabContainer>
         <div className={css.row}>
           {/* <div style={{ width: 150 }}> */}
-          <span>
-            {sample_text.label}
-          </span>
           <FormItemWrap>
             <TextBox
               // placeholder="テキスト"

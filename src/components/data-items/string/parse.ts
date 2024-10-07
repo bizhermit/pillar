@@ -1,7 +1,7 @@
-const defaultLabel = "値";
+import { getDataItemLabel } from "../label";
 
-export const $strParse = <V extends string>({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$object>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
-  const label = dataItem.label || dataItem.name || defaultLabel;
+export const $strParse = <V extends string>({ value, dataItem, fullName, env }: DataItem.ParseProps<DataItem.$object>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
+  const label = getDataItemLabel({ dataItem, env });
 
   if (Array.isArray(value) && value.length > 1) {
     return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];

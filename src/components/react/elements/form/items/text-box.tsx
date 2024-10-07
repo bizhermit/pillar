@@ -47,8 +47,8 @@ export const TextBox = <D extends DataItem.$str | undefined>({
     effect: ({ edit, value, effect }) => {
       if (iref.current && (!edit || effect)) iref.current.value = value ?? "";
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $strValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $strValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: focusInput,

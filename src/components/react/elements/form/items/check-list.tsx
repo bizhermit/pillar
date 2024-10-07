@@ -116,8 +116,8 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
       return v1.some(val1 => v2.some(val2 => equals(val1[vdn], val2[vdn])));
     },
     effect: () => { },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $arrayValidations(dataItem, true);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $arrayValidations({ dataItem, env }, true);
       return (_, p) => iterator(funcs, p);
     },
     setBind: ({ data, name, value }) => {

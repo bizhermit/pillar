@@ -1,9 +1,8 @@
 import { parseDate } from "../../objects/date";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $dateParse = ({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$date | DataItem.$month>): DataItem.ParseResult<Date> => {
-  const label = dataItem.label || dataItem.name || defaultLabel;
+export const $dateParse = ({ value, dataItem, fullName, env }: DataItem.ParseProps<DataItem.$date | DataItem.$month>): DataItem.ParseResult<Date> => {
+  const label = getDataItemLabel({ dataItem, env });
 
   if (Array.isArray(value) && value.length > 1) {
     return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];

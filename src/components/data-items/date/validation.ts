@@ -1,15 +1,13 @@
 import { equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate } from "../../objects/date";
-
-const defaultLabel = "値";
+import { getDataItemLabel } from "../label";
 
 type Options = {
   skipRequired?: boolean;
 };
 
-export const $dateValidations = (dataItem: DataItem.ArgObject<DataItem.$date | DataItem.$month>, opts?: Options): Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> => {
+export const $dateValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$date | DataItem.$month>, opts?: Options): Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> => {
   const validations: Array<DataItem.Validation<DataItem.$date | DataItem.$month, Date>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env });
   const dateFormatPattern = dataItem.type === "month" ? "yyyy/MM" : "yyyy/MM/dd";
 
   if (dataItem.required && !opts?.skipRequired) {

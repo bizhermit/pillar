@@ -2,12 +2,11 @@ import { DateTime } from "../../objects/datetime";
 import { get } from "../../objects/struct";
 import { getTimeUnit } from "../../objects/time";
 import { $dateParse } from "../date/parse";
+import { getDataItemLabel } from "../label";
 import { $timeParse } from "../time/parse";
 
-const defaultLabel = "値";
-
 export const $datetimeParse = ({ value, dataItem, fullName, data, env }: DataItem.ParseProps<DataItem.$datetime>): DataItem.ParseResult<DateTime> => {
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env });
 
   if (Array.isArray(value) && value.length > 1) {
     return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];

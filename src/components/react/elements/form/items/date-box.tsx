@@ -104,8 +104,8 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       if (yref.current && (!edit || effect)) renderInputs(value);
     },
     equals: (v1, v2) => equals(v1?.str, v2?.str),
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $dateValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $dateValidations({ dataItem, env });
       return (v, p) => iterator(funcs, { ...p, value: v?.date });
     },
     setBind: ({ data, name, value }) => {

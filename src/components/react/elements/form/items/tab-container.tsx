@@ -56,8 +56,8 @@ export const InputTabContainer = ({
     effect: ({ value, effect }) => {
       if (effect) $hook.setKey(value!);
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $strValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $strValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: () => { },

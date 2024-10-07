@@ -1,11 +1,9 @@
 import { formatTime, getTimeUnit, parseMilliseconds, parseTimeAsUnit, TimeUtils } from "../../objects/time";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $timeValidations = (dataItem: DataItem.ArgObject<DataItem.$time>): Array<DataItem.Validation<DataItem.$time>> => {
+export const $timeValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$time>): Array<DataItem.Validation<DataItem.$time>> => {
   const validations: Array<DataItem.Validation<DataItem.$time>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env });
 
   if (dataItem.required) {
     validations.push((p) => {

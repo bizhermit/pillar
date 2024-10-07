@@ -60,8 +60,8 @@ export const FileDrop = <D extends DataItem.$file | undefined>({
         }
       }
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $fileValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $fileValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: focusInput,

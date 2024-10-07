@@ -52,6 +52,11 @@ declare namespace DataItem {
 
   type ArgObject<D extends $object> = PickPartial<D, OmitableProps>;
 
+  type ValidationGeneratorProps<D extends $object> = {
+    dataItem: ArgObject<D>;
+    env: Env;
+  };
+
   type ValidationProps<D extends $object, V = ValueType<D>> = {
     value: V | null | undefined;
     data: { [v: string | number]: any } | null | undefined;

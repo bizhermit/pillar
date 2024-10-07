@@ -142,8 +142,8 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     equals: (v1, v2, { dataItem }) => {
       return equals(v1?.str, v2?.str) && equals(v1?.y, v2?.y) && equals(v1?.m, v2?.m) && (dataItem.type === "month" || equals(v1?.d, v2?.d));
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $dateValidations(dataItem, { skipRequired: allowMissing });
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $dateValidations({ dataItem, env }, { skipRequired: allowMissing });
       return (v, p) => {
         const label = p.dataItem.label || p.dataItem.name || "値";
         if (allowMissing) {

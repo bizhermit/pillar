@@ -1,11 +1,9 @@
 import { equals } from "../../objects";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $boolValidations = (dataItem: DataItem.ArgObject<DataItem.$boolAny>) => {
+export const $boolValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$boolAny>) => {
   const validations: Array<DataItem.Validation<DataItem.$boolAny>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env });
 
   validations.push((p) => {
     if (equals(p.value, p.dataItem.trueValue)) return undefined;

@@ -1,9 +1,8 @@
 import { convertBase64ToFile, convertBlobToFile } from "@/objects/file";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $fileParse = ({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$file>): DataItem.ParseResult<File> => {
-  const label = dataItem.label || dataItem.name || defaultLabel;
+export const $fileParse = ({ value, dataItem, fullName, env }: DataItem.ParseProps<DataItem.$file>): DataItem.ParseResult<File> => {
+  const label = getDataItemLabel({ dataItem, env });
 
   if (Array.isArray(value) && value.length > 1) {
     return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];

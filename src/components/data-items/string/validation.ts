@@ -1,11 +1,9 @@
 import { isAlphabet, isEmpty, isFullWidth, isFWAlphabet, isFWKatakana, isFWNumeric, isHalfWidth, isHiragana, isHWAlphabet, isHWAlphanumeric, isHWAlphanumericAndSymbols, isHWKatakana, isHWNumeric, isInteger, isKatakana, isMailAddress, isNumeric, isPhoneNumber, isUrl, strLength } from "../../objects/string";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $strValidations = (dataItem: DataItem.ArgObject<DataItem.$str>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$str>> => {
+export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$str>, skipSourceCheck?: boolean): Array<DataItem.Validation<DataItem.$str>> => {
   const validations: Array<DataItem.Validation<DataItem.$str>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env });
 
   if (dataItem.required) {
     validations.push((p) => {

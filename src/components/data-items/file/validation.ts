@@ -1,11 +1,9 @@
 import { getAccept, getSizeText } from "../../objects/file";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "ファイル";
-
-export const $fileValidations = (dataItem: DataItem.ArgObject<DataItem.$file>): Array<DataItem.Validation<DataItem.$file>> => {
+export const $fileValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$file>): Array<DataItem.Validation<DataItem.$file>> => {
   const validations: Array<DataItem.Validation<DataItem.$file>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env }, "ファイル");
 
   validations.push(({ value, fullName }) => {
     if (value == null || value instanceof File) return undefined;

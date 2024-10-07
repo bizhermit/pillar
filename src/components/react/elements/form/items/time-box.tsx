@@ -105,8 +105,8 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
       if (!edit || effect) renderInputs(value);
     },
     equals: (v1, v2) => equals(v1?.unitValue, v2?.unitValue),
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $timeValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $timeValidations({ dataItem, env });
       return (v, p) => iterator(funcs, { ...p, value: v?.unitValue });
     },
     setBind: ({ data, name, value }) => {

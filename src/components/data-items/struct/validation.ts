@@ -1,11 +1,9 @@
 import { getObjectType } from "../../objects";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $structValidations = (dataItem: DataItem.ArgObject<DataItem.$struct<Array<DataItem.$object>>>): Array<DataItem.Validation<DataItem.$struct<Array<DataItem.$object>>>> => {
+export const $structValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$struct<Array<DataItem.$object>>>): Array<DataItem.Validation<DataItem.$struct<Array<DataItem.$object>>>> => {
   const validations: Array<DataItem.Validation<DataItem.$struct<Array<DataItem.$object>>>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const label = getDataItemLabel({ dataItem, env });
 
   validations.push(({ value, fullName }) => {
     if (value == null || getObjectType(value) === "Object") return undefined;

@@ -24,6 +24,7 @@ type FormItemCoreArgs<
   equals?: (v1: IV | null | undefined, v2: IV | null | undefined, params: { dataItem: DataItem.ArgObject<SD>; }) => boolean;
   validation: (props: {
     dataItem: DataItem.ArgObject<SD>;
+    env: DataItem.Env,
     iterator: (funcs: Array<DataItem.Validation<any>>, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
   }) => (v: IV | null | undefined, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
   setBind?: (props: {
@@ -105,6 +106,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       parseVal: cp.parse({ dataItem }),
       validation: cp.validation({
         dataItem,
+        env,
         iterator: (funcs, arg) => {
           let r: DataItem.ValidationResult | null | undefined;
           for (const func of funcs) {
