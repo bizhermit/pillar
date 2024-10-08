@@ -81,6 +81,7 @@ declare namespace DataItem {
   type $ = {
     name: string;
     label?: LangKey;
+    labelAsIs?: string;
     required?: boolean | ((params: DataItem.ValidationProps<any>) => boolean);
     refs?: Array<string>;
   };

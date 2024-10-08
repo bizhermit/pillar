@@ -50,6 +50,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   hook,
   name,
   label,
+  labelAsIs,
   disabled,
   readOnly,
   required,
@@ -75,8 +76,8 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   const { dataItem, $label } = useMemo(() => {
     const $name = name || $dataItem?.name;
     const $required = required ?? $dataItem?.required;
-    const labelLang = label ?? $dataItem?.label;
-    const $label = (labelLang ? env.lang(labelLang) : "") || $dataItem?.name;
+    const l = label ?? $dataItem?.label;
+    const $label = (l ? env.lang(l) : "") || labelAsIs || $dataItem?.labelAsIs || $dataItem?.name;
     const $refs = (() => {
       const ret = [...(refs ?? []), ...($dataItem?.refs ?? [])];
       if (ret.length === 0) return undefined;
@@ -87,11 +88,12 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
         name: $name,
         required: $required,
         label: $label,
+        labelAsIs: $label,
         refs: $refs,
         validations: $dataItem?.validations,
         ...cp.getDataItem({
           name,
-          label: labelLang,
+          label: l,
           required,
           refs: $refs,
           dataItem: $dataItem,
