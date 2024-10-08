@@ -25,6 +25,7 @@
     text-decoration: none;
     min-width: 0;
     transition: opacity .2s;
+    font-weight: 500;
 
     &[data-color="secondary"] {
       ---btn-bg: var(--c-secondary, var(--c-primary));
@@ -73,8 +74,8 @@
 
     >.icon {
       width: calc(var(--btn-size) * .5);
-      overflow: hidden;        
-      
+      overflow: hidden;
+
       &:only-child {
         position: absolute;
       }

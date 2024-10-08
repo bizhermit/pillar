@@ -4,6 +4,7 @@ import { $boolParse } from "./bool/parse";
 import { $dateParse } from "./date/parse";
 import { $datetimeParse } from "./datetime/parse";
 import { $fileParse } from "./file/parse";
+import { getDataItemLabel } from "./label";
 import { $numParse } from "./number/parse";
 import { $strParse } from "./string/parse";
 import { $timeParse } from "./time/parse";
@@ -67,7 +68,16 @@ export const parseBasedOnDataItem = (
       case "array": {
         const { value, name } = replace(dataItem, ({ value, fullName }) => {
           if (value == null || getObjectType(value) === "Array") return [value];
-          return [undefined, { type: "e", code: "parse", fullName, msg: `${dataItem.label}に配列を設定してください。` }];
+          return [undefined, {
+            type: "e",
+            code: "parse",
+            fullName,
+            msg: env.lang("validation.typeOf", {
+              s: getDataItemLabel({ dataItem, env }),
+              type: env.lang("common.typeOfArray"),
+              mode: "set",
+            }),
+          }];
         }, index);
         if (!hasError() && value) {
           const item = dataItem.item;
@@ -91,7 +101,16 @@ export const parseBasedOnDataItem = (
       case "struct": {
         const { value, name } = replace(dataItem, ({ value, fullName }) => {
           if (value == null || getObjectType(value) === "Object") return [value];
-          return [undefined, { type: "e", code: "parse", fullName, msg: `${dataItem.label}に連想配列を設定してください。` }];
+          return [undefined, {
+            type: "e",
+            code: "parse",
+            fullName,
+            msg: env.lang("validation.typeOf", {
+              s: getDataItemLabel({ dataItem, env }),
+              type: env.lang("common.typeOfStruct"),
+              mode: "set",
+            }),
+          }];
         }, index);
         if (!hasError() && value) results.push(...parseBasedOnDataItem(value, dataItem.item, env, name));
         return;

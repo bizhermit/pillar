@@ -19,7 +19,7 @@ type FormItemCoreArgs<
     dataItem: D | undefined;
   }) => DataItem.ArgObject<SD>;
   getTieInNames?: (params: { dataItem: SD; }) => (Array<string> | undefined);
-  parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>, args: { bind: boolean; }) => DataItem.ParseResult<IV>;
+  parse: (params: { dataItem: SD; env: DataItem.Env; }) => (props: DataItem.ParseProps<SD>, args: { bind: boolean; }) => DataItem.ParseResult<IV>;
   revert?: (v: IV | null | undefined) => (V | null | undefined);
   equals?: (v1: IV | null | undefined, v2: IV | null | undefined, params: { dataItem: DataItem.ArgObject<SD>; }) => boolean;
   validation: (props: {
@@ -103,7 +103,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 
   const { parseVal, validation } = useMemo(() => {
     return {
-      parseVal: cp.parse({ dataItem }),
+      parseVal: cp.parse({ dataItem, env }),
       validation: cp.validation({
         dataItem,
         env,

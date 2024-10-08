@@ -1,3 +1,4 @@
+import { langFactory } from "@/i18n/factory";
 import { type HTMLAttributes, useEffect, useRef, useState } from "react";
 import { equals } from "../../../../objects";
 import { convertBlobToFile, convertFileToBase64 } from "../../../../objects/file";
@@ -16,6 +17,8 @@ type ElecSignOptions<D extends DataItem.$any | undefined> = FormItemOptions<D, D
 };
 
 type ElecSignProps<D extends DataItem.$any | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, ElecSignOptions<D>>;
+
+const lang = langFactory();
 
 export const ElecSign = <D extends DataItem.$any | undefined>({
   preventAutoSave,
@@ -75,12 +78,19 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
         };
       }
     },
-    validation: ({ dataItem, iterator }) => {
+    validation: ({ dataItem, iterator, env }) => {
       const funcs: Array<DataItem.Validation<any, any>> = [
         (p) => {
           if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
           if (p.value == null || p.value === "" || p.value === nullValueRef.current) {
-            return { type: "e", code: "required", fullName: p.fullName, msg: `${p.dataItem.label || "サイン"}を記入してください。` };
+            return {
+              type: "e",
+              code: "required",
+              fullName: p.fullName,
+              msg: env.lang("validation.writeSign", {
+                s: p.dataItem.label || env.lang("form.sign"),
+              }),
+            };
           }
           return undefined;
         },
@@ -255,7 +265,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
                 tabIndex={-1}
                 onClick={save}
                 disabled={!fi.editable}
-                title="保存"
+                title={lang("common.save")}
               >
                 <SaveIcon />
               </button>
@@ -266,7 +276,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               disabled={!fi.editable || !canUndo}
               tabIndex={-1}
               onClick={undo}
-              title="元に戻す"
+              title={lang("form.revert")}
             >
               <UndoIcon />
             </button>
@@ -276,7 +286,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               disabled={!fi.editable || !canRedo}
               tabIndex={-1}
               onClick={redo}
-              title="やり直し"
+              title={lang("form.progress")}
             >
               <RedoIcon />
             </button>
@@ -286,7 +296,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               disabled={!fi.editable || empty}
               tabIndex={-1}
               onClick={() => clearCanvas()}
-              title="キャンパスをクリアする"
+              title={lang("form.clear", { s: lang("form.canvas") })}
             >
               <CrossIcon />
             </button>
@@ -296,7 +306,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
               tabIndex={-1}
               disabled={!canClearHist}
               onClick={() => clearCanvas(true)}
-              title="キャンパスと履歴クリアする"
+              title={lang("form.clearCanvasAndHistory")}
             >
               <ClearAllIcon />
             </button>

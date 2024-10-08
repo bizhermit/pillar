@@ -2,10 +2,15 @@ import { parseDate } from "../../objects/date";
 import { getDataItemLabel } from "../label";
 
 export const $dateParse = ({ value, dataItem, fullName, env }: DataItem.ParseProps<DataItem.$date | DataItem.$month>): DataItem.ParseResult<Date> => {
-  const label = getDataItemLabel({ dataItem, env });
+  const s = getDataItemLabel({ dataItem, env });
 
   if (Array.isArray(value) && value.length > 1) {
-    return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];
+    return [undefined, {
+      type: "e",
+      code: "multiple",
+      fullName,
+      msg: env.lang("validation.single", { s }),
+    }];
   }
   if (value == null || value === "") return [undefined];
 
@@ -17,8 +22,27 @@ export const $dateParse = ({ value, dataItem, fullName, env }: DataItem.ParsePro
     const d = parseDate(value);
     if (d == null) throw new Error;
     if (dataItem.type === "month") d.setDate(1);
-    return [d, { type: "i", code: "parse", fullName, msg: `${label}を日付型に変換しました。[${value}]->[${d}]` }];
+    return [d, {
+      type: "i",
+      code: "parse",
+      fullName,
+      msg: env.lang("validation.parseSucceeded", {
+        s,
+        type: env.lang("common.typeOfDate"),
+        before: value,
+        after: d,
+      }),
+    }];
   } catch {
-    return [undefined, { type: "e", code: "parse", fullName, msg: `${label}を日付型に変換できません。[${value}]` }];
+    return [undefined, {
+      type: "e",
+      code: "parse",
+      fullName,
+      msg: env.lang("validation.parseFailed", {
+        s,
+        type: env.lang("common.typeOfDate"),
+        value,
+      }),
+    }];
   }
 };

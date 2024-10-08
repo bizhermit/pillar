@@ -4,7 +4,7 @@ const kind = "auth";
 
 langLoadLogAtClient("ja", kind);
 
-const LangAuth = {
+const Langs = {
   authError: "Authentication error",
   signIn: "Please sign in.",
   mailAddress: "Mail Address",
@@ -13,4 +13,4 @@ const LangAuth = {
   signOutBtn: "SignOut",
 } as const satisfies Partial<I18N_Langs[typeof kind]>;
 
-export default LangAuth;
+export default Langs;

@@ -1,15 +1,20 @@
 "use client";
 
 import { type ReactNode } from "react";
+import { langFactory } from "../../../i18n/factory";
 import { MenuLeftRightIcon } from "../icon";
 import { navMinId, navOpenId, navToggleRadioName, navVisId } from "./consts";
 
+const lang = langFactory();
+
+const navVisBtnText = lang("navigation.spreadNav");
 export const NavVisBtn = (props: { children: ReactNode }) => {
   return (
     <button
       className="nav-btn nav-vis"
       type="button"
-      aria-label="Spread navigation"
+      title={navVisBtnText}
+      aria-label={navVisBtnText}
       onClick={() => {
         const elem = document.querySelector(`#${navVisId}`);
         if (elem) (elem as HTMLInputElement).checked = true;
@@ -20,12 +25,14 @@ export const NavVisBtn = (props: { children: ReactNode }) => {
   );
 };
 
+const navMinBtnText = lang("navigation.shrinkNav");
 export const NavMinBtn = (props: { children: ReactNode }) => {
   return (
     <button
       className="nav-btn nav-min"
       type="button"
-      aria-label="Shrink navigation"
+      title={navMinBtnText}
+      aria-label={navMinBtnText}
       onClick={() => {
         const elem = document.querySelector(`#${navMinId}`);
         if (elem) (elem as HTMLInputElement).checked = true;
@@ -36,12 +43,14 @@ export const NavMinBtn = (props: { children: ReactNode }) => {
   );
 };
 
+const navOpenBtnText = lang("navigation.openNav");
 export const NavOpenBtn = (props: { children: ReactNode }) => {
   return (
     <button
       className="nav-btn"
       type="button"
-      aria-label="Open navigation"
+      title={navOpenBtnText}
+      aria-label={navOpenBtnText}
       onClick={() => {
         const elem = document.querySelector(`#${navOpenId}`);
         if (elem) (elem as HTMLInputElement).checked = true;
@@ -52,12 +61,14 @@ export const NavOpenBtn = (props: { children: ReactNode }) => {
   );
 };
 
+const navCloseBtnText = lang("navigation.openNav");
 export const NavCloseBtn = (props: { children: ReactNode }) => {
   return (
     <button
       className="nav-btn nav-close"
       type="button"
-      aria-label="Close navigation"
+      title={navCloseBtnText}
+      aria-label={navCloseBtnText}
       onClick={() => {
         const elem = document.querySelector(`#${navOpenId}`);
         if (elem) (elem as HTMLInputElement).checked = false;
@@ -79,12 +90,14 @@ export const autoNav = () => {
   });
 };
 
+const navSizeAutoBtnText = lang("navigation.autoNav");
 export const NavSizeAutoButton = () => {
   return (
     <button
       className="nav-btn nav-auto"
       type="button"
-      aria-label="Auto navigation size"
+      title={navSizeAutoBtnText}
+      aria-label={navSizeAutoBtnText}
       onClick={autoNav}
     >
       <MenuLeftRightIcon />

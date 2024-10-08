@@ -65,7 +65,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
       };
     },
     getTieInNames: () => tieInNames?.map(item => item.hiddenName || item.dataName),
-    parse: ({ dataItem }) => {
+    parse: ({ dataItem, env }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
         if (loading) {
           return [{ [vdn]: v, [ldn]: v == null ? "" : String(v) }, r];
@@ -77,7 +77,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
             type: "e",
             code: "not-found",
             fullName: p.fullName,
-            msg: `選択肢に値が存在しません。[${v}]`,
+            msg: env.lang("validation.choices", { s: dataItem.label, value: v }),
           }];
         }
         return [item, r];

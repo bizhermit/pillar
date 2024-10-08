@@ -550,6 +550,10 @@ export default function Home() {
                 required
                 disabled={disabled.value}
                 readOnly={readOnly.value}
+                pair={{
+                  name: "date",
+                  position: "before",
+                }}
               />
             }
           />

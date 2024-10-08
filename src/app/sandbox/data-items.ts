@@ -6,6 +6,7 @@ export const sample_text = $str({
   name: "sample_text",
   labelLang: "sandbox.sample_textLabel",
   required: true,
+  minLength: 5,
 });
 
 export const sample_number = $num({

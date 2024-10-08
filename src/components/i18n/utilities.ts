@@ -26,3 +26,11 @@ export const langLoadLogAtClient = (lang: Lang, key: string) => {
   // eslint-disable-next-line no-console
   console.info(`load lang: [${lang}]-[${key}]`);
 };
+
+export const writeHas = <P extends { [v: string]: any }, K extends keyof P>(p: P, key: K, func?: (v: P[K]) => string) => {
+  return key in p ? (func ? func(p[key]) : p[key]) : "";
+};
+
+export const writeStr = <P extends { [v: string]: any }, K extends keyof P>(p: P, key: K, func?: (v: P[K]) => string) => {
+  return p[key] ? (func ? func(p[key]) : p[key]) : "";
+};

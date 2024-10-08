@@ -4,15 +4,13 @@ import { DEFAULT_LANG, LANG_KEY } from "./consts";
 export const langFactory = (langs?: Array<Lang>) => {
   const $langs = (() => {
     if (langs != null) return langs;
-    if (typeof window === "undefined") {
-      try {
-        const { cookies } = require("next/headers");
-        return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<Lang>;
-      } catch {
-        return [DEFAULT_LANG] as Array<Lang>;
-      }
+    if (typeof window !== "undefined") return getLangs();
+    try {
+      const { cookies } = require("next/headers");
+      return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<Lang>;
+    } catch {
+      return [DEFAULT_LANG] as Array<Lang>;
     }
-    return getLangs();
   })();
 
   const cache: Partial<LangCache> = (() => {

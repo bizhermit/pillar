@@ -1,15 +1,20 @@
-import { formatTime, getTimeUnit, parseMilliseconds, parseTimeAsUnit, TimeUtils } from "../../objects/time";
+import { formatTime, getTimeUnit, parseMilliseconds, parseTimeAsUnit } from "../../objects/time";
 import { getDataItemLabel } from "../label";
 
 export const $timeValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$time>): Array<DataItem.Validation<DataItem.$time>> => {
   const validations: Array<DataItem.Validation<DataItem.$time>> = [];
-  const label = getDataItemLabel({ dataItem, env });
+  const s = getDataItemLabel({ dataItem, env });
 
   if (dataItem.required) {
     validations.push((p) => {
       if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
       if (p.value != null) return undefined;
-      return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を入力してください。` };
+      return {
+        type: "e",
+        code: "required",
+        fullName: p.fullName,
+        msg: env.lang("validation.required", { s }),
+      };
     });
   }
 
@@ -24,21 +29,46 @@ export const $timeValidations = ({ dataItem, env }: DataItem.ValidationGenerator
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
       if (min! <= value && value <= max!) return undefined;
-      return { type: "e", code: "range", fullName, msg: `${label}は${minStr}～${maxStr}の範囲で入力してください。` };
+      return {
+        type: "e",
+        code: "range",
+        fullName,
+        msg: env.lang("validation.rangeDate", {
+          s,
+          minDate: minStr,
+          maxDate: maxStr,
+        }),
+      };
     });
   } else {
     if (dataItem.min != null) {
       validations.push(({ value, fullName }) => {
         if (value == null) return undefined;
         if (min! <= value) return undefined;
-        return { type: "e", code: "min", fullName, msg: `${label}は${minStr}以降を入力してください。` };
+        return {
+          type: "e",
+          code: "min",
+          fullName,
+          msg: env.lang("validation.minDate", {
+            s,
+            minDate: minStr,
+          }),
+        };
       });
     }
     if (dataItem.max != null) {
       validations.push(({ value, fullName }) => {
         if (value == null) return undefined;
         if (value <= max!) return undefined;
-        return { type: "e", code: "max", fullName, msg: `${label}は${maxStr}以前を入力してください。` };
+        return {
+          type: "e",
+          code: "max",
+          fullName,
+          msg: env.lang("validation.maxDate", {
+            s,
+            maxDate: maxStr,
+          }),
+        };
       });
     }
   }
@@ -60,7 +90,7 @@ export const $timeValidations = ({ dataItem, env }: DataItem.ValidationGenerator
           type: "e",
           code: "pair-after",
           fullName,
-          msg: pairDataItem?.pair ? "" : `時間の前後関係が不適切です。${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)} - ${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)}`,
+          msg: pairDataItem?.pair ? "" : env.lang("validation.contextTime", { s }),
         };
       }
       if (value > pairTime) return undefined;
@@ -68,7 +98,7 @@ export const $timeValidations = ({ dataItem, env }: DataItem.ValidationGenerator
         type: "e",
         code: "pair-before",
         fullName,
-        msg: `時間の前後関係が不適切です。${dataItem.label ? `[${dataItem.label}]` : ""}${TimeUtils.format(value, formatPattern)} - ${pairDataItem?.label ? `[${pairDataItem.label}]` : ""}${TimeUtils.format(pairTime, formatPattern)}`,
+        msg: env.lang("validation.contextTime", { s }),
       };
     });
   }

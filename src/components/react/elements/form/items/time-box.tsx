@@ -1,3 +1,4 @@
+import { langFactory } from "@/i18n/factory";
 import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactElement, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
@@ -38,6 +39,8 @@ const isNumericOrEmpty = (value?: string): value is `${number}` => {
 
 const defaultMinTime = new Time();
 const defaultMaxTime = new Time(24 * TimeRadix.H - TimeRadix.S);
+
+const lang = langFactory();
 
 export const TimeBox = <D extends DataItem.$time | undefined>({
   mode,
@@ -803,7 +806,8 @@ export const TimePicker = (props: TimePickerProps) => {
           <button
             className="ipt-btn"
             type="button"
-            title="キャンセル"
+            title={lang("common.cancel")}
+            aria-label={lang("common.cancel")}
             onClick={() => {
               props.onCancel!();
             }}
@@ -823,7 +827,7 @@ export const TimePicker = (props: TimePickerProps) => {
               });
             }}
           >
-            OK
+            {lang("common.ok")}
           </button>
         }
       </div>

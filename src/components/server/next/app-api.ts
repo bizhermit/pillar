@@ -97,9 +97,9 @@ export const apiMethodHandler = <
           if (validationError.length === 0) return;
           throw new ApiError(422, {
             type: "e",
-            title: "バリデーションエラー",
+            title: env.lang("validation.error"),
             body: validationError.map(item => item.msg).join("\n"),
-            buttonText: "閉じる",
+            buttonText: env.lang("common.close"),
           }, { validationResults });
         },
       });

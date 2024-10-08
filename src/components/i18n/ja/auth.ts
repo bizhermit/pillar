@@ -4,7 +4,7 @@ const kind = "auth";
 
 langLoadLogAtClient("ja", kind);
 
-const LangAuth = {
+const Langs = {
   authError: "認証エラー",
   signIn: "サインインしてください。",
   mailAddress: "メールアドレス",
@@ -13,4 +13,4 @@ const LangAuth = {
   signOutBtn: "サインアウト",
 } as const satisfies I18N_Langs[typeof kind];
 
-export default LangAuth;
+export default Langs;

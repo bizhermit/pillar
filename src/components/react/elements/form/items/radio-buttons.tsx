@@ -70,7 +70,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
         source: origin as DataItem.Source<any>,
       };
     },
-    parse: ({ dataItem }) => {
+    parse: ({ dataItem, env }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
         if (loading) {
           return [{ [vdn]: v, [ldn]: v == null ? "" : String(v) }, r];
@@ -82,7 +82,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
             type: "e",
             code: "not-found",
             fullName: p.fullName,
-            msg: `選択肢に値が存在しません。[${v}]`,
+            msg: env.lang("validation.choices", { s: dataItem.label, value: v }),
           }];
         }
         return [item, r];
