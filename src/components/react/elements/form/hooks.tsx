@@ -330,6 +330,12 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     if (init.mount === 0) {
       init.mount++;
       $.current.bind = form.bind;
+      cp.effect({
+        dataItem,
+        effect: true,
+        value: valRef.current,
+        origin: valRef.current,
+      });
       return;
     }
     if ($.current.bind === form.bind) return;
