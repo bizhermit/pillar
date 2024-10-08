@@ -6,14 +6,14 @@ export const authErrorCallbackUrlQueryName = "callbackUrl";
 
 export const signIn_email = $str({
   name: "email",
-  labelLang: "auth.mailAddress",
+  label: "auth.mailAddress",
   required: true,
   inputMode: "email",
 });
 
 export const signIn_password = $str({
   name: "password",
-  labelLang: "auth.password",
+  label: "auth.password",
   required: true,
   inputMode: "url",
 });
