@@ -107,7 +107,7 @@ export const apiMethodHandler = <
       return NextResponse.json({ message, data }, { status: status ?? 200 });
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error(err);
+      // console.error(err);
       let data: { [v: string]: any } | null | undefined;
       if (err instanceof ApiError) {
         status = err.status;

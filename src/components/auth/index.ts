@@ -1,4 +1,3 @@
-import { getDataItemLabel } from "@/data-items/label";
 import { LANG_KEY } from "@/i18n/consts";
 import { langFactory } from "@/i18n/factory";
 import { analyzeHeaderAcceptLang } from "@/i18n/utilities";
@@ -31,11 +30,11 @@ export const {
       name: "signin",
       credentials: {
         [signIn_email.name]: {
-          label: getDataItemLabel({ dataItem: signIn_email, env: {} }),
+          label: signIn_email.name,
           type: "email",
         },
         [signIn_password.name]: {
-          label: getDataItemLabel({ dataItem: signIn_password, env: {} }),
+          label: signIn_password.name,
           type: "password",
         },
       },

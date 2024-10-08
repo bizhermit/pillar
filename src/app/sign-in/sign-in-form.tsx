@@ -1,6 +1,7 @@
 "use client";
 
 import { authErrorCallbackUrlQueryName, signIn_email, signIn_password } from "@/auth/consts";
+import { getDataItemLabel } from "@/data-items/label";
 import { langFactory } from "@/i18n/factory";
 import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
@@ -52,14 +53,14 @@ export const SignInForm = (props: Props) => {
         <TextBox
           className={css.input}
           dataItem={signIn_email}
-          placeholder={signIn_email.label}
+          placeholder={getDataItemLabel({ dataItem: signIn_email, env: { lang } })}
           hideMessage
           autoFocus
         />
         <PasswordBox
           className={css.input}
           dataItem={signIn_password}
-          placeholder={signIn_password.label}
+          placeholder={getDataItemLabel({ dataItem: signIn_password, env: { lang } })}
           hideMessage
         />
         <FormButton type="submit">

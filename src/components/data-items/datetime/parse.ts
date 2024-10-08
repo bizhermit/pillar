@@ -43,8 +43,8 @@ export const $datetimeParse = ({ value, dataItem, fullName, data, env }: DataIte
           type: env.lang("common.typeOfDateTime"),
           value,
         }),
-      }]
-    };
+      }];
+    }
     const dt = new DateTime().setDateTime({
       date: dateVal as string,
       time: timeValue,
