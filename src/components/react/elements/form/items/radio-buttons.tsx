@@ -149,7 +149,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
           return (
             <label
               className="ipt-lbl"
-              key={v}
+              key={v ?? "_null"}
               data-disabled={disabled}
               data-readonly={readonly}
               data-children={true}

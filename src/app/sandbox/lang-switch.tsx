@@ -1,39 +1,25 @@
 "use client";
 
 import { clearLang, setLang } from "@/i18n/client";
-import { Button } from "@/react/elements/button";
+import { LANG_LABELS, LANGS } from "@/i18n/consts";
+import { useLang } from "@/i18n/react";
+import { SelectBox } from "@/react/elements/form/items/select-box";
+
+const source = [{ value: undefined, label: "(reset)" }, ...LANGS.map(v => ({ value: v, label: LANG_LABELS[v] }))];
 
 export const LnagSwitch = () => {
+  const lang = useLang();
+
   return (
-    <div>
-      <Button
-        onClick={() => {
-          clearLang();
+    <div style={{ padding: 5 }}>
+      <SelectBox
+        source={source}
+        onEdit={(v) => {
+          if (v?.value) setLang(v.value);
+          else clearLang();
         }}
-      >
-        clear lang
-      </Button>
-      <Button
-        onClick={() => {
-          setLang("ja");
-        }}
-      >
-        ja
-      </Button>
-      <Button
-        onClick={() => {
-          setLang("en-US");
-        }}
-      >
-        en-US
-      </Button>
-      <Button
-        onClick={() => {
-          setLang("en");
-        }}
-      >
-        en
-      </Button>
+        defaultValue={lang.primary}
+      />
     </div>
   );
 };

@@ -18,7 +18,7 @@ export const langFactory = (langs?: Array<Lang>) => {
     return (global as any).i18n;
   })();
 
-  return ((key, arg) => {
+  const lang = ((key, arg) => {
     const [kind, k] = key.split(".");
     for (let i = 0, il = $langs.length; i < il; i++) {
       const lang = $langs[i];
@@ -46,4 +46,6 @@ export const langFactory = (langs?: Array<Lang>) => {
     if (typeof func === "function") return func(arg as any);
     return func;
   }) as LangAccessor;
+  lang.primary = $langs[0];
+  return lang;
 };

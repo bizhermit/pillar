@@ -156,7 +156,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
           return (
             <label
               className="ipt-lbl"
-              key={v}
+              key={v ?? "_null"}
               data-disabled={disabled}
               data-readonly={readonly}
               data-children={true}
@@ -189,7 +189,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
         })}
         {fi.name && fi.mountValue && fi.value?.map(item => {
           return (
-            <Fragment key={item[vdn]}>
+            <Fragment key={item[vdn] ?? "_null"}>
               <input
                 name={`${fi.name}[]`}
                 type="hidden"

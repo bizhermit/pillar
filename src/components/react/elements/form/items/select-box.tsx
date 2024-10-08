@@ -422,7 +422,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             {filtered.map(item => (
               <ListItem
                 loading={loading}
-                key={item[vdn]}
+                key={item[vdn] ?? "_null"}
                 currentValue={fi.value?.[vdn]}
                 empty={empty}
                 initFocusValue={initFocusValue}

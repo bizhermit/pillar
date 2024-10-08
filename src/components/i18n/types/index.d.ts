@@ -12,7 +12,10 @@ type LangValueArg<V extends LangValue<any>> = V extends string ? (null | undefin
 type LangStructKey = { [S in LangSection]: `${S}.${LangSectionKey<S>}` };
 type LangKey = LangStructKey[keyof LangStructKey];
 
-type LangAccessor = <K1 extends LangSection, K2 extends LangSectionKey<K1>>(key: `${K1}.${K2}` | LangKey, arg?: LangValueArg<I18N_Langs[K1][K2]>) => string;
+interface LangAccessor {
+  <K1 extends LangSection, K2 extends LangSectionKey<K1>>(key: `${K1}.${K2}` | LangKey, arg?: LangValueArg<I18N_Langs[K1][K2]>): string;
+  primary: Lang;
+}
 
 type LangCache = {
   [lang in Lang]: {
