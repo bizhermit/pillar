@@ -70,7 +70,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
         source: origin as DataItem.Source<any>,
       };
     },
-    parse: ({ dataItem, env }) => {
+    parse: ({ dataItem, env, label }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
         if (loading) {
           return [{ [vdn]: v, [ldn]: v == null ? "" : String(v) }, r];
@@ -82,7 +82,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
             type: "e",
             code: "not-found",
             fullName: p.fullName,
-            msg: env.lang("validation.choices", { s: dataItem.label, value: v }),
+            msg: env.lang("validation.choices", { s: label, value: v }),
           }];
         }
         return [item, r];
@@ -100,7 +100,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
     revert: (v) => v?.[vdn],
     equals: (v1, v2) => equals(v1?.[vdn], v2?.[vdn]),
     effect: () => { },
-    validation: ({ dataItem, env, iterator }) => {
+    validation: ({ dataItem, env, iterator, label }) => {
       const funcs = (() => {
         switch (dataItem.type) {
           case "bool":
@@ -110,9 +110,17 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
           case "str": return $strValidations({ dataItem: dataItem as DataItem.$str, env }, true);
           case "num": return $numValidations({ dataItem: dataItem as DataItem.$num, env }, true);
           default: return [
-            ({ value, dataItem, fullName }) => {
+            ({ value, fullName }) => {
               if (value != null && value !== "") return undefined;
-              return { type: "e", code: "required", fullName, msg: `${dataItem.label || dataItem.name || "値"}を選択してください。` };
+              return {
+                type: "e",
+                code: "required",
+                fullName,
+                msg: env.lang("validation.required", {
+                  s: label,
+                  mode: "select",
+                }),
+              };
             }
           ] as Array<DataItem.Validation<any>>;
         }

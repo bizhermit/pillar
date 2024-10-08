@@ -378,7 +378,7 @@ export default function Home() {
             <span>Label:</span>
             <FormItemWrap>
               <ToggleSwitch
-                label="トグル"
+                // label="トグル"
                 name="toggle"
                 required
                 requiredIsTrue
@@ -420,7 +420,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <PasswordBox
-              label="パスワード"
+              // label="パスワード"
               name="password"
               disabled={disabled.value}
               readOnly={readOnly.value}
@@ -438,7 +438,7 @@ export default function Home() {
                 // width: 100,
                 // width: 400,
               }}
-              label="クレジットカード番号"
+              // label="クレジットカード番号"
               name="credit-card"
               required
               disabled={disabled.value}
@@ -447,7 +447,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <SelectBox
-              label="セレクトボックス"
+              // label="セレクトボックス"
               name="select"
               placeholder="セレクトボックス"
               required
@@ -476,7 +476,7 @@ export default function Home() {
           </select>
           <FormItemWrap>
             <Slider
-              label="数値"
+              // label="数値"
               name="slider"
               required
               disabled={disabled.value}
@@ -486,7 +486,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <RadioButtons
-              label="ラジオボタン"
+              // label="ラジオボタン"
               name="radio"
               required
               nullable="unselectable"
@@ -507,7 +507,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <CheckList
-              label="チェックリスト"
+              // label="チェックリスト"
               name="check-list"
               required
               minLength={2}
@@ -530,7 +530,7 @@ export default function Home() {
           <FormItemRange
             from={
               <DateBox
-                label="From"
+                // label="From"
                 name="date"
                 placeholder="年月日"
                 required
@@ -544,7 +544,7 @@ export default function Home() {
             }
             to={
               <DateBox
-                label="To"
+                // label="To"
                 name="date-after"
                 placeholder={["yyyy", "m", "d"]}
                 required
@@ -560,7 +560,7 @@ export default function Home() {
           <FormItemWrap>
             <DateBox
               type="month"
-              label="month"
+              // label="month"
               name="month"
               required
               disabled={disabled.value}
@@ -569,7 +569,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <DateSelectBox
-              label="日付"
+              // label="日付"
               name="date-select"
               placeholder="年月日"
               required
@@ -583,7 +583,7 @@ export default function Home() {
           <FormItemWrap>
             <DateSelectBox
               type="month"
-              label="年月"
+              // label="年月"
               name="month-select"
               placeholder={["y", "m"]}
               required
@@ -608,7 +608,7 @@ export default function Home() {
           /> */}
           <FormItemWrap>
             <TextArea
-              label="テキストエリア"
+              // label="テキストエリア"
               name="text-area"
               required
               disabled={disabled.value}

@@ -13,7 +13,7 @@ export const signIn_email = $str({
 
 export const signIn_password = $str({
   name: "password",
-  labelLabel: "auth.password",
+  labelLang: "auth.password",
   required: true,
   inputMode: "url",
 });

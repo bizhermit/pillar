@@ -27,7 +27,7 @@ type FormItemOptions<
   DV extends any = V
 > = {
   name?: string;
-  label?: string;
+  label?: LangKey;
   disabled?: boolean;
   readOnly?: boolean;
   required?: boolean | ((props: DataItem.ValidationProps<D>) => boolean);
