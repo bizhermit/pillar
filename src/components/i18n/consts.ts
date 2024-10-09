@@ -10,6 +10,6 @@ export const LANGS = [
 
 export const LANG_LABELS: { [v in typeof LANGS[number]]: string; } = {
   ja: "日本語",
-  en: "English",
   "en-US": "English (US)",
+  en: "English",
 };
