@@ -52,7 +52,7 @@ PostgreSQLおよびNode.jsの`DateTime`のタイムゾーンとして使用さ�
 
 ### `APP_MODE`
 
-Webアプリケーションの動作モード。  
+**Webアプリケーションの動作モード**  
 ※ Nextサーバーの起動モードとは異なります。  
 
 設定値
@@ -64,18 +64,36 @@ Webアプリケーションの動作モード。
 
 ### `NEXT_PORT`
 
+**Nextサーバーの起動ポート**
+
 ### `API_URL`
+
+**サーバーサイドで使用するWebAPIのオリジン**
 
 ### `NEXT_PUBLIC_API_URL`
 
+**クライアントサイドまたはサーバーサイドで使用するWebAPIのオリジン**
+
 ### `AUTH_URL`
+
+**認証APIのオリジン**
 
 ### `AUTH_SECRET`
 
+**認証の暗号化に使用するsecret文字列**
+
 ### `POSTGRES_USER`
+
+**PostgreSQLの接続ユーザー**
 
 ### `POSTGRES_PASSWORD`
 
+**PostgreSQLの接続パスワード**
+
 ### `POSTGRES_DB`
 
+**PostgreSQLの接続スキーマ**
+
 ### `POSTGRES_PORT`
+
+**PostgreSQLの接続ポート**
