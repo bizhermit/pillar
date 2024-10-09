@@ -14,7 +14,7 @@ Visual Studio Code（VSCode）の使用を前提としています。
 
 1. 任意のフォルダに当リポジトリをクローンする
 2. dockerおよびdocker-composeを実行可能状態にする
-3. [環境変数](./docs/env.md)を設定する
+3. [環境変数](./docs/development/env.md)を設定する
 4. [Dev Container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)を起動する
 
 Dev Container初回起動時のみ、PostgreSQLの構築が行われます。  
@@ -49,5 +49,5 @@ npm run export
 
 コマンド実行後、[Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)を起動する
 
-# [システム仕様](./docs/index.md)
+# [仕様書](./docs/index.md)
 

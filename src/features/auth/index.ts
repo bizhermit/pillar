@@ -1,10 +1,10 @@
 import { LANG_KEY } from "@/i18n/consts";
 import { langFactory } from "@/i18n/factory";
 import { analyzeHeaderAcceptLang } from "@/i18n/utilities";
+import { isEmpty } from "@/objects";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { NextResponse } from "next/server";
-import { isEmpty } from "../objects";
 import { authErrorCallbackUrlQueryName, signIn_email, signIn_password, signInPageUrl } from "./consts";
 
 const isDev = /^dev/.test(process.env.NODE_ENV);
