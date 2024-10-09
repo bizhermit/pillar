@@ -37,8 +37,8 @@ export const Slider = <D extends DataItem.$num | undefined>({
     },
     parse: () => (p) => $numParse(p, true),
     effect: () => { },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $numValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $numValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: () => bref.current?.parentElement?.focus(),

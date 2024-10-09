@@ -35,6 +35,7 @@ import { LayoutContext } from "@/react/hooks/layout";
 import useRouter from "@/react/hooks/router";
 import { sleep } from "@/utilities/sleep";
 import { use, useRef, useState } from "react";
+import { sample_bool, sample_number, sample_text } from "../data-items";
 import css from "./page.module.css";
 
 export default function Home() {
@@ -347,17 +348,18 @@ export default function Home() {
           {/* <div style={{ width: 150 }}> */}
           <FormItemWrap>
             <TextBox
-              placeholder="テキスト"
-              name="text"
-              label="テキスト"
-              // defaultValue="hoge"
-              required={(p) => {
-                // console.log((p.data?.slider ?? 0) > 50);
-                return (p.data?.slider ?? 0) > 50;
-              }}
-              refs={["slider"]}
+              // placeholder="テキスト"
+              // name="text"
+              labelAsIs="テキスト"
+              // // defaultValue="hoge"
+              // required={(p) => {
+              //   // console.log((p.data?.slider ?? 0) > 50);
+              //   return (p.data?.slider ?? 0) > 50;
+              // }}
+              // refs={["slider"]}
               disabled={disabled.value}
               readOnly={readOnly.value}
+              dataItem={sample_text}
             // hook={formItem.hook}
             />
           </FormItemWrap>
@@ -376,7 +378,7 @@ export default function Home() {
             <span>Label:</span>
             <FormItemWrap>
               <ToggleSwitch
-                label="トグル"
+                labelAsIs="トグル"
                 name="toggle"
                 required
                 requiredIsTrue
@@ -391,10 +393,11 @@ export default function Home() {
             <span>Label:</span>
             <FormItemWrap>
               <CheckBox
-                label="チェックボックス"
-                name="check"
-                required
+                labelAsIs="チェックボックス"
+                // name="check"
+                // required
                 // requiredIsTrue
+                dataItem={sample_bool}
                 disabled={disabled.value}
                 readOnly={readOnly.value}
               >
@@ -404,9 +407,10 @@ export default function Home() {
           </label>
           <FormItemWrap style={{ width: 150 }}>
             <NumberBox
-              label="数値"
-              name="num"
-              required
+              labelAsIs="数値"
+              // name="num"
+              // required
+              dataItem={sample_number}
               disabled={disabled.value}
               readOnly={readOnly.value}
               // float={1}
@@ -416,7 +420,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <PasswordBox
-              label="パスワード"
+              labelAsIs="パスワード"
               name="password"
               disabled={disabled.value}
               readOnly={readOnly.value}
@@ -434,7 +438,7 @@ export default function Home() {
                 // width: 100,
                 // width: 400,
               }}
-              label="クレジットカード番号"
+              labelAsIs="クレジットカード番号"
               name="credit-card"
               required
               disabled={disabled.value}
@@ -443,7 +447,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <SelectBox
-              label="セレクトボックス"
+              labelAsIs="セレクトボックス"
               name="select"
               placeholder="セレクトボックス"
               required
@@ -472,7 +476,7 @@ export default function Home() {
           </select>
           <FormItemWrap>
             <Slider
-              label="数値"
+              labelAsIs="数値"
               name="slider"
               required
               disabled={disabled.value}
@@ -482,7 +486,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <RadioButtons
-              label="ラジオボタン"
+              labelAsIs="ラジオボタン"
               name="radio"
               required
               nullable="unselectable"
@@ -503,7 +507,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <CheckList
-              label="チェックリスト"
+              labelAsIs="チェックリスト"
               name="check-list"
               required
               minLength={2}
@@ -526,7 +530,7 @@ export default function Home() {
           <FormItemRange
             from={
               <DateBox
-                label="From"
+                labelAsIs="From"
                 name="date"
                 placeholder="年月日"
                 required
@@ -540,19 +544,23 @@ export default function Home() {
             }
             to={
               <DateBox
-                label="To"
+                labelAsIs="To"
                 name="date-after"
                 placeholder={["yyyy", "m", "d"]}
                 required
                 disabled={disabled.value}
                 readOnly={readOnly.value}
+                pair={{
+                  name: "date",
+                  position: "before",
+                }}
               />
             }
           />
           <FormItemWrap>
             <DateBox
               type="month"
-              label="month"
+              labelAsIs="month"
               name="month"
               required
               disabled={disabled.value}
@@ -561,7 +569,7 @@ export default function Home() {
           </FormItemWrap>
           <FormItemWrap>
             <DateSelectBox
-              label="日付"
+              labelAsIs="日付"
               name="date-select"
               placeholder="年月日"
               required
@@ -575,7 +583,7 @@ export default function Home() {
           <FormItemWrap>
             <DateSelectBox
               type="month"
-              label="年月"
+              labelAsIs="年月"
               name="month-select"
               placeholder={["y", "m"]}
               required
@@ -600,7 +608,7 @@ export default function Home() {
           /> */}
           <FormItemWrap>
             <TextArea
-              label="テキストエリア"
+              labelAsIs="テキストエリア"
               name="text-area"
               required
               disabled={disabled.value}

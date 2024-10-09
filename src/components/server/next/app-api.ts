@@ -1,3 +1,4 @@
+import { langFactory } from "@/i18n/factory";
 import { NextResponse, type NextRequest } from "next/server";
 import { parseBasedOnDataItem } from "../../data-items/parse";
 import { validationBasedOnDataItem } from "../../data-items/validation";
@@ -42,6 +43,7 @@ export const apiMethodHandler = <
     try {
       const env: DataItem.Env = {
         tzOffset: Number(req.headers.get("tz-offset") || new Date().getTimezoneOffset()),
+        lang: langFactory(),
       };
 
       const data = await process({
@@ -95,9 +97,9 @@ export const apiMethodHandler = <
           if (validationError.length === 0) return;
           throw new ApiError(422, {
             type: "e",
-            title: "バリデーションエラー",
+            title: env.lang("validation.error"),
             body: validationError.map(item => item.msg).join("\n"),
-            buttonText: "閉じる",
+            buttonText: env.lang("common.close"),
           }, { validationResults });
         },
       });
@@ -105,7 +107,7 @@ export const apiMethodHandler = <
       return NextResponse.json({ message, data }, { status: status ?? 200 });
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error(err);
+      // console.error(err);
       let data: { [v: string]: any } | null | undefined;
       if (err instanceof ApiError) {
         status = err.status;

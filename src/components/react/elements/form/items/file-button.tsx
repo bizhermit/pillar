@@ -1,5 +1,6 @@
 "use client";
 
+import { langFactory } from "@/i18n/factory";
 import { type ChangeEvent, type HTMLAttributes, useRef } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
 import { $fileValidations } from "../../../../data-items/file/validation";
@@ -15,6 +16,8 @@ type FileButtonOptions<D extends DataItem.$file | undefined> = FormItemOptions<D
 };
 
 type FileButtonProps<D extends DataItem.$file | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, FileButtonOptions<D>>;
+
+const lang = langFactory();
 
 export const FileButton = <D extends DataItem.$file | undefined>({
   accept,
@@ -59,8 +62,8 @@ export const FileButton = <D extends DataItem.$file | undefined>({
         }
       }
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $fileValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $fileValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: focusInput,
@@ -104,7 +107,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
           autoFocus={fi.autoFocus}
           {...fi.iptAria}
         >
-          {props.children ?? "ファイルを選択"}
+          {props.children ?? lang("form.selectFile")}
         </Button>
         <input
           ref={iref}

@@ -108,7 +108,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
       };
     },
     getTieInNames: () => tieInNames?.map(item => item.hiddenName || item.dataName),
-    parse: ({ dataItem }) => {
+    parse: ({ dataItem, env, label }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
         if (loading) {
           if (equals($emptyItem?.[vdn], v)) return [$emptyItem, r];
@@ -121,7 +121,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             type: "e",
             code: "not-found",
             fullName: p.fullName,
-            msg: `選択肢に値が存在しません。[${v}]`,
+            msg: env.lang("validation.choices", { s: label, value: v }),
           }];
         }
         return [item, r];
@@ -141,19 +141,27 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
     effect: ({ value }) => {
       iref.current.value = value?.[ldn] || "";
     },
-    validation: ({ dataItem, iterator }) => {
+    validation: ({ dataItem, env, iterator, label }) => {
       const funcs = (() => {
         switch (dataItem.type) {
           case "bool":
           case "b-num":
           case "b-str":
-            return $boolValidations(dataItem as DataItem.$boolAny);
-          case "str": return $strValidations(dataItem as DataItem.$str, true);
-          case "num": return $numValidations(dataItem as DataItem.$num, true);
+            return $boolValidations({ dataItem: dataItem as DataItem.$boolAny, env });
+          case "str": return $strValidations({ dataItem: dataItem as DataItem.$str, env }, true);
+          case "num": return $numValidations({ dataItem: dataItem as DataItem.$num, env }, true);
           default: return [
-            ({ value, dataItem, fullName }) => {
+            ({ value, fullName, env }) => {
               if (value != null && value !== "") return undefined;
-              return { type: "e", code: "required", fullName, msg: `${dataItem.label || dataItem.name || "値"}を選択してください。` };
+              return {
+                type: "e",
+                code: "required",
+                fullName,
+                msg: env.lang("validation.required", {
+                  s: label,
+                  mode: "select",
+                }),
+              };
             }
           ] as Array<DataItem.Validation<any>>;
         }
@@ -414,7 +422,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
             {filtered.map(item => (
               <ListItem
                 loading={loading}
-                key={item[vdn]}
+                key={item[vdn] ?? "_null"}
                 currentValue={fi.value?.[vdn]}
                 empty={empty}
                 initFocusValue={initFocusValue}

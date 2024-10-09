@@ -55,8 +55,8 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
     effect: ({ edit, value, effect }) => {
       if (iref.current && (!edit || effect)) iref.current.value = value ?? "";
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $strValidations(minimumValidation ? { type: "str", required: dataItem.required } : dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $strValidations({ dataItem: minimumValidation ? { type: "str", required: dataItem.required } : dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: () => iref.current?.focus(),

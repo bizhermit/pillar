@@ -75,8 +75,8 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
     effect: ({ value, edit, dataItem, effect }) => {
       if (iref.current && (!edit || effect)) iref.current.checked = equals(dataItem.trueValue, value);
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $boolValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $boolValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: () => iref.current?.focus(),

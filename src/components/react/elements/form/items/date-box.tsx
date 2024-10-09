@@ -1,5 +1,6 @@
 "use client";
 
+import { useLang } from "@/i18n/react-hook";
 import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactElement, useEffect, useMemo, useReducer, useRef, type WheelEvent } from "react";
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
@@ -104,8 +105,8 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
       if (yref.current && (!edit || effect)) renderInputs(value);
     },
     equals: (v1, v2) => equals(v1?.str, v2?.str),
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $dateValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $dateValidations({ dataItem, env });
       return (v, p) => iterator(funcs, { ...p, value: v?.date });
     },
     setBind: ({ data, name, value }) => {
@@ -512,6 +513,7 @@ export const DatePicker = (props: DatePickerProps) => {
   const minDate = props.minDate ?? defaultMinDate;
   const maxDate = props.maxDate ?? defaultMaxDate;
   const memorizedValue = (values ?? []).map(v => formatDate(v)).join("");
+  const lang = useLang();
 
   const [dispDate, setDispDate] = useReducer((state: Date, { date, act }: { date: Date; act?: "select" | "effect"; }) => {
     if (state.getMonth() === date.getMonth() && state.getFullYear() === date.getFullYear()) return state;
@@ -827,7 +829,7 @@ export const DatePicker = (props: DatePickerProps) => {
           <button
             className="ipt-btn"
             type="button"
-            title="キャンセル"
+            title={lang("common.cancel")}
             onClick={() => {
               props.onCancel!();
             }}
@@ -838,7 +840,7 @@ export const DatePicker = (props: DatePickerProps) => {
         <button
           className="ipt-btn"
           type="button"
-          title="今日"
+          title={lang("form.today")}
           onClick={selectToday}
         >
           <TodayIcon />
@@ -846,7 +848,7 @@ export const DatePicker = (props: DatePickerProps) => {
         <button
           className="ipt-btn"
           type="button"
-          title="選択中を表示する"
+          title={lang("form.dispCurrent")}
           onClick={() => {
             setDispDate({
               date: getFirstDateAtMonth(values[0] ?? new Date()),

@@ -65,7 +65,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
       };
     },
     getTieInNames: () => tieInNames?.map(item => item.hiddenName || item.dataName),
-    parse: ({ dataItem }) => {
+    parse: ({ dataItem, env, label }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
         if (loading) {
           return [{ [vdn]: v, [ldn]: v == null ? "" : String(v) }, r];
@@ -77,7 +77,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
             type: "e",
             code: "not-found",
             fullName: p.fullName,
-            msg: `選択肢に値が存在しません。[${v}]`,
+            msg: env.lang("validation.choices", { s: label, value: v }),
           }];
         }
         return [item, r];
@@ -116,8 +116,8 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
       return v1.some(val1 => v2.some(val2 => equals(val1[vdn], val2[vdn])));
     },
     effect: () => { },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $arrayValidations(dataItem, true);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $arrayValidations({ dataItem, env }, true);
       return (_, p) => iterator(funcs, p);
     },
     setBind: ({ data, name, value }) => {
@@ -156,7 +156,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
           return (
             <label
               className="ipt-lbl"
-              key={v}
+              key={v ?? "_null"}
               data-disabled={disabled}
               data-readonly={readonly}
               data-children={true}
@@ -189,7 +189,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
         })}
         {fi.name && fi.mountValue && fi.value?.map(item => {
           return (
-            <Fragment key={item[vdn]}>
+            <Fragment key={item[vdn] ?? "_null"}>
               <input
                 name={`${fi.name}[]`}
                 type="hidden"

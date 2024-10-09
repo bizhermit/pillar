@@ -3,18 +3,21 @@ import Link from "@/react/elements/link";
 import { Navigation } from "@/react/elements/navigation";
 import { NavigationMenu, NavMenuLink, NavMenuNest } from "@/react/elements/navigation/menu";
 import { FetchProvider } from "@/react/hooks/fetch";
+import { cookies } from "next/headers";
 import { ReactNode } from "react";
-import { InputsAsClient } from "./inputs-client";
-import { InputsAsServer } from "./inputs-server";
+import { LnagSwitch } from "./lang-switch";
 import css from "./layout.module.scss";
 
 const Layout = (props: { children: ReactNode; }) => {
+  const langs = cookies().get("lang")?.value;
+
   return (
     <FetchProvider>
       <Navigation
         header={
           <h1>
             <Link href="/sandbox" noDecoration>Sandbox</Link>
+            <span> - {langs}</span>
           </h1>
         }
         content={props.children}
@@ -99,16 +102,7 @@ const Layout = (props: { children: ReactNode; }) => {
             DateTime
           </NavMenuLink>
         </NavigationMenu>
-        <ul style={{ wordBreak: "keep-all", whiteSpace: "nowrap" }}>
-          <li>
-            server
-            <InputsAsServer />
-          </li>
-          <li>
-            client
-            <InputsAsClient />
-          </li>
-        </ul>
+        <LnagSwitch />
       </Navigation>
     </FetchProvider>
   );

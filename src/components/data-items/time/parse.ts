@@ -1,12 +1,16 @@
 import { getTimeUnit, parseMilliseconds, parseTimeAsUnit, roundTime, Time } from "../../objects/time";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $timeParse = ({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$time>): DataItem.ParseResult<number> => {
-  const label = dataItem.label || dataItem.name || defaultLabel;
+export const $timeParse = ({ value, dataItem, fullName, env }: DataItem.ParseProps<DataItem.$time>): DataItem.ParseResult<number> => {
+  const s = getDataItemLabel({ dataItem, env });
 
   if (Array.isArray(value) && value.length > 1) {
-    return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];
+    return [undefined, {
+      type: "e",
+      code: "multiple",
+      fullName,
+      msg: env.lang("validation.single", { s }),
+    }];
   }
   if (value == null || value === "") return [undefined];
 
@@ -14,7 +18,16 @@ export const $timeParse = ({ value, dataItem, fullName }: DataItem.ParseProps<Da
   const time = parseMilliseconds(value, unit);
   let num = parseTimeAsUnit(time, unit);
   if (num == null) {
-    return [undefined, { type: "e", code: "parse", fullName, msg: `${label}を数値型に変換できません。[${value}]` }];
+    return [undefined, {
+      type: "e",
+      code: "parse",
+      fullName,
+      msg: env.lang("validation.parseFailed", {
+        s,
+        type: env.lang("common.typeOfNumber"),
+        value,
+      }),
+    }];
   }
   const t = new Time(num, unit);
   t.setHours(roundTime(t.getHours(), dataItem.hourStep ?? 1));
@@ -22,5 +35,15 @@ export const $timeParse = ({ value, dataItem, fullName }: DataItem.ParseProps<Da
   t.setSeconds(roundTime(t.getSeconds(), dataItem.secondStep ?? 1));
   num = parseTimeAsUnit(t.getTime(), unit);
   if (num === value) return [num];
-  return [num, { type: "i", code: "parse", fullName, msg: `${label}を数値型に変換しました。[${value}]->[${num}]` }];
+  return [num, {
+    type: "i",
+    code: "parse",
+    fullName,
+    msg: env.lang("validation.parseSucceeded", {
+      s,
+      type: env.lang("common.typeOfNumber"),
+      before: value,
+      after: num,
+    }),
+  }];
 };

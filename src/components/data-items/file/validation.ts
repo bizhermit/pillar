@@ -1,22 +1,34 @@
 import { getAccept, getSizeText } from "../../objects/file";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "ファイル";
-
-export const $fileValidations = (dataItem: DataItem.ArgObject<DataItem.$file>): Array<DataItem.Validation<DataItem.$file>> => {
+export const $fileValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$file>): Array<DataItem.Validation<DataItem.$file>> => {
   const validations: Array<DataItem.Validation<DataItem.$file>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const s = getDataItemLabel({ dataItem, env }, "ファイル");
 
   validations.push(({ value, fullName }) => {
     if (value == null || value instanceof File) return undefined;
-    return { type: "e", code: "type", fullName, msg: `${label}はファイル型を設定してください。` };
+    return {
+      type: "e",
+      code: "type",
+      fullName,
+      msg: env.lang("validation.typeOf", {
+        s,
+        type: env.lang("common.typeOfFile"),
+        mode: "set",
+      }),
+    };
   });
 
   if (dataItem.required) {
     validations.push((p) => {
       if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
       if (p.value != null) return undefined;
-      return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を選択してください。` };
+      return {
+        type: "e",
+        code: "required",
+        fullName: p.fullName,
+        msg: env.lang("validation.required", { s, mode: "set" }),
+      };
     });
   }
 
@@ -38,7 +50,12 @@ export const $fileValidations = (dataItem: DataItem.ArgObject<DataItem.$file>): 
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
       if (validAccept(value)) return undefined;
-      return { type: "e", code: "accept", fullName, msg: `${label}のファイルタイプが不適切です` };
+      return {
+        type: "e",
+        code: "accept",
+        fullName,
+        msg: env.lang("validation.fileAccept", { s }),
+      };
     });
   }
 
@@ -47,7 +64,12 @@ export const $fileValidations = (dataItem: DataItem.ArgObject<DataItem.$file>): 
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
       if (value.size >= dataItem.fileSize!) return undefined;
-      return { type: "e", code: "size", fullName, msg: `${label}のファイルサイズは${sizeText}以内をアップロードしてください。` };
+      return {
+        type: "e",
+        code: "size",
+        fullName,
+        msg: env.lang("validation.fileSize", { s, size: sizeText }),
+      };
     });
   }
 

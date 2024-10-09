@@ -53,8 +53,8 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
     effect: ({ edit, value, effect }) => {
       if (iref.current && (!edit || effect)) iref.current.value = parseFormattedValue(value);
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $numValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $numValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: focusInput,

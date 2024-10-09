@@ -40,9 +40,9 @@ export const setCookie = (name: string, value: string, opts?: CookieOptions) => 
     return undefined;
   }
   const strs: Array<string> = [];
-  if (opts?.path) strs.push(`Path=${encodeURIComponent(opts.path)}`);
-  if (opts?.domain) strs.push(`Domain=${encodeURIComponent(opts.domain)}`);
-  if (opts?.expires) strs.push(`Expires=${encodeURIComponent(opts.expires)}`);
+  if (opts?.path) strs.push(`Path=${opts.path}`);
+  if (opts?.domain) strs.push(`Domain=${opts.domain}`);
+  if (opts?.expires) strs.push(`Expires=${opts.expires}`);
   if (opts?.maxAge != null) strs.push(`Max-Age=${opts.maxAge}`);
   if (opts?.secure) strs.push("Secure");
   if (opts?.httpOnly) strs.push("HttpOnly");
@@ -50,6 +50,6 @@ export const setCookie = (name: string, value: string, opts?: CookieOptions) => 
   document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)};${strs.join(";")}`;
 };
 
-export const deleteCookie = (name: string) => {
-  setCookie(name, "", { maxAge: 0 });
+export const deleteCookie = (name: string, opts?: Pick<CookieOptions, "path" | "domain">) => {
+  setCookie(name, "", { ...opts, maxAge: 0 });
 };

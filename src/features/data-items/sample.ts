@@ -7,7 +7,7 @@ import { $struct } from "@/data-items/struct";
 
 export const sample_str = $str({
   name: "sample_str",
-  label: "サンプル文字列",
+  labelAsIs: "サンプル文字列",
   maxLength: 10,
   // required: () => true,
   required: true,
@@ -31,7 +31,7 @@ export type TYPE_STR_S = DataItem.SourceValueType<typeof sample_str>;
 
 export const sample_num = $num({
   name: "sample_num",
-  label: "サンプル数値",
+  labelAsIs: "サンプル数値",
   required: true,
   max: 1980,
   source: [
@@ -82,7 +82,7 @@ export type TYPE_BOOL_STR = DataItem.ValueType<typeof sample_bool_str>;
 
 export const sample_date = $date({
   name: "sample_date",
-  label: "日付",
+  labelAsIs: "日付",
 });
 
 export type TYPE_DATE = DataItem.ValueType<typeof sample_date>;

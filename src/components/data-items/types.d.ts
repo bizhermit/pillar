@@ -45,11 +45,17 @@ declare namespace DataItem {
 
   type Env = {
     tzOffset: number;
+    lang: LangAccessor;
   };
 
   type OmitableProps = "name";
 
   type ArgObject<D extends $object> = PickPartial<D, OmitableProps>;
+
+  type ValidationGeneratorProps<D extends $object> = {
+    dataItem: ArgObject<D>;
+    env: Env;
+  };
 
   type ValidationProps<D extends $object, V = ValueType<D>> = {
     value: V | null | undefined;
@@ -74,7 +80,8 @@ declare namespace DataItem {
 
   type $ = {
     name: string;
-    label?: string;
+    label?: LangKey;
+    labelAsIs?: string;
     required?: boolean | ((params: DataItem.ValidationProps<any>) => boolean);
     refs?: Array<string>;
   };

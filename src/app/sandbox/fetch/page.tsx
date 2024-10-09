@@ -10,6 +10,7 @@ import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { useFetch } from "@/react/hooks/fetch";
 import useRouter from "@/react/hooks/router";
 import $fetch from "@/utilities/fetch";
+import { sample_bool, sample_number, sample_text } from "../data-items";
 
 type Req = TypeofAppApi["/api"]["GET"]["req"];
 type Res = TypeofAppApi["/api"]["GET"]["res"];
@@ -45,14 +46,17 @@ const Page = () => {
         onClick={async ({ unlock }) => {
           try {
             const data = await api.get("/api", {
-              hoge: "string",
-              fuga: 3,
-              piyo: true,
+              // hoge: "string",
+              // fuga: 3,
+              // piyo: true,
+              sample_text: "hoge",
+              sample_num: 3,
+              sample_bool: false,
             }, {
               done: (res) => {
                 return {
                   message: {
-                    body: `piyo: ${res.data.req.piyo}`,
+                    body: `piyo: ${res.data.req.sample_text}`,
                   },
                 };
               }
@@ -139,13 +143,13 @@ const Page = () => {
         }}
       >
         <TextBox
-          name="hoge"
+          dataItem={sample_text}
         />
         <NumberBox
-          name="fuga"
+          dataItem={sample_number}
         />
         <ToggleSwitch
-          name="piyo"
+          dataItem={sample_bool}
         />
         <FormButton type="submit">
           submit

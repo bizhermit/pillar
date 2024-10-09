@@ -1,3 +1,4 @@
+import { getDataItemLabel } from "@/data-items/label";
 import { type HTMLAttributes, useEffect } from "react";
 import { $arrayValidations } from "../../../../data-items/array/validation";
 import { $boolValidations } from "../../../../data-items/bool/validation";
@@ -84,22 +85,22 @@ export const Hidden = <V extends any, D extends DataItem.$object | undefined>({
     },
     parse: () => (p) => [p.value],
     effect: () => { },
-    validation: ({ dataItem, iterator }) => {
+    validation: ({ dataItem, env, iterator }) => {
       const funcs = (() => {
         switch (dataItem.type) {
-          case "str": return $strValidations(dataItem as DataItem.$str);
-          case "num": return $numValidations(dataItem as DataItem.$num);
+          case "str": return $strValidations({ dataItem: dataItem as DataItem.$str, env });
+          case "num": return $numValidations({ dataItem: dataItem as DataItem.$num, env });
           case "bool":
           case "b-num":
           case "b-str":
-            return $boolValidations(dataItem as DataItem.$boolAny);
+            return $boolValidations({ dataItem: dataItem as DataItem.$boolAny, env });
           case "date":
           case "month":
-            return $dateValidations(dataItem as DataItem.$date);
-          case "time": return $timeValidations(dataItem as DataItem.$time);
-          case "file": return $fileValidations(dataItem as DataItem.$file);
-          case "array": return $arrayValidations(dataItem as DataItem.$array<any>);
-          case "struct": return $structValidations(dataItem as DataItem.$struct<Array<DataItem.$object>>);
+            return $dateValidations({ dataItem: dataItem as DataItem.$date, env });
+          case "time": return $timeValidations({ dataItem: dataItem as DataItem.$time, env });
+          case "file": return $fileValidations({ dataItem: dataItem as DataItem.$file, env });
+          case "array": return $arrayValidations({ dataItem: dataItem as DataItem.$array<any>, env });
+          case "struct": return $structValidations({ dataItem: dataItem as DataItem.$struct<Array<DataItem.$object>>, env });
           default:
             return (() => {
               const funcs: Array<DataItem.Validation<DataItem.$any, V>> = [];
@@ -107,7 +108,7 @@ export const Hidden = <V extends any, D extends DataItem.$object | undefined>({
                 funcs.push((p) => {
                   if (typeof p.dataItem.required === "function" && !p.dataItem.required(p)) return undefined;
                   if (p.value != null && p.value !== "") return undefined;
-                  return { type: "e", code: "required", fullName: p.fullName, msg: `${p.dataItem.label || p.dataItem.name || "値"}を設定してください。` };
+                  return { type: "e", code: "required", fullName: p.fullName, msg: `${getDataItemLabel({ dataItem, env })}を設定してください。` };
                 });
               }
               if (dataItem.validations) funcs.push(...(dataItem as DataItem.$any).validations!);

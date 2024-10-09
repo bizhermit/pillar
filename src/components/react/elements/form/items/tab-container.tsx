@@ -43,21 +43,21 @@ export const InputTabContainer = ({
         type: "str",
       };
     },
-    parse: () => (p) => {
+    parse: ({ env }) => (p) => {
       const key = String(p.value);
       if ($children.find(c => c.key === key)) return [key];
       return [defaultKey, {
         type: "e",
         code: "parse",
         fullName: p.fullName,
-        msg: "一致するキーが存在しません。",
+        msg: env.lang("validation.choices", { value: key }),
       }];
     },
     effect: ({ value, effect }) => {
       if (effect) $hook.setKey(value!);
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $strValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $strValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: () => { },

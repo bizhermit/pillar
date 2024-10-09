@@ -1,24 +1,41 @@
 import { equals } from "../../objects";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $boolValidations = (dataItem: DataItem.ArgObject<DataItem.$boolAny>) => {
+export const $boolValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$boolAny>) => {
   const validations: Array<DataItem.Validation<DataItem.$boolAny>> = [];
-
-  const label = dataItem.label || dataItem.name || defaultLabel;
+  const s = getDataItemLabel({ dataItem, env });
 
   validations.push((p) => {
     if (equals(p.value, p.dataItem.trueValue)) return undefined;
     const $required = typeof p.dataItem.required === "function" ? p.dataItem.required(p) : p.dataItem.required;
     if (equals(p.value, p.dataItem.falseValue)) {
-      if ($required && p.dataItem.requiredIsTrue) return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を入力してください。` };
+      if ($required && p.dataItem.requiredIsTrue) {
+        return {
+          type: "e",
+          code: "required",
+          fullName: p.fullName,
+          msg: env.lang("validation.required", { s }),
+        };
+      }
       return undefined;
     }
     if (p.value == null) {
-      if ($required) return { type: "e", code: "required", fullName: p.fullName, msg: `${label}を入力してください。` };
+      if ($required) {
+        return {
+          type: "e",
+          code: "required",
+          fullName: p.fullName,
+          msg: env.lang("validation.required", { s }),
+        };
+      }
       return undefined;
     }
-    return { type: "e", code: "required", fullName: p.fullName, msg: `${label}は有効な値を設定してください。` };
+    return {
+      type: "e",
+      code: "required",
+      fullName: p.fullName,
+      msg: env.lang("validation.contain", { s }),
+    };
   });
 
   if (dataItem.validations) {

@@ -75,8 +75,8 @@ export const CheckBox = <True extends boolean | number | string, False extends b
     effect: ({ value, edit, effect, dataItem }) => {
       if (iref.current && (!edit || effect)) iref.current.checked = equals(dataItem.trueValue, value);
     },
-    validation: ({ dataItem, iterator }) => {
-      const funcs = $boolValidations(dataItem);
+    validation: ({ dataItem, env, iterator }) => {
+      const funcs = $boolValidations({ dataItem, env });
       return (_, p) => iterator(funcs, p);
     },
     focus: () => iref.current?.focus(),

@@ -3,6 +3,7 @@
 import { type ReactNode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { preventScroll } from "../../dom/prevent-scroll";
+import { langFactory } from "../../i18n/factory";
 import { Button, type ButtonProps } from "./button";
 
 type MessageBoxChildrenProps = {
@@ -38,6 +39,8 @@ type MessageBoxProps = {
   color?: StyleColor;
   buttons: Array<ButtonProps>;
 };
+
+const lang = langFactory();
 
 export const MessageBox = (props: MessageBoxProps) => {
   const [disabled, setDisabled] = useState(false);
@@ -214,7 +217,7 @@ export const $alert = (props: MessageBoxAlertProps | string) => {
         ...p,
         buttons: [
           {
-            children: "OK",
+            children: lang("common.ok"),
             autoFocus: true,
             ...buttonProps,
             onClick: () => {
@@ -235,7 +238,7 @@ export const $confirm = (props: MessageBoxConfirmProps | string) => {
         ...p,
         buttons: [
           {
-            children: "キャンセル",
+            children: lang("common.cancel"),
             outline: true,
             autoFocus: true,
             ...negativeButtonProps,
@@ -244,7 +247,7 @@ export const $confirm = (props: MessageBoxConfirmProps | string) => {
             },
           },
           {
-            children: "OK",
+            children: lang("common.ok"),
             ...positiveButtonProps,
             onClick: () => {
               close(true);

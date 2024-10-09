@@ -1,5 +1,6 @@
 "use client";
 
+import { langFactory } from "@/i18n/factory";
 import { use, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
 import { equals } from "../../../objects";
@@ -16,13 +17,15 @@ type FormItemCoreArgs<
   dataItemDeps: Array<any>;
   getDataItem: (props: PickPartial<DataItem.$, DataItem.OmitableProps> & {
     dataItem: D | undefined;
-  }) => DataItem.ArgObject<SD>;
+  }, label: string | undefined) => DataItem.ArgObject<SD>;
   getTieInNames?: (params: { dataItem: SD; }) => (Array<string> | undefined);
-  parse: (params: { dataItem: SD; }) => (props: DataItem.ParseProps<SD>, args: { bind: boolean; }) => DataItem.ParseResult<IV>;
+  parse: (params: { dataItem: SD; env: DataItem.Env; label: string | undefined; }) => (props: DataItem.ParseProps<SD>, args: { bind: boolean; }) => DataItem.ParseResult<IV>;
   revert?: (v: IV | null | undefined) => (V | null | undefined);
   equals?: (v1: IV | null | undefined, v2: IV | null | undefined, params: { dataItem: DataItem.ArgObject<SD>; }) => boolean;
   validation: (props: {
     dataItem: DataItem.ArgObject<SD>;
+    env: DataItem.Env,
+    label: string | undefined;
     iterator: (funcs: Array<DataItem.Validation<any>>, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
   }) => (v: IV | null | undefined, arg: DataItem.ValidationProps<SD, any>) => (DataItem.ValidationResult | null | undefined);
   setBind?: (props: {
@@ -40,12 +43,14 @@ type FormItemCoreArgs<
 
 const env: DataItem.Env = {
   tzOffset: new Date().getTimezoneOffset(),
+  lang: langFactory(),
 };
 
 export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V, DV extends any = V>({
   hook,
   name,
   label,
+  labelAsIs,
   disabled,
   readOnly,
   required,
@@ -68,29 +73,34 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   const $disabled = disabled || form.disabled;
   const $readOnly = readOnly || form.processing;
 
-  const dataItem = useMemo(() => {
+  const { dataItem, $label } = useMemo(() => {
     const $name = name || $dataItem?.name;
     const $required = required ?? $dataItem?.required;
-    const $label = label || $dataItem?.label;
+    const l = label ?? $dataItem?.label;
+    const $label = (l ? env.lang(l) : "") || labelAsIs || $dataItem?.labelAsIs || $dataItem?.name;
     const $refs = (() => {
       const ret = [...(refs ?? []), ...($dataItem?.refs ?? [])];
       if (ret.length === 0) return undefined;
       return ret;
     })();
     return {
-      name: $name,
-      required: $required,
-      label: $label,
-      refs: $refs,
-      validations: $dataItem?.validations,
-      ...cp.getDataItem({
-        name,
-        label,
-        required,
+      dataItem: {
+        name: $name,
+        required: $required,
+        label: $label,
+        labelAsIs: $label,
         refs: $refs,
-        dataItem: $dataItem,
-      }),
-    } as SD;
+        validations: $dataItem?.validations,
+        ...cp.getDataItem({
+          name,
+          label: l,
+          required,
+          refs: $refs,
+          dataItem: $dataItem,
+        }, $label),
+      } as unknown as SD,
+      $label,
+    };
   }, [
     name,
     typeof required === "function" ? "" : required,
@@ -100,9 +110,11 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 
   const { parseVal, validation } = useMemo(() => {
     return {
-      parseVal: cp.parse({ dataItem }),
+      parseVal: cp.parse({ dataItem, env, label: $label }),
       validation: cp.validation({
         dataItem,
+        env,
+        label: $label,
         iterator: (funcs, arg) => {
           let r: DataItem.ValidationResult | null | undefined;
           for (const func of funcs) {
@@ -326,6 +338,12 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     if (init.mount === 0) {
       init.mount++;
       $.current.bind = form.bind;
+      cp.effect({
+        dataItem,
+        effect: true,
+        value: valRef.current,
+        origin: valRef.current,
+      });
       return;
     }
     if ($.current.bind === form.bind) return;
@@ -416,7 +434,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     autoFocus,
     props,
     iptAria: {
-      "aria-label": $dataItem?.label,
+      "aria-label": $label,
       "aria-invalid": editable && msg?.type === "e",
       "aria-errormessage": errMsgId,
       "aria-required": $required,

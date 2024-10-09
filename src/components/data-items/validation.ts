@@ -41,31 +41,31 @@ export const validationBasedOnDataItem = (data: { [v: string]: any } | Array<any
   const impl = (dataItem: DataItem.$object, index?: number) => {
     switch (dataItem.type) {
       case "str":
-        isValid(dataItem, $strValidations(dataItem), index);
+        isValid(dataItem, $strValidations({ dataItem, env }), index);
         return;
       case "num":
-        isValid(dataItem, $numValidations(dataItem), index);
+        isValid(dataItem, $numValidations({ dataItem, env }), index);
         return;
       case "bool":
       case "b-num":
       case "b-str":
-        isValid(dataItem, $boolValidations(dataItem), index);
+        isValid(dataItem, $boolValidations({ dataItem, env }), index);
         return;
       case "date":
       case "month":
-        isValid(dataItem, $dateValidations(dataItem), index);
+        isValid(dataItem, $dateValidations({ dataItem, env }), index);
         return;
       case "time":
-        isValid(dataItem, $timeValidations(dataItem), index);
+        isValid(dataItem, $timeValidations({ dataItem, env }), index);
         return;
       case "datetime":
-        isValid(dataItem, $datetimeValidations(dataItem), index);
+        isValid(dataItem, $datetimeValidations({ dataItem, env }), index);
         return;
       case "file":
-        isValid(dataItem, $fileValidations(dataItem), index);
+        isValid(dataItem, $fileValidations({ dataItem, env }), index);
         return;
       case "array": {
-        const { value, name } = isValid(dataItem, $arrayValidations(dataItem), index);
+        const { value, name } = isValid(dataItem, $arrayValidations({ dataItem, env }), index);
         if (value) {
           const item = dataItem.item;
           if (Array.isArray(item)) {
@@ -86,7 +86,7 @@ export const validationBasedOnDataItem = (data: { [v: string]: any } | Array<any
         return;
       }
       case "struct": {
-        const { value, name } = isValid(dataItem, $structValidations(dataItem), index);
+        const { value, name } = isValid(dataItem, $structValidations({ dataItem, env }), index);
         if (value) results.push(...validationBasedOnDataItem(value, dataItem.item, env, name));
         return;
       }

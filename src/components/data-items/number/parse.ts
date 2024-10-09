@@ -1,13 +1,17 @@
 import { parseNum } from "../../objects/number";
+import { getDataItemLabel } from "../label";
 
-const defaultLabel = "値";
-
-export const $numParse = <V extends number>({ value, dataItem, fullName }: DataItem.ParseProps<DataItem.$num<V> | DataItem.$boolNum<V, V>>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
-  const label = dataItem.label || dataItem.name || defaultLabel;
+export const $numParse = <V extends number>({ value, dataItem, fullName, env }: DataItem.ParseProps<DataItem.$num<V> | DataItem.$boolNum<V, V>>, skipRefSource?: boolean): DataItem.ParseResult<V> => {
+  const s = getDataItemLabel({ dataItem: dataItem as DataItem.$num, env });
 
   try {
     if (Array.isArray(value) && value.length > 1) {
-      return [undefined, { type: "e", code: "multiple", fullName, msg: `${label}が複数設定されています。` }];
+      return [undefined, {
+        type: "e",
+        code: "multiple",
+        fullName,
+        msg: env.lang("validation.single", { s }),
+      }];
     }
 
     let v: V | DataItem.NullValue, change = false;
@@ -26,11 +30,40 @@ export const $numParse = <V extends number>({ value, dataItem, fullName }: DataI
     if (!skipRefSource) {
       const source = (dataItem as DataItem.$num)["source"];
       if (source && !source.find(s => s.value === v)) {
-        return [v, { type: "e", code: "source", fullName, msg: `${change ? `${label}を数値型に変換しました。[${value}]->[${v}]\n` : ""}${label}は有効な値を設定してください。` }];
+        return [v, {
+          type: "e",
+          code: "source",
+          fullName,
+          msg: `${change ? `${env.lang("validation.parseSucceeded", {
+            s,
+            type: env.lang("common.typeOfNumber"),
+            before: value,
+            after: v,
+          })} / ` : ""}${env.lang("validation.contain", { s })}`,
+        }];
       }
     }
-    return change ? [v, { type: "i", code: "parse", fullName, msg: `${label}を数値型に変換しました。[${value}]->[${v}]` }] : [v];
+    return change ? [v, {
+      type: "i",
+      code: "parse",
+      fullName,
+      msg: env.lang("validation.parseSucceeded", {
+        s,
+        type: env.lang("common.typeOfNumber"),
+        before: value,
+        after: v,
+      }),
+    }] : [v];
   } catch {
-    return [undefined, { type: "e", code: "parse", fullName, msg: `${label}を数値型に変換できません。[${value}]` }];
+    return [undefined, {
+      type: "e",
+      code: "parse",
+      fullName,
+      msg: env.lang("validation.parseFailed", {
+        s,
+        type: env.lang("common.typeOfNumber"),
+        value,
+      }),
+    }];
   }
 };

@@ -70,7 +70,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
         source: origin as DataItem.Source<any>,
       };
     },
-    parse: ({ dataItem }) => {
+    parse: ({ dataItem, env, label }) => {
       const parseData = ([v, r]: DataItem.ParseResult<any>, p: DataItem.ParseProps<any>): DataItem.ParseResult<any> => {
         if (loading) {
           return [{ [vdn]: v, [ldn]: v == null ? "" : String(v) }, r];
@@ -82,7 +82,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
             type: "e",
             code: "not-found",
             fullName: p.fullName,
-            msg: `選択肢に値が存在しません。[${v}]`,
+            msg: env.lang("validation.choices", { s: label, value: v }),
           }];
         }
         return [item, r];
@@ -100,19 +100,27 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
     revert: (v) => v?.[vdn],
     equals: (v1, v2) => equals(v1?.[vdn], v2?.[vdn]),
     effect: () => { },
-    validation: ({ dataItem, iterator }) => {
+    validation: ({ dataItem, env, iterator, label }) => {
       const funcs = (() => {
         switch (dataItem.type) {
           case "bool":
           case "b-num":
           case "b-str":
-            return $boolValidations(dataItem as DataItem.$boolAny);
-          case "str": return $strValidations(dataItem as DataItem.$str, true);
-          case "num": return $numValidations(dataItem as DataItem.$num, true);
+            return $boolValidations({ dataItem: dataItem as DataItem.$boolAny, env });
+          case "str": return $strValidations({ dataItem: dataItem as DataItem.$str, env }, true);
+          case "num": return $numValidations({ dataItem: dataItem as DataItem.$num, env }, true);
           default: return [
-            ({ value, dataItem, fullName }) => {
+            ({ value, fullName }) => {
               if (value != null && value !== "") return undefined;
-              return { type: "e", code: "required", fullName, msg: `${dataItem.label || dataItem.name || "値"}を選択してください。` };
+              return {
+                type: "e",
+                code: "required",
+                fullName,
+                msg: env.lang("validation.required", {
+                  s: label,
+                  mode: "select",
+                }),
+              };
             }
           ] as Array<DataItem.Validation<any>>;
         }
@@ -149,7 +157,7 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
           return (
             <label
               className="ipt-lbl"
-              key={v}
+              key={v ?? "_null"}
               data-disabled={disabled}
               data-readonly={readonly}
               data-children={true}
