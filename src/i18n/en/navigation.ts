@@ -1,4 +1,4 @@
-import { langLoadLogAtClient } from "../utilities";
+import { langLoadLogAtClient } from "../../components/i18n/utilities";
 
 const kind = "navigation";
 

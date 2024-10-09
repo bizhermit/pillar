@@ -1,4 +1,4 @@
-type Lang = typeof import("../consts").LANGS[number];
+type Lang = typeof import("./consts").LANGS[number];
 
 interface I18N_Langs { }
 
