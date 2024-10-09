@@ -48,3 +48,6 @@ npm run export
 ```
 
 コマンド実行後、[Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)を起動する
+
+# [システム仕様](./docs/index.md)
+
