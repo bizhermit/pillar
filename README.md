@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# 環境
 
-## Getting Started
+- Node.js v20
+- TypeScript v5
+- React v19
+- Next.js v15
+- NextAuth.js v5
+- Prisma v5
+- PostgreSQL v16
 
-First, run the development server:
+# 開発環境構築
+
+Visual Studio Code（VSCode）の使用を前提としています。
+
+1. 任意のフォルダに当リポジトリをクローンする
+2. dockerおよびdocker-composeを実行可能状態にする
+3. [環境変数](./docs/env.md)を設定する
+4. [Dev Container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)を起動する
+
+Dev Container初回起動時のみ、PostgreSQLの構築が行われます。  
+Dev Container起動時毎に、npmライブラリのインストールおよびPrismaのマイグレーションが自動実行されます。  
+
+# Webアプリケーション起動
+
+| モード     | Fast Refresh<br>(Hot Reload) | Strict Mode |  SSR  | Dynamic Routing |
+| ---------- | :--------------------------: | :---------: | :---: | :-------------: |
+| develop    |              ○               |      ○      |   ○   |        ○        |
+| production |                              |             |   ○   |        ○        |
+| static     |                              |             |       |   ※要事前定義   |
+
+
+## 開発（develop）モード
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 製品（production）モード
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run next
+``` 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+## 静的（static）モード
 
-## Learn More
+```bash
+npm run export
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+コマンド実行後、[Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)を起動する
