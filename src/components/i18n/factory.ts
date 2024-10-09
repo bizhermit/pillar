@@ -19,30 +19,30 @@ export const langFactory = (langs?: Array<Lang>) => {
   })();
 
   const lang = ((key, arg) => {
-    const [kind, k] = key.split(".");
+    const [s, k] = key.split(".");
     for (let i = 0, il = $langs.length; i < il; i++) {
-      const lang = $langs[i];
-      if (cache[lang] == null) cache[lang] = {};
-      if (!(kind in cache[lang]!)) {
+      const l = $langs[i];
+      if (cache[l] == null) cache[l] = {};
+      if (!(s in cache[l]!)) {
         try {
-          cache[lang]![kind] = require(`@/i18n/${lang}/${kind}`)?.default;
+          cache[l]![s] = require(`@/i18n/${l}/${s}`)?.default;
         } catch (e) {
-          cache[lang]![kind] = null;
+          cache[l]![s] = null;
           continue;
         }
       }
-      const func = cache[lang]![kind]?.[k];
+      const func = cache[l]![s]?.[k];
       if (func == null) continue;
       if (typeof func === "function") return func(arg as any);
       return func;
     }
     if (cache[DEFAULT_LANG] == null) cache[DEFAULT_LANG] = {};
     try {
-      if (!(kind in cache[DEFAULT_LANG]!)) cache[DEFAULT_LANG]![kind] = require(`@/i18n/${DEFAULT_LANG}/${kind}`)?.default;
+      if (!(s in cache[DEFAULT_LANG]!)) cache[DEFAULT_LANG]![s] = require(`@/i18n/${DEFAULT_LANG}/${s}`)?.default;
     } catch (e) {
-      cache[DEFAULT_LANG]![kind] = null;
+      cache[DEFAULT_LANG]![s] = null;
     }
-    const func = cache[DEFAULT_LANG]![kind]?.[k];
+    const func = cache[DEFAULT_LANG]![s]?.[k];
     if (typeof func === "function") return func(arg as any);
     return func;
   }) as LangAccessor;
