@@ -37,9 +37,8 @@
 
 ## 各設定
 
-### `TZ`
+### `TZ` : サーバーのタイムゾーン  
 
-**サーバーのタイムゾーン**  
 PostgreSQLおよびNode.jsの`DateTime`のタイムゾーンとして使用されます。  
 
 設定値
@@ -50,10 +49,9 @@ PostgreSQLおよびNode.jsの`DateTime`のタイムゾーンとして使用さ�
 | `Asia/Tokyo` | 日本標準時                                 |
 
 
-### `APP_MODE`
+### `APP_MODE` : Webアプリケーションの動作モード
 
-**Webアプリケーションの動作モード**  
-※ Nextサーバーの起動モードとは異なります。  
+Nextサーバーの起動モードとは異なります。  
 
 設定値
 
@@ -62,38 +60,20 @@ PostgreSQLおよびNode.jsの`DateTime`のタイムゾーンとして使用さ�
 | `prod` | 本番モード（デフォルト値）                                                                           |
 | `dev`  | 開発モード<br>デバッグログ等を表示する 。<br>`*.dev.ts`、`*.dev.tsx`の拡張子がビルド対象に含まれる。 |
 
-### `NEXT_PORT`
+### `NEXT_PORT` : Nextサーバーの起動ポート
 
-**Nextサーバーの起動ポート**
+### `API_URL` : サーバーサイドで使用するWebAPIのオリジン
 
-### `API_URL`
+### `NEXT_PUBLIC_API_URL` : クライアントサイドまたはサーバーサイドで使用するWebAPIのオリジン
 
-**サーバーサイドで使用するWebAPIのオリジン**
+### `AUTH_URL` : 認証APIのオリジン
 
-### `NEXT_PUBLIC_API_URL`
+### `AUTH_SECRET` : 認証の暗号化に使用するsecret文字列
 
-**クライアントサイドまたはサーバーサイドで使用するWebAPIのオリジン**
+### `POSTGRES_USER` : PostgreSQLの接続ユーザー
 
-### `AUTH_URL`
+### `POSTGRES_PASSWORD` : PostgreSQLの接続パスワード
 
-**認証APIのオリジン**
+### `POSTGRES_DB` : PostgreSQLの接続スキーマ
 
-### `AUTH_SECRET`
-
-**認証の暗号化に使用するsecret文字列**
-
-### `POSTGRES_USER`
-
-**PostgreSQLの接続ユーザー**
-
-### `POSTGRES_PASSWORD`
-
-**PostgreSQLの接続パスワード**
-
-### `POSTGRES_DB`
-
-**PostgreSQLの接続スキーマ**
-
-### `POSTGRES_PORT`
-
-**PostgreSQLの接続ポート**
+### `POSTGRES_PORT` : PostgreSQLの接続ポート
