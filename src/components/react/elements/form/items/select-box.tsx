@@ -7,6 +7,7 @@ import { $numParse } from "../../../../data-items/number/parse";
 import { $numValidations } from "../../../../data-items/number/validation";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
+import { blurToOuter } from "../../../../dom/outer-event";
 import { equals } from "../../../../objects";
 import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
@@ -264,16 +265,10 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   };
 
   const blur = (e: FocusEvent<HTMLDivElement>) => {
-    let elem = e.relatedTarget;
-    while (elem) {
-      if (elem === e.currentTarget) {
-        props.onBlur?.(e);
-        return;
-      }
-      elem = elem.parentElement;
+    if (blurToOuter(e)) {
+      closeDialog();
+      selectItemByText();
     }
-    closeDialog();
-    selectItemByText();
     props.onBlur?.(e);
   };
 

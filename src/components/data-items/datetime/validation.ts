@@ -1,4 +1,4 @@
-import { DateTime } from "@/objects/datetime";
+import { DateTime } from "../../objects/datetime";
 import { getDataItemLabel } from "../label";
 
 export const $datetimeValidations = ({ dataItem, env }: DataItem.ValidationGeneratorProps<DataItem.$datetime>): Array<DataItem.Validation<DataItem.$datetime>> => {

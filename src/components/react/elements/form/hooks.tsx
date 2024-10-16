@@ -1,8 +1,8 @@
 "use client";
 
-import { langFactory } from "@/i18n/factory";
 import { use, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
+import { langFactory } from "../../../i18n/factory";
 import { equals } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";

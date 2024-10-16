@@ -1,12 +1,13 @@
 "use client";
 
-import { parseNum } from "@/objects/number";
 import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactElement, type ReactNode, useMemo, useRef } from "react";
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
+import { blurToOuter } from "../../../../dom/outer-event";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
 import { DateTime } from "../../../../objects/datetime";
+import { parseNum } from "../../../../objects/number";
 import { isEmpty } from "../../../../objects/string";
 import { get, set } from "../../../../objects/struct";
 import { Dialog, useDialog } from "../../dialog";
@@ -299,21 +300,11 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   };
 
   const blur = (e: FocusEvent<HTMLDivElement>, target: Target) => {
-    let elem = e.relatedTarget;
-    while (elem) {
-      if (elem === e.currentTarget) return;
-      elem = elem.parentElement;
-    }
-    closeDialog(target);
+    if (blurToOuter(e)) closeDialog(target);
   };
 
   const blurWrap = (e: FocusEvent<HTMLDivElement>) => {
-    let elem = e.relatedTarget;
-    while (elem) {
-      if (elem === e.currentTarget) return;
-      elem = elem.parentElement;
-    }
-    renderInputs(fi.valueRef.current);
+    if (blurToOuter(e)) renderInputs(fi.valueRef.current);
     props.onBlur?.(e);
   };
 

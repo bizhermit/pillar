@@ -1,9 +1,10 @@
 "use client";
 
-import { useLang } from "@/i18n/react-hook";
 import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactElement, useEffect, useMemo, useReducer, useRef, type WheelEvent } from "react";
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
+import { blurToOuter } from "../../../../dom/outer-event";
+import { useLang } from "../../../../i18n/react-hook";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
 import { DateTime, Month, Week } from "../../../../objects/datetime";
@@ -178,16 +179,10 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   };
 
   const blur = (e: FocusEvent<HTMLDivElement>) => {
-    let elem = e.relatedTarget;
-    while (elem) {
-      if (elem === e.currentTarget) {
-        props.onBlur?.(e);
-        return;
-      }
-      elem = elem.parentElement;
+    if (blurToOuter(e)) {
+      closeDialog();
+      renderInputs(fi.valueRef.current);
     }
-    closeDialog();
-    renderInputs(fi.valueRef.current);
     props.onBlur?.(e);
   };
 
