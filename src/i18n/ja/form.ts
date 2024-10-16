@@ -1,4 +1,4 @@
-import { langLoadLogAtClient, writeHas } from "../../components/i18n/utilities";
+import { langLoadLogAtClient, writeHas } from "@/i18n/utilities";
 
 const kind = "form";
 

@@ -1,8 +1,8 @@
-import { langLoadLogAtClient, writeHas } from "../../components/i18n/utilities";
+import { langLoadLogAtClient, writeHas } from "@/i18n/utilities";
 
 const kind = "validation";
 
-langLoadLogAtClient("ja", kind);
+langLoadLogAtClient("en", kind);
 
 const sub = (s: string | undefined, func?: (s: string) => string) => s ? (func?.(s) ?? s) : "";
 

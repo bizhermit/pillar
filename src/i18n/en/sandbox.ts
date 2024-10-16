@@ -1,8 +1,8 @@
-import { langLoadLogAtClient } from "../../components/i18n/utilities";
+import { langLoadLogAtClient } from "@/i18n/utilities";
 
 const kind = "sandbox";
 
-langLoadLogAtClient("ja", kind);
+langLoadLogAtClient("en", kind);
 
 const Langs = {
   sample_textLabel: "text",

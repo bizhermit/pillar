@@ -1,4 +1,4 @@
-import { langLoadLogAtClient } from "../../components/i18n/utilities";
+import { langLoadLogAtClient } from "@/i18n/utilities";
 
 const kind = "sandbox";
 
