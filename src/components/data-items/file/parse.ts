@@ -1,4 +1,4 @@
-import { convertBase64ToFile, convertBlobToFile } from "@/objects/file";
+import { convertBase64ToFile, convertBlobToFile } from "../../objects/file";
 import { getDataItemLabel } from "../label";
 
 export const $fileParse = ({ value, dataItem, fullName, env }: DataItem.ParseProps<DataItem.$file>): DataItem.ParseResult<File> => {

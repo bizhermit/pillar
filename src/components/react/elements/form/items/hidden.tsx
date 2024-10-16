@@ -1,9 +1,9 @@
-import { getDataItemLabel } from "@/data-items/label";
 import { type HTMLAttributes, useEffect } from "react";
 import { $arrayValidations } from "../../../../data-items/array/validation";
 import { $boolValidations } from "../../../../data-items/bool/validation";
 import { $dateValidations } from "../../../../data-items/date/validation";
 import { $fileValidations } from "../../../../data-items/file/validation";
+import { getDataItemLabel } from "../../../../data-items/label";
 import { $numValidations } from "../../../../data-items/number/validation";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { $structValidations } from "../../../../data-items/struct/validation";
