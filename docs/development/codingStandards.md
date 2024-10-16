@@ -68,6 +68,7 @@
 | `layout-client.tsx`  | `layout.tsx`で使用するクライアントコンポーネント群<br>※ `layout.tsx`をクライアントコンポーネントとする場合は不要                                                                         |
 | `page.module.scss`   | 同階層に存在する`page.tsx`および`page-client.tsx`で使用するスタイルシート。必要に応じて作成する。<br>使用する際は`page.tsx`で`import css from "./page.module.scss";`と記述する。         |
 | `layout.module.scss` | 同階層に存在する`layout.tsx`および`layout-client.tsx`で使用するスタイルシート。必要に応じて作成する。<br>使用する際は`layout.tsx`で`import css from "./layout.module.scss";`と記述する。 |
+| `api/**/route.ts`    | WebAPIエンドポイント。必要に応じて作成する。<br/>認証チェックロジックの複雑化を避けるため、認証が必要なエンドポイントはページパス付近に作成する。                                        |
 
 ## スタイリング
 
