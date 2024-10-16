@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { type FocusEvent, useRef, useState } from "react";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
+import { blurToOuter } from "../../../../dom/outer-event";
 import { isEmpty } from "../../../../objects/string";
 import { CircleFillIcon, CircleIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
@@ -76,11 +77,17 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
     focusInput();
   };
 
+  const blur = (e: FocusEvent<HTMLDivElement>) => {
+    if (blurToOuter(e)) setType("password");
+    props.onBlur?.(e);
+  };
+
   return (
     <>
       <div
         {...fi.props}
         className={joinClassNames("ipt-field", props.className)}
+        onBlur={blur}
         data-disabled={fi.disabled}
         data-invalid={fi.iptAria["aria-invalid"]}
       >
