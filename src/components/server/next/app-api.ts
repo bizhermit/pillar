@@ -1,7 +1,7 @@
-import { langFactory } from "@/i18n/factory";
 import { NextResponse, type NextRequest } from "next/server";
 import { parseBasedOnDataItem } from "../../data-items/parse";
 import { validationBasedOnDataItem } from "../../data-items/validation";
+import { langFactory } from "../../i18n/factory";
 import { append } from "../../objects/struct";
 
 export class ApiError extends Error {

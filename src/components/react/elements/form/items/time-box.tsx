@@ -1,7 +1,8 @@
-import { langFactory } from "@/i18n/factory";
 import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEvent, type ReactElement, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
+import { blurToOuter } from "../../../../dom/outer-event";
+import { langFactory } from "../../../../i18n/factory";
 import { equals } from "../../../../objects";
 import { DateTime } from "../../../../objects/datetime";
 import { isEmpty } from "../../../../objects/string";
@@ -194,29 +195,23 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   };
 
   const blur = (e?: FocusEvent<HTMLDivElement>) => {
-    let elem = e?.relatedTarget;
-    while (elem) {
-      if (elem === e!.currentTarget) {
-        props.onBlur?.(e!);
-        return;
+    if (!e || blurToOuter(e)) {
+      closeDialog();
+      const time = fi.valueRef.current?.time;
+      if (time) {
+        const t = new Time();
+        t.setHours(roundTime(time.getHours(), hStep));
+        t.setMinutes(roundTime(time.getMinutes(), mStep));
+        t.setSeconds(roundTime(time.getSeconds(), sStep));
+        if (t.getTime() !== time.getTime()) {
+          fi.set({
+            value: { time: t, unitValue: parseTimeAsUnit(t.getTime(), unit) },
+            effect: true,
+          });
+        }
       }
-      elem = elem.parentElement;
+      renderInputs(fi.valueRef.current);
     }
-    closeDialog();
-    const time = fi.valueRef.current?.time;
-    if (time) {
-      const t = new Time();
-      t.setHours(roundTime(time.getHours(), hStep));
-      t.setMinutes(roundTime(time.getMinutes(), mStep));
-      t.setSeconds(roundTime(time.getSeconds(), sStep));
-      if (t.getTime() !== time.getTime()) {
-        fi.set({
-          value: { time: t, unitValue: parseTimeAsUnit(t.getTime(), unit) },
-          effect: true,
-        });
-      }
-    }
-    renderInputs(fi.valueRef.current);
     if (e) props.onBlur?.(e);
   };
 

@@ -1,3 +1,4 @@
+import { DEFAULT_LANG, LANG_KEY } from "@/i18n/consts";
 import type { Metadata, Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
@@ -26,10 +27,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const layoutTheme = (cookies().get("theme")?.value as LayoutTheme) || defaultLayoutTheme;
+  const c = cookies();
+  const lang = c.get(LANG_KEY)?.value.split(",")[0] || DEFAULT_LANG;
+  const layoutTheme = (c.get("theme")?.value as LayoutTheme) || defaultLayoutTheme;
   return (
     <html
-      lang="ja"
+      lang={lang}
       data-theme={layoutTheme}
     >
       <body>

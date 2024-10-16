@@ -1,5 +1,5 @@
-import { langFactory } from "@/i18n/factory";
 import { type HTMLAttributes, useEffect, useRef, useState } from "react";
+import { langFactory } from "../../../../i18n/factory";
 import { equals } from "../../../../objects";
 import { convertBlobToFile, convertFileToBase64 } from "../../../../objects/file";
 import { isEmpty } from "../../../../objects/string";
