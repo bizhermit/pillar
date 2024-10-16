@@ -39,14 +39,15 @@ export const setCookie = (name: string, value: string, opts?: CookieOptions) => 
     console.warn(`faild to get cookie, not client side. set: [${name}]`);
     return undefined;
   }
-  const strs: Array<string> = [];
-  if (opts?.path) strs.push(`Path=${opts.path}`);
+  const strs: Array<string> = [
+    `SameSite=${opts?.samesite || "Lax"}`,
+  ];
+  if (!(opts && "path" in opts && opts.path == null)) strs.push(`Path=${opts?.path || "/"}`);
   if (opts?.domain) strs.push(`Domain=${opts.domain}`);
   if (opts?.expires) strs.push(`Expires=${opts.expires}`);
   if (opts?.maxAge != null) strs.push(`Max-Age=${opts.maxAge}`);
   if (opts?.secure) strs.push("Secure");
   if (opts?.httpOnly) strs.push("HttpOnly");
-  strs.push(`SameSite=${opts?.samesite || "Lax"}`);
   document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)};${strs.join(";")}`;
 };
 

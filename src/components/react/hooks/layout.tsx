@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, type Dispatch, type ReactNode, useLayoutEffect, useReducer, useState } from "react";
+import { deleteCookie, setCookie } from "../../utilities/cookie";
 
 export type LayoutTheme = "auto" | "light" | "dark";
 
@@ -39,7 +40,8 @@ export const LayoutProvider = (props: Props) => {
   const [theme, setTheme] = useReducer((_: LayoutTheme, action: LayoutTheme) => {
     if (typeof window !== "undefined") {
       document.documentElement.setAttribute("data-theme", action);
-      document.cookie = `theme=${action};path=/;${action === "auto" ? "max-age=0;" : ""}`;
+      if (action === "auto") deleteCookie("theme");
+      else setCookie("theme", action);
     }
     return action;
   }, props.defaultLayoutTheme || defaultLayoutTheme);
