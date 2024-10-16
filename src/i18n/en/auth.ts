@@ -1,8 +1,8 @@
-import { langLoadLogAtClient } from "../../components/i18n/utilities";
+import { langLoadLogAtClient } from "@/i18n/utilities";
 
 const kind = "auth";
 
-langLoadLogAtClient("ja", kind);
+langLoadLogAtClient("en", kind);
 
 const Langs = {
   authError: "Authentication error",

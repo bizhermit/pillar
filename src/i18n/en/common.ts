@@ -1,8 +1,8 @@
-import { langLoadLogAtClient } from "../../components/i18n/utilities";
+import { langLoadLogAtClient } from "@/i18n/utilities";
 
 const kind = "common";
 
-langLoadLogAtClient("en", "common");
+langLoadLogAtClient("en", kind);
 
 const Langs = {
   halloWorld: () => "Hallo, World.",

@@ -1,6 +1,5 @@
 "use client";
 
-import { authErrorCallbackUrlQueryName, signIn_email, signIn_password } from "@/auth/consts";
 import { getDataItemLabel } from "@/data-items/label";
 import { langFactory } from "@/i18n/factory";
 import { Form } from "@/react/elements/form";
@@ -11,6 +10,7 @@ import { $alert } from "@/react/elements/message-box";
 import useRouter from "@/react/hooks/router";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { authErrorCallbackUrlQueryName, signIn_email, signIn_password } from "~/auth/consts";
 import css from "./page.module.scss";
 
 type Props = {

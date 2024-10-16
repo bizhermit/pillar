@@ -20,6 +20,10 @@
             "src/components"
           ],
           [
+            "~",
+            "src/features"
+          ],
+          [
             "$",
             "src/app"
           ]

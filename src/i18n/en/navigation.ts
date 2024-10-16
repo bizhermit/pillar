@@ -1,8 +1,8 @@
-import { langLoadLogAtClient } from "../../components/i18n/utilities";
+import { langLoadLogAtClient } from "@/i18n/utilities";
 
 const kind = "navigation";
 
-langLoadLogAtClient("ja", kind);
+langLoadLogAtClient("en", kind);
 
 const Langs = {
   spreadNav: "Spread navigation",
