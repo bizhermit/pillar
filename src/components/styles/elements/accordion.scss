@@ -21,6 +21,7 @@
     flex-flow: row nowrap;
     justify-content: flex-start;
     align-items: center;
+    overflow: hidden;
 
     &:not([data-direction="horizontal"]) {
       .accordion-toggle {
