@@ -3,6 +3,7 @@
 import { langFactory } from "@/i18n/factory";
 import { type ReactNode } from "react";
 import { type ButtonProps } from "./button";
+import { DownIcon, RightIcon } from "./icon";
 import { joinClassNames } from "./utilities";
 
 type AccordionOptions = {
@@ -37,6 +38,7 @@ export const Accordion = ({
       <label
         className="accordion-summary"
         tabIndex={disabled ? undefined : 0}
+        data-direction={direction}
         onKeyDown={e => {
           if (!disabled && (e.key === "Enter" || e.key === " ")) {
             e.preventDefault();
@@ -66,6 +68,11 @@ export const Accordion = ({
             onToggle?.(e.currentTarget.checked);
           }}
         />
+        {!summaryButton &&
+          <div className="accordion-toggle">
+            {direction === "horizontal" ? <RightIcon /> : <DownIcon />}
+          </div>
+        }
         {summary || lang("common.detail")}
       </label>
       <div

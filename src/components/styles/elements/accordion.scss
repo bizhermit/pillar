@@ -6,10 +6,38 @@
     display: none;
   }
 
+  .accordion-toggle {
+    display: grid;
+    place-items: center;
+    transform: rotate(0deg);
+    transition: transform .2s;
+  }
+
   .accordion-summary {
     min-width: 0;
     font-weight: bold;
     font-size: 2.4rem;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    &:not([data-direction="horizontal"]) {
+      .accordion-toggle {
+        height: 100%;
+        width: var(--btn-size);
+      }
+    }
+
+    &[data-direction="horizontal"] {
+      writing-mode: vertical-rl;
+
+      .accordion-toggle {
+        height: var(--btn-size);
+        width: 100%;
+        margin: 0 auto;
+      }
+    }
 
     &[tabIndex] {
       user-select: none;
@@ -26,6 +54,10 @@
     }
 
     &:has(.accordion-check:checked) {
+      .accordion-toggle {
+        transform: rotate(180deg);
+      }
+
       &+.accordion {
         display: grid;
 

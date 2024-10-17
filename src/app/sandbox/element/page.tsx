@@ -804,19 +804,21 @@ const AccordionContents = () => {
     <div style={{
       display: "flex",
       flexFlow: "column nowrap",
-      justifyContent: "center",
-      alignItems: "center",
-      // alignItems: "stretch",
+      // flexFlow: "row nowrap",
+      // justifyContent: "center",
+      justifyContent: "stretch",
+      // alignItems: "center",
+      alignItems: "stretch",
       // gap: 10,
       // height: 300,
     }}>
       <Accordion
         summary="Accordion"
         // disabled
-        summaryButton={{
-          color: "danger",
-          //   outline: true,
-        }}
+        // summaryButton={{
+        //   color: "danger",
+        //   //   outline: true,
+        // }}
         // defaultOpen
         // direction="horizontal"
         onToggle={(open) => {
