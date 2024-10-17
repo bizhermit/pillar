@@ -1,7 +1,7 @@
 "use client";
 
-import { langFactory } from "@/i18n/factory";
 import { type ReactNode } from "react";
+import { langFactory } from "../../i18n/factory";
 import { type ButtonProps } from "./button";
 import { DownIcon, RightIcon } from "./icon";
 import { joinClassNames } from "./utilities";
