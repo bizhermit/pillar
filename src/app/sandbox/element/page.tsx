@@ -2,6 +2,7 @@
 "use client";
 
 import { get, set } from "@/objects/struct";
+import { Accordion } from "@/react/elements/accordion";
 import { Button } from "@/react/elements/button";
 import { Dialog, useDialog } from "@/react/elements/dialog";
 import { Form } from "@/react/elements/form";
@@ -69,6 +70,7 @@ export default function Home() {
       {/* <LoadingBar
       // mask
       /> */}
+      <AccordionContents />
       <TabContainer
         disabled={disabled.value}
         // defaultMount
@@ -794,5 +796,45 @@ const RenderCheck = () => {
   console.log("render");
   return (
     <span></span>
+  );
+};
+
+const AccordionContents = () => {
+  return (
+    <div style={{
+      display: "flex",
+      flexFlow: "column nowrap",
+      justifyContent: "center",
+      alignItems: "center",
+      // alignItems: "stretch",
+      // gap: 10,
+      // height: 300,
+    }}>
+      <Accordion
+        summary="Accordion"
+        // disabled
+        summaryButton={{
+          color: "danger",
+          //   outline: true,
+        }}
+        // defaultOpen
+        // direction="horizontal"
+        onToggle={(open) => {
+          console.log("accordion toggle: ", open);
+        }}
+      >
+        <h2 style={{ whiteSpace: "nowrap" }}>Accordion Contents</h2>
+        <p>
+          <span>hogehoge</span>
+        </p>
+        <p>
+          <span>fuga</span>
+        </p>
+        <p>
+          piyo
+        </p>
+        <Button>button</Button>
+      </Accordion>
+    </div>
   );
 };

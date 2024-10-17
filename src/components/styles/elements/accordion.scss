@@ -1,0 +1,83 @@
+@use "../mixins" as mixins;
+
+@layer base {
+
+  .accordion-check {
+    display: none;
+  }
+
+  .accordion-summary {
+    min-width: 0;
+    font-weight: bold;
+    font-size: 2.4rem;
+
+    &[tabIndex] {
+      user-select: none;
+      cursor: pointer;
+      transition: opacity .2s;
+
+      @include mixins.hover {
+        opacity: .8;
+
+        &:active {
+          opacity: 1;
+        }
+      }
+    }
+
+    &:has(.accordion-check:checked) {
+      &+.accordion {
+        display: grid;
+
+        &:not([data-direction="horizontal"]) {
+          grid-template-rows: 1fr;
+        }
+
+        &[data-direction="horizontal"] {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+
+  .accordion {
+    overflow: hidden;
+    display: none;
+    min-width: 0;
+
+    &:not([data-direction="horizontal"]) {
+      transition: grid-template-rows .3s, display .3s allow-discrete, overlay .3s allow-discrete;
+      grid-template-rows: 0fr;
+    }
+
+    &[data-direction="horizontal"] {
+      transition: grid-template-columns .3s, display .3s allow-discrete, overlay .3s allow-discrete;
+      grid-template-columns: 0fr;
+    }
+  }
+
+  .accordion-contents {
+    overflow: hidden;
+  }
+
+  @starting-style {
+
+    .accordion-summary {
+      &:has(.accordion-check:checked) {
+        &+.accordion {
+          display: grid;
+
+          &:not([data-direction="horizontal"]) {
+            grid-template-rows: 0fr;
+          }
+
+          &[data-direction="horizontal"] {
+            grid-template-columns: 0fr;
+          }
+        }
+      }
+    }
+
+  }
+
+}

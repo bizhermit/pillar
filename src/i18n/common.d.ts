@@ -15,5 +15,6 @@ interface I18N_Langs {
     close: string;
     cancel: string;
     save: string;
+    detail: string;
   };
 }

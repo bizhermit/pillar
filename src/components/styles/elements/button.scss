@@ -2,7 +2,7 @@
 
 @layer base {
 
-  :is(.btn, a[role="button"]) {
+  :is(.btn, a[role="button"], label[role="button"]) {
     ---btn-bg: var(--c-primary);
     ---btn-fg: var(--c-primary_);
 
