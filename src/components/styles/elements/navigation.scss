@@ -388,12 +388,14 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
 
   .nav-menu-children {
     width: 100%;
-    display: grid;
     grid-template-rows: 0fr;
+    display: none;
     overflow: hidden;
     padding-left: var(---nav-menu-nest, 0);
-    transition: grid-template-rows 0.3s,
-    padding-left #{$transDuration};
+    transition: grid-template-rows #{$transDuration},
+    padding-left #{$transDuration},
+    display #{$transDuration} allow-discrete,
+    overlay #{$transDuration} allow-discrete;
   }
 
   .nav-menu-check {
@@ -407,7 +409,9 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
       }
 
       &~.nav-menu-children {
+        display: grid;
         grid-template-rows: 1fr;
+        padding-left: var(---nav-menu-nest, 0);
       }
     }
   }
@@ -453,6 +457,18 @@ $nestPadding: calc(var(--nav-min-width) * 0.25);
     width: var(--nav-min-width);
     display: grid;
     place-items: center;
+  }
+
+  @starting-style {
+    .nav-menu-check {
+      &:checked {
+        &~.nav-menu-children {
+          display: grid;
+          grid-template-rows: 0fr;
+          padding-left: var(---nav-menu-nest, 0);
+        }
+      }
+    }
   }
 
 }

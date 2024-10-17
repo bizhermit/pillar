@@ -1,0 +1,116 @@
+@use "../mixins" as mixins;
+
+@layer base {
+
+  .accordion-check {
+    display: none;
+  }
+
+  .accordion-toggle {
+    display: grid;
+    place-items: center;
+    transform: rotate(0deg);
+    transition: transform .2s;
+  }
+
+  .accordion-summary {
+    min-width: 0;
+    font-weight: bold;
+    font-size: 2.4rem;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+
+    &:not([data-direction="horizontal"]) {
+      .accordion-toggle {
+        height: 100%;
+        width: var(--btn-size);
+      }
+    }
+
+    &[data-direction="horizontal"] {
+      writing-mode: vertical-rl;
+
+      .accordion-toggle {
+        height: var(--btn-size);
+        width: 100%;
+        margin: 0 auto;
+      }
+    }
+
+    &[tabIndex] {
+      user-select: none;
+      cursor: pointer;
+      transition: opacity .2s;
+
+      @include mixins.hover {
+        opacity: .8;
+
+        &:active {
+          opacity: 1;
+        }
+      }
+    }
+
+    &:has(.accordion-check:checked) {
+      .accordion-toggle {
+        transform: rotate(180deg);
+      }
+
+      &+.accordion {
+        display: grid;
+
+        &:not([data-direction="horizontal"]) {
+          grid-template-rows: 1fr;
+        }
+
+        &[data-direction="horizontal"] {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+
+  .accordion {
+    overflow: hidden;
+    display: none;
+    min-width: 0;
+
+    &:not([data-direction="horizontal"]) {
+      transition: grid-template-rows .3s, display .3s allow-discrete, overlay .3s allow-discrete;
+      grid-template-rows: 0fr;
+    }
+
+    &[data-direction="horizontal"] {
+      transition: grid-template-columns .3s, display .3s allow-discrete, overlay .3s allow-discrete;
+      grid-template-columns: 0fr;
+    }
+  }
+
+  .accordion-contents {
+    overflow: hidden;
+  }
+
+  @starting-style {
+
+    .accordion-summary {
+      &:has(.accordion-check:checked) {
+        &+.accordion {
+          display: grid;
+
+          &:not([data-direction="horizontal"]) {
+            grid-template-rows: 0fr;
+          }
+
+          &[data-direction="horizontal"] {
+            grid-template-columns: 0fr;
+          }
+        }
+      }
+    }
+
+  }
+
+}
