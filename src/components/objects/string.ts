@@ -137,7 +137,16 @@ export const isPostalCode = (str: string | null | undefined) => {
 };
 
 export const isMailAddress = (str: string | null | undefined) => {
-  return str != null && /^([\w!#$%&'*+\-\/=?^`{|}~]+(\.[\w!#$%&'*+\-\/=?^`{|}~]+)*|"([\w!#$%&'*+\-\/=?^`{|}~. ()<>\[\]:;@,]|\\[\\"])+")@(([a-zA-Z\d\-]+\.)+[a-zA-Z]+|\[(\d{1,3}(\.\d{1,3}){3}|IPv6:[\da-fA-F]{0,4}(:[\da-fA-F]{0,4}){1,5}(:\d{1,3}(\.\d{1,3}){3}|(:[\da-fA-F]{0,4}){0,2}))\])$/.test(str);
+  if (!str) return false;
+  const ctx = str.match(/^((?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f ]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*"))@((?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}|(?:\[(?:[0-9]{1,3}\.){3}[0-9]{1,3}\])|(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:\[(?:IPv6:[a-fA-F0-9:]+\]))))$/);
+  if (!ctx) return false;
+  if (strLength(str) > 254) return false;
+  const localPart = ctx[1];
+  const domain = ctx[2];
+  if (!localPart || !domain || strLength(localPart) > 64 || strLength(domain) > 253) return false;
+  const ipv4Domain = domain.match(/^\[?((?:[0-9]{1,3}\.){3}[0-9]{1,3})\]?$/);
+  if (ipv4Domain) return isIpv4Address(ipv4Domain[1]);
+  return true;
 };
 
 export const isUrl = (str: string | null | undefined): str is `http${string}` => {
