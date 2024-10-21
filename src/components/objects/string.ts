@@ -137,7 +137,89 @@ export const isPostalCode = (str: string | null | undefined) => {
 };
 
 export const isMailAddress = (str: string | null | undefined) => {
-  return str != null && /^([\w!#$%&'*+\-\/=?^`{|}~]+(\.[\w!#$%&'*+\-\/=?^`{|}~]+)*|"([\w!#$%&'*+\-\/=?^`{|}~. ()<>\[\]:;@,]|\\[\\"])+")@(([a-zA-Z\d\-]+\.)+[a-zA-Z]+|\[(\d{1,3}(\.\d{1,3}){3}|IPv6:[\da-fA-F]{0,4}(:[\da-fA-F]{0,4}){1,5}(:\d{1,3}(\.\d{1,3}){3}|(:[\da-fA-F]{0,4}){0,2}))\])$/.test(str);
+  if (!str) return false;
+  let quoted = false, escape = false;
+  for (let i = 0, il = strLength(str); i < il; i++) {
+    const c = str[i];
+    if ("@" === c && !quoted) {
+      // console.log("local:", str.slice(0, i));
+      if (i < 1 || i > 64) {
+        // console.log("[x] local len", i, str);
+        return false;
+      }
+      if ("." === str[i - 1]) {
+        // console.log("[x] local-part dot end", str);
+        return false;
+      }
+      // domain
+      const domain = str.slice(i + 1);
+      // console.log("domain:", domain);
+      if (strLength(domain) > 63) {
+        // console.log("[x] domain len", strLength(domain), str);
+        return false;
+      }
+      const ctx = domain.match(/^(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}|(?:\[((?:[0-9]{1,3}\.){3}[0-9]{1,3})\])|(?:((?:[0-9]{1,3}\.){3}[0-9]{1,3}))|(?:\[(?:IPv6:[a-fA-F0-9:]+\])))$/);
+      if (!ctx) {
+        // console.log("[x] un domain", str);
+        return false;
+      }
+      const ipv4 = ctx[1] || ctx[2];
+      if (ipv4) return isIpv4Address(ipv4);
+      return true;
+    }
+
+    // local
+    if (("\"" === c || "”" === c) && !escape) {
+      if (quoted) {
+        const next = str[i + 1];
+        if ("." !== next && "@" !== next) {
+          // console.log("[x] quote not end of part", `[${str[i - 1]}${c}${str[i + 1]}]`, i, str);
+          return false;
+        }
+      } else {
+        const prev = str[i - 1];
+        if (prev && "." !== prev) {
+          // console.log("[x] quote not start of part", `[${c}]`, i, str);
+          return false;
+        }
+      }
+      quoted = !quoted;
+      continue;
+    }
+
+    if (quoted) {
+      if (escape) {
+        if (!/[\x01-\x09\x0b\x0c\x0e-\x7f\\ ]/.test(c)) {
+          // console.log("[x] not allow quoted/escape char", `[${c}]`, str);
+          return false;
+        }
+      } else {
+        if ("\\" === c) {
+          escape = true;
+          continue;
+        }
+        if (!/[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f ]/.test(c)) {
+          // console.log("[x] not allow quoted char", `[${c}]`, str);
+          return false;
+        }
+      }
+    } else {
+      if (!/[.a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]/.test(c)) {
+        // console.log("[x] not allow char", `[${c}]`, str);
+        return false;
+      }
+      if ("." === c) {
+        if (i === 0 || "." === str[i - 1]) {
+          // console.log("[x] dot failed", str);
+          return false;
+        }
+      }
+    }
+    escape = false;
+  }
+
+  // console.log("[x] no domain", str);
+  return false;
 };
 
 export const isUrl = (str: string | null | undefined): str is `http${string}` => {

@@ -465,10 +465,10 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   } as const;
 };
 
-export const useFormItem = <T extends any = any>(): FormItemHook<T> => {
+export const useFormItem = <T extends any = any>(): FormItemHook<T | null | undefined> => {
   const [value, setVal] = useState<T | DataItem.NullValue>(undefined);
   const [message, setMsg] = useState<DataItem.ValidationResult | null | undefined>(undefined);
-  const con = useRef<FormItemHookConnectionParams<T> | null>(null);
+  const con = useRef<FormItemHookConnectionParams<T | null | undefined> | null>(null);
   const set = useCallback((v: T | DataItem.NullValue, edit: boolean) => con.current?.set({ value: v, edit, effect: true }), []);
 
   return {

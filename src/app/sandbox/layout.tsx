@@ -101,6 +101,12 @@ const Layout = (props: { children: ReactNode; }) => {
           >
             DateTime
           </NavMenuLink>
+          <NavMenuLink
+            url="/sandbox/mailaddress"
+            icon={<TextBoxIcon />}
+          >
+            MailAddress
+          </NavMenuLink>
         </NavigationMenu>
         <LnagSwitch />
       </Navigation>
