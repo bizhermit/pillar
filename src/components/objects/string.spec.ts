@@ -78,6 +78,7 @@ describe("string", () => {
       `username@example.c`,
       `user@.localhost.localdomain`,
       `あいうえお@example.com`,
+      `"あいうえお"@example.com`,
       `üñîçøðé@example.com`,
       `"this is"not\\\\allowed@example.com"`,
       `"this\\ still\\"not\\\\allowed@example.com"`,
