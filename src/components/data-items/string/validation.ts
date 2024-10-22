@@ -103,7 +103,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "int",
             fullName,
-            msg: env.lang("validation.int"),
+            msg: env.lang("validation.int", { s }),
           };
         });
         break;
@@ -115,7 +115,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "h-num",
             fullName,
-            msg: env.lang("validation.halfNum"),
+            msg: env.lang("validation.halfNum", { s }),
           };
         });
         break;
@@ -127,7 +127,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "f-num",
             fullName,
-            msg: env.lang("validation.fullNum"),
+            msg: env.lang("validation.fullNum", { s }),
           };
         });
         break;
@@ -139,7 +139,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "num",
             fullName,
-            msg: env.lang("validation.num"),
+            msg: env.lang("validation.num", { s }),
           };
         });
         break;
@@ -151,7 +151,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "h-alpha",
             fullName,
-            msg: env.lang("validation.halfAlpha"),
+            msg: env.lang("validation.halfAlpha", { s }),
           };
         });
         break;
@@ -163,7 +163,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "f-alpha",
             fullName,
-            msg: env.lang("validation.fullAlpha"),
+            msg: env.lang("validation.fullAlpha", { s }),
           };
         });
         break;
@@ -175,7 +175,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "alpha",
             fullName,
-            msg: env.lang("validation.alpha"),
+            msg: env.lang("validation.alpha", { s }),
           };
         });
         break;
@@ -187,7 +187,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "h-alpha-num",
             fullName,
-            msg: env.lang("validation.halfAlphaNum"),
+            msg: env.lang("validation.halfAlphaNum", { s }),
           };
         });
         break;
@@ -199,7 +199,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "h-alpha-num-syn",
             fullName,
-            msg: env.lang("validation.halfApphaNumSyn"),
+            msg: env.lang("validation.halfApphaNumSyn", { s }),
           };
         });
         break;
@@ -211,7 +211,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "h-katakana",
             fullName,
-            msg: env.lang("validation.halfKatakana"),
+            msg: env.lang("validation.halfKatakana", { s }),
           };
         });
         break;
@@ -223,7 +223,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "f-katakana",
             fullName,
-            msg: env.lang("validation.fullKatakana"),
+            msg: env.lang("validation.fullKatakana", { s }),
           };
         });
         break;
@@ -235,7 +235,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "katakana",
             fullName,
-            msg: env.lang("validation.katakana"),
+            msg: env.lang("validation.katakana", { s }),
           };
         });
         break;
@@ -247,7 +247,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "hiragana",
             fullName,
-            msg: env.lang("validation.hiragana"),
+            msg: env.lang("validation.hiragana", { s }),
           };
         });
         break;
@@ -259,7 +259,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "half",
             fullName,
-            msg: env.lang("validation.halfWidth"),
+            msg: env.lang("validation.halfWidth", { s }),
           };
         });
         break;
@@ -271,7 +271,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "full",
             fullName,
-            msg: env.lang("validation.fullWidth"),
+            msg: env.lang("validation.fullWidth", { s }),
           };
         });
         break;
@@ -283,7 +283,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "email",
             fullName,
-            msg: env.lang("validation.email"),
+            msg: env.lang("validation.email", { s }),
           };
         });
         break;
@@ -295,7 +295,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "tel",
             fullName,
-            msg: env.lang("validation.tel"),
+            msg: env.lang("validation.tel", { s }),
           };
         });
         break;
@@ -307,7 +307,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
             type: "e",
             code: "url",
             fullName,
-            msg: env.lang("validation.url"),
+            msg: env.lang("validation.url", { s }),
           };
         });
         break;
