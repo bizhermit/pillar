@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, type HTMLAttributes } from "react";
+import { useMemo, useRef, type HTMLAttributes, type KeyboardEvent } from "react";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
-import { isEmpty } from "../../../../objects/string";
+import { equals } from "../../../../objects";
+import { isEmpty, toFullWidth, toFullWidthKatakana, toHalfWidth, toHalfWidthKatakana, toHiragana, toKatakana } from "../../../../objects/string";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -62,6 +63,56 @@ export const TextBox = <D extends DataItem.$str | undefined>({
     focusInput();
   };
 
+  const { keydown, blur } = useMemo(() => {
+    if (!fi.dataItem.charType) return {};
+    const ct = fi.dataItem.charType;
+    const funcs: Array<(v: string) => string> = [];
+
+    if (ct.startsWith("h-") || ct === "half") {
+      funcs.push(v => toHalfWidth(v));
+    } else if (ct.startsWith("f-") || ct === "full") {
+      funcs.push(v => toFullWidth(v));
+    }
+    switch (ct) {
+      case "hiragana":
+        funcs.push(v => toHiragana(v));
+        break;
+      case "katakana":
+        funcs.push(v => toKatakana(v));
+        break;
+      case "f-katakana":
+        funcs.push(
+          v => toKatakana(v),
+          v => toFullWidthKatakana(v),
+        );
+        break;
+      case "h-katanaka":
+        funcs.push(
+          v => toKatakana(v),
+          v => toHalfWidthKatakana(v),
+        );
+        break;
+      default:
+        break;
+    }
+
+    if (funcs.length === 0) return {};
+    const convert = () => {
+      if (!iref.current) return;
+      let v = iref.current.value;
+      const buf = v;
+      if (!v) return;
+      funcs.forEach(f => v = f(v));
+      if (!equals(buf, v)) fi.set({ value: v, effect: true });
+    };
+    return {
+      blur: () => convert(),
+      keydown: (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") convert();
+      }
+    };
+  }, [fi.dataItem.charType]);
+
   return (
     <>
       <div
@@ -85,6 +136,8 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           autoComplete={autoComplete ?? "off"}
           inputMode={inputMode ?? fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
+          onBlur={blur}
+          onKeyDown={keydown}
           {...fi.iptAria}
         />
         {fi.clearButton(empty ? undefined : clear)}
