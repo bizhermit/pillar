@@ -139,20 +139,21 @@ export const isPostalCode = (str: string | null | undefined) => {
 export const isMailAddress = (str: string | null | undefined) => {
   if (!str) return false;
   let quoted = false, escape = false;
-  for (let i = 0, il = strLength(str); i < il; i++) {
-    const c = str[i];
+  const arr = Array.from(str);
+  for (let i = 0, il = arr.length; i < il; i++) {
+    const c = arr[i];
     if ("@" === c && !quoted) {
       // console.log("local:", str.slice(0, i));
       if (i < 1 || i > 64) {
         // console.log("[x] local len", i, str);
         return false;
       }
-      if ("." === str[i - 1]) {
+      if ("." === arr[i - 1]) {
         // console.log("[x] local-part dot end", str);
         return false;
       }
       // domain
-      const domain = str.slice(i + 1);
+      const domain = arr.slice(i + 1).join("");
       // console.log("domain:", domain);
       if (strLength(domain) > 63) {
         // console.log("[x] domain len", strLength(domain), str);
@@ -171,13 +172,13 @@ export const isMailAddress = (str: string | null | undefined) => {
     // local
     if (("\"" === c || "”" === c) && !escape) {
       if (quoted) {
-        const next = str[i + 1];
+        const next = arr[i + 1];
         if ("." !== next && "@" !== next) {
           // console.log("[x] quote not end of part", `[${str[i - 1]}${c}${str[i + 1]}]`, i, str);
           return false;
         }
       } else {
-        const prev = str[i - 1];
+        const prev = arr[i - 1];
         if (prev && "." !== prev) {
           // console.log("[x] quote not start of part", `[${c}]`, i, str);
           return false;
