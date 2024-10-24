@@ -363,7 +363,7 @@ export default function Home() {
               readOnly={readOnly.value}
               dataItem={sample_text}
               required={false}
-              charType="h-katanaka"
+              charType="h-alpha-num"
             // hook={formItem.hook}
             />
           </FormItemWrap>

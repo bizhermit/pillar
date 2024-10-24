@@ -13,7 +13,8 @@ type TextBoxOptions<D extends DataItem.$str | undefined> = FormItemOptions<D, D 
   minLength?: DataItem.$str["minLength"];
   maxLength?: DataItem.$str["maxLength"];
   charType?: DataItem.$str["charType"];
-  inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
+  inputMode?: DataItem.$str["inputMode"];
+  type?: DataItem.$str["inputType"];
   autoComplete?: string;
   placeholder?: string;
 };
@@ -26,6 +27,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
   maxLength,
   charType,
   inputMode,
+  type,
   autoComplete,
   placeholder,
   ...props
@@ -36,12 +38,44 @@ export const TextBox = <D extends DataItem.$str | undefined>({
   const fi = useFormItemCore<DataItem.$str, D, string, string>(props, {
     dataItemDeps: [length, minLength, maxLength, charType],
     getDataItem: ({ dataItem }) => {
+      const ct = charType ?? dataItem?.charType;
       return {
         type: "str",
         length: length ?? dataItem?.length,
         minLength: minLength ?? dataItem?.minLength,
         maxLength: maxLength ?? dataItem?.maxLength,
-        charType: charType ?? dataItem?.charType,
+        charType: ct,
+        inputMode: inputMode ?? dataItem?.inputMode ?? (() => {
+          switch (ct) {
+            case "int":
+            case "h-num":
+              return "numeric";
+            case "email":
+              return "email";
+            case "tel":
+              return "tel";
+            case "url":
+              return "url";
+            case "h-alpha":
+            case "h-alpha-num":
+            case "h-alpha-num-syn":
+              return "url";
+            default:
+              return undefined;
+          }
+        })(),
+        inputType: type || dataItem?.inputType || (() => {
+          switch (ct) {
+            case "email":
+              return "email" as const;
+            case "url":
+              return "url" as const;
+            case "tel":
+              return "tel" as const;
+            default:
+              return "text" as const;
+          }
+        })(),
       };
     },
     parse: () => (p) => $strParse(p, true),
@@ -68,14 +102,12 @@ export const TextBox = <D extends DataItem.$str | undefined>({
     const ct = fi.dataItem.charType;
     const funcs: Array<(v: string) => string> = [];
 
-    if (ct.startsWith("h-") || ct === "half") {
-      funcs.push(v => toHalfWidth(v));
-    } else if (ct.startsWith("f-") || ct === "full") {
-      funcs.push(v => toFullWidth(v));
-    }
     switch (ct) {
       case "hiragana":
-        funcs.push(v => toHiragana(v));
+        funcs.push(
+          v => toFullWidthKatakana(v),
+          v => toHiragana(v),
+        );
         break;
       case "katakana":
         funcs.push(v => toKatakana(v));
@@ -86,13 +118,18 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           v => toFullWidthKatakana(v),
         );
         break;
-      case "h-katanaka":
+      case "h-katakana":
         funcs.push(
           v => toKatakana(v),
           v => toHalfWidthKatakana(v),
         );
         break;
       default:
+        if (ct.startsWith("h-") || ct === "half") {
+          funcs.push(v => toHalfWidth(v));
+        } else if (ct.startsWith("f-") || ct === "full") {
+          funcs.push(v => toFullWidth(v));
+        }
         break;
     }
 
@@ -124,7 +161,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
         <input
           ref={iref}
           className="ipt-txt"
-          type="text"
+          type={fi.dataItem.inputType || "text"}
           name={fi.mountValue ? fi.name : undefined}
           placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
@@ -134,7 +171,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           defaultValue={fi.value ?? ""}
           maxLength={fi.dataItem.length ?? fi.dataItem.maxLength}
           autoComplete={autoComplete ?? "off"}
-          inputMode={inputMode ?? fi.dataItem.inputMode}
+          inputMode={fi.dataItem.inputMode}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
           onBlur={blur}
           onKeyDown={keydown}
