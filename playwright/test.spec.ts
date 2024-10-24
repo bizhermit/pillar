@@ -1,7 +1,9 @@
 import test from "@playwright/test";
-import { ssPath } from "save-screen-shot";
+import { getContext } from "save-screen-shot";
 
-test("test", async ({ page }) => {
+test("test", async ({ page, browserName }) => {
+  const { ssPath } = getContext({ browserName });
+
   await page.goto("/");
   await page.screenshot({ path: ssPath(), fullPage: true });
   await page.locator("a").filter({ hasText: "sandbox" }).click();
