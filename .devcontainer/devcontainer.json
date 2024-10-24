@@ -29,7 +29,8 @@
         "GrapeCity.gc-excelviewer",
         "hediet.vscode-drawio",
         "ritwickdey.LiveServer",
-        "Prisma.prisma"
+        "Prisma.prisma",
+        "ms-playwright.playwright"
       ],
       "settings": {
         "liveServer.settings.root": "/dist/out",
