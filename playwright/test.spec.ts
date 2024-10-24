@@ -1,8 +1,8 @@
 import test from "@playwright/test";
 import { getPlaywrightPageContext } from "./context";
 
-test("test", async ({ page, browserName }) => {
-  const { saveSS } = getPlaywrightPageContext({ page, browserName });
+test("test", async ({ page, browserName }, testInfo) => {
+  const { saveSS } = getPlaywrightPageContext({ page, browserName }, testInfo);
 
   await page.goto("/");
   await saveSS();

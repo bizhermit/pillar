@@ -34,8 +34,25 @@ export default defineConfig({
   },
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "chromium-ja",
+      use: {
+        ...devices["Desktop Chrome"],
+        locale: "ja"
+      },
+    },
+    {
+      name: "chromium-enUS",
+      use: {
+        ...devices["Desktop Chrome"],
+        locale: "en-US"
+      },
+    },
+    {
+      name: "chromium-en",
+      use: {
+        ...devices["Desktop Chrome"],
+        locale: "en"
+      },
     },
     {
       name: "firefox",
