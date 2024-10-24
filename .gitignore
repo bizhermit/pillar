@@ -38,6 +38,10 @@ next-env.d.ts
 # prisma
 /prisma/migrations
 
+# playwright
+/.playwright
+/playwright-report
+
 /.vscode/*
 # !.vscode/settings.json
 !.vscode/tasks.json
