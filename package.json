@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "node scripts/clean.mjs",
     "predev": "npm run route",
+    "type-check": "npx tsc -p ./src/tsconfig.json --noEmit",
     "dev": "bash scripts/next-dev.sh",
     "prebuild": "npm run route",
     "build": "npx next build",
@@ -15,6 +16,7 @@
     "format": "npx next lint --fix",
     "route": "node scripts/next-route.mjs",
     "jest": "npx jest",
+    "test": "npm run type-check | npm run jest",
     "migrate": "npx prisma migrate dev"
   },
   "dependencies": {

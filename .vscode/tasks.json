@@ -38,10 +38,22 @@
       "command": "npm run route"
     },
     {
+      "label": "type-check",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run type-check"
+    },
+    {
       "label": "jest",
       "group": "none",
       "type": "shell",
       "command": "npm run jest"
+    },
+    {
+      "label": "test",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run test"
     },
     {
       "label": "database migrate",
