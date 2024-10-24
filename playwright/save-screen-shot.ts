@@ -8,7 +8,7 @@ let count = 0;
 export const getContext = (params: { browserName: string }) => {
   return {
     ssPath: (name?: string) => {
-      return `.playwright/${prefix}/${params.browserName || "default"}/${(`0000` + count++).slice(-4)}_${name?.replace(/^\//, "") || `${Date.now()}`}.png`;
+      return `test-results/${prefix}/${params.browserName || "default"}/${(`0000` + count++).slice(-4)}_${name?.replace(/^\//, "") || `${Date.now()}`}.png`;
     },
   };
 };

@@ -16,6 +16,7 @@
     "format": "npx next lint --fix",
     "route": "node scripts/next-route.mjs",
     "jest": "npx jest",
+    "playwright": "npx playwright test && npx playwright show-report",
     "test": "npm run type-check | npm run jest",
     "migrate": "npx prisma migrate dev"
   },

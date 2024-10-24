@@ -39,7 +39,7 @@ next-env.d.ts
 /prisma/migrations
 
 # playwright
-/.playwright
+/test-results
 /playwright-report
 
 /.vscode/*
