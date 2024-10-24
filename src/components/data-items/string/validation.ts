@@ -203,7 +203,7 @@ export const $strValidations = ({ dataItem, env }: DataItem.ValidationGeneratorP
           };
         });
         break;
-      case "h-katanaka":
+      case "h-katakana":
         validations.push(({ value, fullName }) => {
           if (isEmpty(value)) return undefined;
           if (isHWKatakana(value)) return undefined;
