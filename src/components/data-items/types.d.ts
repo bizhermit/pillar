@@ -109,7 +109,7 @@ declare namespace DataItem {
     | "alpha"
     | "h-alpha-num"
     | "h-alpha-num-syn"
-    | "h-katanaka"
+    | "h-katakana"
     | "f-katakana"
     | "katakana"
     | "hiragana"
@@ -120,6 +120,7 @@ declare namespace DataItem {
     | "url"
     ;
     inputMode?: React.HTMLAttributes<React.HTMLInputElement>["inputMode"];
+    inputType?: Extract<React.HTMLInputTypeAttribute, "text" | "email" | "url" | "tel">;
   };
 
   type $num<V extends number = number> = $ & {

@@ -362,6 +362,8 @@ export default function Home() {
               disabled={disabled.value}
               readOnly={readOnly.value}
               dataItem={sample_text}
+              required={false}
+              charType="h-alpha-num"
             // hook={formItem.hook}
             />
           </FormItemWrap>
