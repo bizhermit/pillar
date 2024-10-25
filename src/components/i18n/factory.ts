@@ -38,7 +38,7 @@ export const langFactory = (langs?: Array<Lang>) => {
     }
     if (cache[DEFAULT_LANG] == null) cache[DEFAULT_LANG] = {};
     try {
-      if (!(s in cache[DEFAULT_LANG]!)) cache[DEFAULT_LANG]![s] = require(`@/i18n/${DEFAULT_LANG}/${s}`)?.default;
+      if (!(s in cache[DEFAULT_LANG]!)) cache[DEFAULT_LANG]![s] = require(`src/i18n/${DEFAULT_LANG}/${s}`)?.default;
     } catch (e) {
       cache[DEFAULT_LANG]![s] = null;
     }
