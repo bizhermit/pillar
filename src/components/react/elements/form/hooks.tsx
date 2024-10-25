@@ -87,7 +87,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       dataItem: {
         name: $name,
         required: $required,
-        label: $label,
+        label: l,
         labelAsIs: $label,
         refs: $refs,
         validations: $dataItem?.validations,
