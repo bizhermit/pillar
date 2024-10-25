@@ -8,10 +8,19 @@ let count = 0;
 
 export const getPlaywrightPageContext = (args: PlaywrightContextArgs, testInfo: TestInfo) => {
   return {
-    saveSS: (name?: string) => {
-      return args.page.screenshot({
+    saveSS: async (name?: string) => {
+      await args.page.screenshot({
         path: `${testInfo.snapshotDir}/${testInfo.project.name || args.browserName || "default"}/${(`0000` + count++).slice(-4)}_${name?.replace(/^\//, "") || `${Date.now()}`}.png`,
         fullPage: true,
+      });
+    },
+    waitImgs: async () => {
+      const imgs = await args.page.locator("img").all();
+      for await (const img of imgs) {
+        await img.waitFor({ state: "visible" });
+      }
+      await args.page.evaluate(() => {
+        return Array.from(document.images).every(img => img.complete && img.naturalHeight !== 0);
       });
     },
   };
