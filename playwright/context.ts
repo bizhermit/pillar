@@ -163,7 +163,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           const fileChooser = await fileChooserPromise;
           await fileChooser.setFiles(filePath);
         },
-        fileDrop: async (name: string, file: { path: string; name: string; type: string; }) => {
+        fileDrop: async (name: string, file: { path: string; name: string; type?: string; }) => {
           const selector = fselector(`div[data-name="${name}"][role="button"]`);
           await page.waitForSelector(selector, { state: "attached" });
 

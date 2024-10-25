@@ -25,7 +25,7 @@ test("test", async ({ page, browserName }, testInfo) => {
   await f.timeBox("time", { h: 7, m: 30 });
   await f.textArea("text-area", "hoge\nfuga\npiyo");
   await f.fileChoose("file", "public/next.svg");
-  await f.fileChoose("file-drop", "public/vercel.svg");
+  await f.fileDrop("file-drop", { name: "public/vercel.svg", path: "public/vercel.svg", type: "svg" });
   await f.submit();
   await screenShot();
 });
