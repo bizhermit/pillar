@@ -51,6 +51,13 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
       });
     },
     form: () => {
+      const waitLoadable = async (selector: string) => {
+        await page.waitForFunction(() => {
+          const elem = document.querySelector(selector);
+          return elem && elem.getAttribute("data-loaded") === "true";
+        });
+      };
+
       const textBox = async (name: string, value: string | number) => {
         const locator = page.locator(`input[type="text"][data-name="${name}"]`);
         await locator.focus();
@@ -58,11 +65,11 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         await locator.blur();
       };
 
-      const waitLoadable = async (selector: string) => {
-        await page.waitForFunction(() => {
-          const elem = document.querySelector(selector);
-          return elem && elem.getAttribute("data-loaded") === "true";
-        });
+      const radioButtons = async (name: string, label: string) => {
+        const selector = `div[data-name="${name}"][data-loaded]`;
+        await waitLoadable(selector);
+        const locator = page.locator(`${selector}>label`).filter({ hasText: label });
+        await locator.click();
       };
 
       return {
@@ -76,12 +83,8 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await locator.fill(label);
           await locator.blur();
         },
-        radioButtons: async (name: string, label: string) => {
-          const selector = `div[data-name="${name}"][data-loaded]`;
-          await waitLoadable(selector);
-          const locator = page.locator(`${selector}>label`).filter({ hasText: label });
-          await locator.click();
-        },
+        radioButtons,
+        checkList: radioButtons,
       }
     },
   };

@@ -146,6 +146,7 @@ export const CheckList = <D extends DataItem.$array<DataItem.$str | DataItem.$nu
         {...fi.props}
         className={joinClassNames("ipt-items", props.className)}
         ref={ref}
+        data-name={fi.name}
         data-loaded={!loading}
       >
         {origin.map((item, i) => {
