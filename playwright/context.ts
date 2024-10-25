@@ -179,6 +179,17 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
 
           await page.locator(selector).dispatchEvent("drop", { dataTransfer });
         },
+        submit: async () => {
+          const selector = `button[type="submit"]:not(:disabled)`;
+          await page.waitForSelector(selector)
+          await page.locator(selector).click();
+        },
+        reset: async () => {
+          const selector = `button[type="reset"]`;
+          if (!await page.$(selector)) return;
+          await page.waitForSelector(`${selector}:not(:disabled)`);
+          await page.locator(selector).click();
+        },
       };
     },
   };
