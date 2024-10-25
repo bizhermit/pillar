@@ -25,6 +25,7 @@
 | `src/i18n/`       | 国際化用言語定義                   |
 | `public/imgs/`    | 画像ファイル                       |
 | `prisma/`         | Prisma                             |
+| `playwright/`     | Playwright                         |
 | `docs/`           | ドキュメント                       |
 
 ### 機能要件を含まないコンポーネント群（`src/components/*`）
