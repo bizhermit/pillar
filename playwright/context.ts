@@ -65,6 +65,11 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         await locator.blur();
       };
 
+      const checkBox = async (name: string, checked: boolean) => {
+        const locator = page.locator(`input[type="checkbox"][data-name="${name}"]`);
+        await locator.setChecked(checked, { force: true });
+      };
+
       const radioButtons = async (name: string, label: string) => {
         const selector = `div[data-name="${name}"][data-loaded]`;
         await waitLoadable(selector);
@@ -83,6 +88,8 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await locator.fill(label);
           await locator.blur();
         },
+        checkBox,
+        toggleSwitch: checkBox,
         radioButtons,
         checkList: radioButtons,
       }

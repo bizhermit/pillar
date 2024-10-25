@@ -96,6 +96,7 @@ export const CheckBox = <True extends boolean | number | string, False extends b
           ref={iref}
           className="ipt-chk"
           type="checkbox"
+          data-name={fi.name}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
