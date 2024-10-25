@@ -1,4 +1,4 @@
-import type { PlaywrightTestArgs, PlaywrightTestOptions, PlaywrightWorkerArgs, PlaywrightWorkerOptions, TestInfo } from "@playwright/test";
+import type { Locator, PlaywrightTestArgs, PlaywrightTestOptions, PlaywrightWorkerArgs, PlaywrightWorkerOptions, TestInfo } from "@playwright/test";
 
 type PlaywrightArgs = PlaywrightTestArgs & PlaywrightTestOptions & PlaywrightWorkerArgs & PlaywrightWorkerOptions;
 type PickPartial<T, K extends keyof T> = Omit<Partial<T>, K> & Pick<T, K>;
@@ -96,26 +96,47 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         toggleSwitch: checkBox,
         radioButtons,
         checkList: radioButtons,
-        dateBox: async (name: string, y: number, m: number, d: number) => {
+        dateBox: async (name: string, date: { y?: number | null; m?: number | null; d?: number | null; }) => {
           let selector = `input[data-name="${name}_y"]`;
           await page.waitForSelector(selector);
           let locator = page.locator(selector);
           await locator.focus();
-          await locator.fill(String(y));
+          await locator.fill(date.y == null ? "" : String(date.y));
           selector = `input[data-name="${name}_m"]`;
           if (await page.$(selector)) {
             locator = page.locator(selector);
             await locator.focus();
-            await locator.fill(String(m));
-
-            selector = `input[data-name="${name}_d"]`;
-            if (await page.$(selector)) {
-              locator = page.locator(selector);
-              locator.focus();
-              await locator.fill(String(d));
-            }
+            await locator.fill(date.m == null ? "" : String(date.m));
+          }
+          selector = `input[data-name="${name}_d"]`;
+          if (await page.$(selector)) {
+            locator = page.locator(selector);
+            locator.focus();
+            await locator.fill(date.d == null ? "" : String(date.d));
           }
           await locator.blur();
+        },
+        timeBox: async (name: string, time: { h?: number | null; m?: number | null; s?: number | null; }) => {
+          let selector = `input[data-name="${name}_h"]`;
+          let locator: Locator | null = null;
+          if (await page.$(selector)) {
+            locator = page.locator(selector);
+            await locator.focus();
+            await locator.fill(time.h == null ? "" : String(time.h));
+          }
+          selector = `input[data-name="${name}_m"]`;
+          if (await page.$(selector)) {
+            locator = page.locator(selector);
+            await locator.focus();
+            await locator.fill(time.m == null ? "" : String(time.m));
+          }
+          selector = `input[data-name="${name}_s"]`;
+          if (await page.$(selector)) {
+            locator = page.locator(selector);
+            await locator.focus();
+            await locator.fill(time.s == null ? "" : String(time.s));
+          }
+          await locator?.blur();
         },
       }
     },
