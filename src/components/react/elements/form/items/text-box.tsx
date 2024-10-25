@@ -163,6 +163,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           className="ipt-txt"
           type={fi.dataItem.inputType || "text"}
           name={fi.mountValue ? fi.name : undefined}
+          data-name={fi.name}
           placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}

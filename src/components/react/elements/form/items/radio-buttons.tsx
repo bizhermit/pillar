@@ -148,6 +148,8 @@ export const RadioButtons = <D extends DataItem.$str | DataItem.$num | DataItem.
         {...fi.props}
         className={joinClassNames("ipt-items", props.className)}
         ref={ref}
+        data-name={fi.name}
+        data-loaded={!loading}
       >
         {origin.map((item, i) => {
           const v = item[vdn];

@@ -94,6 +94,7 @@ export const CreditCardNumberBox = <D extends DataItem.$str | undefined>({
           ref={iref}
           className="ipt-txt"
           type="text"
+          data-name={fi.name}
           placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}

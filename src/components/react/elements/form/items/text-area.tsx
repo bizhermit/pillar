@@ -77,6 +77,7 @@ export const TextArea = <D extends DataItem.$str | undefined>({
           style={{ resize }}
           className="ipt-txt-area"
           name={fi.mountValue ? fi.name : undefined}
+          data-name={fi.name}
           placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}

@@ -333,6 +333,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         onBlur={blur}
         data-disabled={fi.disabled}
         data-invalid={fi.iptAria["aria-invalid"]}
+        data-name={fi.name}
+        data-loaded={!loading}
       >
         <input
           ref={iref}

@@ -135,6 +135,7 @@ export const FileDrop = <D extends DataItem.$file | undefined>({
           <div
             role="button"
             className="ipt-file-drop-area"
+            data-name={fi.name}
             tabIndex={fi.disabled ? undefined : (fi.tabIndex ?? 0)}
             autoFocus={fi.autoFocus}
             data-click={!preventClick}
@@ -153,6 +154,7 @@ export const FileDrop = <D extends DataItem.$file | undefined>({
           ref={iref}
           className="ipt-file"
           type="file"
+          data-name={fi.name}
           name={fi.mountValue ? fi.name : undefined}
           accept={fi.dataItem.accept}
           onChange={change}

@@ -177,6 +177,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           ref={iref}
           className="ipt-num"
           type="text"
+          data-name={fi.name}
           placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}

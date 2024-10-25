@@ -96,6 +96,7 @@ export const ToggleSwitch = <True extends boolean | number | string, False exten
           ref={iref}
           className="ipt-tgl"
           type="checkbox"
+          data-name={fi.name}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
           tabIndex={fi.tabIndex}
