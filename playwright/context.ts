@@ -46,6 +46,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
       await waitLoading();
       await waitImgs();
       await waitLoadable();
+      await page.evaluate(() => window.scrollTo(0, 0));
       await page.screenshot({
         path: `${testInfo.snapshotDir}/${testInfo.project.name || args.browserName || "default"}/${(`0000` + count++).slice(-4)}_${name?.replace(/^\//, "") || `${Date.now()}`}.png`,
         fullPage: true,
