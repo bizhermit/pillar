@@ -62,7 +62,15 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         textBox,
         numberBox: textBox,
         selectBox: async (name: string, label: string) => {
-
+          const selector = `div[data-name="${name}"][data-loaded]`;
+          await page.waitForFunction(() => {
+            const elem = document.querySelector(selector);
+            return elem && elem.getAttribute("data-loaded") === "true";
+          });
+          const locator = page.locator(`${selector}>input[type="text"]`);
+          await locator.focus();
+          await locator.fill(label);
+          await locator.blur();
         },
       }
     },
