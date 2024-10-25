@@ -58,19 +58,29 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         await locator.blur();
       };
 
+      const waitLoadable = async (selector: string) => {
+        await page.waitForFunction(() => {
+          const elem = document.querySelector(selector);
+          return elem && elem.getAttribute("data-loaded") === "true";
+        });
+      };
+
       return {
         textBox,
         numberBox: textBox,
         selectBox: async (name: string, label: string) => {
           const selector = `div[data-name="${name}"][data-loaded]`;
-          await page.waitForFunction(() => {
-            const elem = document.querySelector(selector);
-            return elem && elem.getAttribute("data-loaded") === "true";
-          });
+          await waitLoadable(selector);
           const locator = page.locator(`${selector}>input[type="text"]`);
           await locator.focus();
           await locator.fill(label);
           await locator.blur();
+        },
+        radioButtons: async (name: string, label: string) => {
+          const selector = `div[data-name="${name}"][data-loaded]`;
+          await waitLoadable(selector);
+          const locator = page.locator(`${selector}>label`).filter({ hasText: label });
+          await locator.click();
         },
       }
     },
