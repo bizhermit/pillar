@@ -18,7 +18,7 @@ loadEnv(`.env.${isDev ? "development" : "production"}.local`);
 
 const webServerUrl = `http://localhost:${process.env.NEXT_PORT || "3000"}`;
 
-const now = new Date(Date.now() - process.uptime());
+const now = new Date();
 const pad = (v: number | string) => `00${v}`.slice(-2);
 const taskId = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDay())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
 
