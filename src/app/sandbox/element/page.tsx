@@ -458,7 +458,7 @@ export default function Home() {
               defaultValue={4}
               initFocusValue={10}
               source={async () => {
-                await sleep(3000);
+                // await sleep(3000);
                 const arr = [];
                 for (let i = 0; i < 100; i++) {
                   arr.push({ value: i, label: `item-${i}` });

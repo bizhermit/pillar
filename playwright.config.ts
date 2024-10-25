@@ -37,9 +37,10 @@ export default defineConfig({
     baseURL: webServerUrl,
     trace: "on-first-retry",
     launchOptions: {
-      slowMo: 1000,
+      // slowMo: 500,
     },
   },
+  timeout: 100000,
   projects: [
     {
       name: "chromium-ja",
