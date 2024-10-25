@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 
-const isDev = process.env.NODE_ENV === "development";
+const isDev = (process.env.NODE_ENV || "").startsWith("dev");
 const loadEnv = (name: string) => {
   const fullName = path.resolve(__dirname, name);
   if (!fs.existsSync(fullName)) return false;
