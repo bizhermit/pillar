@@ -96,7 +96,14 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         checkBox,
         toggleSwitch: checkBox,
         radioButtons,
-        checkList: radioButtons,
+        checkList: async (name: string, labels: Array<string>) => {
+          const selector = `div[data-name="${name}"][data-loaded]`;
+          await waitLoadable(selector);
+          for await (const label of labels) {
+            const locator = page.locator(`${selector}>label`, { hasText: label });
+            await locator.click();
+          }
+        },
         dateBox: async (name: string, date: { y?: number | null; m?: number | null; d?: number | null; }) => {
           let selector = `input[data-name="${name}_y"]`;
           await page.waitForSelector(selector);
