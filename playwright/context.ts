@@ -139,6 +139,14 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           }
           await locator?.blur();
         },
+        fileButton: async (name: string, filePath: string) => {
+          const selector = `input[type="file][data-name="${name}"]`;
+          await page.waitForSelector(selector);
+          const fileChooserPromise = page.waitForEvent("filechooser");
+          await page.locator(selector).click();
+          const fileChooser = await fileChooserPromise;
+          await fileChooser.setFiles(filePath);
+        },
         fileDrop: async (name: string, file: { path: string; name: string; type: string; }) => {
           const selector = `div[data-name="${name}"][role="button"]`;
           await page.waitForSelector(selector);

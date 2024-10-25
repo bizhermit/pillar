@@ -113,6 +113,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
           ref={iref}
           className="ipt-file"
           type="file"
+          data-name={fi.name}
           name={fi.mountValue ? fi.name : undefined}
           accept={fi.dataItem.accept}
           onChange={change}
