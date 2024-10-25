@@ -53,10 +53,10 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     },
     form: () => {
       const waitLoadable = async (selector: string) => {
-        await page.waitForFunction(() => {
+        await page.waitForFunction(async ({ selector }) => {
           const elem = document.querySelector(selector);
-          return elem && elem.getAttribute("data-loaded") === "true";
-        });
+          return elem != null && elem.getAttribute("data-loaded") === "true";
+        }, { selector });
       };
 
       const textBox = async (name: string, value: string | number) => {
@@ -75,13 +75,6 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         await locator.setChecked(checked, { force: true });
       };
 
-      const radioButtons = async (name: string, label: string) => {
-        const selector = `div[data-name="${name}"][data-loaded]`;
-        await waitLoadable(selector);
-        const locator = page.locator(`${selector}>label`, { hasText: label });
-        await locator.click();
-      };
-
       return {
         textBox,
         numberBox: textBox,
@@ -95,7 +88,12 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         },
         checkBox,
         toggleSwitch: checkBox,
-        radioButtons,
+        radioButtons: async (name: string, label: string) => {
+          const selector = `div[data-name="${name}"][data-loaded]`;
+          await waitLoadable(selector);
+          const locator = page.locator(`${selector}>label`, { hasText: label });
+          await locator.click();
+        },
         checkList: async (name: string, labels: Array<string>) => {
           const selector = `div[data-name="${name}"][data-loaded]`;
           await waitLoadable(selector);
@@ -146,7 +144,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           }
           await locator?.blur();
         },
-        fileButton: async (name: string, filePath: string) => {
+        fileChoose: async (name: string, filePath: string) => {
           const selector = `input[type="file][data-name="${name}"]`;
           await page.waitForSelector(selector);
           const fileChooserPromise = page.waitForEvent("filechooser");
