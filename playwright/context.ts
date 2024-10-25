@@ -52,7 +52,9 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         fullPage: true,
       });
     },
-    form: () => {
+    form: (formSelector?: string) => {
+      const fselector = (s: string) => `${formSelector ? `${formSelector} ` : ""}${s}`;
+
       const waitLoadable = async (selector: string) => {
         await page.waitForFunction(async ({ selector }) => {
           const elem = document.querySelector(selector);
@@ -61,7 +63,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
       };
 
       const textBox = async (name: string, value: string | number) => {
-        const selector = `input[type="text"][data-name="${name}"]`;
+        const selector = fselector(`input[type="text"][data-name="${name}"]`);
         await page.waitForSelector(selector);
         const locator = page.locator(selector);
         await locator.focus();
@@ -70,7 +72,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
       };
 
       const checkBox = async (name: string, checked: boolean) => {
-        const selector = `input[type="checkbox"][data-name="${name}"]`;
+        const selector = fselector(`input[type="checkbox"][data-name="${name}"]`);
         await page.waitForSelector(selector);
         const locator = page.locator(selector);
         await locator.setChecked(checked, { force: true });
@@ -80,7 +82,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         textBox,
         numberBox: textBox,
         textArea: async (name: string, value: string) => {
-          const selector = `textarea[data-name="${name}"]`;
+          const selector = fselector(`textarea[data-name="${name}"]`);
           await page.waitForSelector(selector);
           const locator = page.locator(selector);
           await locator.focus();
@@ -88,7 +90,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await locator.blur();
         },
         selectBox: async (name: string, label: string) => {
-          const selector = `div[data-name="${name}"][data-loaded]`;
+          const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
           const locator = page.locator(`${selector}>input[type="text"]`);
           await locator.focus();
@@ -98,13 +100,13 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         checkBox,
         toggleSwitch: checkBox,
         radioButtons: async (name: string, label: string) => {
-          const selector = `div[data-name="${name}"][data-loaded]`;
+          const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
           const locator = page.locator(`${selector}>label`, { hasText: label });
           await locator.click();
         },
         checkList: async (name: string, labels: Array<string>) => {
-          const selector = `div[data-name="${name}"][data-loaded]`;
+          const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
           for await (const label of labels) {
             const locator = page.locator(`${selector}>label`, { hasText: label });
@@ -112,18 +114,18 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           }
         },
         dateBox: async (name: string, date: { y?: number | null; m?: number | null; d?: number | null; }) => {
-          let selector = `input[data-name="${name}_y"]`;
+          let selector = fselector(`input[data-name="${name}_y"]`);
           await page.waitForSelector(selector);
           let locator = page.locator(selector);
           await locator.focus();
           await locator.fill(date.y == null ? "" : String(date.y));
-          selector = `input[data-name="${name}_m"]`;
+          selector = fselector(`input[data-name="${name}_m"]`);
           if (await page.$(selector)) {
             locator = page.locator(selector);
             await locator.focus();
             await locator.fill(date.m == null ? "" : String(date.m));
           }
-          selector = `input[data-name="${name}_d"]`;
+          selector = fselector(`input[data-name="${name}_d"]`);
           if (await page.$(selector)) {
             locator = page.locator(selector);
             locator.focus();
@@ -132,20 +134,20 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await locator.blur();
         },
         timeBox: async (name: string, time: { h?: number | null; m?: number | null; s?: number | null; }) => {
-          let selector = `input[data-name="${name}_h"]`;
+          let selector = fselector(`input[data-name="${name}_h"]`);
           let locator: Locator | null = null;
           if (await page.$(selector)) {
             locator = page.locator(selector);
             await locator.focus();
             await locator.fill(time.h == null ? "" : String(time.h));
           }
-          selector = `input[data-name="${name}_m"]`;
+          selector = fselector(`input[data-name="${name}_m"]`);
           if (await page.$(selector)) {
             locator = page.locator(selector);
             await locator.focus();
             await locator.fill(time.m == null ? "" : String(time.m));
           }
-          selector = `input[data-name="${name}_s"]`;
+          selector = fselector(`input[data-name="${name}_s"]`);
           if (await page.$(selector)) {
             locator = page.locator(selector);
             await locator.focus();
@@ -154,7 +156,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await locator?.blur();
         },
         fileChoose: async (name: string, filePath: string) => {
-          const selector = `input[type="file"][data-name="${name}"]`;
+          const selector = fselector(`input[type="file"][data-name="${name}"]`);
           await page.waitForSelector(selector, { state: "attached" });
           const fileChooserPromise = page.waitForEvent("filechooser");
           await page.locator(selector).dispatchEvent("click");
@@ -162,7 +164,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await fileChooser.setFiles(filePath);
         },
         fileDrop: async (name: string, file: { path: string; name: string; type: string; }) => {
-          const selector = `div[data-name="${name}"][role="button"]`;
+          const selector = fselector(`div[data-name="${name}"][role="button"]`);
           await page.waitForSelector(selector, { state: "attached" });
 
           const buf = readFileSync(file.path).toString("base64");
@@ -181,12 +183,12 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await page.locator(selector).dispatchEvent("drop", { dataTransfer });
         },
         submit: async () => {
-          const selector = `button[type="submit"]:not(:disabled)`;
+          const selector = fselector(`button[type="submit"]:not(:disabled)`);
           await page.waitForSelector(selector)
           await page.locator(selector).click();
         },
         reset: async () => {
-          const selector = `button[type="reset"]`;
+          const selector = fselector(`button[type="reset"]`);
           if (!await page.$(selector)) return;
           await page.waitForSelector(`${selector}:not(:disabled)`);
           await page.locator(selector).click();
