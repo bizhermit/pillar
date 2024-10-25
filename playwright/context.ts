@@ -36,6 +36,10 @@ export const getPlaywrightPageContext = (args: PlaywrightContextArgs, testInfo: 
     });
   };
 
+  const textBox = async (name: string, value: string | number) => {
+    return await args.page.locator(`input[type="text"][data-name="${name}"]`).fill(String(value));
+  };
+
   return {
     waitLoading,
     waitImgs,
@@ -50,13 +54,9 @@ export const getPlaywrightPageContext = (args: PlaywrightContextArgs, testInfo: 
         fullPage: true,
       });
     },
-    textBox: async (name: string) => {
-      return args.page.locator(`input[type="text"][data-name="${name}"]`);
-    },
-    numberBox: async (name: string) => {
-      return args.page.locator(`input[type="text"][data-name="${name}"]`);
-    },
-    selectBox: (name: string) => {
+    textBox,
+    numberBox: textBox,
+    selectBox: async (name: string, value: string | number) => {
 
     },
   };
