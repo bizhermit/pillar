@@ -78,6 +78,14 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
       return {
         textBox,
         numberBox: textBox,
+        textArea: async (name: string, value: string) => {
+          const selector = `textarea[data-name="${name}"]`;
+          await page.waitForSelector(selector);
+          const locator = page.locator(selector);
+          await locator.focus();
+          await locator.fill(String(value));
+          await locator.blur();
+        },
         selectBox: async (name: string, label: string) => {
           const selector = `div[data-name="${name}"][data-loaded]`;
           await waitLoadable(selector);
@@ -145,16 +153,16 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await locator?.blur();
         },
         fileChoose: async (name: string, filePath: string) => {
-          const selector = `input[type="file][data-name="${name}"]`;
-          await page.waitForSelector(selector);
+          const selector = `input[type="file"][data-name="${name}"]`;
+          await page.waitForSelector(selector, { state: "attached" });
           const fileChooserPromise = page.waitForEvent("filechooser");
-          await page.locator(selector).click();
+          await page.locator(selector).dispatchEvent("click");
           const fileChooser = await fileChooserPromise;
           await fileChooser.setFiles(filePath);
         },
         fileDrop: async (name: string, file: { path: string; name: string; type: string; }) => {
           const selector = `div[data-name="${name}"][role="button"]`;
-          await page.waitForSelector(selector);
+          await page.waitForSelector(selector, { state: "attached" });
 
           const buf = readFileSync(file.path).toString("base64");
           const dataTransfer = await page.evaluateHandle(async ({ buffer, fileName, fileType }) => {
