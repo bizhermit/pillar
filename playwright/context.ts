@@ -59,21 +59,25 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
       };
 
       const textBox = async (name: string, value: string | number) => {
-        const locator = page.locator(`input[type="text"][data-name="${name}"]`);
+        const selector = `input[type="text"][data-name="${name}"]`;
+        await page.waitForSelector(selector);
+        const locator = page.locator(selector);
         await locator.focus();
         await locator.fill(String(value));
         await locator.blur();
       };
 
       const checkBox = async (name: string, checked: boolean) => {
-        const locator = page.locator(`input[type="checkbox"][data-name="${name}"]`);
+        const selector = `input[type="checkbox"][data-name="${name}"]`;
+        await page.waitForSelector(selector);
+        const locator = page.locator(selector);
         await locator.setChecked(checked, { force: true });
       };
 
       const radioButtons = async (name: string, label: string) => {
         const selector = `div[data-name="${name}"][data-loaded]`;
         await waitLoadable(selector);
-        const locator = page.locator(`${selector}>label`).filter({ hasText: label });
+        const locator = page.locator(`${selector}>label`, { hasText: label });
         await locator.click();
       };
 
@@ -92,6 +96,27 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         toggleSwitch: checkBox,
         radioButtons,
         checkList: radioButtons,
+        dateBox: async (name: string, y: number, m: number, d: number) => {
+          let selector = `input[data-name="${name}_y"]`;
+          await page.waitForSelector(selector);
+          let locator = page.locator(selector);
+          await locator.focus();
+          await locator.fill(String(y));
+          selector = `input[data-name="${name}_m"]`;
+          if (await page.$(selector)) {
+            locator = page.locator(selector);
+            await locator.focus();
+            await locator.fill(String(m));
+
+            selector = `input[data-name="${name}_d"]`;
+            if (await page.$(selector)) {
+              locator = page.locator(selector);
+              locator.focus();
+              await locator.fill(String(d));
+            }
+          }
+          await locator.blur();
+        },
       }
     },
   };
