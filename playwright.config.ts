@@ -31,7 +31,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
-  outputDir: outputDir,
+  outputDir,
   snapshotDir: path.join(outputDir, taskId),
   use: {
     baseURL: webServerUrl,
