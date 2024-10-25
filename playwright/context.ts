@@ -1,4 +1,5 @@
 import type { Locator, PlaywrightTestArgs, PlaywrightTestOptions, PlaywrightWorkerArgs, PlaywrightWorkerOptions, TestInfo } from "@playwright/test";
+import { readFileSync } from "fs";
 
 type PlaywrightArgs = PlaywrightTestArgs & PlaywrightTestOptions & PlaywrightWorkerArgs & PlaywrightWorkerOptions;
 type PickPartial<T, K extends keyof T> = Omit<Partial<T>, K> & Pick<T, K>;
@@ -138,7 +139,26 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           }
           await locator?.blur();
         },
-      }
+        fileDrop: async (name: string, file: { path: string; name: string; type: string; }) => {
+          const selector = `div[data-name="${name}"][role="button"]`;
+          await page.waitForSelector(selector);
+
+          const buf = readFileSync(file.path).toString("base64");
+          const dataTransfer = await page.evaluateHandle(async ({ buffer, fileName, fileType }) => {
+            const dt = new DataTransfer();
+            const blob = await (await fetch(buffer)).blob();
+            const f = new File([blob], fileName, { type: fileType });
+            dt.items.add(f);
+            return dt;
+          }, {
+            buffer: `data:application/octet-stream;base64,${buf}`,
+            fileName: file.name,
+            fileType: file.type,
+          });
+
+          await page.locator(selector).dispatchEvent("drop", { dataTransfer });
+        },
+      };
     },
   };
 };
