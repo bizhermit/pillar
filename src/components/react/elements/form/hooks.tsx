@@ -438,7 +438,6 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       "aria-invalid": editable && msg?.type === "e",
       "aria-errormessage": errMsgId,
       "aria-required": $required,
-      "data-name": dataItem.name,
     },
     // message: msg,
     messageComponent: (errMsgId &&

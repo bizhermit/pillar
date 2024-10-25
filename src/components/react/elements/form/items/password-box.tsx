@@ -96,6 +96,7 @@ export const PasswordBox = <D extends DataItem.$str | undefined>({
           className="ipt-txt"
           type={type}
           name={fi.mountValue ? fi.name : undefined}
+          data-name={fi.name}
           placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
           readOnly={fi.readOnly}
