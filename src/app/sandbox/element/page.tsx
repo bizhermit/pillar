@@ -328,7 +328,7 @@ export default function Home() {
         }}
       >
         <RenderCheck />
-        <ObservationFormValue name="slider" value={90} />
+        <ObservationFormValue name="slider" value={60} />
         <InputTabContainer
           name="tab"
         >

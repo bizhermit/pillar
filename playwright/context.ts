@@ -155,6 +155,25 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           }
           await locator?.blur();
         },
+        slider: async (name: string, value: number, options?: { min?: number; max?: number; }) => {
+          const sliderSelector = fselector(`div.ipt-slider[data-name="${name}"]`);
+          const thumbSelector = `${sliderSelector} .ipt-slider-thumb`;
+          await page.waitForSelector(thumbSelector);
+          const thumbElem = (await page.$(thumbSelector))!;
+          await thumbElem.scrollIntoViewIfNeeded();
+          await thumbElem.click();
+          const thumbRect = (await thumbElem.boundingBox())!;
+          const margin = Math.round(thumbRect.width / 2);
+          await page.mouse.move(thumbRect.x + margin, thumbRect.y + margin);
+          await page.mouse.down();
+          const min = options?.min ?? 0;
+          const max = options?.max ?? 100;
+          const rate = Math.round((value - min) * 100 / (max - min)) / 100;
+          const railElem = (await page.$(`${sliderSelector} .ipt-slider-rail`))!;
+          const railRect = (await railElem.boundingBox())!;
+          await page.mouse.move(railRect.x + railRect.width * rate + margin, thumbRect.y + margin);
+          await page.mouse.up();
+        },
         fileChoose: async (name: string, filePath: string) => {
           const selector = fselector(`input[type="file"][data-name="${name}"]`);
           await page.waitForSelector(selector, { state: "attached" });

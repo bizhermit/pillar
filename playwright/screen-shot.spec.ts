@@ -31,7 +31,12 @@ test("test", async ({ page, browserName }, testInfo) => {
   await f.fileChoose("file", "public/next.svg");
   await f.fileDrop("file-drop", { name: "public/vercel.svg", path: "public/vercel.svg", type: "svg" });
   await f.textBox("credit-card", "1111222233334444");
-
+  // await f.slider("slider", 88);
+  await f.slider("slider", 13);
+  // await f.slider("slider", 50);
+  // await f.slider("slider", 0);
+  // await f.slider("slider", 10);
+  // await f.slider("slider", 100);
   await f.submit();
   await screenShot();
 });
