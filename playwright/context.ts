@@ -155,6 +155,25 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           }
           await locator?.blur();
         },
+        slider: async (name: string, value: number, options?: { min?: number; max?: number; }) => {
+          const sliderSelector = fselector(`div.ipt-slider[data-name="${name}"]`);
+          const thumbSelector = `${sliderSelector} .ipt-slider-thumb`;
+          await page.waitForSelector(thumbSelector);
+          const thumbElem = (await page.$(thumbSelector))!;
+          await thumbElem.scrollIntoViewIfNeeded();
+          await thumbElem.click();
+          const thumbRect = (await thumbElem.boundingBox())!;
+          const margin = Math.round(thumbRect.width / 2);
+          await page.mouse.move(thumbRect.x + margin, thumbRect.y + margin);
+          await page.mouse.down();
+          const min = options?.min ?? 0;
+          const max = options?.max ?? 100;
+          const rate = Math.round((value - min) * 100 / (max - min)) / 100;
+          const railElem = (await page.$(`${sliderSelector} .ipt-slider-rail`))!;
+          const railRect = (await railElem.boundingBox())!;
+          await page.mouse.move(railRect.x + railRect.width * rate + margin, thumbRect.y + margin);
+          await page.mouse.up();
+        },
         fileChoose: async (name: string, filePath: string) => {
           const selector = fselector(`input[type="file"][data-name="${name}"]`);
           await page.waitForSelector(selector, { state: "attached" });
@@ -163,24 +182,49 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           const fileChooser = await fileChooserPromise;
           await fileChooser.setFiles(filePath);
         },
-        fileDrop: async (name: string, file: { path: string; name: string; type?: string; }) => {
+        fileDrop: async (name: string, file: { path: string; name?: string; type?: string; }) => {
           const selector = fselector(`div[data-name="${name}"][role="button"]`);
           await page.waitForSelector(selector, { state: "attached" });
 
           const buf = readFileSync(file.path).toString("base64");
-          const dataTransfer = await page.evaluateHandle(async ({ buffer, fileName, fileType }) => {
-            const dt = new DataTransfer();
-            const blob = await (await fetch(buffer)).blob();
+          const dataTransfer = await page.evaluateHandle(async ({ base64, fileName, fileType }) => {
+            const bin = atob(base64.replace(/^.*,/, ""));
+            const buffer = new Uint8Array(bin.length);
+            for (var i = 0; i < bin.length; i++) {
+              buffer[i] = bin.charCodeAt(i);
+            }
+            const blob = new Blob([buffer.buffer], { type: fileType });
             const f = new File([blob], fileName, { type: fileType });
-            dt.items.add(f);
+
+            const dt = new DataTransfer();
+            try {
+              dt.items.add(f);
+            } catch {
+              // webkit not supported.
+            }
             return dt;
           }, {
-            buffer: `data:application/octet-stream;base64,${buf}`,
-            fileName: file.name,
+            base64: `data:application/octet-stream;base64,${buf}`,
+            fileName: file.name || file.path,
             fileType: file.type,
           });
 
           await page.locator(selector).dispatchEvent("drop", { dataTransfer });
+          dataTransfer.dispose();
+        },
+        sign: async (name: string) => {
+          const selector = fselector(`canvas[data-name="${name}"]`);
+          await page.waitForSelector(selector);
+          const elem = (await page.$(selector))!;
+          await elem.scrollIntoViewIfNeeded();
+          const rect = (await elem.boundingBox())!;
+          const y = Math.round(rect.y + rect.height / 2);
+          const startX = Math.round(rect.x + rect.width * 0.3);
+          const endX = Math.round(rect.x + rect.width * 0.7);
+          await page.mouse.move(startX, y);
+          await page.mouse.down();
+          await page.mouse.move(endX, y);
+          await page.mouse.up();
         },
         submit: async () => {
           const selector = fselector(`button[type="submit"]:not(:disabled)`);

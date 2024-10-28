@@ -134,6 +134,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
         aria-valuenow={fi.value ?? undefined}
         {...fi.iptAria}
         aria-disabled={fi.disabled}
+        data-name={fi.name}
       >
         <div
           className="ipt-slider-bar"
