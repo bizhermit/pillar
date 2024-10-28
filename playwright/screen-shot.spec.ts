@@ -29,7 +29,8 @@ test("test", async ({ page, browserName }, testInfo) => {
   await f.textArea("text-area", "hoge\nfuga\npiyo");
   await f.radioButtons("radio", "item-1");
   await f.fileChoose("file", "public/next.svg");
-  await f.fileDrop("file-drop", { name: "public/vercel.svg", path: "public/vercel.svg", type: "svg" });
+  await f.fileDrop("file-drop", { name: "public/vercel.svg", path: "public/vercel.svg", type: "image/svg" });
+  // await f.fileChoose("file-drop", "public/vercel.svg");
   await f.textBox("credit-card", "1111222233334444");
   // await f.slider("slider", 88);
   await f.slider("slider", 13);

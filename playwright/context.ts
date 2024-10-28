@@ -182,24 +182,35 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           const fileChooser = await fileChooserPromise;
           await fileChooser.setFiles(filePath);
         },
-        fileDrop: async (name: string, file: { path: string; name: string; type?: string; }) => {
+        fileDrop: async (name: string, file: { path: string; name?: string; type?: string; }) => {
           const selector = fselector(`div[data-name="${name}"][role="button"]`);
           await page.waitForSelector(selector, { state: "attached" });
 
           const buf = readFileSync(file.path).toString("base64");
-          const dataTransfer = await page.evaluateHandle(async ({ buffer, fileName, fileType }) => {
-            const dt = new DataTransfer();
-            const blob = await (await fetch(buffer)).blob();
+          const dataTransfer = await page.evaluateHandle(async ({ base64, fileName, fileType }) => {
+            const bin = atob(base64.replace(/^.*,/, ""));
+            const buffer = new Uint8Array(bin.length);
+            for (var i = 0; i < bin.length; i++) {
+              buffer[i] = bin.charCodeAt(i);
+            }
+            const blob = new Blob([buffer.buffer], { type: fileType });
             const f = new File([blob], fileName, { type: fileType });
-            dt.items.add(f);
+
+            const dt = new DataTransfer();
+            try {
+              dt.items.add(f);
+            } catch {
+              // webkit not supported.
+            }
             return dt;
           }, {
-            buffer: `data:application/octet-stream;base64,${buf}`,
-            fileName: file.name,
+            base64: `data:application/octet-stream;base64,${buf}`,
+            fileName: file.name || file.path,
             fileType: file.type,
           });
 
           await page.locator(selector).dispatchEvent("drop", { dataTransfer });
+          dataTransfer.dispose();
         },
         sign: async (name: string) => {
           const selector = fselector(`canvas[data-name="${name}"]`);
