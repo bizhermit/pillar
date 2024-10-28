@@ -201,6 +201,20 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
 
           await page.locator(selector).dispatchEvent("drop", { dataTransfer });
         },
+        sign: async (name: string) => {
+          const selector = fselector(`canvas[data-name="${name}"]`);
+          await page.waitForSelector(selector);
+          const elem = (await page.$(selector))!;
+          await elem.scrollIntoViewIfNeeded();
+          const rect = (await elem.boundingBox())!;
+          const y = Math.round(rect.y + rect.height / 2);
+          const startX = Math.round(rect.x + rect.width * 0.3);
+          const endX = Math.round(rect.x + rect.width * 0.7);
+          await page.mouse.move(startX, y);
+          await page.mouse.down();
+          await page.mouse.move(endX, y);
+          await page.mouse.up();
+        },
         submit: async () => {
           const selector = fselector(`button[type="submit"]:not(:disabled)`);
           await page.waitForSelector(selector)

@@ -248,6 +248,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
         <canvas
           ref={cref}
           className="ipt-canvas"
+          data-name={fi.name}
           onMouseDown={mouseDown}
           onTouchStart={touchStart}
           width={width || 500}

@@ -37,6 +37,7 @@ test("test", async ({ page, browserName }, testInfo) => {
   // await f.slider("slider", 0);
   // await f.slider("slider", 10);
   // await f.slider("slider", 100);
+  await f.sign("elec-sign");
   await f.submit();
   await screenShot();
 });
