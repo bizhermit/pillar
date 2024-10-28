@@ -145,10 +145,7 @@ export const Slider = <D extends DataItem.$num | undefined>({
             style={{ width: rate }}
           />
         </div>
-        <div
-          className="ipt-slider-rail"
-          data-name={fi.name}
-        >
+        <div className="ipt-slider-rail">
           <div
             className="ipt-slider-thumb"
             style={{ left: rate }}
