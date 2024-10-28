@@ -63,7 +63,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
       };
 
       const textBox = async (name: string, value: string | number) => {
-        const selector = fselector(`input[type="text"][data-name="${name}"]`);
+        const selector = fselector(`input[data-name="${name}"]:is([type="text"],[type="password"])`);
         await page.waitForSelector(selector);
         const locator = page.locator(selector);
         await locator.focus();
