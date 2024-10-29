@@ -72,6 +72,17 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
       }, { label });
       await page.getByRole("button", { name: label }).click();
     },
+    clickLink: async (label: string | RegExp) => {
+      await page.waitForFunction(({ label }) => {
+        return Array.from(document.querySelectorAll("a")).find(elem => {
+          const tc = elem.textContent;
+          if (!tc) return false;
+          if (typeof label === "string") return tc.indexOf(label) >= 0;
+          return label.test(tc);
+        }) != null;
+      }, { label });
+      await page.getByRole("button", { name: label }).click();
+    },
     selectTab: async (label: string | RegExp) => {
       const selector = `div.tab-item[role="tab"]`;
       await page.waitForSelector(selector);
