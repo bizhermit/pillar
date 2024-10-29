@@ -2,7 +2,7 @@ import test from "@playwright/test";
 import { getPlaywrightPageContext } from "./context";
 
 test("test", async ({ page, browserName }, testInfo) => {
-  const { screenShot, form } = getPlaywrightPageContext({ page, browserName }, testInfo);
+  const { screenShot, form, selectTab } = getPlaywrightPageContext({ page, browserName }, testInfo);
 
   await page.goto("/");
   await screenShot();
@@ -14,6 +14,7 @@ test("test", async ({ page, browserName }, testInfo) => {
   await page.waitForURL("/sandbox/element");
   await screenShot();
 
+  selectTab("タブ２");
   const f = form();
   await f.textBox("sample_text", "playwright");
   await f.numberBox("sample_num", 1234);

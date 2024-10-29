@@ -52,6 +52,12 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         fullPage: true,
       });
     },
+    selectTab: async (label: string) => {
+      const selector = `div.tab-item[role="tab"]`;
+      await page.waitForSelector(selector);
+      const locator = page.locator(selector).filter({ hasText: label });
+      await locator.click();
+    },
     form: (formSelector?: string) => {
       const fselector = (s: string) => `${formSelector ? `${formSelector} ` : ""}${s}`;
 
