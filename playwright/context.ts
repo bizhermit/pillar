@@ -42,6 +42,12 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     waitImgs,
     waitLoadable,
     waitShowedDialog,
+    goto: async (url: string) => {
+      await page.goto(url);
+      await waitLoading();
+      await waitImgs();
+      await waitLoadable();
+    },
     screenShot: async (name?: string) => {
       await waitLoading();
       await waitImgs();
@@ -51,6 +57,16 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         path: `${testInfo.snapshotDir}/${testInfo.project.name || args.browserName || "default"}/${(`0000` + count++).slice(-4)}_${name?.replace(/^\//, "") || `${Date.now()}`}.png`,
         fullPage: true,
       });
+    },
+    clickButton: async (label: string) => {
+      await page.waitForFunction(({ label }) => {
+        return Array.from(document.querySelectorAll("button")).find(elem => {
+          const tc = elem.textContent;
+          if (!tc) return false;
+          return tc.indexOf(label) >= 0;
+        }) != null;
+      }, { label });
+      await page.getByRole("button", { name: label }).click();
     },
     selectTab: async (label: string) => {
       const selector = `div.tab-item[role="tab"]`;
