@@ -8,6 +8,8 @@ type PlaywrightContextArgs = PickPartial<PlaywrightArgs, "page">;
 let count = 0;
 
 export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArgs, testInfo: TestInfo) => {
+  const sleep = (time: number) => new Promise<void>(r => setTimeout(r, time));
+
   const waitLoading = async () => {
     await page.waitForFunction(() => {
       return document.querySelectorAll(`div[class^="loading-"]`).length === 0;
@@ -38,6 +40,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
   };
 
   return {
+    sleep,
     waitLoading,
     waitImgs,
     waitLoadable,
@@ -58,17 +61,18 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         fullPage: true,
       });
     },
-    clickButton: async (label: string) => {
+    clickButton: async (label: string | RegExp) => {
       await page.waitForFunction(({ label }) => {
-        return Array.from(document.querySelectorAll("button")).find(elem => {
+        return Array.from(document.querySelectorAll(`button,[role="button"]`)).find(elem => {
           const tc = elem.textContent;
           if (!tc) return false;
-          return tc.indexOf(label) >= 0;
+          if (typeof label === "string") return tc.indexOf(label) >= 0;
+          return label.test(tc);
         }) != null;
       }, { label });
       await page.getByRole("button", { name: label }).click();
     },
-    selectTab: async (label: string) => {
+    selectTab: async (label: string | RegExp) => {
       const selector = `div.tab-item[role="tab"]`;
       await page.waitForSelector(selector);
       const locator = page.locator(selector).filter({ hasText: label });
@@ -121,13 +125,13 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         },
         checkBox,
         toggleSwitch: checkBox,
-        radioButtons: async (name: string, label: string) => {
+        radioButtons: async (name: string, label: string | RegExp) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
           const locator = page.locator(`${selector}>label`, { hasText: label });
           await locator.click();
         },
-        checkList: async (name: string, labels: Array<string>) => {
+        checkList: async (name: string, labels: Array<string | RegExp>) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
           for await (const label of labels) {
