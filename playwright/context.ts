@@ -39,22 +39,31 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     });
   };
 
+  const wait = async (opts?: { throw?: boolean }) => {
+    try {
+      await Promise.all([
+        waitLoading(),
+        waitImgs(),
+        waitLoadable(),
+      ]);
+    } catch (e) {
+      if (opts?.throw) throw e;
+    }
+  };
+
   return {
     sleep,
     waitLoading,
     waitImgs,
     waitLoadable,
     waitShowedDialog,
+    wait,
     goto: async (url: string) => {
       await page.goto(url);
-      await waitLoading();
-      await waitImgs();
-      await waitLoadable();
+      await wait();
     },
     screenShot: async (name?: string) => {
-      await waitLoading();
-      await waitImgs();
-      await waitLoadable();
+      await wait();
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.screenshot({
         path: `${testInfo.snapshotDir}/${testInfo.project.name || args.browserName || "default"}/${(`0000` + count++).slice(-4)}_${name?.replace(/^\//, "") || `${Date.now()}`}.png`,
