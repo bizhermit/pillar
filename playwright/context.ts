@@ -139,15 +139,22 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         radioButtons: async (name: string, label: string | RegExp) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
-          const locator = page.locator(`${selector}>label`, { hasText: label });
-          await locator.click();
+          const locator = page.locator(`${selector}>label`, { hasText: label }).locator(`input[type="checkbox"]`);
+          await locator.setChecked(true, { force: true });
         },
         checkList: async (name: string, labels: Array<string | RegExp>) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
-          for await (const label of labels) {
-            const locator = page.locator(`${selector}>label`, { hasText: label });
-            await locator.click();
+          const items = await page.locator(`${selector}>label`).all();
+          const hasText = async (locator: Locator) => {
+            for await (const label of labels) {
+              if (await locator.filter({ hasText: label }).count() > 0) return true;
+            }
+            return false;
+          }
+          for await (const item of items) {
+            const checked = await hasText(item);
+            await item.locator(`input[type="checkbox"]`).setChecked(checked, { force: true });
           }
         },
         dateBox: async (name: string, date: { y?: number | null; m?: number | null; d?: number | null; }) => {

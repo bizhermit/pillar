@@ -20,7 +20,7 @@ test("test", async ({ page, browserName }, testInfo) => {
   await f.numberBox("sample_num", 1234);
   await f.checkBox("sample_bool", true);
   await f.toggleSwitch("toggle", true);
-  await f.checkList("check-list", ["item-2"]);
+  await f.checkList("check-list", ["item-2", "item-0"]);
   await f.dateBox("date", { y: 2024, m: 12, d: 30 });
   await f.dateBox("date-after", { y: 2024, m: 12, d: 31 });
   await f.dateBox("month", { y: 2024, m: 12 });
@@ -28,6 +28,7 @@ test("test", async ({ page, browserName }, testInfo) => {
   await f.dateBox("month-select", { y: 2024, m: 12 });
   await f.timeBox("time", { h: 7, m: 30 });
   await f.textArea("text-area", "hoge\nfuga\npiyo");
+  await f.radioButtons("radio", "item-1");
   await f.radioButtons("radio", "item-1");
   await f.fileChoose("file", "public/next.svg");
   await f.fileDrop("file-drop", { name: "public/vercel.svg", path: "public/vercel.svg", type: "image/svg" });
