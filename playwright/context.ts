@@ -8,6 +8,8 @@ type PlaywrightContextArgs = PickPartial<PlaywrightArgs, "page">;
 let count = 0;
 
 export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArgs, testInfo: TestInfo) => {
+  const sleep = (time: number) => new Promise<void>(r => setTimeout(r, time));
+
   const waitLoading = async () => {
     await page.waitForFunction(() => {
       return document.querySelectorAll(`div[class^="loading-"]`).length === 0;
@@ -37,20 +39,64 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     });
   };
 
+  const wait = async (opts?: { throw?: boolean }) => {
+    try {
+      await Promise.all([
+        waitLoading(),
+        waitImgs(),
+        waitLoadable(),
+      ]);
+    } catch (e) {
+      if (opts?.throw) throw e;
+    }
+  };
+
   return {
+    sleep,
     waitLoading,
     waitImgs,
     waitLoadable,
     waitShowedDialog,
+    wait,
+    goto: async (url: string) => {
+      await page.goto(url);
+      await wait();
+    },
     screenShot: async (name?: string) => {
-      await waitLoading();
-      await waitImgs();
-      await waitLoadable();
+      await wait();
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.screenshot({
         path: `${testInfo.snapshotDir}/${testInfo.project.name || args.browserName || "default"}/${(`0000` + count++).slice(-4)}_${name?.replace(/^\//, "") || `${Date.now()}`}.png`,
         fullPage: true,
       });
+    },
+    clickButton: async (label: string | RegExp) => {
+      await page.waitForFunction(({ label }) => {
+        return Array.from(document.querySelectorAll(`button,[role="button"]`)).find(elem => {
+          const tc = elem.textContent;
+          if (!tc) return false;
+          if (typeof label === "string") return tc.indexOf(label) >= 0;
+          return label.test(tc);
+        }) != null;
+      }, { label });
+      await page.getByRole("button", { name: label }).click();
+    },
+    clickLink: async (label: string | RegExp) => {
+      await page.waitForFunction(({ label }) => {
+        return Array.from(document.querySelectorAll("a")).find(elem => {
+          const tc = elem.textContent;
+          if (!tc) return false;
+          if (typeof label === "string") return tc.indexOf(label) >= 0;
+          return label.test(tc);
+        }) != null;
+      }, { label });
+      await page.getByRole("button", { name: label }).click();
+    },
+    selectTab: async (label: string | RegExp) => {
+      const selector = `div.tab-item[role="tab"]`;
+      await page.waitForSelector(selector);
+      const locator = page.locator(selector).filter({ hasText: label });
+      await locator.click();
     },
     form: (formSelector?: string) => {
       const fselector = (s: string) => `${formSelector ? `${formSelector} ` : ""}${s}`;
@@ -99,18 +145,25 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
         },
         checkBox,
         toggleSwitch: checkBox,
-        radioButtons: async (name: string, label: string) => {
+        radioButtons: async (name: string, label: string | RegExp) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
-          const locator = page.locator(`${selector}>label`, { hasText: label });
-          await locator.click();
+          const locator = page.locator(`${selector}>label`, { hasText: label }).locator(`input[type="checkbox"]`);
+          await locator.setChecked(true, { force: true });
         },
-        checkList: async (name: string, labels: Array<string>) => {
+        checkList: async (name: string, labels: Array<string | RegExp>) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
-          for await (const label of labels) {
-            const locator = page.locator(`${selector}>label`, { hasText: label });
-            await locator.click();
+          const items = await page.locator(`${selector}>label`).all();
+          const hasText = async (locator: Locator) => {
+            for await (const label of labels) {
+              if (await locator.filter({ hasText: label }).count() > 0) return true;
+            }
+            return false;
+          }
+          for await (const item of items) {
+            const checked = await hasText(item);
+            await item.locator(`input[type="checkbox"]`).setChecked(checked, { force: true });
           }
         },
         dateBox: async (name: string, date: { y?: number | null; m?: number | null; d?: number | null; }) => {
