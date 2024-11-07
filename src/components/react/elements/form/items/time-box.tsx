@@ -2,7 +2,7 @@ import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEv
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
 import { blurToOuter } from "../../../../dom/outer-event";
-import { langFactory } from "../../../../i18n/next-factory";
+import { lang } from "../../../../i18n/client";
 import { equals } from "../../../../objects";
 import { DateTime } from "../../../../objects/datetime";
 import { isEmpty } from "../../../../objects/string";
@@ -40,8 +40,6 @@ const isNumericOrEmpty = (value?: string): value is `${number}` => {
 
 const defaultMinTime = new Time();
 const defaultMaxTime = new Time(24 * TimeRadix.H - TimeRadix.S);
-
-const lang = langFactory();
 
 export const TimeBox = <D extends DataItem.$time | undefined>({
   mode,

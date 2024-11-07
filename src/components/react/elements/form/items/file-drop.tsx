@@ -3,7 +3,7 @@
 import { useRef, type ChangeEvent, type DragEvent, type HTMLAttributes } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
 import { $fileValidations } from "../../../../data-items/file/validation";
-import { langFactory } from "../../../../i18n/next-factory";
+import { lang } from "../../../../i18n/client";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -17,8 +17,6 @@ type FileDropOptions<D extends DataItem.$file | undefined> = FormItemOptions<D, 
 };
 
 type FileDropProps<D extends DataItem.$file | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, FileDropOptions<D>>;
-
-const lang = langFactory();
 
 export const FileDrop = <D extends DataItem.$file | undefined>({
   accept,

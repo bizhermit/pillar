@@ -1,8 +1,8 @@
 import { langFactory } from "@/i18n/next-factory";
 import Link from "@/react/elements/link";
 
-const Page = () => {
-  const lang = langFactory();
+const Page = async () => {
+  const lang = await langFactory();
 
   return (
     <>

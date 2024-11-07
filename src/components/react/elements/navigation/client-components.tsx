@@ -1,11 +1,9 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { langFactory } from "../../../i18n/next-factory";
+import { lang } from "../../../i18n/client";
 import { MenuLeftRightIcon } from "../icon";
 import { navMinId, navOpenId, navToggleRadioName, navVisId } from "./consts";
-
-const lang = langFactory();
 
 const navVisBtnText = lang("navigation.spreadNav");
 export const NavVisBtn = (props: { children: ReactNode }) => {
