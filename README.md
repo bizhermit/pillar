@@ -1,6 +1,6 @@
 # 環境
 
-- Node.js v20
+- Node.js v22
 - TypeScript v5
 - React v19
 - Next.js v15

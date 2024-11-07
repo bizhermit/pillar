@@ -5,7 +5,7 @@
   "workspaceFolder": "/workspace",
   "initializeCommand": "bash ./.devcontainer/initializeCommand.sh",
   "postCreateCommand": "bash ./.devcontainer/postCreatedCommand.sh",
-  "postStartCommand": "npm i && npm run migrate && npx playwright install",
+  "postStartCommand": "npm i --force && npm run migrate && npx playwright install",
   "overrideCommand": true,
   "remoteUser": "node",
   "customizations": {
