@@ -1,11 +1,13 @@
 "use client";
 
-import { lang } from "@/i18n/react";
+import { useLang } from "@/i18n/react-hook";
 import { Button } from "@/react/elements/button";
 import { signOut } from "next-auth/react";
 import { signInPageUrl } from "~/auth/consts";
 
 export const SignOutButton = () => {
+  const lang = useLang();
+
   return (
     <Button
       onClick={async () => {

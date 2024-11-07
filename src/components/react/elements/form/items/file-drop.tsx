@@ -3,7 +3,7 @@
 import { useRef, type ChangeEvent, type DragEvent, type HTMLAttributes } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
 import { $fileValidations } from "../../../../data-items/file/validation";
-import { lang } from "../../../../i18n/react";
+import { useLang } from "../../../../i18n/react-hook";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 
@@ -27,6 +27,7 @@ export const FileDrop = <D extends DataItem.$file | undefined>({
   showAlways,
   ...props
 }: FileDropProps<D>) => {
+  const lang = useLang();
   const iref = useRef<HTMLInputElement>(null!);
   const focusInput = () => {
     (iref.current.previousElementSibling as HTMLDivElement)?.focus();

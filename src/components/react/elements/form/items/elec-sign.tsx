@@ -1,7 +1,7 @@
 "use client";
 
 import { type HTMLAttributes, useEffect, useRef, useState } from "react";
-import { lang } from "../../../../i18n/react";
+import { useLang } from "../../../../i18n/react-hook";
 import { equals } from "../../../../objects";
 import { convertBlobToFile, convertFileToBase64 } from "../../../../objects/file";
 import { isEmpty } from "../../../../objects/string";
@@ -27,6 +27,7 @@ export const ElecSign = <D extends DataItem.$any | undefined>({
   height,
   ...props
 }: ElecSignProps<D>) => {
+  const lang = useLang();
   const href = useRef<HTMLInputElement>(null!);
   const cref = useRef<HTMLCanvasElement>(null!);
   const focusInput = () => cref.current?.focus();

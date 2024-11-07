@@ -4,7 +4,7 @@ import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEv
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
 import { blurToOuter } from "../../../../dom/outer-event";
-import { lang } from "../../../../i18n/react";
+import { useLang } from "../../../../i18n/react-hook";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
 import { DateTime, Month, Week } from "../../../../objects/datetime";
@@ -506,6 +506,7 @@ type DatePickerProps = {
 };
 
 export const DatePicker = (props: DatePickerProps) => {
+  const lang = useLang();
   const type = props.type ?? "date";
   const values = props.values ?? (props.initValue ? [props.initValue] : []);
   const minDate = props.minDate ?? defaultMinDate;

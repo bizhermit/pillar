@@ -3,7 +3,7 @@
 import { type ReactNode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { preventScroll } from "../../dom/prevent-scroll";
-import { lang } from "../../i18n/react";
+import { lang } from "../../i18n/react-hook";
 import { Button, type ButtonProps } from "./button";
 
 type MessageBoxChildrenProps = {

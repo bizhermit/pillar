@@ -1,4 +1,5 @@
 import { DEFAULT_LANG, LANG_KEY } from "@/i18n/consts";
+import { LangProvider } from "@/i18n/react-hook";
 import type { Metadata, Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
@@ -37,9 +38,11 @@ export default async function RootLayout({
     >
       <body>
         <SessionProvider>
-          <LayoutProvider defaultLayoutTheme={layoutTheme}>
-            {children}
-          </LayoutProvider>
+          <LangProvider>
+            <LayoutProvider defaultLayoutTheme={layoutTheme}>
+              {children}
+            </LayoutProvider>
+          </LangProvider>
         </SessionProvider>
       </body>
     </html>
