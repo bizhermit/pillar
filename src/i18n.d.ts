@@ -1,4 +1,95 @@
 interface I18N_Langs {
+  sandbox: {
+    sample_textLabel: LangValue,
+    sample_numberLabel: LangValue,
+    sample_boolLabel: LangValue,
+  };
+  common: {
+    halloWorld: LangValue;
+    value: string;
+    typeOfString: string;
+    typeOfNumber: string;
+    typeOfBool: string;
+    typeOfArray: string;
+    typeOfStruct: string;
+    typeOfDate: string;
+    typeOfDateTime: string;
+    typeOfTime: string;
+    typeOfFile: string;
+    ok: string;
+    close: string;
+    cancel: string;
+    save: string;
+    detail: string;
+  };
+  form: {
+    /**
+     * 元に戻す
+     */
+    revert: string;
+    /**
+     * やり直す
+     */
+    progress: string;
+    /**
+     * クリアする
+     */
+    clear: LangValue<{ s?: string }>;
+    /**
+     * 履歴をクリアする
+     */
+    clearHistory: LangValue<{ s: string; }>;
+    /**
+     * キャンバスと履歴をクリアする
+     */
+    clearCanvasAndHistory: string;
+    /**
+     * 今日
+     */
+    today: string;
+    /**
+     * 選択中を表示する
+     */
+    dispCurrent: string;
+    /**
+     * サイン
+     */
+    sign: string;
+    /**
+     * キャンバス
+     */
+    canvas: string;
+    /**
+     * ファイルを選択する
+     */
+    selectFile: string;
+    /**
+     * ファイルをドラッグ＆ドロップ
+     */
+    dragAndDropFile: string;
+  };
+  navigation: {
+    /**
+     * メニューを広げる
+     */
+    spreadNav: string,
+    /**
+     * メニューを狭める
+     */
+    shrinkNav: string;
+    /**
+     * メニューを開く
+     */
+    openNav: string;
+    /**
+     * メニューを閉じる
+     */
+    closeNav: string;
+    /**
+     * メニューサイズをウィンドウサイズで可変
+     */
+    autoNav: string;
+  };
   validation: {
     /**
      * バリデーションエラー（タイトル）
@@ -192,5 +283,13 @@ interface I18N_Langs {
      * サイン
      */
     writeSign: LangValue<{ s?: string; }>;
+  };
+  auth: {
+    authError: LangValue;
+    signIn: LangValue;
+    mailAddress: LangValue;
+    password: LangValue;
+    signInBtn: LangValue;
+    signOutBtn: LangValue;
   };
 }

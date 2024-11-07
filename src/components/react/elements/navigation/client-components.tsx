@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { langFactory } from "../../../i18n/factory";
+import { langFactory } from "../../../i18n/next-factory";
 import { MenuLeftRightIcon } from "../icon";
 import { navMinId, navOpenId, navToggleRadioName, navVisId } from "./consts";
 

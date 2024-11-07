@@ -1,7 +1,9 @@
 import { getLangs } from "./client";
 import { DEFAULT_LANG, LANG_KEY } from "./consts";
 
-export const langFactory = (langs?: Array<Lang>) => {
+const importFile = (l: Lang, s: LangSection) => require(`src/i18n/${l || DEFAULT_LANG}/${s}`)?.default;
+
+export const langFactoryCore = (langs?: Array<Lang>) => {
   const $langs = (() => {
     if (langs != null) return langs;
     if (typeof window !== "undefined") return getLangs();
@@ -19,13 +21,13 @@ export const langFactory = (langs?: Array<Lang>) => {
   })();
 
   const lang = ((key, arg) => {
-    const [s, k] = key.split(".");
+    const [s, k] = key.split(/\./) as [LangSection, LangSectionKey<LangSection>];
     for (let i = 0, il = $langs.length; i < il; i++) {
       const l = $langs[i];
       if (cache[l] == null) cache[l] = {};
       if (!(s in cache[l]!)) {
         try {
-          cache[l]![s] = require(`src/i18n/${l}/${s}`)?.default;
+          cache[l]![s] = importFile(l, s);
         } catch (e) {
           cache[l]![s] = null;
           continue;
@@ -38,7 +40,7 @@ export const langFactory = (langs?: Array<Lang>) => {
     }
     if (cache[DEFAULT_LANG] == null) cache[DEFAULT_LANG] = {};
     try {
-      if (!(s in cache[DEFAULT_LANG]!)) cache[DEFAULT_LANG]![s] = require(`src/i18n/${DEFAULT_LANG}/${s}`)?.default;
+      if (!(s in cache[DEFAULT_LANG]!)) cache[DEFAULT_LANG]![s] = importFile(DEFAULT_LANG, s);
     } catch (e) {
       cache[DEFAULT_LANG]![s] = null;
     }

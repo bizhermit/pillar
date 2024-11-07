@@ -2,7 +2,7 @@
 "use client";
 
 import { clearLang, setLang } from "@/i18n/client";
-import { langFactory } from "@/i18n/factory";
+import { langFactory } from "@/i18n/next-factory";
 import { Button } from "@/react/elements/button";
 import { getCookie } from "@/utilities/cookie";
 
