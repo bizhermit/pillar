@@ -4,7 +4,7 @@ import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEv
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
 import { blurToOuter } from "../../../../dom/outer-event";
-import { lang } from "../../../../i18n/client";
+import { lang } from "../../../../i18n/react";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
 import { DateTime, Month, Week } from "../../../../objects/datetime";

@@ -1,6 +1,6 @@
 "use client";
 
-import { lang } from "@/i18n/client";
+import { lang } from "@/i18n/react";
 import { Button } from "@/react/elements/button";
 import { signOut } from "next-auth/react";
 import { signInPageUrl } from "~/auth/consts";

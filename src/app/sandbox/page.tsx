@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 "use client";
 
-import { clearLang, lang, setLang } from "@/i18n/client";
+import { clearLang, setLang } from "@/i18n/client";
+import { lang } from "@/i18n/react";
 import { Button } from "@/react/elements/button";
 import { getCookie } from "@/utilities/cookie";
 

@@ -2,7 +2,6 @@
 
 import { deleteCookie, getCookie, setCookie } from "../utilities/cookie";
 import { DEFAULT_LANG, LANG_KEY } from "./consts";
-import { langFactoryCore } from "./core";
 
 export const setLang = (lang: Lang) => {
   setCookie(LANG_KEY, lang);
@@ -22,6 +21,3 @@ export const setLangs = (langs: Array<Lang>) => {
   setCookie(LANG_KEY, langs.join(","));
 };
 
-const langs = typeof window === "undefined" ? (await require("next/headers").cookies()) : getLangs();
-
-export const lang = langFactoryCore(langs);

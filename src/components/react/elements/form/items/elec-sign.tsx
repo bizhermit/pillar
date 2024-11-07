@@ -1,7 +1,7 @@
 "use client";
 
 import { type HTMLAttributes, useEffect, useRef, useState } from "react";
-import { lang } from "../../../../i18n/client";
+import { lang } from "../../../../i18n/react";
 import { equals } from "../../../../objects";
 import { convertBlobToFile, convertFileToBase64 } from "../../../../objects/file";
 import { isEmpty } from "../../../../objects/string";

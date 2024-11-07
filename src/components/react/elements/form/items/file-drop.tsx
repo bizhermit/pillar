@@ -3,7 +3,7 @@
 import { useRef, type ChangeEvent, type DragEvent, type HTMLAttributes } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
 import { $fileValidations } from "../../../../data-items/file/validation";
-import { lang } from "../../../../i18n/client";
+import { lang } from "../../../../i18n/react";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
 

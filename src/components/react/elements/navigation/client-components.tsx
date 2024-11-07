@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { lang } from "../../../i18n/client";
+import { lang } from "../../../i18n/react";
 import { MenuLeftRightIcon } from "../icon";
 import { navMinId, navOpenId, navToggleRadioName, navVisId } from "./consts";
 

@@ -2,7 +2,7 @@
 
 import { use, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
-import { lang } from "../../../i18n/client";
+import { lang } from "../../../i18n/react";
 import { equals } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";

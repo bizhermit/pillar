@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { lang } from "../../i18n/client";
+import { lang } from "../../i18n/react";
 import { type ButtonProps } from "./button";
 import { DownIcon, RightIcon } from "./icon";
 import { joinClassNames } from "./utilities";

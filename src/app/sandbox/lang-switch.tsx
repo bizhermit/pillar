@@ -1,7 +1,8 @@
 "use client";
 
-import { clearLang, lang, setLang } from "@/i18n/client";
+import { clearLang, setLang } from "@/i18n/client";
 import { LANG_LABELS, LANGS } from "@/i18n/consts";
+import { lang } from "@/i18n/react";
 import { SelectBox } from "@/react/elements/form/items/select-box";
 
 const source = [{ value: undefined, label: "(reset)" }, ...LANGS.map(v => ({ value: v, label: LANG_LABELS[v] }))];
