@@ -29,16 +29,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const lang = cookieStore.get(LANG_KEY)?.value.split(",")[0] || DEFAULT_LANG;
+  const langs = (cookieStore.get(LANG_KEY)?.value.split(",") as Array<Lang>) || [DEFAULT_LANG];
   const layoutTheme = (cookieStore.get("theme")?.value as LayoutTheme) || defaultLayoutTheme;
   return (
     <html
-      lang={lang}
+      lang={langs[0]}
       data-theme={layoutTheme}
     >
       <body>
         <SessionProvider>
-          <LangProvider>
+          <LangProvider langs={langs}>
             <LayoutProvider defaultLayoutTheme={layoutTheme}>
               {children}
             </LayoutProvider>

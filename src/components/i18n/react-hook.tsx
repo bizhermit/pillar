@@ -14,8 +14,13 @@ export const lang = langFactoryCore(langs);
 type LangContextProps = typeof lang;
 const LangContext = createContext<LangContextProps>(lang);
 
-export const LangProvider = (props: { children: ReactNode }) => {
-  const lang = langFactoryCore(getLangs());
+type LangProviderProps = {
+  langs: Array<Lang>;
+  children: ReactNode;
+};
+
+export const LangProvider = (props: LangProviderProps) => {
+  const lang = langFactoryCore(props.langs);
 
   return (
     <LangContext.Provider value={lang}>
