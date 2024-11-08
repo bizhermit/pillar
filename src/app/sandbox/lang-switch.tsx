@@ -2,12 +2,14 @@
 
 import { clearLang, setLang } from "@/i18n/client";
 import { LANG_LABELS, LANGS } from "@/i18n/consts";
-import { lang } from "@/i18n/react";
+import { useLang } from "@/i18n/react-hook";
 import { SelectBox } from "@/react/elements/form/items/select-box";
 
 const source = [{ value: undefined, label: "(reset)" }, ...LANGS.map(v => ({ value: v, label: LANG_LABELS[v] }))];
 
 export const LnagSwitch = () => {
+  const lang = useLang();
+
   return (
     <div style={{ padding: 5 }}>
       <SelectBox

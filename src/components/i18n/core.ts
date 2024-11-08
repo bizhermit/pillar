@@ -1,20 +1,8 @@
-import { getLangs } from "./client";
-import { DEFAULT_LANG, LANG_KEY } from "./consts";
+import { DEFAULT_LANG } from "./consts";
 
 const importFile = (l: Lang, s: LangSection) => require(`src/i18n/${l || DEFAULT_LANG}/${s}`)?.default;
 
-export const langFactoryCore = (langs?: Array<Lang>) => {
-  const $langs = (() => {
-    if (langs != null) return langs;
-    if (typeof window !== "undefined") return getLangs();
-    try {
-      const { cookies } = require("next/headers");
-      return (cookies().get(LANG_KEY)?.value.split(",") ?? [DEFAULT_LANG]) as Array<Lang>;
-    } catch {
-      return [DEFAULT_LANG] as Array<Lang>;
-    }
-  })();
-
+export const langFactoryCore = (langs: Array<Lang>) => {
   const cache: Partial<LangCache> = (() => {
     if ((global as any).i18n == null) (global as any).i18n = {};
     return (global as any).i18n;
@@ -22,8 +10,8 @@ export const langFactoryCore = (langs?: Array<Lang>) => {
 
   const lang = ((key, arg) => {
     const [s, k] = key.split(/\./) as [LangSection, LangSectionKey<LangSection>];
-    for (let i = 0, il = $langs.length; i < il; i++) {
-      const l = $langs[i];
+    for (let i = 0, il = langs.length; i < il; i++) {
+      const l = langs[i];
       if (cache[l] == null) cache[l] = {};
       if (!(s in cache[l]!)) {
         try {
@@ -48,6 +36,6 @@ export const langFactoryCore = (langs?: Array<Lang>) => {
     if (typeof func === "function") return func(arg as any);
     return func;
   }) as LangAccessor;
-  lang.primary = $langs[0];
+  lang.primary = langs[0];
   return lang;
 };

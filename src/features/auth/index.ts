@@ -1,6 +1,6 @@
 import { LANG_KEY } from "@/i18n/consts";
 import { langFactoryCore } from "@/i18n/core";
-import { analyzeHeaderAcceptLang } from "@/i18n/utilities";
+import { analyzeHeaderAcceptLang, parseLangs } from "@/i18n/utilities";
 import { isEmpty } from "@/objects";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -67,7 +67,7 @@ export const {
       const url = new URL(signInPageUrl, nextUrl);
       url.searchParams.set(authErrorCallbackUrlQueryName, nextUrl.href);
       if (/.*\/api(\/|$)/.test(nextUrl.pathname)) {
-        const lang = langFactoryCore(cookies.get(LANG_KEY)?.value.split(",") as Array<Lang>);
+        const lang = langFactoryCore(parseLangs(cookies.get(LANG_KEY)?.value));
         return NextResponse.json({
           message: {
             type: "e",

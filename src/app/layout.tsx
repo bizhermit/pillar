@@ -1,4 +1,6 @@
-import { DEFAULT_LANG, LANG_KEY } from "@/i18n/consts";
+import { LANG_KEY } from "@/i18n/consts";
+import { LangProvider } from "@/i18n/react-hook";
+import { parseLangs } from "@/i18n/utilities";
 import type { Metadata, Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
@@ -28,18 +30,20 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const lang = cookieStore.get(LANG_KEY)?.value.split(",")[0] || DEFAULT_LANG;
+  const langs = parseLangs(cookieStore.get(LANG_KEY)?.value);
   const layoutTheme = (cookieStore.get("theme")?.value as LayoutTheme) || defaultLayoutTheme;
   return (
     <html
-      lang={lang}
+      lang={langs[0]}
       data-theme={layoutTheme}
     >
       <body>
         <SessionProvider>
-          <LayoutProvider defaultLayoutTheme={layoutTheme}>
-            {children}
-          </LayoutProvider>
+          <LangProvider langs={langs}>
+            <LayoutProvider defaultLayoutTheme={layoutTheme}>
+              {children}
+            </LayoutProvider>
+          </LangProvider>
         </SessionProvider>
       </body>
     </html>

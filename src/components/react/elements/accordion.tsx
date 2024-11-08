@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { lang } from "../../i18n/react";
+import { useLang } from "../../i18n/react-hook";
 import { type ButtonProps } from "./button";
 import { DownIcon, RightIcon } from "./icon";
 import { joinClassNames } from "./utilities";
@@ -31,6 +31,8 @@ export const Accordion = ({
   onToggle,
   children,
 }: AccordionOptions) => {
+  const lang = useLang();
+
   return (
     <>
       <label

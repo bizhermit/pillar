@@ -2,7 +2,7 @@ import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEv
 import { $timeParse } from "../../../../data-items/time/parse";
 import { $timeValidations } from "../../../../data-items/time/validation";
 import { blurToOuter } from "../../../../dom/outer-event";
-import { lang } from "../../../../i18n/react";
+import { useLang } from "../../../../i18n/react-hook";
 import { equals } from "../../../../objects";
 import { DateTime } from "../../../../objects/datetime";
 import { isEmpty } from "../../../../objects/string";
@@ -573,6 +573,7 @@ const pickerListClassName = "ipt-tp-times";
 const pickerCellClassName = "ipt-tp-cell";
 
 export const TimePicker = (props: TimePickerProps) => {
+  const lang = useLang();
   const wref = useRef<HTMLDivElement>(null!);
 
   const mode = props.mode || "hm";

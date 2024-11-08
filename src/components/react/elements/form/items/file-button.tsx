@@ -3,7 +3,7 @@
 import { type ChangeEvent, type HTMLAttributes, useRef } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
 import { $fileValidations } from "../../../../data-items/file/validation";
-import { lang } from "../../../../i18n/react";
+import { useLang } from "../../../../i18n/react-hook";
 import { Button } from "../../button";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -24,6 +24,7 @@ export const FileButton = <D extends DataItem.$file | undefined>({
   hideFileName,
   ...props
 }: FileButtonProps<D>) => {
+  const lang = useLang();
   const iref = useRef<HTMLInputElement>(null!);
   const bref = useRef<HTMLButtonElement>(null!);
 

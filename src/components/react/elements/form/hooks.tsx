@@ -2,7 +2,7 @@
 
 import { use, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
-import { lang } from "../../../i18n/react";
+import { useLang } from "../../../i18n/react-hook";
 import { equals } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
@@ -41,10 +41,7 @@ type FormItemCoreArgs<
   focus: () => void;
 };
 
-const env: DataItem.Env = {
-  tzOffset: new Date().getTimezoneOffset(),
-  lang,
-};
+const tzOffset = new Date().getTimezoneOffset();
 
 export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V, DV extends any = V>({
   hook,
@@ -68,6 +65,8 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
 }: FormItemOptions<D, V, any, DV>,
   cp: FormItemCoreArgs<SD, D, V, IV>
 ) => {
+  const lang = useLang();
+  const env: DataItem.Env = { tzOffset, lang };
   const id = useId();
   const form = use(FormContext);
   const $disabled = disabled || form.disabled;
@@ -77,7 +76,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     const $name = name || $dataItem?.name;
     const $required = required ?? $dataItem?.required;
     const l = label ?? $dataItem?.label;
-    const $label = (l ? env.lang(l) : "") || labelAsIs || $dataItem?.labelAsIs || $dataItem?.name;
+    const $label = (l ? lang(l) : "") || labelAsIs || $dataItem?.labelAsIs || $dataItem?.name;
     const $refs = (() => {
       const ret = [...(refs ?? []), ...($dataItem?.refs ?? [])];
       if (ret.length === 0) return undefined;
