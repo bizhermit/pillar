@@ -24,7 +24,7 @@ const findNextPathName = (fileName, findPathname) => {
   return extensions.find(ex => fileName === `${findPathname}.${ex}`);
 };
 
-const mainForApp = (dirName, nestLevel = 0, underApi = false) => {
+const mainForApp = (dirName, nestLevel = 0) => {
   const items = fs.readdirSync(dirName);
   items.sort((a, b) => {
     if (fs.statSync(path.join(dirName, a)).isDirectory()) return 1;
@@ -33,22 +33,18 @@ const mainForApp = (dirName, nestLevel = 0, underApi = false) => {
     if (findNextPathName(b, "index")) return 1;
     return 0;
   }).forEach(name => {
-    let api = underApi;
     if (name.startsWith("@")) return;
-    if (name === "api") api = true;
 
     const fullName = path.join(dirName, name);
     if (fs.statSync(fullName).isDirectory()) {
-      mainForApp(fullName, nestLevel + 1, api);
+      mainForApp(fullName, nestLevel + 1);
       return;
     }
 
     if (!isNextPathName(name)) return;
 
-    if (api) {
-      if (findNextPathName(name, "route")) {
-        appApiRoutes.push(`/${path.relative(appRoot, fullName).replace(/\\/g, "/")}`);
-      }
+    if (findNextPathName(name, "route")) {
+      appApiRoutes.push(`/${path.relative(appRoot, fullName).replace(/\\/g, "/")}`);
     }
 
     if (findNextPathName(name, "page")) {

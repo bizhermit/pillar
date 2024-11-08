@@ -20,3 +20,4 @@ export const getLangs = () => {
 export const setLangs = (langs: Array<Lang>) => {
   setCookie(LANG_KEY, langs.join(","));
 };
+

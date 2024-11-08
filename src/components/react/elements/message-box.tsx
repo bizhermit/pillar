@@ -3,7 +3,7 @@
 import { type ReactNode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { preventScroll } from "../../dom/prevent-scroll";
-import { langFactory } from "../../i18n/factory";
+import { lang } from "../../i18n/react";
 import { Button, type ButtonProps } from "./button";
 
 type MessageBoxChildrenProps = {
@@ -39,8 +39,6 @@ type MessageBoxProps = {
   color?: StyleColor;
   buttons: Array<ButtonProps>;
 };
-
-const lang = langFactory();
 
 export const MessageBox = (props: MessageBoxProps) => {
   const [disabled, setDisabled] = useState(false);

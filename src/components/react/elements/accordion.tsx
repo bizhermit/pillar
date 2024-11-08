@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { langFactory } from "../../i18n/factory";
+import { lang } from "../../i18n/react";
 import { type ButtonProps } from "./button";
 import { DownIcon, RightIcon } from "./icon";
 import { joinClassNames } from "./utilities";
@@ -20,8 +20,6 @@ type AccordionOptions = {
   direction?: "horizontal" | "vertical";
   onToggle?: (open: boolean) => void;
 };
-
-const lang = langFactory();
 
 export const Accordion = ({
   className,

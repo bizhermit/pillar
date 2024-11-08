@@ -2,13 +2,11 @@
 "use client";
 
 import { clearLang, setLang } from "@/i18n/client";
-import { langFactory } from "@/i18n/factory";
+import { lang } from "@/i18n/react";
 import { Button } from "@/react/elements/button";
 import { getCookie } from "@/utilities/cookie";
 
 const Page = () => {
-  const lang = langFactory();
-
   return (
     <div>
       <Button

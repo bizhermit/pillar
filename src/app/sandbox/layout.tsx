@@ -8,8 +8,8 @@ import { ReactNode } from "react";
 import { LnagSwitch } from "./lang-switch";
 import css from "./layout.module.scss";
 
-const Layout = (props: { children: ReactNode; }) => {
-  const langs = cookies().get("lang")?.value;
+const Layout = async (props: { children: ReactNode; }) => {
+  const langs = (await cookies()).get("lang")?.value;
 
   return (
     <FetchProvider>

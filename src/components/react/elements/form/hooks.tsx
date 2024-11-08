@@ -2,7 +2,7 @@
 
 import { use, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FormContext } from ".";
-import { langFactory } from "../../../i18n/factory";
+import { lang } from "../../../i18n/react";
 import { equals } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
@@ -43,7 +43,7 @@ type FormItemCoreArgs<
 
 const env: DataItem.Env = {
   tzOffset: new Date().getTimezoneOffset(),
-  lang: langFactory(),
+  lang,
 };
 
 export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V, DV extends any = V>({

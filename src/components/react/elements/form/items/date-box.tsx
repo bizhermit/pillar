@@ -4,7 +4,7 @@ import { type ChangeEvent, type FocusEvent, type HTMLAttributes, type KeyboardEv
 import { $dateParse } from "../../../../data-items/date/parse";
 import { $dateValidations } from "../../../../data-items/date/validation";
 import { blurToOuter } from "../../../../dom/outer-event";
-import { useLang } from "../../../../i18n/react-hook";
+import { lang } from "../../../../i18n/react";
 import { equals } from "../../../../objects";
 import { addDay, addMonth, equalDate, formatDate, getFirstDateAtMonth, getLastDateAtMonth, isAfterDate, isBeforeDate, parseDate, withoutTime } from "../../../../objects/date";
 import { DateTime, Month, Week } from "../../../../objects/datetime";
@@ -511,7 +511,6 @@ export const DatePicker = (props: DatePickerProps) => {
   const minDate = props.minDate ?? defaultMinDate;
   const maxDate = props.maxDate ?? defaultMaxDate;
   const memorizedValue = (values ?? []).map(v => formatDate(v)).join("");
-  const lang = useLang();
 
   const [dispDate, setDispDate] = useReducer((state: Date, { date, act }: { date: Date; act?: "select" | "effect"; }) => {
     if (state.getMonth() === date.getMonth() && state.getFullYear() === date.getFullYear()) return state;

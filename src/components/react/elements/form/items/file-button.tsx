@@ -3,7 +3,7 @@
 import { type ChangeEvent, type HTMLAttributes, useRef } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
 import { $fileValidations } from "../../../../data-items/file/validation";
-import { langFactory } from "../../../../i18n/factory";
+import { lang } from "../../../../i18n/react";
 import { Button } from "../../button";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -16,8 +16,6 @@ type FileButtonOptions<D extends DataItem.$file | undefined> = FormItemOptions<D
 };
 
 type FileButtonProps<D extends DataItem.$file | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, FileButtonOptions<D>>;
-
-const lang = langFactory();
 
 export const FileButton = <D extends DataItem.$file | undefined>({
   accept,
