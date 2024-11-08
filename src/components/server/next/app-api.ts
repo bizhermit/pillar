@@ -3,7 +3,7 @@ import { parseBasedOnDataItem } from "../../data-items/parse";
 import { validationBasedOnDataItem } from "../../data-items/validation";
 import { LANG_KEY } from "../../i18n/consts";
 import { langFactoryCore } from "../../i18n/core";
-import { analyzeHeaderAcceptLang } from "../../i18n/utilities";
+import { analyzeHeaderAcceptLang, parseLangs } from "../../i18n/utilities";
 import { append } from "../../objects/struct";
 
 export class ApiError extends Error {
@@ -43,7 +43,7 @@ export const apiMethodHandler = <
     const validationResults: Array<DataItem.ValidationResult> = [];
 
     try {
-      const langs = req.cookies.get(LANG_KEY)?.value.split(",") as Array<Lang> ?? analyzeHeaderAcceptLang(req.headers.get("accept-language"));
+      const langs = parseLangs(req.cookies.get(LANG_KEY)?.value) ?? analyzeHeaderAcceptLang(req.headers.get("accept-language"));
       const env: DataItem.Env = {
         tzOffset: Number(req.headers.get("tz-offset") || new Date().getTimezoneOffset()),
         lang: langFactoryCore(langs),

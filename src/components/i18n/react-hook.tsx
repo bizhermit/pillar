@@ -4,9 +4,10 @@ import { createContext, ReactNode, use } from "react";
 import { getLangs } from "./client";
 import { LANG_KEY } from "./consts";
 import { langFactoryCore } from "./core";
+import { parseLangs } from "./utilities";
 
 const langs = typeof window === "undefined" ?
-  (await require("next/headers").cookies()).get(LANG_KEY)?.value.split(",") as Array<Lang> :
+  parseLangs((await require("next/headers").cookies()).get(LANG_KEY)?.value) :
   getLangs();
 
 export const lang = langFactoryCore(langs);

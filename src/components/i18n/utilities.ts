@@ -20,6 +20,10 @@ export const analyzeHeaderAcceptLang = (str: string | null | undefined) => {
     .join(",") || DEFAULT_LANG;
 };
 
+export const parseLangs = (langsStr: string | null | undefined) => {
+  return langsStr?.split(",") as Array<Lang>;
+};
+
 export const langLoadLogAtClient = (lang: Lang, key: string) => {
   if (typeof window === "undefined") return;
   if (process.env.APP_MODE !== "dev") return;

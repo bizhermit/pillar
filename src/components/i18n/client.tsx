@@ -2,6 +2,7 @@
 
 import { deleteCookie, getCookie, setCookie } from "../utilities/cookie";
 import { DEFAULT_LANG, LANG_KEY } from "./consts";
+import { parseLangs } from "./utilities";
 
 export const setLang = (lang: Lang) => {
   setCookie(LANG_KEY, lang);
@@ -14,7 +15,7 @@ export const clearLang = (preventReload?: boolean) => {
 };
 
 export const getLangs = () => {
-  return (getCookie(LANG_KEY)?.split(",") as unknown as Array<Lang>) ?? [DEFAULT_LANG];
+  return parseLangs(getCookie(LANG_KEY)) ?? [DEFAULT_LANG];
 };
 
 export const setLangs = (langs: Array<Lang>) => {
