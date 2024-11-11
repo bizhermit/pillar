@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { preventScroll } from "../../dom/prevent-scroll";
 import { useLang } from "../../i18n/react-hook";
@@ -269,18 +269,18 @@ export const useMessageBox = () => {
   const ctxs = useRef<Array<MessageBoxContext>>([]);
   const lang = useLang();
 
-  const unmountCtx = useCallback((ctx: MessageBoxContext) => {
+  const unmountCtx = (ctx: MessageBoxContext) => {
     const idx = ctxs?.current?.findIndex(c => c === ctx);
     if (idx < 0) return;
     ctxs.current.splice(idx, 1);
-  }, []);
+  };
 
   useEffect(() => {
     return () => {
       ctxs.current.forEach(ctx => {
         if (ctx.state.closing || ctx.state.closed) return;
         ctx.close();
-        ctx.controllers.reject(new Error("MessageBox was rejected due to unmounting."));
+        ctx.controllers.reject();
       });
     };
   }, []);
