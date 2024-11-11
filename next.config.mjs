@@ -19,8 +19,8 @@ const nextConfig = {
     distDir: '.renderer',
   } : {}),
   pageExtensions: [
+    ...(appMode === 'mock' ? ['mock.tsx', 'mock.ts'] : []),
     'tsx', 'ts',
-    ...(appMode === 'dev' ? ['dev.tsx', 'dev.ts'] : [])
   ],
 };
 

@@ -9,7 +9,7 @@ const appRoot = path.join(srcRoot, appAlias);
 const pageAlias = "pages";
 const pageRoot = path.join(srcRoot, pageAlias);
 
-const extensions = ["ts", "tsx", "mts", "cts", "dev.ts", "dev.tsx"].sort((a, b) => b.length - a.length);
+const extensions = ["ts", "tsx", "mts", "cts", "mock.ts", "mock.tsx"].sort((a, b) => b.length - a.length);
 
 const pagesRoutes = [];
 const pagesApiRoutes = [];
