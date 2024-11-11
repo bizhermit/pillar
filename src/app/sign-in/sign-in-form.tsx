@@ -6,7 +6,7 @@ import { Form } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
-import { $alert } from "@/react/elements/message-box";
+import { useMessageBox } from "@/react/elements/message-box";
 import useRouter from "@/react/hooks/router";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -21,6 +21,7 @@ export const SignInForm = (props: Props) => {
   const lang = useLang();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { $alert } = useMessageBox();
 
   return (
     <div className={css.wrap}>

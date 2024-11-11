@@ -1,19 +1,21 @@
 "use client";
 
-import { createContext, ReactNode, use } from "react";
-import { getLangs } from "./client";
+import { createContext, type ReactNode, use } from "react";
+import { clearLang, setLangs } from "./client";
 import { LANG_KEY } from "./consts";
 import { langFactoryCore } from "./core";
 import { parseLangs } from "./utilities";
 
-const langs = typeof window === "undefined" ?
-  parseLangs((await require("next/headers").cookies()).get(LANG_KEY)?.value) :
-  getLangs();
+// NOTE developビルドエラー回避用
+process.env.NODE_ENV.startsWith("dev") && typeof window === "undefined" && parseLangs((await require("next/headers").cookies()).get(LANG_KEY)?.value);
 
-export const lang = langFactoryCore(langs);
+interface LangContextProps extends LangAccessor {
+  set: (langs: Array<Lang>) => void
+  reset: () => void
+}
 
-type LangContextProps = typeof lang;
-const LangContext = createContext<LangContextProps>(lang);
+const langCache = {};
+const LangContext = createContext<LangContextProps>(null!);
 
 type LangProviderProps = {
   langs: Array<Lang>;
@@ -21,7 +23,9 @@ type LangProviderProps = {
 };
 
 export const LangProvider = (props: LangProviderProps) => {
-  const lang = langFactoryCore(props.langs);
+  const lang = langFactoryCore(props.langs, langCache) as LangContextProps;
+  lang.set = (langs: Array<Lang>) => setLangs(langs);
+  lang.reset = () => clearLang();
 
   return (
     <LangContext.Provider value={lang}>

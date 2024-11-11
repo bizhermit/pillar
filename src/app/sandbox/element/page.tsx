@@ -30,7 +30,7 @@ import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import { FormItemRange, FormItemWrap } from "@/react/elements/form/wrap";
 import { MagnifyingGlassIcon, SmileIcon } from "@/react/elements/icon";
 import Link from "@/react/elements/link";
-import { $alert, $confirm } from "@/react/elements/message-box";
+import { useMessageBox } from "@/react/elements/message-box";
 import { TabContainer, TabContent, useTabContainer } from "@/react/elements/tab-container";
 import { LayoutContext } from "@/react/hooks/layout";
 import useRouter from "@/react/hooks/router";
@@ -64,6 +64,7 @@ export default function Home() {
   const modelessDialog = useDialog();
 
   const router = useRouter();
+  const { $alert, $confirm } = useMessageBox();
 
   return (
     <div>
@@ -287,13 +288,29 @@ export default function Home() {
         </Button>
         <Button
           onClick={async () => {
-            $alert({
-              body: "transition (no block)",
-            });
+            $alert("transition (no block)");
             router.push("/sandbox");
           }}
         >
           transition page (no block)
+        </Button>
+        <Button
+          onClick={async () => {
+            $alert({
+              body: "transition (close when defect page)",
+              stitchComponent: true,
+            }).then(() => {
+              console.log("then");
+            }).catch((e) => {
+              // catchを設定しないとnextjsによってコンソールにエラーが表示される
+              console.log("catch", e);
+            }).finally(() => {
+              console.log("finally");
+            });
+            router.push("/sandbox");
+          }}
+        >
+          transition page (close when defect page)
         </Button>
       </div>
       <div style={{ display: "flex", flexFlow: "row", gap: 4 }}>
