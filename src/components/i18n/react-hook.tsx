@@ -6,8 +6,8 @@ import { LANG_KEY } from "./consts";
 import { langFactoryCore } from "./core";
 import { parseLangs } from "./utilities";
 
-// NOTE ビルドエラー回避用
-typeof window === "undefined" && parseLangs((await require("next/headers").cookies()).get(LANG_KEY)?.value);
+// NOTE developビルドエラー回避用
+process.env.NODE_ENV.startsWith("dev") && typeof window === "undefined" && parseLangs((await require("next/headers").cookies()).get(LANG_KEY)?.value);
 
 interface LangContextProps extends LangAccessor {
   set: (langs: Array<Lang>) => void
