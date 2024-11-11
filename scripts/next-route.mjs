@@ -1,15 +1,29 @@
+import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 
+const projectRoot = path.join(import.meta.dirname, "..");
+
+const loadEnv = (name) => {
+  const fullName = path.resolve(projectRoot, name);
+  console.log(fullName);
+  if (!fs.existsSync(fullName)) return false;
+  dotenv.config({ path: fullName, override: true });
+  return true;
+};
+loadEnv(".env");
+loadEnv(".env.local");
+
+const appMode = process.env.APP_MODE || "prod";
 const quiet = true;
 
-const srcRoot = path.join(import.meta.dirname, "..", "src");
+const srcRoot = path.join(projectRoot, "src");
 const appAlias = "app";
 const appRoot = path.join(srcRoot, appAlias);
 const pageAlias = "pages";
 const pageRoot = path.join(srcRoot, pageAlias);
 
-const extensions = ["ts", "tsx", "mts", "cts", "mock.ts", "mock.tsx"].sort((a, b) => b.length - a.length);
+const extensions = ["ts", "tsx", "mts", "cts", ...(appMode === "mock" ? ["mock.ts", "mock.tsx"] : [])].sort((a, b) => b.length - a.length);
 
 const pagesRoutes = [];
 const pagesApiRoutes = [];
