@@ -24,9 +24,10 @@ export const parseLangs = (langsStr: string | null | undefined) => {
   return langsStr?.split(",") as Array<Lang>;
 };
 
+const showLog = ["dev", "mock"].includes(process.env.APP_MODE ?? "");
 export const langLoadLogAtClient = (lang: Lang, key: string) => {
   if (typeof window === "undefined") return;
-  if (process.env.APP_MODE !== "dev") return;
+  if (!showLog) return;
   // eslint-disable-next-line no-console
   console.info(`load lang: [${lang}]-[${key}]`);
 };
