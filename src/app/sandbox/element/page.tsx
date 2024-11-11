@@ -288,13 +288,22 @@ export default function Home() {
         </Button>
         <Button
           onClick={async () => {
-            $alert({
-              body: "transition (no block)",
-            });
+            $alert("transition (no block)");
             router.push("/sandbox");
           }}
         >
           transition page (no block)
+        </Button>
+        <Button
+          onClick={async () => {
+            $alert({
+              body: "transition (close when defect page)",
+              stitchComponent: true,
+            });
+            router.push("/sandbox");
+          }}
+        >
+          transition page (close when defect page)
         </Button>
       </div>
       <div style={{ display: "flex", flexFlow: "row", gap: 4 }}>

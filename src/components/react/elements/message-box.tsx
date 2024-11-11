@@ -20,9 +20,13 @@ type MessageBoxInternalOptions = {
   lang: LangAccessor;
 };
 
+type MessageBoxHookOptions = {
+  stitchComponent?: boolean;
+};
+
 type MessageBoxControllers = {
   resolve: (value?: any) => void;
-  reject: () => void;
+  reject: (e?: Error) => void;
 };
 
 type MessageBoxContext = {
@@ -276,34 +280,36 @@ export const useMessageBox = () => {
       ctxs.current.forEach(ctx => {
         if (ctx.state.closing || ctx.state.closed) return;
         ctx.close();
-        ctx.controllers.reject();
+        ctx.controllers.reject(new Error("MessageBox was rejected due to unmounting."));
       });
     };
   }, []);
 
   return {
-    show: <T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps>(props: MessageBoxCustomProps<T, P>) => {
+    show: <T extends any, P extends (MessageBoxBaseProps & MessageBoxHookOptions) = (MessageBoxBaseProps & MessageBoxHookOptions)>(props: MessageBoxCustomProps<T, P>) => {
       return $show<T, P>({
         lang,
         ...props,
-        mount: (ctx) => ctxs.current.push(ctx),
-        unmount: (ctx) => unmountCtx(ctx),
+        mount: (ctx) => props.stitchComponent && ctxs.current.push(ctx),
+        unmount: (ctx) => props.stitchComponent && unmountCtx(ctx),
       });
     },
-    $alert: (props: MessageBoxAlertProps | string) => {
+    $alert: (props: (MessageBoxAlertProps & MessageBoxHookOptions) | string) => {
+      const { stitchComponent: parasitizeComponent, ...p } = optimizeProps(props);
       return $alert({
         lang,
-        ...optimizeProps(props),
-        mount: (ctx) => ctxs.current.push(ctx),
-        unmount: (ctx) => unmountCtx(ctx),
+        ...p,
+        mount: (ctx) => parasitizeComponent && ctxs.current.push(ctx),
+        unmount: (ctx) => parasitizeComponent && unmountCtx(ctx),
       });
     },
-    $confirm: (props: MessageBoxConfirmProps | string) => {
+    $confirm: (props: (MessageBoxConfirmProps & MessageBoxHookOptions) | string) => {
+      const { stitchComponent: parasitizeComponent, ...p } = optimizeProps(props);
       return $confirm({
         lang,
-        ...optimizeProps(props),
-        mount: (ctx) => ctxs.current.push(ctx),
-        unmount: (ctx) => unmountCtx(ctx),
+        ...p,
+        mount: (ctx) => parasitizeComponent && ctxs.current.push(ctx),
+        unmount: (ctx) => parasitizeComponent && unmountCtx(ctx),
       });
     },
   } as const;
