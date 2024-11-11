@@ -295,21 +295,21 @@ export const useMessageBox = () => {
       });
     },
     $alert: (props: (MessageBoxAlertProps & MessageBoxHookOptions) | string) => {
-      const { stitchComponent: parasitizeComponent, ...p } = optimizeProps(props);
+      const { stitchComponent, ...p } = optimizeProps(props);
       return $alert({
         lang,
         ...p,
-        mount: (ctx) => parasitizeComponent && ctxs.current.push(ctx),
-        unmount: (ctx) => parasitizeComponent && unmountCtx(ctx),
+        mount: (ctx) => stitchComponent && ctxs.current.push(ctx),
+        unmount: (ctx) => stitchComponent && unmountCtx(ctx),
       });
     },
     $confirm: (props: (MessageBoxConfirmProps & MessageBoxHookOptions) | string) => {
-      const { stitchComponent: parasitizeComponent, ...p } = optimizeProps(props);
+      const { stitchComponent, ...p } = optimizeProps(props);
       return $confirm({
         lang,
         ...p,
-        mount: (ctx) => parasitizeComponent && ctxs.current.push(ctx),
-        unmount: (ctx) => parasitizeComponent && unmountCtx(ctx),
+        mount: (ctx) => stitchComponent && ctxs.current.push(ctx),
+        unmount: (ctx) => stitchComponent && unmountCtx(ctx),
       });
     },
   } as const;
