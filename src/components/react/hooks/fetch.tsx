@@ -2,7 +2,7 @@
 
 import { createContext, type ReactNode, use, useLayoutEffect, useRef } from "react";
 import $fetch, { type FetchFailedResponse, type FetchOptions, type FetchResponse, optimizeHeader } from "../../utilities/fetch";
-import { $alert, $confirm, type MessageBoxAlertProps, type MessageBoxConfirmProps } from "../elements/message-box";
+import { type MessageBoxAlertProps, type MessageBoxConfirmProps, useMessageBox } from "../elements/message-box";
 
 type FetchHookMessageBoxOptions =
   | {
@@ -65,6 +65,7 @@ export const FetchProvider = (props: FetchProviderProps) => {
 export const useFetch = <EndPoint extends ApiPath>() => {
   const ctx = use(FetchContext);
   const mounted = useRef(true);
+  const { $alert, $confirm } = useMessageBox();
 
   useLayoutEffect(() => {
     mounted.current = true;

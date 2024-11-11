@@ -1,9 +1,9 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { preventScroll } from "../../dom/prevent-scroll";
-import { lang } from "../../i18n/react-hook";
+import { useLang } from "../../i18n/react-hook";
 import { Button, type ButtonProps } from "./button";
 
 type MessageBoxChildrenProps = {
@@ -14,6 +14,10 @@ type MessageBoxShowOptions = {
   classNames?: string;
   mount?: (ctx: MessageBoxContext) => void;
   unmount?: (ctx: MessageBoxContext) => void;
+};
+
+type MessageBoxInternalOptions = {
+  lang: LangAccessor;
 };
 
 type MessageBoxControllers = {
@@ -207,7 +211,7 @@ const $show = <T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProp
   });
 };
 
-export const $alert = (props: MessageBoxAlertProps | string) => {
+const $alert = ({ lang, ...props }: MessageBoxAlertProps & MessageBoxInternalOptions) => {
   return $show<void, MessageBoxAlertProps>({
     ...optimizeProps(props),
     component: ({ close, props: { buttonProps, ...p } }) => {
@@ -228,7 +232,7 @@ export const $alert = (props: MessageBoxAlertProps | string) => {
   });
 };
 
-export const $confirm = (props: MessageBoxConfirmProps | string) => {
+const $confirm = ({ lang, ...props }: MessageBoxConfirmProps & MessageBoxInternalOptions) => {
   return $show<boolean, MessageBoxConfirmProps>({
     ...optimizeProps<MessageBoxConfirmProps>(props),
     component: ({ close, props: { negativeButtonProps, positiveButtonProps, ...p } }) => {
@@ -257,46 +261,50 @@ export const $confirm = (props: MessageBoxConfirmProps | string) => {
   });
 };
 
-// export const useMessageBox = () => {
-//   const ctxs = useRef<Array<MessageBoxContext>>([]);
+export const useMessageBox = () => {
+  const ctxs = useRef<Array<MessageBoxContext>>([]);
+  const lang = useLang();
 
-//   const unmountCtx = useCallback((ctx: MessageBoxContext) => {
-//     const idx = ctxs?.current?.findIndex(c => c === ctx);
-//     if (idx < 0) return;
-//     ctxs.current.splice(idx, 1);
-//   }, []);
+  const unmountCtx = useCallback((ctx: MessageBoxContext) => {
+    const idx = ctxs?.current?.findIndex(c => c === ctx);
+    if (idx < 0) return;
+    ctxs.current.splice(idx, 1);
+  }, []);
 
-//   useEffect(() => {
-//     return () => {
-//       ctxs.current.forEach(ctx => {
-//         if (ctx.state.closing || ctx.state.closed) return;
-//         ctx.close();
-//         ctx.controllers.reject();
-//       });
-//     };
-//   }, []);
+  useEffect(() => {
+    return () => {
+      ctxs.current.forEach(ctx => {
+        if (ctx.state.closing || ctx.state.closed) return;
+        ctx.close();
+        ctx.controllers.reject();
+      });
+    };
+  }, []);
 
-//   return {
-//     show: <T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps>(props: MessageBoxCustomProps<T, P>) => {
-//       return $show<T, P>({
-//         ...props,
-//         mount: (ctx) => ctxs.current.push(ctx),
-//         unmount: (ctx) => unmountCtx(ctx),
-//       });
-//     },
-//     alert: (props: MessageBoxAlertProps | string) => {
-//       return $alert({
-//         ...optimizeProps(props),
-//         mount: (ctx) => ctxs.current.push(ctx),
-//         unmount: (ctx) => unmountCtx(ctx),
-//       });
-//     },
-//     confirm: (props: MessageBoxConfirmProps | string) => {
-//       return $confirm({
-//         ...optimizeProps(props),
-//         mount: (ctx) => ctxs.current.push(ctx),
-//         unmount: (ctx) => unmountCtx(ctx),
-//       });
-//     },
-//   } as const;
-// };
+  return {
+    show: <T extends any, P extends MessageBoxBaseProps = MessageBoxBaseProps>(props: MessageBoxCustomProps<T, P>) => {
+      return $show<T, P>({
+        lang,
+        ...props,
+        mount: (ctx) => ctxs.current.push(ctx),
+        unmount: (ctx) => unmountCtx(ctx),
+      });
+    },
+    $alert: (props: MessageBoxAlertProps | string) => {
+      return $alert({
+        lang,
+        ...optimizeProps(props),
+        mount: (ctx) => ctxs.current.push(ctx),
+        unmount: (ctx) => unmountCtx(ctx),
+      });
+    },
+    $confirm: (props: MessageBoxConfirmProps | string) => {
+      return $confirm({
+        lang,
+        ...optimizeProps(props),
+        mount: (ctx) => ctxs.current.push(ctx),
+        unmount: (ctx) => unmountCtx(ctx),
+      });
+    },
+  } as const;
+};
