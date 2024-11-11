@@ -32,10 +32,12 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const langs = parseLangs(cookieStore.get(LANG_KEY)?.value);
   const layoutTheme = (cookieStore.get("theme")?.value as LayoutTheme) || defaultLayoutTheme;
+
   return (
     <html
       lang={langs[0]}
       data-theme={layoutTheme}
+      data-mode={process.env.APP_MODE || undefined}
     >
       <body>
         <SessionProvider>
