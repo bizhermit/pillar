@@ -299,6 +299,13 @@ export default function Home() {
             $alert({
               body: "transition (close when defect page)",
               stitchComponent: true,
+            }).then(() => {
+              console.log("then");
+            }).catch((e) => {
+              // catchを設定しないとnextjsによってコンソールにエラーが表示される
+              console.log("catch", e);
+            }).finally(() => {
+              console.log("finally");
             });
             router.push("/sandbox");
           }}
