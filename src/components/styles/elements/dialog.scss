@@ -14,7 +14,6 @@
   .dialog:popover-open::backdrop {
     opacity: 1;
     z-index: 99999;
-    
   }
 
   .dialog {
@@ -26,6 +25,7 @@
     outline: none;
     position: fixed;
     overscroll-behavior: contain;
+    --header-height: 0;
 
     &:not([data-pos="true"]) {
       inset: 0;
