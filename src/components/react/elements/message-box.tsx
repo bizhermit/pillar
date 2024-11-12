@@ -112,13 +112,14 @@ const createAndOpenDialog = (node: (props: MessageBoxChildrenProps) => ReactNode
   const close = () => {
     state.closing = true;
     return new Promise<void>((resolve) => {
-      const unmount = (e: TransitionEvent) => {
-        if (e.target !== e.currentTarget || !e.pseudoElement) return;
+      const unmount = (e?: TransitionEvent) => {
+        if (state.closed) return;
+        if (e != null && (e.target !== e.currentTarget || !e.pseudoElement)) return;
         elem.removeEventListener("transitioncancel", unmount);
         elem.removeEventListener("transitionend", unmount);
         elem.removeEventListener("keydown", keydownHandler);
-        releaseScroll();
         root.unmount();
+        releaseScroll();
         document.body.removeChild(elem);
         resolve();
         state.closing = false;
@@ -126,6 +127,10 @@ const createAndOpenDialog = (node: (props: MessageBoxChildrenProps) => ReactNode
       };
       elem.addEventListener("transitioncancel", unmount);
       elem.addEventListener("transitionend", unmount);
+      setTimeout(() => {
+        // NOTE: firefox is not work closing transition.
+        if (!state.closed) unmount();
+      }, 300);
       elem.close();
     });
   };
