@@ -2,16 +2,17 @@ import Link from "@/react/elements/link";
 import { sleep } from "@/utilities/sleep";
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  }
+  }>;
 };
 
 const Page = async (props: Props) => {
   await sleep(1500);
+  const params = await props.params;
   return (
     <div>
-      @detail: {props.params.id}
+      @detail: {params.id}
       <ul>
         <li>
           <Link href="/sandbox/paralell-route-modal/[id]" params={{ id: 1 }} replace>detail 1</Link>

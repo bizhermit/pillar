@@ -1,13 +1,14 @@
 import { InterceptingRouteLinks } from "$/sandbox/intercepting-routes/links";
 
 type Props = {
-  params: { id: Array<string> };
+  params: Promise<{ id: Array<string> }>;
 };
 
-const Page = (props: Props) => {
+const Page = async (props: Props) => {
+  const params = await props.params;
   return (
     <>
-      <span>@detail: {JSON.stringify(props.params.id)}</span>
+      <span>@detail: {JSON.stringify(params.id)}</span>
       <InterceptingRouteLinks replace />
     </>
   );

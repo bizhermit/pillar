@@ -7,13 +7,14 @@ type Params = {
   id?: Array<string>;
 };
 
-const Page = (props: { params: Params; }) => {
+const Page = async (props: { params: Promise<Params>; }) => {
+  const params = await props.params;
   // eslint-disable-next-line no-console
-  console.log("page", props.params);
+  console.log("page", params);
   return (
     <>
       <h3>page</h3>
-      <span>{JSON.stringify(props.params)}</span>
+      <span>{JSON.stringify(params)}</span>
       <div className={css.inputs}>
         <InputsAsClient />
         <InputsAsServer />
