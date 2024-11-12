@@ -8,14 +8,15 @@ type Params = {
   id: Array<string>;
 };
 
-const Page = (props: { params: Params; children: ReactNode; }) => {
+const Page = async (props: { params: Promise<Params>; children: ReactNode; }) => {
+  const params = await props.params;
   // eslint-disable-next-line no-console
-  console.log("layout", props.params);
+  console.log("layout", params);
   return (
     <div className={css.layout}>
       <div>
         <h3>layout</h3>
-        <span>{JSON.stringify(props.params)}</span>
+        <span>{JSON.stringify(params)}</span>
         <div className={css.inputs}>
           <InputsAsClient />
           <InputsAsServer />

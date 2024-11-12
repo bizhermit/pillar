@@ -7,13 +7,14 @@ type Params = {
   id: string;
 };
 
-const Page = (props: { params: Params }) => {
+const Page = async (props: { params: Promise<Params> }) => {
+  const params = await props.params;
   // eslint-disable-next-line no-console
-  console.log("page", props.params);
+  console.log("page", params);
   return (
     <>
       <h3>page (parent)</h3>
-      <span>{props.params.id}</span>
+      <span>{params.id}</span>
       <div className={css.inputs}>
         <InputsAsClient />
         <InputsAsServer />

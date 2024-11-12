@@ -1,5 +1,6 @@
 "use client";
 
+import { use } from "react";
 import { InputsAsClient } from "../../../inputs-client";
 import { InputsAsServer } from "../../../inputs-server";
 import css from "../../../styles.module.scss";
@@ -9,13 +10,14 @@ type Params = {
   id?: string;
 };
 
-const Page = (props: { params: Params }) => {
+const Page = (props: { params: Promise<Params> }) => {
+  const params = use(props.params);
   // eslint-disable-next-line no-console
-  console.log("layout", props.params);
+  console.log("layout", params);
   return (
     <>
       <h3>page (parent)</h3>
-      <span>{props.params.id}</span>
+      <span>{params.id}</span>
       <div className={css.inputs}>
         <InputsAsClient />
         <InputsAsServer />

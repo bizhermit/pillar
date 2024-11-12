@@ -4,13 +4,13 @@ import { isNotEmpty } from "@/objects/string";
 import { Dialog } from "@/react/elements/dialog";
 import useRouter from "@/react/hooks/router";
 import { useSelectedLayoutSegment, useSelectedLayoutSegments } from "next/navigation";
-import { ReactNode, Suspense } from "react";
+import { ReactNode, Suspense, use } from "react";
 
 type Props = {
   children: ReactNode;
   list: ReactNode;
   detail: ReactNode;
-  params: { [v: string]: string | Array<string> };
+  params: Promise<{ [v: string]: string | Array<string> }>;
 };
 
 const Layout = (props: Props) => {
@@ -18,8 +18,9 @@ const Layout = (props: Props) => {
   const segments = useSelectedLayoutSegments();
   const segmentList = useSelectedLayoutSegment("list");
   const segmentDetail = useSelectedLayoutSegment("detail");
+  const params = use(props.params);
   // eslint-disable-next-line no-console
-  console.log(segment, segments, segmentList, segmentDetail, props.params);
+  console.log(segment, segments, segmentList, segmentDetail, params);
   const showDetail = isNotEmpty(segment);
   const dialogDetail = true;
 

@@ -1,13 +1,14 @@
 import Link from "@/react/elements/link";
 
 type Props = {
-  params: { id: string; };
+  params: Promise<{ id: string; }>;
 };
 
-const Page = (props: Props) => {
+const Page = async (props: Props) => {
+  const params = await props.params;
   return (
     <div>
-      detail: {props.params.id}
+      detail: {params.id}
       <Link href="/sandbox/paralell-route-modal">return list</Link>
     </div>
   );
