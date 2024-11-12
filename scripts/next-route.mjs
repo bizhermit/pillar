@@ -1,15 +1,29 @@
+import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 
-const quiet = true;
+const quiet = process.argv.find(arg => arg === "--quiet");
 
-const srcRoot = path.join(import.meta.dirname, "..", "src");
+const projectRoot = path.join(import.meta.dirname, "..");
+
+const loadEnv = (name) => {
+  const fullName = path.resolve(projectRoot, name);
+  if (!fs.existsSync(fullName)) return false;
+  dotenv.config({ path: fullName, override: true });
+  return true;
+};
+loadEnv(".env");
+loadEnv(".env.local");
+
+const appMode = process.env.APP_MODE || "prod";
+
+const srcRoot = path.join(projectRoot, "src");
 const appAlias = "app";
 const appRoot = path.join(srcRoot, appAlias);
 const pageAlias = "pages";
 const pageRoot = path.join(srcRoot, pageAlias);
 
-const extensions = ["ts", "tsx", "mts", "cts", "dev.ts", "dev.tsx"].sort((a, b) => b.length - a.length);
+const extensions = ["ts", "tsx", "mts", "cts", ...(appMode === "mock" ? ["mock.ts", "mock.tsx"] : [])].sort((a, b) => b.length - a.length);
 
 const pagesRoutes = [];
 const pagesApiRoutes = [];
@@ -97,6 +111,24 @@ const pickNextPathNameAsPages = (fileName) => {
   return pn.match(/(.*)\/index/)?.[1] ?? pn;
 };
 
+if (appMode === "mock") {
+  const map = {};
+  appApiRoutes.forEach(pathName => {
+    const pn = pickNextPathName(pathName).match(/(.*)\/route/)?.[1] || "/";
+    if (map[pn] == null) map[pn] = [];
+    map[pn].push(pathName);
+  });
+  Object.keys(map).forEach(pn => {
+    const pathList = map[pn];
+    if (pathList.length === 1) return;
+    pathList.forEach(pathName => {
+      if (!pathName.match(/\.mock\.tsx?/)) {
+        appApiRoutes.splice(appApiRoutes.findIndex(route => route === pathName), 1);
+      }
+    });
+  });
+}
+
 const contents = `// generate by script
 // do not edit
 
@@ -115,7 +147,7 @@ type AppApiPath = ${(() => {
     if (appApiRoutes.length === 0) return "\"\"";
     return appApiRoutes.map(pathName => {
       const pn = pickNextPathName(pathName).match(/(.*)\/route/)?.[1] || "/";
-      process.stdout.write(`${pathName} -> ${pn}\n`);
+      !quiet && process.stdout.write(`${pathName} -> ${pn}\n`);
       return `"${pn}"`;
     }).join("\n  | ");
   })()};
@@ -144,7 +176,7 @@ type PagesApiPath = ${(() => {
     if (pagesApiRoutes.length === 0) return "\"\"";
     return pagesApiRoutes.map(pathName => {
       const pn = pickNextPathNameAsPages(pathName);
-      process.stdout.write(`${pathName} -> ${pn}\n`);
+      !quiet && process.stdout.write(`${pathName} -> ${pn}\n`);
       return `"${pn}"`;
     }).join("\n  | ");
   })()};
