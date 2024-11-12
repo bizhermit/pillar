@@ -2,11 +2,12 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 
+const quiet = process.argv.find(arg => arg === "--quiet");
+
 const projectRoot = path.join(import.meta.dirname, "..");
 
 const loadEnv = (name) => {
   const fullName = path.resolve(projectRoot, name);
-  console.log(fullName);
   if (!fs.existsSync(fullName)) return false;
   dotenv.config({ path: fullName, override: true });
   return true;
@@ -15,7 +16,6 @@ loadEnv(".env");
 loadEnv(".env.local");
 
 const appMode = process.env.APP_MODE || "prod";
-const quiet = process.argv.find(arg => arg === "--quiet");
 
 const srcRoot = path.join(projectRoot, "src");
 const appAlias = "app";

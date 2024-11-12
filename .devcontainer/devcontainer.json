@@ -22,6 +22,7 @@
         "clinyong.vscode-css-modules",
         "Divlo.vscode-styled-jsx-languageserver",
         "Divlo.vscode-styled-jsx-syntax",
+        "appulate.filewatcher",
         "Pivotal.vscode-manifest-yaml",
         "jock.svg",
         "yzhang.markdown-all-in-one",
@@ -45,7 +46,27 @@
         "scss.lint.unknownAtRules": "ignore",
         "[prisma]": {
           "editor.defaultFormatter": "Prisma.prisma"
-        }
+        },
+        "filewatcher.commands": [
+          {
+            "match": "\\\\src\\\\(app(\\\\|\\\\.*\\\\)(page\\.tsx|route\\.ts)|(pages)(\\\\|\\[^_]*\\\\)(\\*\\.tsx?))$",
+            "isAsync": true,
+            "cmd": "node ${currentWorkspace}/scripts/next-route.mjs --quiet",
+            "event": "onFileCreate"
+          },
+          {
+            "match": "\\\\src\\\\(app(\\\\|\\\\.*\\\\)(page\\.tsx|route\\.ts)|(pages)(\\\\|\\[^_]*\\\\)(\\*\\.tsx?))$",
+            "isAsync": true,
+            "cmd": "node ${currentWorkspace}/scripts/next-route.mjs --quiet",
+            "event": "onFileRename"
+          },
+          {
+            "match": "\\\\src\\\\(app(\\\\|\\\\.*\\\\)(page\\.tsx|route\\.ts)|(pages)(\\\\|\\[^_]*\\\\)(\\*\\.tsx?))$",
+            "isAsync": true,
+            "cmd": "node ${currentWorkspace}/scripts/next-route.mjs --quiet",
+            "event": "onFileDelete"
+          }
+        ],
       }
     }
   }
