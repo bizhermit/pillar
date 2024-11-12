@@ -15,7 +15,7 @@ loadEnv(".env");
 loadEnv(".env.local");
 
 const appMode = process.env.APP_MODE || "prod";
-const quiet = true;
+const quiet = process.argv.find(arg => arg === "--quiet");
 
 const srcRoot = path.join(projectRoot, "src");
 const appAlias = "app";
@@ -147,7 +147,7 @@ type AppApiPath = ${(() => {
     if (appApiRoutes.length === 0) return "\"\"";
     return appApiRoutes.map(pathName => {
       const pn = pickNextPathName(pathName).match(/(.*)\/route/)?.[1] || "/";
-      process.stdout.write(`${pathName} -> ${pn}\n`);
+      !quiet && process.stdout.write(`${pathName} -> ${pn}\n`);
       return `"${pn}"`;
     }).join("\n  | ");
   })()};
@@ -176,7 +176,7 @@ type PagesApiPath = ${(() => {
     if (pagesApiRoutes.length === 0) return "\"\"";
     return pagesApiRoutes.map(pathName => {
       const pn = pickNextPathNameAsPages(pathName);
-      process.stdout.write(`${pathName} -> ${pn}\n`);
+      !quiet && process.stdout.write(`${pathName} -> ${pn}\n`);
       return `"${pn}"`;
     }).join("\n  | ");
   })()};
