@@ -87,8 +87,11 @@ export const Dialog = ({
     if (show === showed) return;
     if (!show) {
       if (!keepMount) {
-        const unmount = (e: TransitionEvent) => {
-          if (e.target !== e.currentTarget || !e.pseudoElement) return;
+        let unmounted = false;
+        const unmount = (e?: TransitionEvent) => {
+          if (unmounted) return;
+          unmounted = true;
+          if (e != null && (e.target !== e.currentTarget || !e.pseudoElement)) return;
           dref.current.removeEventListener("transitioncancel", unmount);
           dref.current.removeEventListener("transitionend", unmount);
           if (!showedRef.current) setMount(false);
@@ -96,6 +99,10 @@ export const Dialog = ({
         };
         dref.current.addEventListener("transitioncancel", unmount);
         dref.current.addEventListener("transitionend", unmount);
+        setTimeout(() => {
+          // NOTE: firefox is not work closing transition.
+          if (!unmounted) unmount();
+        }, 300);
       }
       toggleShowed(false);
       hookRef.current?.(false);
