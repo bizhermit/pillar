@@ -23,8 +23,8 @@ export const $dateValidations = ({ dataItem, env }: DataItem.ValidationGenerator
     });
   }
 
-  let min = dataItem.min ? parseDate(dataItem.min) : null;
-  let max = dataItem.max ? parseDate(dataItem.max) : null;
+  let min = dataItem.min ? parseDate(typeof dataItem.min === "function" ? dataItem.min() : dataItem.min) : null;
+  let max = dataItem.max ? parseDate(typeof dataItem.max === "function" ? dataItem.max() : dataItem.max) : null;
   if (dataItem.type === "month") {
     if (min) min = getFirstDateAtMonth(min);
     if (max) max = getLastDateAtMonth(max);
@@ -35,7 +35,7 @@ export const $dateValidations = ({ dataItem, env }: DataItem.ValidationGenerator
     validations.push(({ value, fullName }) => {
       if (value == null) return undefined;
       const t = value.getTime();
-      if (min.getTime() >= t && t <= max.getTime()) return undefined;
+      if (min.getTime() <= t && t <= max.getTime()) return undefined;
       return {
         type: "e",
         code: "range",
