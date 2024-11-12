@@ -36,7 +36,7 @@ import { LayoutContext } from "@/react/hooks/layout";
 import useRouter from "@/react/hooks/router";
 import { sleep } from "@/utilities/sleep";
 import { use, useRef, useState } from "react";
-import { sample_bool, sample_number, sample_text } from "../data-items";
+import { sample_bool, sample_date, sample_number, sample_text } from "../data-items";
 import css from "./page.module.css";
 
 export default function Home() {
@@ -578,6 +578,11 @@ export default function Home() {
               />
             }
           />
+          <FormItemWrap>
+            <DateBox
+              dataItem={sample_date}
+            />
+          </FormItemWrap>
           <FormItemWrap>
             <DateBox
               type="month"

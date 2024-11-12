@@ -170,8 +170,8 @@ declare namespace DataItem {
   type $date = $ & {
     type: "date";
     validations?: Array<Validation<$date, Date>>;
-    min?: string | number | Date | import("../objects/datetime").DateTime;
-    max?: string | number | Date | import("../objects/datetime").DateTime;
+    min?: string | number | Date | import("../objects/datetime").DateTime | (() => (Date | import("../objects/datetime").DateTime));
+    max?: string | number | Date | import("../objects/datetime").DateTime | (() => (Date | import("../objects/datetime").DateTime));
     pair?: {
       name: string;
       position: "before" | "after";

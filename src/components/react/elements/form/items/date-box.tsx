@@ -35,9 +35,6 @@ const isNumericOrEmpty = (value?: string): value is `${number}` => {
   return /^[0-9]+$/.test(value);
 };
 
-const defaultMinDate = new Date(1900, 0, 1);
-const defaultMaxDate = new Date(2100, 11, 31);
-
 export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>({
   type,
   min,
@@ -117,7 +114,9 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   });
 
   const minDate = useMemo(() => {
-    const d = withoutTime(parseDate(fi.dataItem.min) ?? defaultMinDate);
+    const min = parseDate(typeof fi.dataItem.min === "function" ? fi.dataItem.min() : fi.dataItem.min);
+    if (min == null) return null;
+    const d = withoutTime(min);
     if (fi.dataItem.type === "month") {
       return getFirstDateAtMonth(d);
     }
@@ -125,7 +124,9 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   }, [fi.dataItem.min]);
 
   const maxDate = useMemo(() => {
-    const d = withoutTime(parseDate(fi.dataItem.max) ?? defaultMaxDate);
+    const max = parseDate(typeof fi.dataItem.max === "function" ? fi.dataItem.max() : fi.dataItem.max);
+    if (max == null) return null;
+    const d = withoutTime(max);
     if (fi.dataItem.type === "month") {
       return getLastDateAtMonth(d);
     }
@@ -496,8 +497,8 @@ type DatePickerProps = {
   multiple?: boolean;
   values?: Array<Date>;
   initValue?: Date;
-  minDate?: Date;
-  maxDate?: Date;
+  minDate?: Date | null;
+  maxDate?: Date | null;
   firstWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   dialog?: boolean;
   preventSelectedRender?: boolean;
@@ -509,8 +510,6 @@ export const DatePicker = (props: DatePickerProps) => {
   const lang = useLang();
   const type = props.type ?? "date";
   const values = props.values ?? (props.initValue ? [props.initValue] : []);
-  const minDate = props.minDate ?? defaultMinDate;
-  const maxDate = props.maxDate ?? defaultMaxDate;
   const memorizedValue = (values ?? []).map(v => formatDate(v)).join("");
 
   const [dispDate, setDispDate] = useReducer((state: Date, { date, act }: { date: Date; act?: "select" | "effect"; }) => {
@@ -546,10 +545,10 @@ export const DatePicker = (props: DatePickerProps) => {
     let hasToday = false;
     const today = new Date();
     const isToday = (d: Date) => !hasToday && (hasToday = (today.getMonth() === d.getMonth() && today.getFullYear() === d.getFullYear()));
-    let hasOverMinDate = false;
-    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(minDate, d));
+    let hasOverMinDate = props.minDate == null;
+    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(props.minDate!, d));
     let hasReachedMaxDate = false;
-    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = isAfterDate(maxDate, d));
+    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = props.maxDate != null && isAfterDate(props.maxDate, d));
 
     const cursorDate = new Date(yNum, 0, 1);
 
@@ -600,10 +599,10 @@ export const DatePicker = (props: DatePickerProps) => {
     let hasToday = false;
     const today = new Date();
     const isToday = (d: Date) => !hasToday && (hasToday = equalDate(today, d));
-    let hasOverMinDate = false;
-    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(minDate, d));
+    let hasOverMinDate = props.minDate == null;
+    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(props.minDate!, d));
     let hasReachedMaxDate = false;
-    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = isAfterDate(maxDate, d));
+    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = props.maxDate != null && isAfterDate(props.maxDate, d));
 
     const prevDayCount = (w > 3 ? w : 7 + w) - (props.firstWeek ?? 0);
     const cursorDate = addDay(new Date(dispDate), -prevDayCount);
@@ -665,23 +664,24 @@ export const DatePicker = (props: DatePickerProps) => {
     type,
   ]);
 
-  const prevYearDisabled = yNum - 1 < minDate.getFullYear();
+  const prevYearDisabled = props.minDate != null && yNum - 1 < props.minDate.getFullYear();
   const prevYear = () => {
     if (prevYearDisabled) return;
     setDispDate({ date: new Date(yNum - 1, mNum, 1) });
   };
 
-  const nextYearDisabled = yNum + 1 > maxDate.getFullYear();
+  const nextYearDisabled = props.maxDate != null && yNum + 1 > props.maxDate.getFullYear();
   const nextYear = () => {
     if (nextYearDisabled) return;
     setDispDate({ date: new Date(yNum + 1, mNum, 1) });
   };
 
   const prevMonthDisabled = (() => {
+    if (props.minDate == null) return false;
     let m = mNum - 1;
     const y = m < 0 ? yNum - 1 : yNum;
     m = (m + 12) % 12;
-    return y * 100 + m < minDate.getFullYear() * 100 + minDate.getMonth();
+    return y * 100 + m < props.minDate.getFullYear() * 100 + props.minDate.getMonth();
   })();
   const prevMonth = () => {
     if (prevMonthDisabled) return;
@@ -689,10 +689,11 @@ export const DatePicker = (props: DatePickerProps) => {
   };
 
   const nextMonthDisabled = (() => {
+    if (props.maxDate == null) return false;
     let m = mNum + 1;
     const y = m >= 12 ? yNum + 1 : yNum;
     m = m % 12;
-    return y * 100 + m > maxDate.getFullYear() * 100 + maxDate.getMonth();
+    return y * 100 + m > props.maxDate.getFullYear() * 100 + props.maxDate.getMonth();
   })();
   const nextMonth = () => {
     if (nextMonthDisabled) return;

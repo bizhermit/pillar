@@ -46,6 +46,9 @@ const isNumericOrEmpty = (value?: string): value is `${number}` => {
   return /^[0-9]+$/.test(value);
 };
 
+const defaultMinDate = new Date(1900, 0, 1);
+const defaultMaxDate = new Date(2100, 11, 31);
+
 export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undefined>({
   type,
   min,
@@ -183,7 +186,8 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   if (fi.dataItem.type === "month") today.setDate(1);
 
   const minDate = useMemo(() => {
-    const d = withoutTime(parseDate(fi.dataItem.min) ?? new Date(1900, 0, 1));
+    const min = parseDate(typeof fi.dataItem.min === "function" ? fi.dataItem.min() : fi.dataItem.min);
+    const d = withoutTime(min ?? defaultMinDate);
     if (fi.dataItem.type === "month") {
       return getFirstDateAtMonth(d);
     }
@@ -191,7 +195,8 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   }, [fi.dataItem.min]);
 
   const maxDate = useMemo(() => {
-    const d = withoutTime(parseDate(fi.dataItem.max) ?? new Date(2100, 11, 31));
+    const max = parseDate(typeof fi.dataItem.max === "function" ? fi.dataItem.max() : fi.dataItem.max);
+    const d = withoutTime(max ?? defaultMaxDate);
     if (fi.dataItem.type === "month") {
       return getLastDateAtMonth(d);
     }
@@ -547,10 +552,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     const valM = fi.value?.m ?? $initFocusDate.getMonth();
     const todayM = today.getMonth();
 
-    let hasOverMinDate = false;
-    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(minDate, d));
+    let hasOverMinDate = minDate == null;
+    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(minDate!, d));
     let hasReachedMaxDate = false;
-    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = isAfterDate(maxDate, d));
+    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = maxDate != null && isAfterDate(maxDate, d));
 
     const cursorDate = new Date(fi.value?.y ?? $initFocusDate.getFullYear(), 0, 1);
 
@@ -592,10 +597,10 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
     const valD = fi.value?.d ?? $initFocusDate.getDate();
     const todayD = today.getDate();
 
-    let hasOverMinDate = false;
-    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(minDate, d));
+    let hasOverMinDate = minDate == null;
+    const overMaxDate = (d: Date) => hasOverMinDate || (hasOverMinDate = !isBeforeDate(minDate!, d));
     let hasReachedMaxDate = false;
-    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = isAfterDate(maxDate, d));
+    const reachedMaxDate = (d: Date) => hasReachedMaxDate || (hasReachedMaxDate = maxDate != null && isAfterDate(maxDate, d));
 
     const cursorDate = new Date(fi.value?.y ?? $initFocusDate.getFullYear(), (fi.value?.m ?? $initFocusDate.getMonth()) + 1, 0);
     const max = cursorDate.getDate();
