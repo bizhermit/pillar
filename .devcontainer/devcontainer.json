@@ -49,24 +49,24 @@
         },
         "filewatcher.commands": [
           {
-            "match": "\\\\src\\\\(app(\\\\|\\\\.*\\\\)(page\\.tsx|route\\.ts)|(pages)(\\\\|\\[^_]*\\\\)(\\*\\.tsx?))$",
+            "match": "\\\\src\\\\(app(?!.*\\\\_).*(?<=\\\\)(page\\.tsx|route\\.ts)|pages(?!.*\\\\_).*\\.tsx?)$",
             "isAsync": true,
             "cmd": "node ${currentWorkspace}/scripts/next-route.mjs --quiet",
             "event": "onFileCreate"
           },
           {
-            "match": "\\\\src\\\\(app(\\\\|\\\\.*\\\\)(page\\.tsx|route\\.ts)|(pages)(\\\\|\\[^_]*\\\\)(\\*\\.tsx?))$",
+            "match": "\\\\src\\\\(app(?!.*\\\\_).*(?<=\\\\)(page\\.tsx|route\\.ts)|pages(?!.*\\\\_).*\\.tsx?)$",
             "isAsync": true,
             "cmd": "node ${currentWorkspace}/scripts/next-route.mjs --quiet",
             "event": "onFileRename"
           },
           {
-            "match": "\\\\src\\\\(app(\\\\|\\\\.*\\\\)(page\\.tsx|route\\.ts)|(pages)(\\\\|\\[^_]*\\\\)(\\*\\.tsx?))$",
+            "match": "\\\\src\\\\(app(?!.*\\\\_).*(?<=\\\\)(page\\.tsx|route\\.ts)|pages(?!.*\\\\_).*\\.tsx?)$",
             "isAsync": true,
             "cmd": "node ${currentWorkspace}/scripts/next-route.mjs --quiet",
             "event": "onFileDelete"
           }
-        ],
+        ]
       }
     }
   }
