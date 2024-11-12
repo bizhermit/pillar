@@ -111,6 +111,24 @@ const pickNextPathNameAsPages = (fileName) => {
   return pn.match(/(.*)\/index/)?.[1] ?? pn;
 };
 
+if (appMode === "mock") {
+  const map = {};
+  appApiRoutes.forEach(pathName => {
+    const pn = pickNextPathName(pathName).match(/(.*)\/route/)?.[1] || "/";
+    if (map[pn] == null) map[pn] = [];
+    map[pn].push(pathName);
+  });
+  Object.keys(map).forEach(pn => {
+    const pathList = map[pn];
+    if (pathList.length === 1) return;
+    pathList.forEach(pathName => {
+      if (!pathName.match(/\.mock\.tsx?/)) {
+        appApiRoutes.splice(appApiRoutes.findIndex(route => route === pathName), 1);
+      }
+    });
+  });
+}
+
 const contents = `// generate by script
 // do not edit
 
