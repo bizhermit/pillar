@@ -35,7 +35,7 @@ type DialogRef<Sync extends boolean | undefined> = {
   showed: Sync extends true ? boolean : null;
   open: (options?: DialogShowOptions) => void;
   close: (options?: DialogCloseOptions) => void;
-}
+};
 
 interface DialogRefConnector<Sync extends boolean | undefined> extends DialogRef<Sync> {
   (params: DialogRefConnectionParams): ((show: boolean) => void);
