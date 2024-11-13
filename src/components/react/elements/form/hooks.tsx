@@ -327,6 +327,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
       dataItem,
       preventCollectForm,
       autoFocus,
+      focus: cp.focus,
     });
     return () => {
       unmount();

@@ -5,7 +5,7 @@ import { get, set } from "@/objects/struct";
 import { Accordion } from "@/react/elements/accordion";
 import { Button } from "@/react/elements/button";
 import { Dialog, useDialog } from "@/react/elements/dialog";
-import { Form } from "@/react/elements/form";
+import { Form, useFormRef } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { useFormItem, useFormValue } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
@@ -65,6 +65,8 @@ export default function Home() {
 
   const router = useRouter();
   const { $alert, $confirm } = useMessageBox();
+
+  const formRef = useFormRef();
 
   return (
     <div>
@@ -324,6 +326,7 @@ export default function Home() {
         <Button color="subdued" outline>subdued</Button>
       </div>
       <Form
+        ref={formRef}
         bind={bind}
         disabled={formDisabled.value}
         // preventEnterSubmit
@@ -346,6 +349,13 @@ export default function Home() {
       >
         <RenderCheck />
         <ObservationFormValue name="slider" value={60} />
+        <Button
+          onClick={() => {
+            formRef.focus(sample_text.name);
+          }}
+        >
+          focus
+        </Button>
         <InputTabContainer
           name="tab"
         >
