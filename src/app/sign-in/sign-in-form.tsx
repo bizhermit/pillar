@@ -2,7 +2,7 @@
 
 import { getDataItemLabel } from "@/data-items/label";
 import { useLang } from "@/i18n/react-hook";
-import { Form } from "@/react/elements/form";
+import { Form, useFormRef } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { PasswordBox } from "@/react/elements/form/items/password-box";
 import { TextBox } from "@/react/elements/form/items/text-box";
@@ -22,10 +22,12 @@ export const SignInForm = (props: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { $alert } = useMessageBox();
+  const formRef = useFormRef();
 
   return (
     <div className={css.wrap}>
       <Form
+        ref={formRef}
         className={css.form}
         enterSubmit
         onSubmit={async ({ getBindData, keepLock }) => {
@@ -48,6 +50,8 @@ export const SignInForm = (props: Props) => {
             $alert({
               body: lang("auth.authError"),
               color: "danger",
+            }).finally(() => {
+              formRef.focus(signIn_email.name);
             });
           }
         }}
