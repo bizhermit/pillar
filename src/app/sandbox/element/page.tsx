@@ -7,7 +7,7 @@ import { Button } from "@/react/elements/button";
 import { Dialog, useDialog } from "@/react/elements/dialog";
 import { Form, useFormRef } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
-import { useFormItem, useFormValue } from "@/react/elements/form/hooks";
+import { useFormItemRef, useFormValue } from "@/react/elements/form/hooks";
 import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CheckList } from "@/react/elements/form/items/check-list";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
@@ -52,13 +52,13 @@ export default function Home() {
     "date-select-m": 3,
     // "hidden": "piyo",
   });
-  const formItem = useFormItem();
+  const formItem = useFormItemRef();
   const [hiddenValue, setHiddenValue] = useState<any>(undefined);
   const tabCont = useTabContainer();
 
-  const formDisabled = useFormItem();
-  const disabled = useFormItem();
-  const readOnly = useFormItem();
+  const formDisabled = useFormItemRef();
+  const disabled = useFormItemRef();
+  const readOnly = useFormItemRef();
 
   const modalDialog = useDialog();
   const modelessDialog = useDialog();
@@ -78,7 +78,7 @@ export default function Home() {
         disabled={disabled.value}
         // defaultMount
         // keepMount
-        hook={tabCont.hook}
+        ref={tabCont}
         onChange={(k) => {
           console.log("tab change", k, formItem.value);
         }}
@@ -200,17 +200,17 @@ export default function Home() {
           <span>reset bind</span>
         </Button>
         <ToggleSwitch
-          hook={formDisabled.hook}
+          ref={formDisabled.hook}
         >
           form disabled
         </ToggleSwitch>
         <ToggleSwitch
-          hook={disabled.hook}
+          ref={disabled.hook}
         >
           item disabled
         </ToggleSwitch>
         <ToggleSwitch
-          hook={readOnly.hook}
+          ref={readOnly.hook}
         >
           item readonly
         </ToggleSwitch>

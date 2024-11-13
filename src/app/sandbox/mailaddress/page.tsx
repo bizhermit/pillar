@@ -1,18 +1,18 @@
 "use client";
 
 import { isMailAddress } from "@/objects/string";
-import { useFormItem } from "@/react/elements/form/hooks";
+import { useFormItemRef } from "@/react/elements/form/hooks";
 import { TextArea } from "@/react/elements/form/items/text-area";
 import css from "./page.module.scss";
 
 const Page = () => {
-  const texts = useFormItem<string>();
+  const texts = useFormItemRef<string>();
 
   return (
     <div className={css.root}>
       <TextArea
         className={css.texts}
-        hook={texts.hook}
+        ref={texts.hook}
       />
       <table className={css.results}>
         <thead>

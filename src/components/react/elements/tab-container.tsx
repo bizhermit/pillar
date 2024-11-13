@@ -9,27 +9,26 @@ type TabContainerHookConnectionParams = {
   set: (key: string, absolute?: boolean) => void;
 };
 
-type TabContainerHook = {
+interface TabContainerRef {
+  (params: TabContainerHookConnectionParams): ((key: string) => void);
   key: string;
   setKey: (key: string, absolute?: boolean) => void;
-  hook: (params: TabContainerHookConnectionParams) => (key: string) => void;
-};
+}
 
-export const useTabContainer = (): TabContainerHook => {
+export const useTabContainer = (): TabContainerRef => {
   const [key, setKey] = useState<string>(null!);
   const con = useRef<TabContainerHookConnectionParams | null>(null);
   const set = useCallback((k: string, abs?: boolean) => con.current?.set(k, abs), []);
 
-  return {
-    key,
-    setKey: set,
-    hook: (c) => {
-      con.current = c;
-      return (k) => {
-        setKey(k);
-      };
-    }
-  } as const;
+  const f = ((c) => {
+    con.current = c;
+    return (k) => {
+      setKey(k);
+    };
+  }) as TabContainerRef;
+  f.key = key;
+  f.setKey = set;
+  return f;
 };
 
 type TabContainerOptions = {
@@ -38,7 +37,7 @@ type TabContainerOptions = {
   defaultMount?: boolean;
   keepMount?: boolean;
   onChange?: (key: string) => void;
-  hook?: TabContainerHook["hook"];
+  ref?: TabContainerRef;
   children: JSX.Element | Array<JSX.Element>;
 };
 
@@ -60,11 +59,11 @@ export const TabContainer = ({
   keepMount,
   children,
   onChange,
-  hook,
+  ref,
   ...props
 }: TabContainerProps) => {
   const $children = Array.isArray(children) ? children : [children];
-  const hookRef = useRef<ReturnType<TabContainerHook["hook"]> | null>(null);
+  const refRef = useRef<ReturnType<TabContainerRef> | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null!);
 
   const [mounted, switchMount] = useReducer((state: Set<string>, params: { key: string; action: "mount" | "unmount", keepMount?: boolean; }) => {
@@ -112,7 +111,7 @@ export const TabContainer = ({
     setKey(k);
   };
 
-  hookRef.current = hook ? hook({
+  refRef.current = ref ? ref({
     get: () => key,
     set: (k, abs) => {
       if (disabled && !abs) return;
@@ -121,7 +120,7 @@ export const TabContainer = ({
   }) : null;
 
   useEffect(() => {
-    hookRef.current?.(key);
+    refRef.current?.(key);
     onChange?.(key);
   }, [key]);
 
