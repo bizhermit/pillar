@@ -200,17 +200,17 @@ export default function Home() {
           <span>reset bind</span>
         </Button>
         <ToggleSwitch
-          ref={formDisabled.hook}
+          ref={formDisabled}
         >
           form disabled
         </ToggleSwitch>
         <ToggleSwitch
-          ref={disabled.hook}
+          ref={disabled}
         >
           item disabled
         </ToggleSwitch>
         <ToggleSwitch
-          ref={readOnly.hook}
+          ref={readOnly}
         >
           item readonly
         </ToggleSwitch>

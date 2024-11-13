@@ -9,16 +9,16 @@ type FormItemRefConnectionParams<IV extends any> = {
   focus: () => void;
 };
 
-type FormItemRef<IV extends any> = {
+interface FormItemRef<IV extends any> {
+  (params: FormItemRefConnectionParams<IV>): ((params: [
+    value: IV | DataItem.NullValue,
+    result?: DataItem.ValidationResult | null | undefined,
+  ]) => void);
   value: IV | DataItem.NullValue;
   setValue: (value: IV | DataItem.NullValue, edit: boolean) => void;
   message: DataItem.ValidationResult | null | undefined;
   focus: () => void;
-  hook: (params: FormItemRefConnectionParams<IV>) => (params: [
-    value: IV | DataItem.NullValue,
-    result?: DataItem.ValidationResult | null | undefined,
-  ]) => void;
-};
+}
 
 type FormItemOptions<
   D extends DataItem.$object | undefined = undefined,
@@ -46,7 +46,7 @@ type FormItemOptions<
   onEdit?: (value: IV | DataItem.NullValue, params: {
     before: IV | DataItem.NullValue;
   }) => void;
-  ref?: FormItemRef<IV>["hook"];
+  ref?: FormItemRef<IV>;
 };
 
 type FormItemSetArg<T extends any = any> = {

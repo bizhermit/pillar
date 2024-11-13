@@ -44,7 +44,7 @@ type FormItemCoreArgs<
 const tzOffset = new Date().getTimezoneOffset();
 
 export const useFormItemCore = <SD extends DataItem.$object, D extends SD | undefined, V extends any, IV extends any = V, DV extends any = V>({
-  ref: hook,
+  ref,
   name,
   label,
   labelAsIs,
@@ -214,7 +214,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
         // setInputted(true);
       }
     }
-    $.current.hook?.([v, res]);
+    $.current.ref?.([v, res]);
   };
 
   const setValue = ({ value, edit, effect, parse, init, mount, bind }: FormItemSetArg) => {
@@ -286,7 +286,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     set: typeof setValue;
     reset: typeof reset;
     getTieInNames?: typeof cp["getTieInNames"];
-    hook: ReturnType<Exclude<typeof hook, undefined>> | null;
+    ref: ReturnType<Exclude<typeof ref, undefined>> | null;
     hasChanged: typeof hasChanged;
     bind: typeof form.bind;
   }>({
@@ -298,7 +298,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   $.current.set = setValue;
   $.current.reset = reset;
   $.current.getTieInNames = cp.getTieInNames;
-  $.current.hook = hook ? hook({
+  $.current.ref = ref ? ref({
     get: () => valRef.current,
     set: (p) => form.setValue(name!, p.value, true),
     clear,
@@ -471,19 +471,18 @@ export const useFormItemRef = <T extends any = any>(): FormItemRef<T | null | un
   const con = useRef<FormItemRefConnectionParams<T | null | undefined> | null>(null);
   const set = useCallback((v: T | DataItem.NullValue, edit: boolean) => con.current?.set({ value: v, edit, effect: true }), []);
 
-  return {
-    value,
-    setValue: set,
-    message,
-    focus: () => con.current?.focus(),
-    hook: (c) => {
-      con.current = c;
-      return ([v, r]) => {
-        setVal(v);
-        setMsg(r);
-      };
-    },
-  } as const;
+  const f = ((c) => {
+    con.current = c;
+    return ([v, r]) => {
+      setVal(v);
+      setMsg(r);
+    };
+  }) as FormItemRef<T | null | undefined>;
+  f.value = value;
+  f.setValue = set;
+  f.message = message;
+  f.focus = () => con.current?.focus();
+  return f;
 };
 
 export const useFormValue = <T extends any>(name: string) => {
