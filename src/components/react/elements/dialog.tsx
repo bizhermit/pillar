@@ -31,11 +31,14 @@ type DialogRefConnectionParams = {
   toggle: ToggleFunction;
 };
 
-interface DialogRef<Sync extends boolean | undefined> {
-  (params: DialogRefConnectionParams): ((show: boolean) => void);
+type DialogRef<Sync extends boolean | undefined> = {
   showed: Sync extends true ? boolean : null;
   open: (options?: DialogShowOptions) => void;
   close: (options?: DialogCloseOptions) => void;
+}
+
+interface DialogRefConnector<Sync extends boolean | undefined> extends DialogRef<Sync> {
+  (params: DialogRefConnectionParams): ((show: boolean) => void);
 }
 
 type DialogOptions = {
@@ -73,7 +76,7 @@ export const Dialog = ({
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
   const [showed, toggleShowed, showedRef] = useRefState<boolean>(false);
-  const hookRef = useRef<((showed: boolean) => void) | null>(null);
+  const refRef = useRef<((showed: boolean) => void) | null>(null);
   const [mount, setMount] = useState(immediatelyMount === true);
   const [showOpts, setShowOpts] = useState<DialogShowOptions | null | undefined>();
   const hasOpenProp = props.open != null;
@@ -105,7 +108,7 @@ export const Dialog = ({
         }, 300);
       }
       toggleShowed(false);
-      hookRef.current?.(false);
+      refRef.current?.(false);
       if (modeless) dref.current.hidePopover();
       else dref.current.close();
       dref.current.inert = true;
@@ -269,7 +272,7 @@ export const Dialog = ({
     }
   };
 
-  hookRef.current = ref ? ref({ toggle }) : null;
+  refRef.current = ref ? (ref as unknown as DialogRefConnector<any>)({ toggle }) : null;
 
   useEffect(() => {
     if (!showed) return;
@@ -296,7 +299,7 @@ export const Dialog = ({
     showOpts?.callbackBeforeAnimation?.();
     dref.current.scrollTop = 0;
     dref.current.scrollLeft = 0;
-    hookRef.current?.(showed);
+    refRef.current?.(showed);
   }, [showed]);
 
   useEffect(() => {
@@ -374,7 +377,7 @@ export const useDialogRef = <Sync extends boolean | undefined = undefined>(sync?
   const f = ((c) => {
     con.current = c;
     return sync ? setShowed : () => { };
-  }) as DialogRef<Sync>;
+  }) as DialogRefConnector<Sync>;
   f.showed = (sync ? showed : null) as DialogRef<Sync>["showed"];
   f.open = (opts) => con.current?.toggle(true, opts);
   f.close = (opts) => con.current?.toggle(false, opts);

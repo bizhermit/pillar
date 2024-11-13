@@ -9,15 +9,18 @@ type FormItemRefConnectionParams<IV extends any> = {
   focus: () => void;
 };
 
-interface FormItemRef<IV extends any> {
-  (params: FormItemRefConnectionParams<IV>): ((params: [
-    value: IV | DataItem.NullValue,
-    result?: DataItem.ValidationResult | null | undefined,
-  ]) => void);
+type FormItemRef<IV extends any> = {
   value: IV | DataItem.NullValue;
   setValue: (value: IV | DataItem.NullValue, edit: boolean) => void;
   message: DataItem.ValidationResult | null | undefined;
   focus: () => void;
+};
+
+interface FormItemRefConnector<IV extends any> extends FormItemRef<IV> {
+  (params: FormItemRefConnectionParams<IV>): ((params: [
+    value: IV | DataItem.NullValue,
+    result?: DataItem.ValidationResult | null | undefined,
+  ]) => void);
 }
 
 type FormItemOptions<

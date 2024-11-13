@@ -9,10 +9,13 @@ type TabContainerHookConnectionParams = {
   set: (key: string, absolute?: boolean) => void;
 };
 
-interface TabContainerRef {
-  (params: TabContainerHookConnectionParams): ((key: string) => void);
+type TabContainerRef = {
   key: string;
   setKey: (key: string, absolute?: boolean) => void;
+};
+
+interface TabContainerRefConnector extends TabContainerRef {
+  (params: TabContainerHookConnectionParams): ((key: string) => void);
 }
 
 export const useTabContainer = (): TabContainerRef => {
@@ -25,7 +28,7 @@ export const useTabContainer = (): TabContainerRef => {
     return (k) => {
       setKey(k);
     };
-  }) as TabContainerRef;
+  }) as TabContainerRefConnector;
   f.key = key;
   f.setKey = set;
   return f;
@@ -63,7 +66,7 @@ export const TabContainer = ({
   ...props
 }: TabContainerProps) => {
   const $children = Array.isArray(children) ? children : [children];
-  const refRef = useRef<ReturnType<TabContainerRef> | null>(null);
+  const refRef = useRef<ReturnType<TabContainerRefConnector> | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null!);
 
   const [mounted, switchMount] = useReducer((state: Set<string>, params: { key: string; action: "mount" | "unmount", keepMount?: boolean; }) => {
@@ -111,7 +114,7 @@ export const TabContainer = ({
     setKey(k);
   };
 
-  refRef.current = ref ? ref({
+  refRef.current = ref ? (ref as unknown as TabContainerRefConnector)({
     get: () => key,
     set: (k, abs) => {
       if (disabled && !abs) return;
@@ -124,7 +127,7 @@ export const TabContainer = ({
     onChange?.(key);
 
     return () => {
-      if (ref) ref(null!);
+      if (ref) (ref as unknown as TabContainerRefConnector)(null!);
     };
   }, [key]);
 

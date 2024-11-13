@@ -14,7 +14,7 @@ export const useFormItemRef = <T extends any = any>(): FormItemRef<T | null | un
       setVal(v);
       setMsg(r);
     };
-  }) as FormItemRef<T | null | undefined>;
+  }) as FormItemRefConnector<T | null | undefined>;
   f.value = value;
   f.setValue = set;
   f.message = message;

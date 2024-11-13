@@ -286,7 +286,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     set: typeof setValue;
     reset: typeof reset;
     getTieInNames?: typeof cp["getTieInNames"];
-    ref: ReturnType<Exclude<typeof ref, undefined>> | null;
+    ref: ReturnType<FormItemRefConnector<any>> | null;
     hasChanged: typeof hasChanged;
     bind: typeof form.bind;
   }>({
@@ -298,7 +298,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   $.current.set = setValue;
   $.current.reset = reset;
   $.current.getTieInNames = cp.getTieInNames;
-  $.current.ref = ref ? ref({
+  $.current.ref = ref ? (ref as unknown as FormItemRefConnector<any>)({
     get: () => valRef.current,
     set: (p) => form.setValue(name!, p.value, true),
     clear,
@@ -331,7 +331,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     });
     return () => {
       unmount();
-      if (ref) ref(null!);
+      if (ref) (ref as unknown as FormItemRefConnector<any>)(null!);
     };
   }, [dataItem, preventCollectForm]);
 
