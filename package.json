@@ -11,7 +11,7 @@
     "prebuild": "npm run route",
     "build": "npx next build",
     "next": "bash scripts/next-start.sh",
-    "export": "npm run clean && npx rimraf dist/out && npx cross-env NEXT_OUTPUT=\"dist\" npm run build",
+    "export": "npm run clean && npx cross-env NEXT_OUTPUT=\"dist\" npm run build",
     "lint": "npx next lint",
     "format": "npx next lint --fix",
     "route": "node scripts/next-route.mjs",
