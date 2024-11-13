@@ -298,13 +298,13 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   $.current.set = setValue;
   $.current.reset = reset;
   $.current.getTieInNames = cp.getTieInNames;
-  $.current.ref = ref ? (ref as unknown as FormItemRefConnector<any>)({
+  $.current.ref = (ref as unknown as FormItemRefConnector<any>)?.({
     get: () => valRef.current,
     set: (p) => form.setValue(name!, p.value, true),
     clear,
     reset,
     focus: cp.focus,
-  }) : null;
+  });
 
   const hasChanged = () => !(cp.equals ?? equals)($.current.cache, valRef.current, { dataItem });
   const mountValue = !preventCollectForm && hasChanged();

@@ -114,13 +114,13 @@ export const TabContainer = ({
     setKey(k);
   };
 
-  refRef.current = ref ? (ref as unknown as TabContainerRefConnector)({
+  refRef.current = (ref as unknown as TabContainerRefConnector)?.({
     get: () => key,
     set: (k, abs) => {
       if (disabled && !abs) return;
       setKey(k);
     },
-  }) : null;
+  });
 
   useEffect(() => {
     refRef.current?.(key);

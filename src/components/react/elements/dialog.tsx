@@ -272,7 +272,7 @@ export const Dialog = ({
     }
   };
 
-  refRef.current = ref ? (ref as unknown as DialogRefConnector<any>)({ toggle }) : null;
+  refRef.current = (ref as unknown as DialogRefConnector<any>)?.({ toggle });
 
   useEffect(() => {
     if (!showed) return;
