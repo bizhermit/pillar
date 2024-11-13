@@ -4,10 +4,11 @@
 import { get, set } from "@/objects/struct";
 import { Accordion } from "@/react/elements/accordion";
 import { Button } from "@/react/elements/button";
-import { Dialog, useDialog } from "@/react/elements/dialog";
-import { Form } from "@/react/elements/form";
+import { Dialog, useDialogRef } from "@/react/elements/dialog";
+import { Form, useFormRef } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
-import { useFormItem, useFormValue } from "@/react/elements/form/hooks";
+import { useFormValue } from "@/react/elements/form/hooks";
+import { useFormItemRef } from "@/react/elements/form/item-ref";
 import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CheckList } from "@/react/elements/form/items/check-list";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
@@ -52,19 +53,21 @@ export default function Home() {
     "date-select-m": 3,
     // "hidden": "piyo",
   });
-  const formItem = useFormItem();
+  const formItem = useFormItemRef();
   const [hiddenValue, setHiddenValue] = useState<any>(undefined);
   const tabCont = useTabContainer();
 
-  const formDisabled = useFormItem();
-  const disabled = useFormItem();
-  const readOnly = useFormItem();
+  const formDisabled = useFormItemRef();
+  const disabled = useFormItemRef();
+  const readOnly = useFormItemRef();
 
-  const modalDialog = useDialog();
-  const modelessDialog = useDialog();
+  const modalDialog = useDialogRef();
+  const modelessDialog = useDialogRef();
 
   const router = useRouter();
   const { $alert, $confirm } = useMessageBox();
+
+  const formRef = useFormRef();
 
   return (
     <div>
@@ -76,7 +79,7 @@ export default function Home() {
         disabled={disabled.value}
         // defaultMount
         // keepMount
-        hook={tabCont.hook}
+        ref={tabCont}
         onChange={(k) => {
           console.log("tab change", k, formItem.value);
         }}
@@ -198,17 +201,17 @@ export default function Home() {
           <span>reset bind</span>
         </Button>
         <ToggleSwitch
-          hook={formDisabled.hook}
+          ref={formDisabled}
         >
           form disabled
         </ToggleSwitch>
         <ToggleSwitch
-          hook={disabled.hook}
+          ref={disabled}
         >
           item disabled
         </ToggleSwitch>
         <ToggleSwitch
-          hook={readOnly.hook}
+          ref={readOnly}
         >
           item readonly
         </ToggleSwitch>
@@ -324,6 +327,7 @@ export default function Home() {
         <Button color="subdued" outline>subdued</Button>
       </div>
       <Form
+        ref={formRef}
         bind={bind}
         disabled={formDisabled.value}
         // preventEnterSubmit
@@ -346,6 +350,13 @@ export default function Home() {
       >
         <RenderCheck />
         <ObservationFormValue name="slider" value={60} />
+        <Button
+          onClick={() => {
+            formRef.focus(sample_text.name);
+          }}
+        >
+          focus
+        </Button>
         <InputTabContainer
           name="tab"
         >
@@ -381,7 +392,7 @@ export default function Home() {
               dataItem={sample_text}
               required={false}
               charType="h-alpha-num"
-            // hook={formItem.hook}
+            // hook={formItem}
             />
           </FormItemWrap>
           <FormItemWrap>
@@ -716,7 +727,7 @@ export default function Home() {
           show modal dialog
         </Button>
         <Dialog
-          hook={modalDialog.hook}
+          ref={modalDialog}
           // preventBackdropClose
           // customPosition
           immediatelyMount
@@ -754,7 +765,7 @@ export default function Home() {
         <Dialog
           modeless
           // transparent
-          hook={modelessDialog.hook}
+          ref={modelessDialog}
           closeWhenScrolled
           // preventBackdropClose
           // customPosition

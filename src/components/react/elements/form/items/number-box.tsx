@@ -6,7 +6,7 @@ import { $numValidations } from "../../../../data-items/number/validation";
 import { formatNum, parseNum } from "../../../../objects/number";
 import { DownFillIcon, UpFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type NumberBoxOptions<D extends DataItem.$num | undefined> = FormItemOptions<D, D extends DataItem.$num ? DataItem.ValueType<D> : number> & {
   min?: DataItem.$num["min"];

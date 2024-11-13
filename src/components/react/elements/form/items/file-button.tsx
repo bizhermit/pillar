@@ -6,7 +6,7 @@ import { $fileValidations } from "../../../../data-items/file/validation";
 import { useLang } from "../../../../i18n/react-hook";
 import { Button } from "../../button";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type FileButtonOptions<D extends DataItem.$file | undefined> = FormItemOptions<D, D extends DataItem.$file ? DataItem.ValueType<D> : File> & {
   accept?: DataItem.$file["accept"];

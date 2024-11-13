@@ -5,7 +5,7 @@ import { $boolParse } from "../../../../data-items/bool/parse";
 import { $boolValidations } from "../../../../data-items/bool/validation";
 import { equals } from "../../../../objects";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type CheckBoxOptions<
   True extends boolean | number | string,

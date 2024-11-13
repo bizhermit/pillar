@@ -4,7 +4,7 @@ import { type HTMLAttributes, type KeyboardEvent, useRef } from "react";
 import { $numParse } from "../../../../data-items/number/parse";
 import { $numValidations } from "../../../../data-items/number/validation";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type SliderOptions<D extends DataItem.$num | undefined> = Omit<FormItemOptions<D, D extends DataItem.$num ? DataItem.ValueType<D> : number>, "hideClearButton"> & {
   min?: DataItem.$num["min"];

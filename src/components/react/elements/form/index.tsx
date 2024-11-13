@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useLayoutEffect, useMemo, useRef, type FormEvent, type FormHTMLAttributes, type KeyboardEvent, type MutableRefObject } from "react";
+import { createContext, useLayoutEffect, useMemo, useRef, type FormEvent, type FormHTMLAttributes, type KeyboardEvent } from "react";
 import { clone } from "../../../objects";
 import { get, set } from "../../../objects/struct";
 import { useRefState } from "../../hooks/ref-state";
@@ -22,6 +22,7 @@ type FormItemMountProps = {
   preventCollectForm: boolean | undefined;
   noInput?: boolean;
   autoFocus?: boolean;
+  focus: () => void;
 };
 
 type FormObserveItemProps = {
@@ -46,6 +47,7 @@ type FormContextProps = {
   },
   getValue: <T>(name: string) => T;
   setValue: (name: string, value: any, edit?: boolean) => void;
+  focus: (name?: string) => void;
 };
 
 export const FormContext = createContext<FormContextProps>({
@@ -70,6 +72,7 @@ export const FormContext = createContext<FormContextProps>({
   },
   getValue: () => undefined as any,
   setValue: () => { },
+  focus: () => { },
 });
 
 type GetBindDataOptions = {
@@ -87,10 +90,15 @@ type FormRef<T extends { [v: string]: any } = { [v: string]: any }> = {
   getBindData: (options?: GetBindDataOptions) => T;
   getValue: <T>(name: string) => T;
   setValue: (name: string, value: any) => void;
+  focus: (name?: string) => void;
+};
+
+export const useFormRef = <T extends { [v: string]: any } = { [v: string]: any }>() => {
+  return useMemo(() => ({} as FormRef<T>), []);
 };
 
 type FormOptions<T extends { [v: string]: any } = { [v: string]: any }> = {
-  ref?: MutableRefObject<FormRef<T> | null>;
+  ref?: FormRef<T>;
   encType?: "application/x-www-form-urlencoded" | "multipart/form-data" | "text/plain";
   disabled?: boolean;
   enterSubmit?: boolean;
@@ -165,6 +173,13 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   const getValue = (name: string) => findItem(name)?.get<any>();
 
   const setValue = (name: string, value: any, edit?: boolean) => findItem(name)?.set({ value, edit: edit ?? false, parse: true });
+
+  const focus = (name?: string) => {
+    ((name ? findItem(name) : undefined) ?? items.current[(() => {
+      const ids = Object.keys(items.current);
+      return ids.find(id => !items.current[id].noInput) ?? ids[0];
+    })()])?.focus();
+  };
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.stopPropagation();
@@ -278,19 +293,25 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   };
 
   if (ref) {
-    ref.current = {
-      getElement: () => $ref.current,
-      submit: () => $ref.current?.submit(),
-      reset: () => $ref.current?.reset(),
-      getFormData,
-      getBindData,
-      getValue,
-      setValue,
-    };
+    ref.getElement = () => $ref.current;
+    ref.submit = () => $ref.current?.submit();
+    ref.reset = () => $ref.current?.reset();
+    ref.getFormData = getFormData;
+    ref.getBindData = getBindData;
+    ref.getValue = getValue;
+    ref.setValue = setValue;
+    ref.focus = focus;
   }
 
   useLayoutEffect(() => {
     setProcess("");
+    return () => {
+      if (ref) {
+        Object.keys(ref).forEach(k => {
+          delete (ref as { [v: string]: any })[k];
+        });
+      }
+    };
   }, []);
 
   return (
@@ -335,6 +356,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
       getMountedItems: () => items.current,
       getValue,
       setValue,
+      focus,
     }}>
       {(process === "submit" || process === "init") && <LoadingBar />}
       <form

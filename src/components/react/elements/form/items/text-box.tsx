@@ -6,7 +6,7 @@ import { $strValidations } from "../../../../data-items/string/validation";
 import { equals } from "../../../../objects";
 import { isEmpty, toFullWidth, toFullWidthKatakana, toHalfWidth, toHalfWidthKatakana, toHiragana, toKatakana } from "../../../../objects/string";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type TextBoxOptions<D extends DataItem.$str | undefined> = FormItemOptions<D, D extends DataItem.$str ? DataItem.ValueType<D> : string> & {
   length?: DataItem.$str["length"];

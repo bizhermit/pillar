@@ -27,20 +27,23 @@ type DialogCloseOptions = {
 
 type ToggleFunction = <S extends boolean>(show: S, opts?: S extends true ? DialogShowOptions : DialogCloseOptions) => void;
 
-type DialogHookConnectionParams = {
+type DialogRefConnectionParams = {
   toggle: ToggleFunction;
 };
 
-type DialogHook<Sync extends boolean | undefined> = {
+type DialogRef<Sync extends boolean | undefined> = {
   showed: Sync extends true ? boolean : null;
   open: (options?: DialogShowOptions) => void;
   close: (options?: DialogCloseOptions) => void;
-  hook: (params: DialogHookConnectionParams) => ((show: boolean) => void);
 };
+
+interface DialogRefConnector<Sync extends boolean | undefined> extends DialogRef<Sync> {
+  (params: DialogRefConnectionParams): ((show: boolean) => void);
+}
 
 type DialogOptions = {
   modeless?: boolean;
-  hook?: DialogHook<any>["hook"];
+  ref?: DialogRef<any>;
   open?: boolean;
   preventBackdropClose?: boolean;
   preventEscapeClose?: boolean;
@@ -58,7 +61,7 @@ type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptio
 
 export const Dialog = ({
   modeless,
-  hook,
+  ref,
   preventBackdropClose,
   preventEscapeClose,
   immediatelyMount,
@@ -73,7 +76,7 @@ export const Dialog = ({
 }: DialogProps) => {
   const dref = useRef<HTMLDialogElement>(null!);
   const [showed, toggleShowed, showedRef] = useRefState<boolean>(false);
-  const hookRef = useRef<((showed: boolean) => void) | null>(null);
+  const refRef = useRef<((showed: boolean) => void) | null>(null);
   const [mount, setMount] = useState(immediatelyMount === true);
   const [showOpts, setShowOpts] = useState<DialogShowOptions | null | undefined>();
   const hasOpenProp = props.open != null;
@@ -105,7 +108,7 @@ export const Dialog = ({
         }, 300);
       }
       toggleShowed(false);
-      hookRef.current?.(false);
+      refRef.current?.(false);
       if (modeless) dref.current.hidePopover();
       else dref.current.close();
       dref.current.inert = true;
@@ -269,7 +272,7 @@ export const Dialog = ({
     }
   };
 
-  hookRef.current = hook ? hook({ toggle }) : null;
+  refRef.current = (ref as unknown as DialogRefConnector<any>)?.({ toggle });
 
   useEffect(() => {
     if (!showed) return;
@@ -296,7 +299,7 @@ export const Dialog = ({
     showOpts?.callbackBeforeAnimation?.();
     dref.current.scrollTop = 0;
     dref.current.scrollLeft = 0;
-    hookRef.current?.(showed);
+    refRef.current?.(showed);
   }, [showed]);
 
   useEffect(() => {
@@ -367,18 +370,17 @@ export const Dialog = ({
   );
 };
 
-export const useDialog = <Sync extends boolean | undefined = undefined>(sync?: Sync): DialogHook<Sync> => {
+export const useDialogRef = <Sync extends boolean | undefined = undefined>(sync?: Sync): DialogRef<Sync> => {
   const [showed, setShowed] = useState<boolean>(false);
-  const con = useRef<DialogHookConnectionParams | null>(null);
+  const con = useRef<DialogRefConnectionParams | null>(null);
 
-  return {
-    showed: (sync ? showed : null) as DialogHook<Sync>["showed"],
-    open: (opts) => con.current?.toggle(true, opts),
-    close: (opts) => con.current?.toggle(false, opts),
-    hook: (c) => {
-      con.current = c;
-      return sync ? setShowed : () => { };
-    },
-  } as const;
+  const f = ((c) => {
+    con.current = c;
+    return sync ? setShowed : () => { };
+  }) as DialogRefConnector<Sync>;
+  f.showed = (sync ? showed : null) as DialogRef<Sync>["showed"];
+  f.open = (opts) => con.current?.toggle(true, opts);
+  f.close = (opts) => con.current?.toggle(false, opts);
+  return f;
 };
 

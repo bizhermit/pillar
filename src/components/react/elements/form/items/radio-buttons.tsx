@@ -11,7 +11,7 @@ import { equals } from "../../../../objects";
 import { set } from "../../../../objects/struct";
 import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type SourceData = { [v: string]: any };
 type SourceTempData<V = any> = { value: V; label: any; } & { [v: string]: any };

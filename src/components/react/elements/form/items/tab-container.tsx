@@ -1,36 +1,36 @@
 import { $strValidations } from "../../../../data-items/string/validation";
 import { getDefaultTabKey, TabContainer, type TabContainerProps, useTabContainer } from "../../tab-container";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type InputTabContainerOptions = Pick<FormItemOptions<undefined, string>,
   | "name"
   | "readOnly"
   | "label"
-  | "hook"
+  | "ref"
   | "onChange"
 >;
 
-type InputTabContainerProps = OverwriteProps<Omit<TabContainerProps, "hook">, InputTabContainerOptions>;
+type InputTabContainerProps = OverwriteProps<Omit<TabContainerProps, "ref">, InputTabContainerOptions>;
 
 export const InputTabContainer = ({
   name,
   readOnly,
   label,
-  hook,
+  ref,
   onChange,
   defaultKey,
   disabled,
   children,
   ...props
 }: InputTabContainerProps) => {
-  const $hook = useTabContainer();
+  const tabRef = useTabContainer();
   const $children = Array.isArray(children) ? children : [children];
 
   const defaultValue = getDefaultTabKey($children, defaultKey);
 
   const fi = useFormItemCore<DataItem.$str, undefined, string, string>({
     name,
-    hook,
+    ref,
     readOnly,
     onChange,
     label,
@@ -54,7 +54,7 @@ export const InputTabContainer = ({
       }];
     },
     effect: ({ value, effect }) => {
-      if (effect) $hook.setKey(value!);
+      if (effect) tabRef.setKey(value!);
     },
     validation: ({ dataItem, env, iterator }) => {
       const funcs = $strValidations({ dataItem, env });
@@ -69,7 +69,7 @@ export const InputTabContainer = ({
         {...props}
         disabled={fi.disabled || fi.readOnly}
         defaultKey={defaultValue}
-        hook={$hook.hook}
+        ref={tabRef}
         onChange={(k) => {
           fi.set({ value: k });
         }}
@@ -80,7 +80,7 @@ export const InputTabContainer = ({
         <input
           type="hidden"
           name={name}
-          value={$hook.key ?? ""}
+          value={tabRef.key ?? ""}
         />
       }
     </>

@@ -7,7 +7,7 @@ import { blurToOuter } from "../../../../dom/outer-event";
 import { isEmpty } from "../../../../objects/string";
 import { CircleFillIcon, CircleIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 import { type TextBoxProps } from "./text-box";
 
 type PasswordBoxProps<D extends DataItem.$str | undefined> = TextBoxProps<D> & {

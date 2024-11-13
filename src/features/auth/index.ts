@@ -1,7 +1,6 @@
 import { LANG_KEY } from "@/i18n/consts";
 import { langFactoryCore } from "@/i18n/core";
 import { analyzeHeaderAcceptLang, parseLangs } from "@/i18n/utilities";
-import { isEmpty } from "@/objects";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { NextResponse } from "next/server";
@@ -39,7 +38,8 @@ export const {
         },
       },
       authorize: async ({ email, password }) => {
-        if (isEmpty(password)) return null;
+        // TODO: authorize
+        if (password !== "pass") return null;
         return {
           id: "0",
           email: email as string,
