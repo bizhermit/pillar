@@ -8,7 +8,7 @@ import { DateTime } from "../../../../objects/datetime";
 import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
 import { getTimeUnit, parseTimeAsUnit, roundTime, Time, TimeRadix } from "../../../../objects/time";
-import { Dialog, useDialog } from "../../dialog";
+import { Dialog, useDialogRef } from "../../dialog";
 import { ClockIcon, CrossIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -59,7 +59,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
   const mref = useRef<HTMLInputElement>(null!);
   const sref = useRef<HTMLInputElement>(null!);
   const cache = useRef<{ h: number | undefined; m: number | undefined; s: number | undefined; }>({ h: undefined, m: undefined, s: undefined });
-  const dialog = useDialog(true);
+  const dialog = useDialogRef(true);
   const [showed, setShowed] = useState(false);
 
   const focusInput = (target?: "h" | "m" | "s") => {
@@ -511,7 +511,7 @@ export const TimeBox = <D extends DataItem.$time | undefined>({
         {fi.clearButton(empty ? undefined : clear)}
         <Dialog
           modeless
-          hook={dialog.hook}
+          ref={dialog}
           mobile
           className="ipt-dialog"
         >

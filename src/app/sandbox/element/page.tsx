@@ -4,7 +4,7 @@
 import { get, set } from "@/objects/struct";
 import { Accordion } from "@/react/elements/accordion";
 import { Button } from "@/react/elements/button";
-import { Dialog, useDialog } from "@/react/elements/dialog";
+import { Dialog, useDialogRef } from "@/react/elements/dialog";
 import { Form, useFormRef } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
 import { useFormItemRef, useFormValue } from "@/react/elements/form/hooks";
@@ -60,8 +60,8 @@ export default function Home() {
   const disabled = useFormItemRef();
   const readOnly = useFormItemRef();
 
-  const modalDialog = useDialog();
-  const modelessDialog = useDialog();
+  const modalDialog = useDialogRef();
+  const modelessDialog = useDialogRef();
 
   const router = useRouter();
   const { $alert, $confirm } = useMessageBox();
@@ -726,7 +726,7 @@ export default function Home() {
           show modal dialog
         </Button>
         <Dialog
-          hook={modalDialog.hook}
+          ref={modalDialog}
           // preventBackdropClose
           // customPosition
           immediatelyMount
@@ -764,7 +764,7 @@ export default function Home() {
         <Dialog
           modeless
           // transparent
-          hook={modelessDialog.hook}
+          ref={modelessDialog}
           closeWhenScrolled
           // preventBackdropClose
           // customPosition

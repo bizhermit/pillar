@@ -12,7 +12,7 @@ import { equals } from "../../../../objects";
 import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
 import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
-import { Dialog, useDialog } from "../../dialog";
+import { Dialog, useDialogRef } from "../../dialog";
 import { DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -53,7 +53,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
 }: SelectBoxProps<D, S>) => {
   const iref = useRef<HTMLInputElement>(null!);
   const focusInput = () => iref.current?.focus();
-  const dialog = useDialog(true);
+  const dialog = useDialogRef(true);
 
   const vdn = valueDataName ?? "value";
   const ldn = labelDataName ?? "label";
@@ -389,7 +389,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
         {fi.clearButton(empty || loading ? undefined : clear)}
         <Dialog
           modeless
-          hook={dialog.hook}
+          ref={dialog}
           mobile
           className="ipt-dialog ipt-dialog-list"
         >

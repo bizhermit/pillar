@@ -27,20 +27,20 @@ type DialogCloseOptions = {
 
 type ToggleFunction = <S extends boolean>(show: S, opts?: S extends true ? DialogShowOptions : DialogCloseOptions) => void;
 
-type DialogHookConnectionParams = {
+type DialogRefConnectionParams = {
   toggle: ToggleFunction;
 };
 
-type DialogHook<Sync extends boolean | undefined> = {
+interface DialogRef<Sync extends boolean | undefined> {
+  (params: DialogRefConnectionParams): ((show: boolean) => void);
   showed: Sync extends true ? boolean : null;
   open: (options?: DialogShowOptions) => void;
   close: (options?: DialogCloseOptions) => void;
-  hook: (params: DialogHookConnectionParams) => ((show: boolean) => void);
-};
+}
 
 type DialogOptions = {
   modeless?: boolean;
-  hook?: DialogHook<any>["hook"];
+  ref?: DialogRef<any>;
   open?: boolean;
   preventBackdropClose?: boolean;
   preventEscapeClose?: boolean;
@@ -58,7 +58,7 @@ type DialogProps = OverwriteAttrs<HTMLAttributes<HTMLDialogElement>, DialogOptio
 
 export const Dialog = ({
   modeless,
-  hook,
+  ref,
   preventBackdropClose,
   preventEscapeClose,
   immediatelyMount,
@@ -269,7 +269,7 @@ export const Dialog = ({
     }
   };
 
-  hookRef.current = hook ? hook({ toggle }) : null;
+  hookRef.current = ref ? ref({ toggle }) : null;
 
   useEffect(() => {
     if (!showed) return;
@@ -367,18 +367,17 @@ export const Dialog = ({
   );
 };
 
-export const useDialog = <Sync extends boolean | undefined = undefined>(sync?: Sync): DialogHook<Sync> => {
+export const useDialogRef = <Sync extends boolean | undefined = undefined>(sync?: Sync): DialogRef<Sync> => {
   const [showed, setShowed] = useState<boolean>(false);
-  const con = useRef<DialogHookConnectionParams | null>(null);
+  const con = useRef<DialogRefConnectionParams | null>(null);
 
-  return {
-    showed: (sync ? showed : null) as DialogHook<Sync>["showed"],
-    open: (opts) => con.current?.toggle(true, opts),
-    close: (opts) => con.current?.toggle(false, opts),
-    hook: (c) => {
-      con.current = c;
-      return sync ? setShowed : () => { };
-    },
-  } as const;
+  const f = ((c) => {
+    con.current = c;
+    return sync ? setShowed : () => { };
+  }) as DialogRef<Sync>;
+  f.showed = (sync ? showed : null) as DialogRef<Sync>["showed"];
+  f.open = (opts) => con.current?.toggle(true, opts);
+  f.close = (opts) => con.current?.toggle(false, opts);
+  return f;
 };
 

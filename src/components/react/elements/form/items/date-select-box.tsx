@@ -10,7 +10,7 @@ import { DateTime } from "../../../../objects/datetime";
 import { parseNum } from "../../../../objects/number";
 import { isEmpty } from "../../../../objects/string";
 import { get, set } from "../../../../objects/struct";
-import { Dialog, useDialog } from "../../dialog";
+import { Dialog, useDialogRef } from "../../dialog";
 import { DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -65,9 +65,9 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
   const mref = useRef<HTMLInputElement>(null!);
   const dref = useRef<HTMLInputElement>(null!);
   const cache = useRef<{ y: number | undefined; m: number | undefined; d: number | undefined; }>({ y: undefined, m: undefined, d: undefined });
-  const yDialog = useDialog(true);
-  const mDialog = useDialog(true);
-  const dDialog = useDialog(true);
+  const yDialog = useDialogRef(true);
+  const mDialog = useDialogRef(true);
+  const dDialog = useDialogRef(true);
   const dialog = (target: Target) => {
     switch (target) {
       case "d": return dDialog;
@@ -691,7 +691,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
           }
           <Dialog
             modeless
-            hook={yDialog.hook}
+            ref={yDialog}
             mobile
             className="ipt-dialog ipt-dialog-list"
           >
@@ -750,7 +750,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
           }
           <Dialog
             modeless
-            hook={mDialog.hook}
+            ref={mDialog}
             mobile
             className="ipt-dialog ipt-dialog-list"
           >
@@ -807,7 +807,7 @@ export const DateSelectBox = <D extends DataItem.$date | DataItem.$month | undef
               }
               <Dialog
                 modeless
-                hook={dDialog.hook}
+                ref={dDialog}
                 mobile
                 className="ipt-dialog ipt-dialog-list"
               >

@@ -10,7 +10,7 @@ import { addDay, addMonth, equalDate, formatDate, getFirstDateAtMonth, getLastDa
 import { DateTime, Month, Week } from "../../../../objects/datetime";
 import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
-import { Dialog, useDialog } from "../../dialog";
+import { Dialog, useDialogRef } from "../../dialog";
 import { CalendarIcon, CrossIcon, LeftIcon, RightIcon, TodayIcon, UndoIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../hooks";
@@ -48,7 +48,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
   const mref = useRef<HTMLInputElement>(null!);
   const dref = useRef<HTMLInputElement>(null!);
   const cache = useRef<{ y: number | undefined; m: number | undefined; d: number | undefined; }>({ y: undefined, m: undefined, d: undefined });
-  const dialog = useDialog(true);
+  const dialog = useDialogRef(true);
 
   const focusInput = (target?: "y" | "m" | "d") => {
     switch (target) {
@@ -465,7 +465,7 @@ export const DateBox = <D extends DataItem.$date | DataItem.$month | undefined>(
         {fi.clearButton(empty ? undefined : clear)}
         <Dialog
           modeless
-          hook={dialog.hook}
+          ref={dialog}
           mobile
           className="ipt-dialog"
         >
