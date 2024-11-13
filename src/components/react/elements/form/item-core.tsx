@@ -331,6 +331,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
     });
     return () => {
       unmount();
+      if (ref) ref(null!);
     };
   }, [dataItem, preventCollectForm]);
 

@@ -122,6 +122,10 @@ export const TabContainer = ({
   useEffect(() => {
     refRef.current?.(key);
     onChange?.(key);
+
+    return () => {
+      if (ref) ref(null!);
+    };
   }, [key]);
 
   return (
