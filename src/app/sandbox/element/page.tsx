@@ -7,7 +7,8 @@ import { Button } from "@/react/elements/button";
 import { Dialog, useDialogRef } from "@/react/elements/dialog";
 import { Form, useFormRef } from "@/react/elements/form";
 import { FormButton } from "@/react/elements/form/form-button";
-import { useFormItemRef, useFormValue } from "@/react/elements/form/hooks";
+import { useFormValue } from "@/react/elements/form/hooks";
+import { useFormItemRef } from "@/react/elements/form/item-ref";
 import { CheckBox } from "@/react/elements/form/items/check-box";
 import { CheckList } from "@/react/elements/form/items/check-list";
 import { CreditCardNumberBox } from "@/react/elements/form/items/credit-card-box";
@@ -391,7 +392,7 @@ export default function Home() {
               dataItem={sample_text}
               required={false}
               charType="h-alpha-num"
-            // hook={formItem.hook}
+            // hook={formItem}
             />
           </FormItemWrap>
           <FormItemWrap>

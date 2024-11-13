@@ -1,6 +1,6 @@
 import { $strValidations } from "../../../../data-items/string/validation";
 import { getDefaultTabKey, TabContainer, type TabContainerProps, useTabContainer } from "../../tab-container";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type InputTabContainerOptions = Pick<FormItemOptions<undefined, string>,
   | "name"

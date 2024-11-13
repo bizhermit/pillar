@@ -15,7 +15,7 @@ import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-ar
 import { Dialog, useDialogRef } from "../../dialog";
 import { DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type SourceData = { [v: string]: any };
 type SourceTempData<V = any> = { value: V; label: any; } & { [v: string]: any };

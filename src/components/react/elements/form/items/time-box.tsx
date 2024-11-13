@@ -11,7 +11,7 @@ import { getTimeUnit, parseTimeAsUnit, roundTime, Time, TimeRadix } from "../../
 import { Dialog, useDialogRef } from "../../dialog";
 import { ClockIcon, CrossIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type TimeValue = { time: Time | null | undefined; unitValue: number | null | undefined; };
 

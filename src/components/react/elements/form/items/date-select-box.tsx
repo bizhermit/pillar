@@ -13,7 +13,7 @@ import { get, set } from "../../../../objects/struct";
 import { Dialog, useDialogRef } from "../../dialog";
 import { DownFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type DataValue = {
   str: string | null | undefined;

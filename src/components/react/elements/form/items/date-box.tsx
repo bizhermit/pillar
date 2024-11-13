@@ -13,7 +13,7 @@ import { set } from "../../../../objects/struct";
 import { Dialog, useDialogRef } from "../../dialog";
 import { CalendarIcon, CrossIcon, LeftIcon, RightIcon, TodayIcon, UndoIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type DataValue = { str: string | null | undefined; date: Date | null | undefined; };
 

@@ -9,7 +9,7 @@ import { useRefState } from "../../../hooks/ref-state";
 import useRender from "../../../hooks/render";
 import { ClearAllIcon, CrossIcon, RedoIcon, SaveIcon, UndoIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type ElecSignOptions<D extends DataItem.$any | undefined> = FormItemOptions<D, D extends DataItem.$any ? DataItem.ValueType<D> : string> & {
   preventAutoSave?: boolean;

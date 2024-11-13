@@ -9,7 +9,7 @@ import { $strValidations } from "../../../../data-items/string/validation";
 import { $structValidations } from "../../../../data-items/struct/validation";
 import { $timeValidations } from "../../../../data-items/time/validation";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 
 type HiddenOptions<V extends any, D extends DataItem.$object | undefined> = FormItemOptions<D, V> & {
   value?: V | null | undefined;

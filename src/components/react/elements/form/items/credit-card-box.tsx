@@ -5,7 +5,7 @@ import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { isEmpty } from "../../../../objects/string";
 import { joinClassNames } from "../../utilities";
-import { useFormItemCore } from "../hooks";
+import { useFormItemCore } from "../item-core";
 import { type TextBoxProps } from "./text-box";
 
 type CreditCardNumberBoxProps<D extends DataItem.$str | undefined> = Omit<TextBoxProps<D>, "inputMode">;

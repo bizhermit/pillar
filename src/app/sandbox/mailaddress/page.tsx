@@ -1,7 +1,7 @@
 "use client";
 
 import { isMailAddress } from "@/objects/string";
-import { useFormItemRef } from "@/react/elements/form/hooks";
+import { useFormItemRef } from "@/react/elements/form/item-ref";
 import { TextArea } from "@/react/elements/form/items/text-area";
 import css from "./page.module.scss";
 
@@ -12,7 +12,7 @@ const Page = () => {
     <div className={css.root}>
       <TextArea
         className={css.texts}
-        ref={texts.hook}
+        ref={texts}
       />
       <table className={css.results}>
         <thead>
