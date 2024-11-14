@@ -6,7 +6,7 @@
 - Next.js v15
 - NextAuth.js v5
 - Prisma v5
-- PostgreSQL v16
+- PostgreSQL v17
 
 # 開発環境構築
 
