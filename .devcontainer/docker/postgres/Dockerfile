@@ -1,1 +1,1 @@
-FROM postgres:16-bookworm
+FROM postgres:17-bookworm
