@@ -4,11 +4,38 @@ import { readFileSync } from "fs";
 type PlaywrightArgs = PlaywrightTestArgs & PlaywrightTestOptions & PlaywrightWorkerArgs & PlaywrightWorkerOptions;
 type PickPartial<T, K extends keyof T> = Omit<Partial<T>, K> & Pick<T, K>;
 type PlaywrightContextArgs = PickPartial<PlaywrightArgs, "page">;
+type WaitOptions = {
+  skip?: {
+    loadable?: boolean;
+    loading?: boolean;
+    imgs?: boolean;
+  };
+  throw?: boolean;
+};
+type GotoOptions = {
+  skipWait?: WaitOptions["skip"];
+};
+type ScreenShotOptions = {
+  dialog?: boolean;
+  clip?: { x: number; y: number; width: number; height: number; };
+  preventResetScroll?: boolean;
+  skipWait?: WaitOptions["skip"];
+};
+type ContextOptions = {
+  screenShot?: {
+    dir?: string;
+    index?: boolean;
+  }
+};
 
 let count = 0;
 
-export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArgs, testInfo: TestInfo) => {
-  const sleep = (time: number) => new Promise<void>(r => setTimeout(r, time));
+export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArgs, testInfo: TestInfo, ctxOpts?: ContextOptions) => {
+  const screenShotDir = ctxOpts?.screenShot?.dir ?
+    `${testInfo.outputDir}/${ctxOpts.screenShot.dir}` :
+    `${testInfo.snapshotDir}/${testInfo.project.name || args.browserName || "default"}`;
+
+  const sleep = (time: number) => page.waitForTimeout(time);
 
   const waitLoading = async () => {
     await page.waitForFunction(() => {
@@ -17,11 +44,12 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
   };
 
   const waitImgs = async () => {
-    const imgs = await page.locator("img").all();
+    const imgs = await page.locator(`img[src^="http"]`).all();
     if (imgs.length === 0) return;
     for await (const img of imgs) {
       await img.waitFor({ state: "visible" });
     }
+    if (imgs.length > 0) await sleep(Math.max(imgs.length * 200, 3000));
     await page.evaluate(() => {
       return Array.from(document.images).every(img => img.complete && img.naturalHeight !== 0);
     });
@@ -39,12 +67,13 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     });
   };
 
-  const wait = async (opts?: { throw?: boolean }) => {
+  const wait = async (opts?: WaitOptions) => {
+    const skipWait = () => new Promise<void>(r => r);
     try {
       await Promise.all([
-        waitLoading(),
-        waitImgs(),
-        waitLoadable(),
+        opts?.skip?.loading ? skipWait() : waitLoading(),
+        opts?.skip?.imgs ? skipWait() : waitImgs(),
+        opts?.skip?.loadable ? skipWait() : waitLoadable(),
       ]);
     } catch (e) {
       if (opts?.throw) throw e;
@@ -58,44 +87,62 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     waitLoadable,
     waitShowedDialog,
     wait,
-    goto: async (url: string) => {
+    goto: async (url: string, opts?: GotoOptions) => {
       await page.goto(url);
-      await wait();
+      await wait({ skip: opts?.skipWait });
     },
-    screenShot: async (name?: string) => {
-      await wait();
-      await page.evaluate(() => window.scrollTo(0, 0));
+    screenShot: async (name?: string, opts?: ScreenShotOptions) => {
+      await wait({ skip: opts?.skipWait });
+      if (!opts?.preventResetScroll && !opts?.dialog) {
+        await page.evaluate(() => window.scrollTo(0, 0));
+      }
+      let clip = opts?.clip;
+      if (!clip && opts?.dialog) {
+        await waitShowedDialog();
+        clip = (await page.locator(`dialog[open],dialog:popover-open`).first().boundingBox()) ?? undefined;
+        if (clip) {
+          // NOTE: 余白
+          const margin = 10;
+          clip.x -= margin;
+          clip.y -= margin;
+          clip.width += margin * 2;
+          clip.height += margin * 2;
+        }
+      }
+
+      const idx = ctxOpts?.screenShot?.index === false ? "" : `${(`0000` + count++).slice(-4)}_`;
       await page.screenshot({
-        path: `${testInfo.snapshotDir}/${testInfo.project.name || args.browserName || "default"}/${(`0000` + count++).slice(-4)}_${name?.replace(/^\//, "") || `${Date.now()}`}.png`,
-        fullPage: true,
+        path: `${screenShotDir}/${idx}${name || `${Date.now()}`}.png`.replace(/^\//, ""),
+        fullPage: !opts?.dialog,
+        clip,
       });
     },
-    clickButton: async (label: string | RegExp) => {
-      await page.waitForFunction(({ label }) => {
+    clickButton: async (text: string | RegExp) => {
+      await page.waitForFunction(({ text }) => {
         return Array.from(document.querySelectorAll(`button,[role="button"]`)).find(elem => {
           const tc = elem.textContent;
           if (!tc) return false;
-          if (typeof label === "string") return tc.indexOf(label) >= 0;
-          return label.test(tc);
+          if (typeof text === "string") return tc.indexOf(text) >= 0;
+          return text.test(tc);
         }) != null;
-      }, { label });
-      await page.getByRole("button", { name: label }).click();
+      }, { text });
+      await page.getByRole("button", { name: text }).click();
     },
-    clickLink: async (label: string | RegExp) => {
-      await page.waitForFunction(({ label }) => {
+    clickLink: async (text: string | RegExp) => {
+      await page.waitForFunction(({ text }) => {
         return Array.from(document.querySelectorAll("a")).find(elem => {
           const tc = elem.textContent;
           if (!tc) return false;
-          if (typeof label === "string") return tc.indexOf(label) >= 0;
-          return label.test(tc);
+          if (typeof text === "string") return tc.indexOf(text) >= 0;
+          return text.test(tc);
         }) != null;
-      }, { label });
-      await page.getByRole("button", { name: label }).click();
+      }, { text });
+      await page.getByRole("button", { name: text }).click();
     },
-    selectTab: async (label: string | RegExp) => {
+    selectTab: async (text: string | RegExp) => {
       const selector = `div.tab-item[role="tab"]`;
       await page.waitForSelector(selector);
-      const locator = page.locator(selector).filter({ hasText: label });
+      const locator = page.locator(selector).filter({ hasText: text });
       await locator.click();
     },
     form: (formSelector?: string) => {
@@ -135,29 +182,29 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
           await locator.fill(String(value));
           await locator.blur();
         },
-        selectBox: async (name: string, label: string) => {
+        selectBox: async (name: string, text: string) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
           const locator = page.locator(`${selector}>input[type="text"]`);
           await locator.focus();
-          await locator.fill(label);
+          await locator.fill(text);
           await locator.blur();
         },
         checkBox,
         toggleSwitch: checkBox,
-        radioButtons: async (name: string, label: string | RegExp) => {
+        radioButtons: async (name: string, text: string | RegExp) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
-          const locator = page.locator(`${selector}>label`, { hasText: label }).locator(`input[type="checkbox"]`);
+          const locator = page.locator(`${selector}>label`, { hasText: text }).locator(`input[type="checkbox"]`);
           await locator.setChecked(true, { force: true });
         },
-        checkList: async (name: string, labels: Array<string | RegExp>) => {
+        checkList: async (name: string, texts: Array<string | RegExp>) => {
           const selector = fselector(`div[data-name="${name}"][data-loaded]`);
           await waitLoadable(selector);
           const items = await page.locator(`${selector}>label`).all();
           const hasText = async (locator: Locator) => {
-            for await (const label of labels) {
-              if (await locator.filter({ hasText: label }).count() > 0) return true;
+            for await (const text of texts) {
+              if (await locator.filter({ hasText: text }).count() > 0) return true;
             }
             return false;
           }
