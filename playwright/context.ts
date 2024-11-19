@@ -51,7 +51,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     for await (const img of imgs) {
       await img.waitFor({ state: "visible" });
     }
-    if (imgs.length > 0) await sleep(Math.max(imgs.length * 200, 3000));
+    if (imgs.length > 0) await sleep(Math.min(imgs.length * 500, 3000));
     await page.evaluate(() => {
       return Array.from(document.images).every(img => img.complete && img.naturalHeight !== 0);
     });
