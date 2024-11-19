@@ -14,6 +14,7 @@ type WaitOptions = {
 };
 type GotoOptions = {
   skipWait?: WaitOptions["skip"];
+  preventResetMousePosition?: boolean;
 };
 type ScreenShotOptions = {
   dialog?: boolean;
@@ -36,6 +37,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     `${testInfo.snapshotDir}/${testInfo.project.name || args.browserName || "default"}`;
 
   const sleep = (time: number) => page.waitForTimeout(time);
+  const skipWait = () => new Promise<void>(r => r);
 
   const waitLoading = async () => {
     await page.waitForFunction(() => {
@@ -68,7 +70,6 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
   };
 
   const wait = async (opts?: WaitOptions) => {
-    const skipWait = () => new Promise<void>(r => r);
     try {
       await Promise.all([
         opts?.skip?.loading ? skipWait() : waitLoading(),
@@ -89,6 +90,7 @@ export const getPlaywrightPageContext = ({ page, ...args }: PlaywrightContextArg
     wait,
     goto: async (url: string, opts?: GotoOptions) => {
       await page.goto(url);
+      if (!opts?.preventResetMousePosition) await page.mouse.move(0, 0);
       await wait({ skip: opts?.skipWait });
     },
     screenShot: async (name?: string, opts?: ScreenShotOptions) => {

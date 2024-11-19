@@ -24,6 +24,21 @@ const taskId = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDay()
 
 const outputDir = path.join(".playwright");
 
+const viewports = {
+  pc: {
+    width: 1270,
+    height: 720 - 70, // NOTE: タブ、アドレスバー等を差し引く
+  },
+  tablet: {
+    width: 820,
+    height: 1080
+  },
+  sp: {
+    width: 480,
+    height: 960,
+  },
+};
+
 export default defineConfig({
   testDir: "./playwright",
   fullyParallel: true,
@@ -46,6 +61,7 @@ export default defineConfig({
       name: "chromium-ja",
       use: {
         ...devices["Desktop Chrome"],
+        viewport: viewports.pc,
         locale: "ja"
       },
     },
@@ -53,6 +69,7 @@ export default defineConfig({
       name: "chromium-enUS",
       use: {
         ...devices["Desktop Chrome"],
+        viewport: viewports.pc,
         locale: "en-US"
       },
     },
@@ -60,16 +77,23 @@ export default defineConfig({
       name: "chromium-en",
       use: {
         ...devices["Desktop Chrome"],
+        viewport: viewports.pc,
         locale: "en"
       },
     },
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: {
+        ...devices["Desktop Firefox"],
+        viewport: viewports.pc,
+      },
     },
     {
       name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      use: {
+        ...devices["Desktop Safari"],
+        viewport: viewports.pc,
+      },
     },
     /* mobile viewports. */
     // {
