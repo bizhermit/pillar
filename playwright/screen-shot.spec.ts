@@ -26,6 +26,7 @@ test("test", async ({ page, browserName }, testInfo) => {
   await f.dateBox("month", { y: 2024, m: 12 });
   await f.dateBox("date-select", { y: 2024, m: 12, d: 31 });
   await f.dateBox("month-select", { y: 2024, m: 12 });
+  await f.dateBox("sample_date", { y: 2024, m: 12, d: 31 });
   await f.timeBox("time", { h: 7, m: 30 });
   await f.textArea("text-area", "hoge\nfuga\npiyo");
   await f.radioButtons("radio", "item-1");
