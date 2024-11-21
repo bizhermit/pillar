@@ -1,7 +1,7 @@
 {
-  "name": "next-app-template",
+  "name": "node-webapp-template",
   "version": "0.0.0",
-  "description": "next-app templates",
+  "description": "node-webapp templates",
   "private": true,
   "scripts": {
     "clean": "node scripts/clean.mjs",
@@ -44,5 +44,8 @@
     "prisma": "^5.19.1",
     "ts-jest": "^29.2.5",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

@@ -8,6 +8,7 @@ const nextConfig = {
   },
   env: {
     APP_MODE: appMode,
+    API_URL: process.env.API_URL || process.env.API_URL_IN_CLIENT,
   },
   ...(outputMode === 'dist' ? {
     output: 'export',

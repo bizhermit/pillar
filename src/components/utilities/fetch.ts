@@ -60,7 +60,7 @@ const handleResponse = <T extends any>(
   };
 };
 
-const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "";
+const apiUrl = process.env.API_URL || "";
 
 const impl = async <T extends any>(url: string, init?: RequestInit) => {
   const res = await fetch(`${apiUrl}${url}`, init);
