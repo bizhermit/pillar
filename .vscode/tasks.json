@@ -2,16 +2,16 @@
   "version": "2.0.0",
   "tasks": [
     // {
-    //   "label": "fetch & merge next-app-template/main (allow unrelated histories)",
+    //   "label": "fetch & merge node-webapp-template/main (allow unrelated histories)",
     //   "group": "none",
     //   "type": "shell",
-    //   "command": "git fetch next-app-template && git merge --allow-unrelated-histories next-app-template/main"
+    //   "command": "git fetch node-webapp-template && git merge --allow-unrelated-histories node-webapp-template/main"
     // },
     // {
-    //   "label": "fetch & merge next-app-template/main",
+    //   "label": "fetch & merge node-webapp-template/main",
     //   "group": "none",
     //   "type": "shell",
-    //   "command": "git fetch next-app-template && git merge next-app-template/main"
+    //   "command": "git fetch node-webapp-template && git merge node-webapp-template/main"
     // },
     {
       "label": "cleanup branch",

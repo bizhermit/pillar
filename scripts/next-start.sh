@@ -9,8 +9,8 @@ if [ -f "$ENV_LOCAL_FILE" ]; then
   source "$ENV_LOCAL_FILE"
 fi
 
-if [ -z "$NEXT_PORT" ]; then
-  export NEXT_PORT=3000
+if [ -z "$FRONTEND_PORT" ]; then
+  export FRONTEND_PORT=3000
 fi
 
-npm run build && npx next start -p $NEXT_PORT
+npm run build && npx next start -p $FRONTEND_PORT

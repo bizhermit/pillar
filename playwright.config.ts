@@ -16,7 +16,7 @@ loadEnv(`.env.${isDev ? "development" : "production"}`);
 loadEnv(".env.local");
 loadEnv(`.env.${isDev ? "development" : "production"}.local`);
 
-const webServerUrl = `http://localhost:${process.env.NEXT_PORT || "3000"}`;
+const webServerUrl = `http://localhost:${process.env.FRONTEND_PORT || "3000"}`;
 
 const now = new Date();
 const pad = (v: number | string) => `00${v}`.slice(-2);

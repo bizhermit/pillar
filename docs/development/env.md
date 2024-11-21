@@ -19,19 +19,19 @@
 クライアントサイドで使用する場合は、キー名を`NEXT_PUBLIC_`から始まるようにしてください。  
 ※ `next.config.mjs`の`env`で設定することも可
 
-| キー                                          | 概要                                                             |
-| --------------------------------------------- | ---------------------------------------------------------------- |
-| [`TZ`](#tz)                                   | サーバーのタイムゾーン                                           |
-| [`APP_MODE`](#app_mode)                       | Webアプリケーションの動作モード                                  |
-| [`NEXT_PORT`](#next_port)                     | Nextサーバーの起動ポート                                         |
-| [`API_URL`](#api_url)                         | サーバーサイドで使用するWebAPIのオリジン                         |
-| [`NEXT_PUBLIC_API_URL`](#next_public_api_url) | クライアントサイドまたはサーバーサイドで使用するWebAPIのオリジン |
-| [`AUTH_URL`](#auth_url)                       | 認証APIのオリジン                                                |
-| [`AUTH_SECRET`](#auth_secret)                 | 認証の暗号化に使用するsecret文字列                               |
-| [`POSTGRES_USER`](#postgres_user)             | PostgreSQLの接続ユーザー                                         |
-| [`POSTGRES_PASSWORD`](#postgres_password)     | PostgreSQLの接続パスワード                                       |
-| [`POSTGRES_DB`](#postgres_db)                 | PostgreSQLの接続スキーマ                                         |
-| [`POSTGRES_PORT`](#postgres_port)             | PostgreSQLの接続ポート                                           |
+| キー                                        | 概要                                                             |
+| ------------------------------------------- | ---------------------------------------------------------------- |
+| [`TZ`](#tz)                                 | サーバーのタイムゾーン                                           |
+| [`APP_MODE`](#app_mode)                     | Webアプリケーションの動作モード                                  |
+| [`FRONTEND_PORT`](#FRONTEND_PORT)           | フロントエンドサーバーの起動ポート                               |
+| [`API_URL`](#api_url)                       | サーバーサイドで使用するWebAPIのオリジン                         |
+| [`API_URL_IN_CLIENT`](#next_public_api_url) | クライアントサイドまたはサーバーサイドで使用するWebAPIのオリジン |
+| [`AUTH_URL`](#auth_url)                     | 認証APIのオリジン                                                |
+| [`AUTH_SECRET`](#auth_secret)               | 認証の暗号化に使用するsecret文字列                               |
+| [`POSTGRES_USER`](#postgres_user)           | PostgreSQLの接続ユーザー                                         |
+| [`POSTGRES_PASSWORD`](#postgres_password)   | PostgreSQLの接続パスワード                                       |
+| [`POSTGRES_DB`](#postgres_db)               | PostgreSQLの接続スキーマ                                         |
+| [`POSTGRES_PORT`](#postgres_port)           | PostgreSQLの接続ポート                                           |
 
 ### `TZ` : サーバーのタイムゾーン  
 
@@ -57,11 +57,11 @@ Nextサーバーの起動モードとは異なります。
 | `dev`  | 開発モード<br>デバッグログ等を表示する 。                                                                        |
 | `mock` | モックモード<br>`*.mock.ts`、`*.mock.tsx`の拡張子がビルド対象に含まれる。 <br>※ ダミーデータを返すWebAPI等に使用 |
 
-### `NEXT_PORT` : Nextサーバーの起動ポート
+### `FRONTEND_PORT` : フロントエンドサーバーの起動ポート
 
 ### `API_URL` : サーバーサイドで使用するWebAPIのオリジン
 
-### `NEXT_PUBLIC_API_URL` : クライアントサイドまたはサーバーサイドで使用するWebAPIのオリジン
+### `API_URL_IN_CLIENT` : クライアントサイドまたはサーバーサイドで使用するWebAPIのオリジン
 
 ### `AUTH_URL` : 認証APIのオリジン
 
