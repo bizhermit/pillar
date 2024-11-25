@@ -4,6 +4,7 @@ import { useRef, type HTMLAttributes } from "react";
 import { $boolParse } from "../../../../data-items/bool/parse";
 import { $boolValidations } from "../../../../data-items/bool/validation";
 import { equals } from "../../../../objects";
+import "../../../../styles/elements/form/item.scss";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";
 

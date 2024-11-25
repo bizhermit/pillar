@@ -5,11 +5,11 @@
 
 ## ファイルのインポートパス
 
-`src/app/`および`src/features/`に属するファイル内でのインポートは、相対パスでの記載とします。  
-ただし`src`直下まで遡る場合はエイリアスを使用してください。  
+`src/app/`および`src/features/`に属するファイル内でのインポートは、相対パスでの記載とする。  
+ただし`src`直下まで遡る場合はエイリアスを使用する。  
 ※ 基本的にはVSCodeの自動インポート機能におまかせで良い  
   
-`src/app/`ではコンテキスト等のルートに近い場所にコンポーネントファイルがある場合はエイリアスの使用を可としますが、`src/features/`に移動させることを検討してください。  
+`src/app/`ではコンテキスト等のルートに近い場所にコンポーネントファイルがある場合はエイリアスの使用を可とするが、`src/features/`に移動させることを検討する。  
 
 - `src/components/*` → `@/*`
 - `src/features/*` → `~/*`
@@ -28,7 +28,7 @@
 | `playwright/`     | Playwright                         |
 | `docs/`           | ドキュメント                       |
 
-### 機能要件を含まないコンポーネント群（`src/components/*`）
+### 機能要件を含まない汎用コンポーネント群（`src/components/*`）
 
 | フォルダ       | 説明                   |
 | -------------- | ---------------------- |
@@ -43,7 +43,7 @@
 
 ※ `src/features/`および`src/app/`からのインポートは禁止
 
-### 機能要件を含む共通コンポーネント群（`src/features/*`）
+### 機能要件を含む汎用／共通コンポーネント群（`src/features/*`）
 
 | フォルダ            | 説明                                                                                                                                      |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -73,5 +73,19 @@
 
 ## スタイリング
 
-共通コンポーネントはcssまたはscssファイルを定義し、`src/app/layout.tsx`にインポートする。  
-`page(-client).tsx`および`layout(-client).tsx`で個別定義する場合は、[CSS Modules](https://nextjs.org/docs/app/building-your-application/styling/css-modules)を使用する。
+### グローバル／ユーティリティ
+
+cssまたはscssファイルを作成し、`src/components/styles/index.scss`内でフォワード（インポート順固定）または`src/app.layout.tsx`にインポートする。  
+※ 抽象化や共通化が難しい場合は、[Tailwind CSS](https://tailwindcss.com/)の導入も検討
+
+### 汎用／共通コンポーネント
+
+cssまたはscssファイルを定義し、使用するコンポーネント内でインポートする。  
+※ クラス名は衝突する可能性を考慮し、プレフィックス（`btn`,`ipt`,`msgbox`等）を使用する
+
+### ページ（レイアウト）コンポーネント
+
+`page(-client).tsx`および`layout(-client).tsx`で個別定義する場合は、[CSS Modules](https://nextjs.org/docs/app/building-your-application/styling/css-modules)を使用する。  
+  
+各クラス名はTypeScriptで参照するため、キャメルケースで定義する。
+※ クラス名が衝突する可能性は考慮しなくて良いため、`main`や`wrap`等の抽象的な命名で良い

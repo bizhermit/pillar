@@ -6,7 +6,7 @@ const Page = async () => {
 
   return (
     <>
-      <h1>Node WebApp Template</h1>
+      <h1>NextApp Template</h1>
       <h2>{lang("common.halloWorld")}</h2>
       <ul>
         <li>

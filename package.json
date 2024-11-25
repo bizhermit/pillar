@@ -1,24 +1,22 @@
 {
-  "name": "node-webapp-template",
+  "name": "next-app-template",
   "version": "0.0.0",
-  "description": "node-webapp templates",
+  "description": "next-app templates",
   "private": true,
   "scripts": {
     "clean": "node scripts/clean.mjs",
-    "predev": "npm run route",
-    "type-check": "npx tsc -p ./src/tsconfig.json --noEmit",
+    "route": "node scripts/next-route.mjs",
     "dev": "bash scripts/next-dev.sh",
-    "prebuild": "npm run route",
-    "build": "npx next build",
+    "build": "npm run route && npx next build",
     "next": "bash scripts/next-start.sh",
     "export": "npm run clean && npx cross-env NEXT_OUTPUT=\"dist\" npm run build",
+    "migrate": "npx prisma migrate dev",
+    "type-check": "npx tsc -p ./src/tsconfig.json --noEmit",
     "lint": "npx next lint",
     "format": "npx next lint --fix",
-    "route": "node scripts/next-route.mjs",
     "jest": "npx jest",
     "test": "npm run type-check | npm run jest",
-    "playwright": "npx playwright test && npx playwright show-report",
-    "migrate": "npx prisma migrate dev"
+    "playwright": "npx playwright test && npx playwright show-report"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.4.2",

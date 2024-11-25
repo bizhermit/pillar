@@ -4,6 +4,8 @@ import { type ChangeEvent, type HTMLAttributes, useRef } from "react";
 import { $fileParse } from "../../../../data-items/file/parse";
 import { $fileValidations } from "../../../../data-items/file/validation";
 import { useLang } from "../../../../i18n/react-hook";
+import "../../../../styles/elements/form/file.scss";
+import "../../../../styles/elements/form/item.scss";
 import { Button } from "../../button";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";

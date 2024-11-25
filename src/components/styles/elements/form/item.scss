@@ -1,4 +1,4 @@
-@use "../mixins" as mixins;
+@use "../../mixins" as mixins;
 
 @layer default {
 
@@ -13,48 +13,6 @@
 }
 
 @layer base {
-
-  .form-row {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 1.2rem;
-  }
-
-  .ipt-wrap {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 0.2rem;
-    min-width: 0;
-
-    >.ipt-msg {
-      padding: 0 0.4rem;
-    }
-  }
-
-  .ipt-range-wrap {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 0.4rem;
-
-    &:not(:has(>.ipt-wrap:not(:first-child) > .ipt-msg)) {
-      >.ipt-wrap {
-        &:first-child {
-          >.ipt-msg {
-            width: 0;
-            overflow: visible;
-            word-break: keep-all;
-            white-space: nowrap;
-          }
-        }
-      }
-    }
-  }
 
   .ipt-msg {
     font-size: 1.3rem;
@@ -793,128 +751,6 @@
   .ipt-radio {
     &::before {
       border-radius: 50%;
-    }
-  }
-
-  .ipt-file {
-    display: none !important;
-    visibility: hidden;
-    max-height: 0;
-    max-width: 0;
-    opacity: 0;
-    z-index: -2;
-  }
-
-  .ipt-file-name {
-    height: var(--btn-size);
-    display: grid;
-    place-items: center start;
-  }
-
-  .ipt-file-drop {
-    position: relative;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-start;
-    align-items: stretch;
-
-    .ipt-clear {
-      height: var(--ipt-size);
-    }
-
-    .ipt-file-name {
-      padding: 0.4rem 0.8rem;
-      flex: 1 1 0rem;
-    }
-
-    &:not([aria-disabled="true"], [aria-readonly="true"]) {
-      .ipt-file-drop-area {
-        &[data-click="true"] {
-          cursor: pointer;
-
-          @include mixins.hover {
-            opacity: 0.8;
-
-            &:active {
-              opacity: 1;
-            }
-          }
-        }
-
-        &[data-dragover] {
-          opacity: 0.8;
-        }
-      }
-    }
-
-    &[aria-disabled="true"] {
-      opacity: 0.6;
-    }
-
-    &[aria-invalid="true"] {
-      .ipt-file-drop-area {
-        background: var(--ipt-bg-err);
-        border-color: var(--ipt-bd-err);
-      }
-    }
-  }
-
-  .ipt-file-drop-area {
-    display: grid;
-    place-items: center;
-    width: 100%;
-    height: calc(var(--ipt-size) * 3);
-    max-height: 100%;
-    padding: 0 0.8rem;
-    border-radius: 2px;
-    border: 1px solid var(--ipt-bd);
-    background: var(--ipt-bg);
-    color: var(--fg-placeholder);
-    user-select: none;
-    transition: color 0.1s, background-color 0.1s, border-color 0.1s, opacity 0.1s;
-
-    &:focus-within {
-      outline-style: solid;
-    }
-  }
-
-  .ipt-elec-sign {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-start;
-    align-items: stretch;
-  }
-
-  .ipt-canvas {
-    background: #fff;
-    border: 1px solid var(--ipt-bd);
-    border-radius: 2px;
-    transition: background-color 0.1s, border-color 0.1s, box-shadow 0.1s;
-    touch-action: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    align-self: center;
-
-    &:focus {
-      outline-style: solid;
-    }
-
-    &[aria-invalid="true"] {
-      border-color: var(--ipt-bd-err);
-      box-shadow: inset 0 0 0 3px var(--ipt-bd-err);
-    }
-  }
-
-  .ipt-elec-sign-btns {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-items: center;
-
-    >.ipt-btn {
-      height: var(--ipt-size);
-      flex: 1 1 0rem;
-      width: 0;
     }
   }
 

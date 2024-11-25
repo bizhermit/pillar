@@ -8,6 +8,7 @@ import { $numValidations } from "../../../../data-items/number/validation";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { $structValidations } from "../../../../data-items/struct/validation";
 import { $timeValidations } from "../../../../data-items/time/validation";
+import "../../../../styles/elements/form/item.scss";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";
 

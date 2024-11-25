@@ -4,12 +4,12 @@ import { parseLangs } from "@/i18n/utilities";
 import type { Metadata, Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
-import { defaultLayoutTheme, LayoutProvider, LayoutTheme } from "../components/react/hooks/layout";
+import { defaultLayoutTheme, LAYOUT_THEME_KEY, LayoutProvider, LayoutTheme } from "../components/react/hooks/layout";
 import "../components/styles/index.scss";
 
 export const metadata: Metadata = {
-  title: "Next App Template",
-  description: "node-webapp template",
+  title: "NextApp Template",
+  description: "next-app template",
   formatDetection: {
     telephone: false,
     email: false,
@@ -31,7 +31,7 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const langs = parseLangs(cookieStore.get(LANG_KEY)?.value);
-  const layoutTheme = (cookieStore.get("theme")?.value as LayoutTheme) || defaultLayoutTheme;
+  const layoutTheme = (cookieStore.get(LAYOUT_THEME_KEY)?.value as LayoutTheme) || defaultLayoutTheme;
 
   return (
     <html

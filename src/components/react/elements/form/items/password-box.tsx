@@ -5,6 +5,7 @@ import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { blurToOuter } from "../../../../dom/outer-event";
 import { isEmpty } from "../../../../objects/string";
+import "../../../../styles/elements/form/item.scss";
 import { CircleFillIcon, CircleIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";

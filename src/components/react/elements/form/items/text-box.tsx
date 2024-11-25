@@ -5,6 +5,7 @@ import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { equals } from "../../../../objects";
 import { isEmpty, toFullWidth, toFullWidthKatakana, toHalfWidth, toHalfWidthKatakana, toHiragana, toKatakana } from "../../../../objects/string";
+import "../../../../styles/elements/form/item.scss";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";
 

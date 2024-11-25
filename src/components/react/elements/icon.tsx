@@ -1,4 +1,5 @@
 import { type HTMLAttributes } from "react";
+import "../../styles/elements/icon.scss";
 import { joinClassNames } from "./utilities";
 
 type IconOptions = {};

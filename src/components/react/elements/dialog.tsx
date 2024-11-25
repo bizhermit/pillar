@@ -2,6 +2,7 @@
 
 import { type CSSProperties, type HTMLAttributes, useEffect, useRef, useState } from "react";
 import { preventScroll } from "../../dom/prevent-scroll";
+import "../../styles/elements/dialog.scss";
 import { throttle } from "../../utilities/throttle";
 import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./utilities";

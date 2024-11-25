@@ -2,6 +2,7 @@
 
 import { type ReactNode } from "react";
 import { useLang } from "../../i18n/react-hook";
+import "../../styles/elements/accordion.scss";
 import { type ButtonProps } from "./button";
 import { DownIcon, RightIcon } from "./icon";
 import { joinClassNames } from "./utilities";

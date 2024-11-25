@@ -9,7 +9,7 @@ export const Links = () => {
           href="/sandbox/page-transition/ssr/path-params/[[...id]]"
           params={{}}
         >
-              null
+          null
         </Link>
       </li>
       <li>
@@ -17,7 +17,7 @@ export const Links = () => {
           href="/sandbox/page-transition/ssr/path-params/[[...id]]"
           params={{ id: 4 }}
         >
-              /4
+          /4
         </Link>
       </li>
       <li>
@@ -25,7 +25,7 @@ export const Links = () => {
           href="/sandbox/page-transition/ssr/path-params/[[...id]]"
           params={{ id: 5 }}
         >
-              /5
+          /5
         </Link>
       </li>
       <li>
@@ -33,7 +33,7 @@ export const Links = () => {
           href="/sandbox/page-transition/ssr/path-params/[[...id]]"
           params={{ id: [6, 7] }}
         >
-              /6/7
+          /6/7
         </Link>
       </li>
       <li>
@@ -41,7 +41,7 @@ export const Links = () => {
           href="/sandbox/page-transition/ssr/path-params/[[...id]]"
           params={{ id: [8, 9, 10] }}
         >
-              /8/9/10
+          /8/9/10
         </Link>
       </li>
       <li>

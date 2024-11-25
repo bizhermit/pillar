@@ -2,6 +2,7 @@
 
 import { type HTMLAttributes, useEffect, useRef } from "react";
 import { preventScroll } from "../../../dom/prevent-scroll";
+import "../../../styles/elements/loading.scss";
 import { joinClassNames } from "../utilities";
 
 const LoadingBarWithMask = ({

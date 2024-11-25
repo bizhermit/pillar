@@ -4,6 +4,7 @@ import { type ChangeEvent, useRef } from "react";
 import { $strParse } from "../../../../data-items/string/parse";
 import { $strValidations } from "../../../../data-items/string/validation";
 import { isEmpty } from "../../../../objects/string";
+import "../../../../styles/elements/form/item.scss";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";
 import { type TextBoxProps } from "./text-box";

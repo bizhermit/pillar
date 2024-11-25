@@ -2,12 +2,7 @@
 
 import { createContext, type ReactNode, use } from "react";
 import { clearLang, setLangs } from "./client";
-import { LANG_KEY } from "./consts";
 import { langFactoryCore } from "./core";
-import { parseLangs } from "./utilities";
-
-// NOTE developビルドエラー回避用
-process.env.NODE_ENV.startsWith("dev") && typeof window === "undefined" && parseLangs((await require("next/headers").cookies()).get(LANG_KEY)?.value);
 
 interface LangContextProps extends LangAccessor {
   set: (langs: Array<Lang>) => void

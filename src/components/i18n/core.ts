@@ -1,6 +1,8 @@
 import { DEFAULT_LANG } from "./consts";
 
-const importFile = (l: Lang, s: LangSection) => require(`src/i18n/${l || DEFAULT_LANG}/${s}`)?.default;
+const importFile = (l: Lang, s: LangSection) => require(`src/i18n/${l}/${s}`)?.default;
+
+const D_L = DEFAULT_LANG; // NOTE: ここで代入定義しないと、フォールバックでデフォルト参照時に`DEFAULT_LANG is not defined`となる
 
 export const langFactoryCore = (langs: Array<Lang>, cache?: { [v: string | number | symbol]: any }) => {
   const $cache: Partial<LangCache> = (() => {
@@ -27,13 +29,13 @@ export const langFactoryCore = (langs: Array<Lang>, cache?: { [v: string | numbe
       if (typeof func === "function") return func(arg as any);
       return func;
     }
-    if ($cache[DEFAULT_LANG] == null) $cache[DEFAULT_LANG] = {};
+    if ($cache[D_L] == null) $cache[D_L] = {};
     try {
-      if (!(s in $cache[DEFAULT_LANG]!)) $cache[DEFAULT_LANG]![s] = importFile(DEFAULT_LANG, s);
+      if (!(s in $cache[D_L]!)) $cache[D_L]![s] = importFile(D_L, s);
     } catch (e) {
-      $cache[DEFAULT_LANG]![s] = null;
+      $cache[D_L]![s] = null;
     }
-    const func = $cache[DEFAULT_LANG]![s]?.[k];
+    const func = $cache[D_L]![s]?.[k];
     if (typeof func === "function") return func(arg as any);
     return func;
   }) as LangAccessor;

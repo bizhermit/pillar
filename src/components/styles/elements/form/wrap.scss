@@ -1,0 +1,45 @@
+@layer base {
+
+  .form-row {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1.2rem;
+  }
+
+  .ipt-wrap {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.2rem;
+    min-width: 0;
+
+    >.ipt-msg {
+      padding: 0 0.4rem;
+    }
+  }
+
+  .ipt-range-wrap {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.4rem;
+
+    &:not(:has(>.ipt-wrap:not(:first-child) > .ipt-msg)) {
+      >.ipt-wrap {
+        &:first-child {
+          >.ipt-msg {
+            width: 0;
+            overflow: visible;
+            word-break: keep-all;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+
+}

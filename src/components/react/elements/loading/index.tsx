@@ -1,4 +1,5 @@
 import { lazy, type HTMLAttributes } from "react";
+import "../../../styles/elements/loading.scss";
 import { joinClassNames } from "../utilities";
 
 const LoadingBarWithMask = lazy(() => import("./bar-mask"));
