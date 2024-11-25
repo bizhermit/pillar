@@ -26,7 +26,7 @@ const nextConfig = {
   ],
   images: {
     unoptimized: isExport,
-  }
+  },
 };
 
 export default nextConfig;
