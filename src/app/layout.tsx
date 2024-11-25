@@ -8,7 +8,7 @@ import { defaultLayoutTheme, LayoutProvider, LayoutTheme } from "../components/r
 import "../components/styles/index.scss";
 
 export const metadata: Metadata = {
-  title: "Next App Template",
+  title: "NextApp Template",
   description: "next-app template",
   formatDetection: {
     telephone: false,
