@@ -9,7 +9,7 @@ import "../components/styles/index.scss";
 
 export const metadata: Metadata = {
   title: "Next App Template",
-  description: "node-webapp template",
+  description: "next-app template",
   formatDetection: {
     telephone: false,
     email: false,

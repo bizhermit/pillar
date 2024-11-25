@@ -13,4 +13,4 @@ if [ -z "$FRONTEND_PORT" ]; then
   export FRONTEND_PORT=3000
 fi
 
-npm run build && npx next start -p $FRONTEND_PORT
+npm run clean && npm run build && npx next start -p $FRONTEND_PORT
