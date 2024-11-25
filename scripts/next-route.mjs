@@ -23,7 +23,7 @@ const appRoot = path.join(srcRoot, appAlias);
 const pageAlias = "pages";
 const pageRoot = path.join(srcRoot, pageAlias);
 
-const extensions = ["ts", "tsx", "mts", "cts", ...(appMode === "mock" ? ["mock.ts", "mock.tsx"] : [])].sort((a, b) => b.length - a.length);
+const extensions = ["ts", "tsx", "mts", "cts", "mock.ts", "mock.tsx"].sort((a, b) => b.length - a.length);
 
 const pagesRoutes = [];
 const pagesApiRoutes = [];
@@ -111,23 +111,27 @@ const pickNextPathNameAsPages = (fileName) => {
   return pn.match(/(.*)\/index/)?.[1] ?? pn;
 };
 
-if (appMode === "mock") {
-  const map = {};
-  appApiRoutes.forEach(pathName => {
-    const pn = pickNextPathName(pathName).match(/(.*)\/route/)?.[1] || "/";
-    if (map[pn] == null) map[pn] = [];
-    map[pn].push(pathName);
-  });
-  Object.keys(map).forEach(pn => {
-    const pathList = map[pn];
-    if (pathList.length === 1) return;
-    pathList.forEach(pathName => {
+const routeMap = {};
+appApiRoutes.forEach(pathName => {
+  const pn = pickNextPathName(pathName).match(/(.*)\/route/)?.[1] || "/";
+  if (routeMap[pn] == null) routeMap[pn] = [];
+  routeMap[pn].push(pathName);
+});
+Object.keys(routeMap).forEach(pn => {
+  const pathList = routeMap[pn];
+  if (pathList.length === 1) return;
+  pathList.forEach(pathName => {
+    if (appMode === "mock") {
       if (!pathName.match(/\.mock\.tsx?/)) {
         appApiRoutes.splice(appApiRoutes.findIndex(route => route === pathName), 1);
       }
-    });
+    } else {
+      if (pathName.match(/\.mock\.tsx?/)) {
+        appApiRoutes.splice(appApiRoutes.findIndex(route => route === pathName), 1);
+      }
+    }
   });
-}
+});
 
 const contents = `// generate by script
 // do not edit
