@@ -7,6 +7,9 @@ export type LayoutTheme = "auto" | "light" | "dark";
 
 export const defaultLayoutTheme: LayoutTheme = "auto";
 
+export const LAYOUT_THEME_KEY = "theme";
+export const LAYOUT_THEME_ATTR = "data-theme";
+
 export const WindowSize = {
   xs: 1,
   s: 2,
@@ -39,9 +42,9 @@ type Props = {
 export const LayoutProvider = (props: Props) => {
   const [theme, setTheme] = useReducer((_: LayoutTheme, action: LayoutTheme) => {
     if (typeof window !== "undefined") {
-      document.documentElement.setAttribute("data-theme", action);
-      if (action === "auto") deleteCookie("theme");
-      else setCookie("theme", action);
+      document.documentElement.setAttribute(LAYOUT_THEME_ATTR, action);
+      if (action === "auto") deleteCookie(LAYOUT_THEME_KEY);
+      else setCookie(LAYOUT_THEME_KEY, action);
     }
     return action;
   }, props.defaultLayoutTheme || defaultLayoutTheme);
@@ -69,7 +72,7 @@ export const LayoutProvider = (props: Props) => {
       setWindowSize(WindowSize.xs);
     };
     window.addEventListener("resize", resizeWindow);
-    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute(LAYOUT_THEME_ATTR, theme);
     return () => {
       window.removeEventListener("resize", resizeWindow);
     };
