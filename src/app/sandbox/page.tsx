@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 "use client";
 
-import { clearLang, setLang } from "@/i18n/client";
 import { useLang } from "@/i18n/react-hook";
 import { Button } from "@/react/elements/button";
 import { getCookie } from "@/utilities/cookie";
@@ -15,7 +14,7 @@ const Page = () => {
         onClick={() => {
           console.log("--- delete lang ---");
           console.log(getCookie("lang"));
-          clearLang();
+          lang.reset();
           console.log(getCookie("lang"));
         }}
       >
@@ -23,21 +22,21 @@ const Page = () => {
       </Button>
       <Button
         onClick={() => {
-          setLang("ja");
+          lang.set(["ja"]);
         }}
       >
         ja
       </Button>
       <Button
         onClick={() => {
-          setLang("en-US");
+          lang.set(["en-US", "en"]);
         }}
       >
         en-US
       </Button>
       <Button
         onClick={() => {
-          setLang("en");
+          lang.set(["en", "en-US"]);
         }}
       >
         en
