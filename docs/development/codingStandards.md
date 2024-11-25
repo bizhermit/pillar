@@ -75,7 +75,7 @@
 
 ### グローバル／ユーティリティ
 
-cssまたはscssファイルを作成し、`src/app.layout.tsx`にインポートする。  
+cssまたはscssファイルを作成し、`src/components/styles/index.scss`内でフォワード（インポート順固定）または`src/app.layout.tsx`にインポートする。  
 ※ 抽象化や共通化が難しい場合は、[Tailwind CSS](https://tailwindcss.com/)の導入も検討
 
 ### 汎用／共通コンポーネント
