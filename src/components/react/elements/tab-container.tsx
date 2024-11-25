@@ -2,6 +2,7 @@
 
 import { type HTMLAttributes, type ReactNode, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { clone } from "../../objects";
+import "../../styles/elements/tab-container.scss";
 import { ifStr, joinClassNames } from "./utilities";
 
 type TabContainerHookConnectionParams = {

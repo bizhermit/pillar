@@ -7,6 +7,7 @@ import { $numParse } from "../../../../data-items/number/parse";
 import { $strParse } from "../../../../data-items/string/parse";
 import { equals } from "../../../../objects";
 import { set } from "../../../../objects/struct";
+import "../../../../styles/elements/form/item.scss";
 import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";

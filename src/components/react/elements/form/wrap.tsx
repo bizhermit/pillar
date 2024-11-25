@@ -1,4 +1,5 @@
 import { ReactElement, ReactNode, type HTMLAttributes } from "react";
+import "../../../styles/elements/form/wrap.scss";
 import { joinClassNames } from "../utilities";
 
 type Props = HTMLAttributes<HTMLDivElement>;

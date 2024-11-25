@@ -8,6 +8,7 @@ import { DateTime } from "../../../../objects/datetime";
 import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
 import { getTimeUnit, parseTimeAsUnit, roundTime, Time, TimeRadix } from "../../../../objects/time";
+import "../../../../styles/elements/form/item.scss";
 import { Dialog, useDialogRef } from "../../dialog";
 import { ClockIcon, CrossIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";

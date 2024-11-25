@@ -5,6 +5,8 @@ import { useLang } from "../../../../i18n/react-hook";
 import { equals } from "../../../../objects";
 import { convertBlobToFile, convertFileToBase64 } from "../../../../objects/file";
 import { isEmpty } from "../../../../objects/string";
+import "../../../../styles/elements/form/elec-sign.scss";
+import "../../../../styles/elements/form/item.scss";
 import { useRefState } from "../../../hooks/ref-state";
 import useRender from "../../../hooks/render";
 import { ClearAllIcon, CrossIcon, RedoIcon, SaveIcon, UndoIcon } from "../../icon";

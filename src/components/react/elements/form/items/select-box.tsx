@@ -11,6 +11,7 @@ import { blurToOuter } from "../../../../dom/outer-event";
 import { equals } from "../../../../objects";
 import { isEmpty } from "../../../../objects/string";
 import { set } from "../../../../objects/struct";
+import "../../../../styles/elements/form/item.scss";
 import { type LoadableArray, useLoadableArray } from "../../../hooks/loadable-array";
 import { Dialog, useDialogRef } from "../../dialog";
 import { DownFillIcon } from "../../icon";

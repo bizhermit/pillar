@@ -1,6 +1,7 @@
 "use client";
 
 import { type ButtonHTMLAttributes, type MouseEvent, type MutableRefObject } from "react";
+import "../../styles/elements/button.scss";
 import { useRefState } from "../hooks/ref-state";
 import { joinClassNames } from "./utilities";
 

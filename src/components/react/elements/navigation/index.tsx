@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import "../../../styles/elements/navigation.scss";
 import { CrossIcon, MenuIcon, MenuLeftIcon, MenuRightIcon } from "../icon";
 import { joinClassNames } from "../utilities";
 import { NavCloseBtn, NavMinBtn, NavOpenBtn, NavSizeAutoButton, NavVisBtn } from "./client-components";

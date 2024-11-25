@@ -4,6 +4,7 @@ import { type ChangeEvent, type HTMLAttributes, type KeyboardEvent, useRef } fro
 import { $numParse } from "../../../../data-items/number/parse";
 import { $numValidations } from "../../../../data-items/number/validation";
 import { formatNum, parseNum } from "../../../../objects/number";
+import "../../../../styles/elements/form/item.scss";
 import { DownFillIcon, UpFillIcon } from "../../icon";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";

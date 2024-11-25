@@ -3,6 +3,7 @@
 import { type HTMLAttributes, type KeyboardEvent, useRef } from "react";
 import { $numParse } from "../../../../data-items/number/parse";
 import { $numValidations } from "../../../../data-items/number/validation";
+import "../../../../styles/elements/form/item.scss";
 import { joinClassNames } from "../../utilities";
 import { useFormItemCore } from "../item-core";
 

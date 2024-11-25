@@ -1,0 +1,42 @@
+@layer base {
+  .ipt-elec-sign {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  .ipt-canvas {
+    background: #fff;
+    border: 1px solid var(--ipt-bd);
+    border-radius: 2px;
+    transition: background-color 0.1s, border-color 0.1s, box-shadow 0.1s;
+    touch-action: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    align-self: center;
+
+    &:focus {
+      outline-style: solid;
+    }
+
+    &[aria-invalid="true"] {
+      border-color: var(--ipt-bd-err);
+      box-shadow: inset 0 0 0 3px var(--ipt-bd-err);
+    }
+  }
+
+  .ipt-elec-sign-btns {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+
+    >.ipt-btn {
+      height: var(--ipt-size);
+      flex: 1 1 0rem;
+      width: 0;
+    }
+  }
+
+}

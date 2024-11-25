@@ -4,6 +4,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { preventScroll } from "../../dom/prevent-scroll";
 import { useLang } from "../../i18n/react-hook";
+import "../../styles/elements/message-box.scss";
 import { Button, type ButtonProps } from "./button";
 
 type MessageBoxChildrenProps = {

@@ -40,7 +40,7 @@ type TypeofAppApi = {
   "/api": typeof import("src/app/api/route.ts");
   "/api/auth/[...nextauth]": typeof import("src/app/api/auth/[...nextauth]/route.ts");
   "/sandbox/datetime/api": typeof import("src/app/sandbox/datetime/api/route.ts");
-  "/sandbox/fetch/api": typeof import("src/app/sandbox/fetch/api/route.mock.ts");
+  "/sandbox/fetch/api": typeof import("src/app/sandbox/fetch/api/route.ts");
 };
 
 type PagesRoutePath = "";
