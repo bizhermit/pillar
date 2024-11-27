@@ -50,6 +50,7 @@ export type ListViewColumn<
   cell?: Node | ((params: RenderParams<D> & { index: number; rowData: D | null | undefined; }) => void);
   align?: ListViewCellAlign;
   sticky?: boolean;
+  fill?: boolean;
   width?: number | string;
   minWidth?: number | string;
   maxWidth?: number | string;
@@ -176,6 +177,7 @@ export class ListViewClass<D extends Data> {
     this.dummy.style.height = `${(this.value?.length ?? 0) * this.rowHeight}px`;
     if (this.value?.length === 0) this.emptyMsg.setAttr("data-vis");
     else this.emptyMsg.rmAttr("data-vis");
+    this.calcScrollBarWidth();
     this.render();
     return this;
   }
@@ -203,6 +205,7 @@ export class ListViewClass<D extends Data> {
           left = parseStrNum(c.width || LIST_VIEW_DEFAULT_CELL_WIDTH);
         }
       }
+      if (c.fill) cell.setAttr("data-fill");
       props.dom.addChild(cell);
       return {
         column: c,
@@ -357,27 +360,26 @@ export class ListViewClass<D extends Data> {
   }
 
   public render() {
-    if (this.rows.length === 0) {
-      this.generateRows();
-    }
+    if (this.rows.length === 0) this.generateRows();
     this.renderHeader();
     this.renderFooter();
     this.renderBindData();
     return this;
   }
 
-  public resize() {
+  protected resize() {
     this.generateRows();
+    this.calcScrollBarWidth();
     this.renderBindData();
   }
 
-  public scrollY() {
+  protected scrollY() {
     this.firstIndex = Math.max(0, Math.min((this.value?.length ?? 0) - this.rows.length, Math.floor(this.bodyWrap.elem.scrollTop / this.rowHeight)));
     this.body.elem.scrollTop = this.bodyWrap.elem.scrollTop - (this.rowHeight * this.firstIndex);
     this.renderBindData();
   }
 
-  public scrollX(triger: "h" | "b" | "f") {
+  protected scrollX(triger: "h" | "b" | "f") {
     switch (triger) {
       case "b":
         this.footer.elem.scrollLeft = this.body.elem.scrollLeft;
@@ -394,6 +396,12 @@ export class ListViewClass<D extends Data> {
       default:
         break;
     }
+  }
+
+  protected calcScrollBarWidth() {
+    const w = this.bodyWrap.elem.offsetWidth - this.bodyWrap.elem.clientWidth;
+    if (this.header) this.header.elem.style.paddingRight = `${w}px`;
+    this.footer.elem.style.paddingRight = `${w}px`;
   }
 
 }

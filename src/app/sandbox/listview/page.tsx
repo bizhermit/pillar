@@ -70,7 +70,7 @@ const Page = () => {
       { name: "col6", headerCell: "Col6" },
       { name: "col7", headerCell: "Col7" },
       { name: "col8", headerCell: "Col8" },
-      { name: "col9", headerCell: "Col9" },
+      { name: "col9", headerCell: "Col9", fill: true },
     ];
   }, []);
 
