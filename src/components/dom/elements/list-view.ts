@@ -363,6 +363,7 @@ export class ListViewClass<D extends Data> {
       if (!row.data) row.elem.rmAttr("data-none");
       if (row.data === data) continue;
       row.data = data;
+      row.elem.setAttr("data-nth", idx % 2 === 1 ? "odd" : "even");
       row.cols.forEach(c => {
         if (c.column.cell) {
           if (typeof c.column.cell === "function") {

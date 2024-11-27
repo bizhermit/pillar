@@ -42,6 +42,7 @@ const Page = () => {
         name: "img",
         width: 40,
         sticky: true,
+        align: "center",
         headerCell: "IMG",
         initializeCell: ({ cellElem }) => {
           const imgElem = document.createElement("img");
