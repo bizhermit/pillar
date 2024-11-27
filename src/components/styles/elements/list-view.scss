@@ -1,7 +1,139 @@
 @layer base {
 
   .lv-main {
+    position: relative;
     display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    max-height: 100%;
+    background-color: blue;
+
+    --row-height: 30px;
+  }
+
+  :is(.lv-header, .lv-footer, .lv-body) {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-width: 100%;
+    min-height: 0;
+  }
+
+  :is(.lv-header, .lv-footer) {
+    flex: none;
+    overflow: hidden;
+    max-width: 100%;
+    height: fit-content;
+    background-color: green;
+  }
+
+  .lv-header {
+    overflow: auto;
+    scrollbar-width: none;
+    font-weight: bold;
+  }
+
+  .lv-footer {
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    >.lv-row {
+      min-height: 1px;
+
+      &[data-none] {
+        display: flex;
+        visibility: hidden;
+        height: 0;
+      }
+    }
+  }
+
+  .lv-body-wrap {
+    position: relative;
+    flex: 1 1 0rem;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    overflow-x: visible;
+    overflow-y: auto;
+    overscroll-behavior-y: none;
+  }
+
+  .lv-body {
+    position: sticky;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: visible;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  .lv-dummy {
+    position: absolute;
+    visibility: hidden;
+    user-select: none;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .lv-row {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    height: var(--row-height);
+
+    &[data-none] {
+      display: none;
+      pointer-events: none;
+      user-select: none;
+      visibility: hidden;
+    }
+
+    &:not(:first-child) {
+      border-top: 1px solid #000;
+    }
+  }
+
+  .lv-cell {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+    width: 100px;
+    background: white;
+    color: black;
+    z-index: 0;
+
+    &[data-sticky] {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+
+    &[data-align="center"] {
+      justify-content: center;
+    }
+
+    &[data-align="right"] {
+      justify-content: flex-end;
+    }
+  }
+
+  .lv-span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    padding: 0 0.8rem;
   }
 
 }

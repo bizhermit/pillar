@@ -3,4 +3,22 @@
   flex-flow: column nowrap;
   justify-content: stretch;
   align-items: stretch;
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 0rem;
+  padding: 0.8rem;
+  background-color: gray;
+}
+
+.row {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.listview {
+  width: 100%;
+  height: 100%;
 }
