@@ -162,6 +162,8 @@
       z-index: 1;
     }
 
+    &[data-fill] {}
+
     &[data-align="center"] {
       justify-content: center;
     }

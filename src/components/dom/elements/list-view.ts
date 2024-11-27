@@ -13,7 +13,7 @@ type ListViewCol<D extends Data> = {
   wElems: Array<HTMLElement>;
 };
 type ListViewRow<D extends Data> = {
-  elem: DomElement<HTMLDivElement>;
+  dom: DomElement<HTMLDivElement>;
   cols: Array<ListViewCol<D>>;
   data: D | null | undefined;
 };
@@ -31,6 +31,8 @@ type InitializeCellResponse<CellElems extends Array<HTMLElement>> = {
   elems: CellElems;
 };
 
+type ListViewCellAlign = "left" | "center" | "right";
+
 export type ListViewColumn<
   D extends Data,
   CellElems extends Array<HTMLElement> = Array<HTMLElement>,
@@ -40,13 +42,13 @@ export type ListViewColumn<
   name: string;
   initializeHeaderCell?: (params: InitializeCellParams<D>) => (InitializeCellResponse<HCellElems> | void);
   headerCell?: Node | ((params: RenderParams<D>) => void);
-  headerAlign?: "left" | "center" | "right";
+  headerAlign?: ListViewCellAlign;
   initializeFooterCell?: (params: InitializeCellParams<D>) => (InitializeCellResponse<FCellElems> | void);
   footerCell?: Node | ((params: RenderParams<D>) => void);
-  footerAlign?: "left" | "center" | "right";
+  footerAlign?: ListViewCellAlign;
   initializeCell?: (params: InitializeCellParams<D>) => (InitializeCellResponse<CellElems> | void);
   cell?: Node | ((params: RenderParams<D> & { index: number; rowData: D | null | undefined; }) => void);
-  align?: "left" | "center" | "right";
+  align?: ListViewCellAlign;
   sticky?: boolean;
   width?: number | string;
   minWidth?: number | string;
@@ -178,14 +180,16 @@ export class ListViewClass<D extends Data> {
     return this;
   }
 
-  protected generateHeader() {
-    if (!this.header) return;
-    const row = this.cloneBase.row.clone().rmAttr("data-none");
-
+  protected generateRowColsImpl(props: {
+    dom: DomElement<HTMLDivElement>;
+    align?: (col: ListViewColumn<D>) => (ListViewCellAlign | undefined);
+    initialize?: (params: { col: ListViewColumn<D>; cell: DomElement<HTMLDivElement>; }) => (InitializeCellResponse<Array<HTMLElement>> | void);
+  }) {
     let left = "";
-    const cols = this.columns.map(c => {
+    return this.columns.map(c => {
       const cell = this.cloneBase.cell.clone();
-      cell.setAttr("data-align", c.headerAlign || "center");
+      const align = props.align?.(c);
+      if (align) cell.setAttr("data-align", align);
       const parseStrNum = (w: number | string) => typeof w === "string" ? w : `${w}px`;
       if (c.width) cell.elem.style.width = parseStrNum(c.width);
       if (c.minWidth) cell.elem.style.minWidth = parseStrNum(c.minWidth);
@@ -199,15 +203,12 @@ export class ListViewClass<D extends Data> {
           left = parseStrNum(c.width || LIST_VIEW_DEFAULT_CELL_WIDTH);
         }
       }
-      row.addChild(cell);
+      props.dom.addChild(cell);
       return {
         column: c,
         elem: cell,
         wElems: (() => {
-          const init = c.initializeHeaderCell?.({
-            column: c,
-            cellElem: cell.elem,
-          });
+          const init = props.initialize?.({ col: c, cell });
           if (init) return init.elems;
           const sElem = this.cloneBase.span.cloneNode() as HTMLSpanElement;
           sElem.classList.add("lv-span");
@@ -216,59 +217,46 @@ export class ListViewClass<D extends Data> {
         })(),
       };
     });
-    this.headerRow = {
-      elem: row,
-      data: null,
-      cols,
-    };
-    this.header.addChild(row);
+  }
+
+  protected generateHeader() {
+    if (!this.header) return;
+    const dom = this.cloneBase.row.clone().rmAttr("data-none");
+
+    const cols = this.generateRowColsImpl({
+      dom,
+      align: c => c.align || "center",
+      initialize: ({ col, cell }) => {
+        return col.initializeHeaderCell?.({
+          column: col,
+          cellElem: cell.elem,
+        });
+      }
+    });
+    this.headerRow = { dom, cols, data: null };
+    this.header.addChild(dom);
   }
 
   protected generateFooter() {
-    const row = this.cloneBase.row.clone();
-
-    let left = "";
-    const cols = this.columns.map(c => {
-      const cell = this.cloneBase.cell.clone();
-      if (c.footerAlign) cell.setAttr("data-align", c.footerAlign);
-      const parseStrNum = (w: number | string) => typeof w === "string" ? w : `${w}px`;
-      if (c.width) cell.elem.style.width = parseStrNum(c.width);
-      if (c.minWidth) cell.elem.style.minWidth = parseStrNum(c.minWidth);
-      if (c.maxWidth) cell.elem.style.maxWidth = parseStrNum(c.maxWidth);
-      if (c.sticky) {
-        cell.setAttr("data-sticky");
-        if (left) {
-          cell.elem.style.setProperty("left", left.indexOf("+") > 0 ? `calc(${left})` : left);
-          left += ` + ${parseStrNum(c.width || LIST_VIEW_DEFAULT_CELL_WIDTH)}`;
-        } else {
-          left = parseStrNum(c.width || LIST_VIEW_DEFAULT_CELL_WIDTH);
-        }
-      }
-      row.addChild(cell);
-      return {
-        column: c,
-        elem: cell,
-        wElems: (() => {
-          const init = c.initializeFooterCell?.({
-            column: c,
-            cellElem: cell.elem,
-          });
-          if (init) return init.elems;
-          const sElem = this.cloneBase.span.cloneNode() as HTMLSpanElement;
-          sElem.classList.add("lv-span");
-          cell.elem.appendChild(sElem);
-          return [sElem];
-        })(),
-      };
+    const dom = this.cloneBase.row.clone();
+    const cols = this.generateRowColsImpl({
+      dom,
+      align: c => c.footerAlign,
+      initialize: ({ col, cell }) => {
+        return col.initializeFooterCell?.({
+          column: col,
+          cellElem: cell.elem,
+        });
+      },
     });
     if (this.columns.find(c => c.footerCell != null)) {
       this.footerRow = {
-        elem: row.rmAttr("data-none"),
-        data: null,
+        dom: dom.rmAttr("data-none"),
         cols,
+        data: null,
       };
     }
-    this.footer.addChild(row);
+    this.footer.addChild(dom);
   }
 
   protected generateRows() {
@@ -279,53 +267,25 @@ export class ListViewClass<D extends Data> {
     if (diff < 0) {
       for (let i = this.rows.length - 1, il = this.rows.length + diff; i >= il; i--) {
         const row = this.rows[i];
-        this.body.rmChild(row.elem);
+        this.body.rmChild(row.dom);
         this.rows.splice(i, 1);
       }
       return diff;
     }
     for (let i = 0; i < diff; i++) {
-      const row: ListViewRow<D> = {
-        elem: this.cloneBase.row.clone(),
-        data: null,
-        cols: null!,
-      };
-      let left = "";
-      row.cols = this.columns.map(c => {
-        const cell = this.cloneBase.cell.clone();
-        if (c.align) cell.setAttr("data-align", c.align);
-        const parseStrNum = (w: number | string) => typeof w === "string" ? w : `${w}px`;
-        if (c.width) cell.elem.style.width = parseStrNum(c.width);
-        if (c.minWidth) cell.elem.style.minWidth = parseStrNum(c.minWidth);
-        if (c.maxWidth) cell.elem.style.maxWidth = parseStrNum(c.maxWidth);
-        if (c.sticky) {
-          cell.setAttr("data-sticky");
-          if (left) {
-            cell.elem.style.setProperty("left", left.indexOf("+") > 0 ? `calc(${left})` : left);
-            left += ` + ${parseStrNum(c.width || LIST_VIEW_DEFAULT_CELL_WIDTH)}`;
-          } else {
-            left = parseStrNum(c.width || LIST_VIEW_DEFAULT_CELL_WIDTH);
-          }
-        }
-        row.elem.addChild(cell);
-        return {
-          column: c,
-          elem: cell,
-          wElems: (() => {
-            const init = c.initializeCell?.({
-              column: c,
-              cellElem: cell.elem,
-            });
-            if (init) return init.elems;
-            const sElem = this.cloneBase.span.cloneNode() as HTMLSpanElement;
-            sElem.classList.add("lv-span");
-            cell.elem.appendChild(sElem);
-            return [sElem];
-          })(),
-        };
+      const dom = this.cloneBase.row.clone();
+      const cols = this.generateRowColsImpl({
+        dom,
+        align: c => c.align,
+        initialize: ({ col, cell }) => {
+          return col.initializeCell?.({
+            column: col,
+            cellElem: cell.elem,
+          });
+        },
       });
-      this.body.addChild(row.elem);
-      this.rows.push(row);
+      this.body.addChild(dom);
+      this.rows.push({ dom, cols, data: null });
     }
     return diff;
   }
@@ -368,14 +328,14 @@ export class ListViewClass<D extends Data> {
       const row = this.rows[i];
       const data = this.value?.[idx];
       if (data == null) {
-        if (row.data) row.elem.setAttr("data-none");
+        if (row.data) row.dom.setAttr("data-none");
         row.data = null;
         continue;
       }
-      if (!row.data) row.elem.rmAttr("data-none");
+      if (!row.data) row.dom.rmAttr("data-none");
       if (row.data === data) continue;
       row.data = data;
-      row.elem.setAttr("data-nth", idx % 2 === 1 ? "odd" : "even");
+      row.dom.setAttr("data-nth", idx % 2 === 1 ? "odd" : "even");
       row.cols.forEach(c => {
         if (c.column.cell) {
           if (typeof c.column.cell === "function") {
