@@ -38,17 +38,20 @@
     overflow: auto;
     scrollbar-width: none;
     font-weight: bold;
-    background: var(--list-header-bg);
-    color: var(--list-header-fg);
+
+    >.lv-row {
+      background: var(--list-header-bg);
+      color: var(--list-header-fg);
+    }
   }
 
   .lv-footer {
     overflow-x: auto;
     overflow-y: hidden;
-    background: var(--list-footer-bg);
-    color: var(--list-footer-fg);
 
     >.lv-row {
+      background: var(--list-footer-bg);
+      color: var(--list-footer-fg);
       min-height: 1px;
 
       &[data-none] {
@@ -89,17 +92,17 @@
         color: var(--list-cell1-fg);
       }
 
-      @include mixins.hover {
-        background: var(--list-row-hover-bg);
-        color: var(--list-row-hover-fg);
+      // @include mixins.hover {
+      //   background: var(--list-row-hover-bg);
+      //   color: var(--list-row-hover-fg);
 
-        .lv-cell {
-          @include mixins.hover {
-            background: var(--list-cell-hover-bg);
-            color: var(--list-cell-hover-fg);
-          }
-        }
-      }
+      //   .lv-cell {
+      //     @include mixins.hover {
+      //       background: var(--list-cell-hover-bg);
+      //       color: var(--list-cell-hover-fg);
+      //     }
+      //   }
+      // }
     }
   }
 
