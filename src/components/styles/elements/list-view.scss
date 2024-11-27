@@ -82,6 +82,7 @@
     overflow-x: visible;
     overflow-y: hidden;
     scrollbar-width: none;
+    z-index: 1;
 
     >.lv-row {
       background: var(--list-cell-bg);
@@ -112,6 +113,20 @@
     user-select: none;
     width: 100%;
     min-height: 0;
+    z-index: 0;
+  }
+
+  .lv-empty-msg {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: none;
+    place-items: center;
+
+    &[data-vis] {
+      display: grid;
+      ;
+    }
   }
 
   .lv-row {

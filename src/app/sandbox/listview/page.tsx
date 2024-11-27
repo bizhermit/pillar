@@ -86,6 +86,7 @@ const Page = () => {
           state: {count}
         </Button>
         <Button onClick={() => setValue(null)}>clear</Button>
+        <Button onClick={() => setValue(0)}>0</Button>
         <Button onClick={() => setValue(1)}>1</Button>
         <Button onClick={() => setValue(10)}>10</Button>
         <Button onClick={() => setValue(15)}>15</Button>

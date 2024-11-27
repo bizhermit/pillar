@@ -1,5 +1,6 @@
 "use client";
 
+import { useLang } from "@/i18n/react-hook";
 import { useEffect, useMemo, useRef, type HTMLAttributes } from "react";
 import { ListViewClass, ListViewColumn } from "../../dom/elements/list-view";
 
@@ -19,6 +20,7 @@ export const ListView = <D extends Data>({
 }: ListViewProps<D>) => {
   const ref = useRef<HTMLDivElement>(null!);
   const lv = useRef<ListViewClass<D>>(null!);
+  const lang = useLang();
 
   useEffect(() => {
     lv.current?.setValue(value);
@@ -29,6 +31,7 @@ export const ListView = <D extends Data>({
       root: ref.current,
       columns,
       value,
+      lang,
     });
 
     return () => {

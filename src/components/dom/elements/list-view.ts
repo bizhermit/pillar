@@ -1,3 +1,5 @@
+"use client";
+
 import { get } from "../../objects/struct";
 import "../../styles/elements/list-view.scss";
 import { cloneDomElement, DomElement } from "../element";
@@ -55,6 +57,7 @@ type ListViewProps<D extends Data> = {
   root: HTMLElement;
   value: Array<D> | null | undefined;
   columns: Array<ListViewColumn<D>>;
+  lang: LangAccessor;
 };
 
 export const LIST_VIEW_DEFAULT_ROW_HEIGHT = 40;
@@ -62,6 +65,7 @@ export const LIST_VIEW_DEFAULT_CELL_WIDTH = 80;
 
 export class ListViewClass<D extends Data> {
 
+  protected lang: LangAccessor;
   protected root: DomElement<HTMLElement>;
   protected observer: ResizeObserver;
 
@@ -76,6 +80,7 @@ export class ListViewClass<D extends Data> {
   protected bodyWrap: DomElement<HTMLDivElement>;
   protected body: DomElement<HTMLDivElement>;
   protected dummy: HTMLDivElement;
+  protected emptyMsg: DomElement<HTMLDivElement>;
 
   protected headerRow: ListViewRow<D> | undefined;
   protected footerRow: ListViewRow<D> | undefined;
@@ -88,6 +93,7 @@ export class ListViewClass<D extends Data> {
   protected rowHeight: number;
 
   constructor(props: ListViewProps<D>) {
+    this.lang = props.lang;
     this.root = new DomElement(props.root);
     this.columns = props.columns;
     this.value = props.value;
@@ -142,6 +148,10 @@ export class ListViewClass<D extends Data> {
     if (this.header) this.root.addChild(this.header);
     this.root.addChild(this.bodyWrap).addChild(this.footer);
 
+    this.emptyMsg = cloneDomElement(this.cloneBase.div).addClass("lv-empty-msg");
+    this.emptyMsg.elem.textContent = this.lang("common.noData");
+    this.bodyWrap.addChild(this.emptyMsg);
+
     this.generateHeader();
     this.generateFooter();
     this.render();
@@ -162,6 +172,8 @@ export class ListViewClass<D extends Data> {
     this.value = value;
     this.bodyWrap.elem.scrollTop = 0;
     this.dummy.style.height = `${(this.value?.length ?? 0) * this.rowHeight}px`;
+    if (this.value?.length === 0) this.emptyMsg.setAttr("data-vis");
+    else this.emptyMsg.rmAttr("data-vis");
     this.render();
     return this;
   }

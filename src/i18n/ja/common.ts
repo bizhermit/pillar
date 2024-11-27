@@ -21,6 +21,7 @@ const Langs = {
   cancel: "キャンセル",
   save: "保存する",
   detail: "詳細",
+  noData: "データが存在しません。",
 } as const satisfies I18N_Langs[typeof kind];
 
 export default Langs;
