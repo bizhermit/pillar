@@ -139,7 +139,6 @@ export class ListViewClass<D extends Data> {
   }
 
   public setColumns(columns: Array<ListViewColumn<D>>) {
-    console.log("set columns");
     this.columns = columns;
     this.generateHeader();
     this.generateBody();
