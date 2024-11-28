@@ -39,8 +39,9 @@ const Page = () => {
         link: ({ rowData }) => {
           const idStr = String(rowData.id).padStart(4, "0");
           return {
-            href: `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            href: rowData.id === 3 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
             text: idStr,
+            disabled: rowData.id === 9,
           };
         },
       }),
@@ -49,8 +50,9 @@ const Page = () => {
         link: ({ rowData }) => {
           const idStr = String(rowData.id).padStart(4, "0");
           return {
-            href: `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            href: rowData.id === 6 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
             text: idStr,
+            disabled: rowData.id === 12,
           };
         },
         interceptor: (href) => {

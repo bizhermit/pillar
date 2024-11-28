@@ -414,21 +414,26 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
     index: number;
   }) => {
     text?: string;
-    href: UrlPath;
+    href: UrlPath | null | undefined;
     target?: HTMLAnchorElement["target"];
+    disabled?: boolean;
   };
   interceptor?: (href: string) => void,
 }): ListViewColumn<D> => {
-  let anchorDom: DomElement<HTMLAnchorElement> | undefined;
+  let anchorBase: DomElement<HTMLAnchorElement> | undefined;
   return {
     name: "_link",
     align: props.role === "button" ? "center" : undefined,
     ...props,
     initializeCell: ({ cell }) => {
-      const anchor = anchorDom?.clone() ?? (anchorDom = new DomElement(document.createElement("a")));
-      if (props.role) anchor.elem.role = props.role;
-      else anchor.addClass("lv-span");
+      const anchor = anchorBase?.clone() ?? (anchorBase = new DomElement(document.createElement("a")));
+      if (props.role) {
+        anchor.setAttr("data-noanimation").elem.role = props.role;
+      } else {
+        anchor.addClass("lv-span");
+      }
       if (props?.target) anchor.elem.target = props.target;
+      if (props.text) anchor.elem.textContent = props.text;
       if (props.interceptor) {
         anchor.addEvent("click", (e) => {
           e.preventDefault();
@@ -444,9 +449,56 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
       if (!rowData) return;
       const elem = wElems[0] as HTMLAnchorElement;
       const ret = props.link({ rowData, column, index });
-      elem.href = ret.href;
+      if (ret.disabled) {
+        if (elem.getAttribute("aria-disabled") !== "true") elem.setAttribute("aria-disabled", String(elem.inert = true));
+      } else {
+        if (elem.getAttribute("aria-disabled") === "true") elem.setAttribute("aria-disabled", String(elem.inert = false));
+      }
+      if (ret.href == null) {
+        if (elem.style.display !== "none") elem.style.display = "none";
+      } else {
+        if (elem.style.display === "none") elem.style.removeProperty("display");
+      }
+      elem.href = ret.href || "";
       if ("target" in ret) elem.target = ret.target || "";
       elem.textContent = ret.text || props.text || (props.name ? get(rowData, props.name)[0] : elem.href) || "";
+    },
+  };
+};
+
+export const listViewButtonColumn = <D extends Data>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
+  text?: string;
+  button: (params: {
+    rowData: D;
+    column: ListViewColumn<D>;
+    index: number;
+  }) => {
+    text?: string;
+    disabled?: boolean;
+    color?: StyleColor;
+  };
+  onClick: () => void;
+}): ListViewColumn<D> => {
+  let buttonBase: DomElement<HTMLButtonElement> | undefined;
+  return {
+    name: "_button",
+    ...props,
+    initializeCell: ({ cell }) => {
+      const btn = buttonBase?.clone() ?? (buttonBase = new DomElement(document.createElement("button")));
+      btn.elem.type = "button";
+      btn.addClass("btn").setAttr("data-noanimation").addEvent("click", () => {
+        // TODO:
+      });
+      if (props.text) btn.elem.textContent = props.text;
+      cell.addChild(btn);
+      return {
+        elems: [btn.elem],
+      };
+    },
+    cell: ({ rowData, wElems, column, index }) => {
+      if (!rowData) return;
+      const elem = wElems[0];
+      // ele;
     },
   };
 };
