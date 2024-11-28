@@ -26,6 +26,7 @@ type RenderParams<D extends Data> = ListViewCol<D> & {
 type InitializeCellParams<D extends Data> = {
   column: ListViewColumn<D>;
   cell: DomElement<HTMLDivElement>;
+  getArrayData: () => (Array<D> | null | undefined);
 };
 type InitializeCellResponse<CellElems extends Array<HTMLElement>> = {
   elems: CellElems;
@@ -229,7 +230,7 @@ export class ListViewClass<D extends Data> {
     const cols = this.generateRowColsImpl({
       dom,
       align: c => c.align || "center",
-      initialize: ({ column, cell }) => column.initializeHeaderCell?.({ column, cell }),
+      initialize: ({ column, cell }) => column.initializeHeaderCell?.({ column, cell, getArrayData: () => this.value }),
     });
     this.headerRow = { dom, cols, data: null };
     this.header.addChild(dom);
@@ -240,7 +241,7 @@ export class ListViewClass<D extends Data> {
     const cols = this.generateRowColsImpl({
       dom,
       align: c => c.footerAlign,
-      initialize: ({ column, cell }) => column.initializeFooterCell?.({ column, cell }),
+      initialize: ({ column, cell }) => column.initializeFooterCell?.({ column, cell, getArrayData: () => this.value }),
     });
     if (this.columns.find(c => c.footerCell != null)) {
       this.footerRow = {
@@ -270,7 +271,7 @@ export class ListViewClass<D extends Data> {
       const cols = this.generateRowColsImpl({
         dom,
         align: c => c.align,
-        initialize: ({ column, cell }) => column.initializeCell?.({ column, cell }),
+        initialize: ({ column, cell }) => column.initializeCell?.({ column, cell, getArrayData: () => this.value }),
       });
       this.body.addChild(dom);
       this.rows.push({ dom, cols, data: null });
@@ -410,7 +411,7 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
   target?: HTMLAnchorElement["target"];
   link: (params: {
     rowData: D;
-    column: ListViewColumn<D>;
+    name: string;
     index: number;
   }) => {
     text?: string;
@@ -448,7 +449,7 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
     cell: ({ rowData, wElems, column, index }) => {
       if (!rowData) return;
       const elem = wElems[0] as HTMLAnchorElement;
-      const ret = props.link({ rowData, column, index });
+      const ret = props.link({ rowData, name: column.name, index });
       if (ret.disabled) {
         if (elem.getAttribute("aria-disabled") !== "true") elem.setAttribute("aria-disabled", String(elem.inert = true));
       } else {
@@ -461,33 +462,44 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
       }
       elem.href = ret.href || "";
       if ("target" in ret) elem.target = ret.target || "";
-      elem.textContent = ret.text || props.text || (props.name ? get(rowData, props.name)[0] : elem.href) || "";
+      elem.textContent = ret.text || (props.name ? get(rowData, props.name)[0] : "") || props.text || elem.href || "";
     },
   };
 };
 
 export const listViewButtonColumn = <D extends Data>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
   text?: string;
-  button: (params: {
+  button?: (params: {
     rowData: D;
-    column: ListViewColumn<D>;
+    name: string;
     index: number;
   }) => {
     text?: string;
     disabled?: boolean;
+    hide?: boolean;
     color?: StyleColor;
   };
-  onClick: () => void;
+  onClick: (params: {
+    rowData: D;
+    index: number;
+  }) => void;
 }): ListViewColumn<D> => {
   let buttonBase: DomElement<HTMLButtonElement> | undefined;
   return {
     name: "_button",
+    align: "center",
     ...props,
-    initializeCell: ({ cell }) => {
+    initializeCell: ({ cell, getArrayData, column }) => {
       const btn = buttonBase?.clone() ?? (buttonBase = new DomElement(document.createElement("button")));
       btn.elem.type = "button";
-      btn.addClass("btn").setAttr("data-noanimation").addEvent("click", () => {
-        // TODO:
+      btn.addClass("btn").setAttr("data-noanimation").addEvent("click", (e) => {
+        const index = (e.currentTarget as any).lvdata;
+        if (index == null || typeof index !== "number") return;
+        const rowData = getArrayData()?.[index];
+        if (!rowData) return;
+        const ret = props.button?.({ rowData, name: column.name, index });
+        if (ret?.disabled || ret?.hide) return;
+        props.onClick({ rowData, index });
       });
       if (props.text) btn.elem.textContent = props.text;
       cell.addChild(btn);
@@ -495,10 +507,33 @@ export const listViewButtonColumn = <D extends Data>(props: Partial<Omit<ListVie
         elems: [btn.elem],
       };
     },
-    cell: ({ rowData, wElems, column, index }) => {
+    cell: ({ rowData, column, wElems, index }) => {
       if (!rowData) return;
+      const ret = props.button?.({ rowData, name: column.name, index });
       const elem = wElems[0];
-      // ele;
+      if (ret) {
+        if (ret.disabled) {
+          if (elem.getAttribute("aria-disabled") !== "true") elem.setAttribute("aria-disabled", String(elem.inert = true));
+        } else {
+          if (elem.getAttribute("aria-disabled") === "true") elem.setAttribute("aria-disabled", String(elem.inert = false));
+        }
+        if (ret.hide) {
+          if (elem.style.display !== "none") elem.style.display = "none";
+        } else {
+          if (elem.style.display === "none") elem.style.removeProperty("display");
+        }
+        if (ret.color) {
+          if (elem.getAttribute("data-color") !== ret.color) elem.setAttribute("data-color", ret.color);
+        } else {
+          if (elem.getAttribute("data-color")) elem.removeAttribute("data-color");
+        }
+      }
+      if (ret?.disabled || ret?.hide) {
+        delete (elem as any).lvdata;
+      } else {
+        (elem as any).lvdata = index;
+      }
+      elem.textContent = ret?.text || (props.name ? get(rowData, props.name)[0] : "") || props.text || "";
     },
   };
 };

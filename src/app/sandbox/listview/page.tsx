@@ -1,6 +1,7 @@
 "use client";
 
-import { ListViewColumn, listViewLinkColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
+import { listViewButtonColumn, ListViewColumn, listViewLinkColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
+import { useLang } from "@/i18n/react-hook";
 import { generateArray } from "@/objects/array";
 import { Button } from "@/react/elements/button";
 import { ListView } from "@/react/elements/list-view";
@@ -17,6 +18,7 @@ type Data = {
 }
 
 const Page = () => {
+  const lang = useLang();
   const [count, setCount] = useState(0);
   const [value, setValue] = useReducer((_: null | Array<Data>, action: number | null) => {
     if (action == null) return null;
@@ -58,6 +60,19 @@ const Page = () => {
         interceptor: (href) => {
           // eslint-disable-next-line no-console
           console.log("intercept (use next router)", href);
+        },
+      }),
+      listViewButtonColumn({
+        text: lang("common.detail"),
+        button: ({ rowData }) => {
+          return {
+            disabled: rowData.id === 1,
+            hide: rowData.id === 2,
+          };
+        },
+        onClick: (params) => {
+          // eslint-disable-next-line no-console
+          console.log("click", params);
         },
       }),
       {
