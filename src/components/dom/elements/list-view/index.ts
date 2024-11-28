@@ -110,53 +110,24 @@ export class ListViewClass<D extends Data> {
       row: cloneDomElement(div).addClass("lv-row").setAttr("data-none", ""),
       cell: cloneDomElement(div).addClass("lv-cell"),
     };
-
-    this.bodyWrap = cloneDomElement(this.cloneBase.div)
-      .addClass("lv-body-wrap")
-      .addEvent("scroll", () => {
-        this.scrollY();
-      });
-    this.dummy = this.cloneBase.div.cloneNode() as HTMLDivElement;
-    this.dummy.classList.add("lv-dummy");
-    this.bodyWrap.elem.appendChild(this.dummy);
-    this.body = cloneDomElement(this.cloneBase.div)
-      .addClass("lv-body")
-      .addEvent("scroll", () => {
-        this.scrollX("b");
-      });
-    this.bodyWrap.addChild(this.body);
-
-    if (this.columns.find(c => c.headerCell != null)) {
-      this.header = cloneDomElement(this.cloneBase.div)
-        .addClass("lv-header")
-        .addEvent("scroll", () => {
-          this.scrollX("h");
-        });
-    }
-    this.footer = cloneDomElement(this.cloneBase.div)// NOTE: 横スクロールバーUIを担うため追加必須
-      .addClass("lv-footer")
-      .addEvent("scroll", () => {
-        this.scrollX("f");
-      });
-
-    this.observer = new ResizeObserver(() => {
-      this.resize();
-    });
-    this.observer.observe(this.root.elem);
+    this.bodyWrap = null!;
+    this.body = null!;
+    this.footer = null!;
+    this.dummy = null!;
+    this.emptyMsg = null!;
 
     this.firstIndex = 0;
     this.rowHeight = LIST_VIEW_DEFAULT_ROW_HEIGHT;
     this.root.elem.style.setProperty("--row-height", `${this.rowHeight}px`);
 
-    if (this.header) this.root.addChild(this.header);
-    this.root.addChild(this.bodyWrap).addChild(this.footer);
-
-    this.emptyMsg = cloneDomElement(this.cloneBase.div).addClass("lv-empty-msg");
-    this.emptyMsg.elem.textContent = this.lang("common.noData");
-    this.bodyWrap.addChild(this.emptyMsg);
-
     this.generateHeader();
+    this.generateBody();
     this.generateFooter();
+
+    this.observer = new ResizeObserver(() => {
+      this.resize();
+    });
+    this.observer.observe(this.root.elem);
     this.render();
   }
 
@@ -165,6 +136,16 @@ export class ListViewClass<D extends Data> {
     this.root.dispose();
     this.root.elem.textContent = "";
     return;
+  }
+
+  public setColumns(columns: Array<ListViewColumn<D>>) {
+    console.log("set columns");
+    this.columns = columns;
+    this.generateHeader();
+    this.generateBody();
+    this.generateFooter();
+    this.render();
+    return this;
   }
 
   public getValue() {
@@ -223,19 +204,75 @@ export class ListViewClass<D extends Data> {
   }
 
   protected generateHeader() {
+    if (this.columns.find(c => c.headerCell != null)) {
+      if (!this.header) {
+        this.header = cloneDomElement(this.cloneBase.div)
+          .addClass("lv-header")
+          .addEvent("scroll", () => {
+            this.scrollX("h");
+          });
+        this.root.addChild(this.header);
+      }
+      this.header.rmChild();
+    } else {
+      this.root.rmChild(this.header);
+      this.header = undefined;
+      this.headerRow = undefined;
+    }
     if (!this.header) return;
-    const dom = this.cloneBase.row.clone().rmAttr("data-none");
 
+    const dom = this.cloneBase.row.clone().rmAttr("data-none");
     const cols = this.generateRowColsImpl({
       dom,
       align: c => c.align || "center",
-      initialize: ({ column, cell }) => column.initializeHeaderCell?.({ column, cell, getArrayData: () => this.value }),
+      initialize: ({ column, cell }) => {
+        return column.initializeHeaderCell?.({
+          column,
+          cell,
+          getArrayData: () => this.value,
+        });
+      },
     });
     this.headerRow = { dom, cols, data: null };
     this.header.addChild(dom);
   }
 
+  protected generateBody() {
+    if (!this.bodyWrap) {
+      this.bodyWrap = cloneDomElement(this.cloneBase.div)
+        .addClass("lv-body-wrap")
+        .addEvent("scroll", () => {
+          this.scrollY();
+        });
+      this.dummy = this.cloneBase.div.cloneNode() as HTMLDivElement;
+      this.dummy.classList.add("lv-dummy");
+      this.bodyWrap.elem.appendChild(this.dummy);
+      this.body = cloneDomElement(this.cloneBase.div)
+        .addClass("lv-body")
+        .addEvent("scroll", () => {
+          this.scrollX("b");
+        });
+      this.bodyWrap.addChild(this.body);
+      this.emptyMsg = cloneDomElement(this.cloneBase.div).addClass("lv-empty-msg");
+      this.emptyMsg.elem.textContent = this.lang("common.noData");
+      this.bodyWrap.addChild(this.emptyMsg);
+      this.root.addChild(this.bodyWrap);
+    }
+    this.body.rmChild();
+    this.rows = [];
+  }
+
   protected generateFooter() {
+    if (!this.footer) {
+      this.footer = cloneDomElement(this.cloneBase.div)// NOTE: 横スクロールバーUIを担うため追加必須
+        .addClass("lv-footer")
+        .addEvent("scroll", () => {
+          this.scrollX("f");
+        });
+      this.root.addChild(this.footer);
+    }
+    this.footer.rmChild();
+
     const dom = this.cloneBase.row.clone();
     const cols = this.generateRowColsImpl({
       dom,

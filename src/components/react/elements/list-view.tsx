@@ -23,6 +23,10 @@ export const ListView = <D extends Data>({
   const lang = useLang();
 
   useEffect(() => {
+    lv.current?.setColumns(columns);
+  }, [columns]);
+
+  useEffect(() => {
     lv.current?.setValue(value);
   }, [value]);
 

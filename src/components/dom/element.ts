@@ -3,6 +3,25 @@ type DomEvent<K extends keyof HTMLElementEventMap> = {
   listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any;
 };
 
+type SizeProperty =
+  | "width"
+  | "height"
+  | "minWidth"
+  | "maxWidth"
+  | "minHeight"
+  | "maxHeight"
+  | "padding"
+  | "paddingTop"
+  | "paddingBottom"
+  | "paddingLeft"
+  | "paddingRight"
+  | "margin"
+  | "marginTop"
+  | "marginBottom"
+  | "marginLeft"
+  | "marginRight"
+  ;
+
 export class DomElement<E extends HTMLElement> {
 
   protected events: Array<DomEvent<any>>;
@@ -105,7 +124,7 @@ export class DomElement<E extends HTMLElement> {
     return this;
   }
 
-  public setStyleSize(key: "width" | "height" | "minWidth" | "maxWidth" | "minHeight" | "maxHeight", size: number | string | null | undefined) {
+  public setStyleSize(key: SizeProperty, size: number | string | null | undefined) {
     if (size == null) {
       this.elem.style.removeProperty(key);
       return this;

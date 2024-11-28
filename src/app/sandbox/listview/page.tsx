@@ -93,7 +93,7 @@ const Page = () => {
       { name: "col8", headerCell: "Col8" },
       { name: "col9", headerCell: "Col9", fill: true },
     ];
-  }, []);
+  }, [count]);
 
   return (
     <>
