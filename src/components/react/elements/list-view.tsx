@@ -1,8 +1,8 @@
 "use client";
 
-import { useLang } from "@/i18n/react-hook";
 import { useEffect, useMemo, useRef, type HTMLAttributes } from "react";
-import { ListViewClass, ListViewColumn } from "../../dom/elements/list-view";
+import { ListViewClass, type ListViewColumn } from "../../dom/elements/list-view";
+import { useLang } from "../../i18n/react-hook";
 
 type Data = { [v: string | number | symbol]: any };
 

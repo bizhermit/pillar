@@ -1,6 +1,8 @@
 "use client";
 
-import { listViewButtonColumn, ListViewColumn, listViewLinkColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
+import { ListViewColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
+import { listViewButtonColumn } from "@/dom/elements/list-view/button-column";
+import { listViewLinkColumn } from "@/dom/elements/list-view/link-column";
 import { useLang } from "@/i18n/react-hook";
 import { generateArray } from "@/objects/array";
 import { Button } from "@/react/elements/button";

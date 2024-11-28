@@ -1,9 +1,8 @@
 "use client";
 
-import { get } from "../../objects/struct";
-import { type UrlPath } from "../../objects/url";
-import "../../styles/elements/list-view.scss";
-import { cloneDomElement, DomElement } from "../element";
+import { get } from "../../../objects/struct";
+import "../../../styles/elements/list-view.scss";
+import { cloneDomElement, DomElement } from "../../element";
 
 type Data = { [v: string | number | symbol]: any };
 type Node = string | null | undefined;
@@ -401,139 +400,6 @@ export const listViewRowNumColumn = <D extends Data>(props?: Partial<Omit<ListVi
     ...props,
     cell: ({ index, wElems }) => {
       wElems[0].textContent = `${index + 1}`;
-    },
-  };
-};
-
-export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
-  text?: string;
-  role?: "button";
-  target?: HTMLAnchorElement["target"];
-  link: (params: {
-    rowData: D;
-    name: string;
-    index: number;
-  }) => {
-    text?: string;
-    href: UrlPath | null | undefined;
-    target?: HTMLAnchorElement["target"];
-    disabled?: boolean;
-  };
-  interceptor?: (href: string) => void,
-}): ListViewColumn<D> => {
-  let anchorBase: DomElement<HTMLAnchorElement> | undefined;
-  return {
-    name: "_link",
-    align: props.role === "button" ? "center" : undefined,
-    ...props,
-    initializeCell: ({ cell }) => {
-      const anchor = anchorBase?.clone() ?? (anchorBase = new DomElement(document.createElement("a")));
-      if (props.role) {
-        anchor.setAttr("data-noanimation").elem.role = props.role;
-      } else {
-        anchor.addClass("lv-span");
-      }
-      if (props?.target) anchor.elem.target = props.target;
-      if (props.text) anchor.elem.textContent = props.text;
-      if (props.interceptor) {
-        anchor.addEvent("click", (e) => {
-          e.preventDefault();
-          props.interceptor!((e.currentTarget as HTMLAnchorElement).href);
-        });
-      }
-      cell.addChild(anchor);
-      return {
-        elems: [anchor.elem],
-      };
-    },
-    cell: ({ rowData, wElems, column, index }) => {
-      if (!rowData) return;
-      const elem = wElems[0] as HTMLAnchorElement;
-      const ret = props.link({ rowData, name: column.name, index });
-      if (ret.disabled) {
-        if (elem.getAttribute("aria-disabled") !== "true") elem.setAttribute("aria-disabled", String(elem.inert = true));
-      } else {
-        if (elem.getAttribute("aria-disabled") === "true") elem.setAttribute("aria-disabled", String(elem.inert = false));
-      }
-      if (ret.href == null) {
-        if (elem.style.display !== "none") elem.style.display = "none";
-      } else {
-        if (elem.style.display === "none") elem.style.removeProperty("display");
-      }
-      elem.href = ret.href || "";
-      if ("target" in ret) elem.target = ret.target || "";
-      elem.textContent = ret.text || (props.name ? get(rowData, props.name)[0] : "") || props.text || elem.href || "";
-    },
-  };
-};
-
-export const listViewButtonColumn = <D extends Data>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
-  text?: string;
-  button?: (params: {
-    rowData: D;
-    name: string;
-    index: number;
-  }) => {
-    text?: string;
-    disabled?: boolean;
-    hide?: boolean;
-    color?: StyleColor;
-  };
-  onClick: (params: {
-    rowData: D;
-    index: number;
-  }) => void;
-}): ListViewColumn<D> => {
-  let buttonBase: DomElement<HTMLButtonElement> | undefined;
-  return {
-    name: "_button",
-    align: "center",
-    ...props,
-    initializeCell: ({ cell, getArrayData, column }) => {
-      const btn = buttonBase?.clone() ?? (buttonBase = new DomElement(document.createElement("button")));
-      btn.elem.type = "button";
-      btn.addClass("btn").setAttr("data-noanimation").addEvent("click", (e) => {
-        const index = (e.currentTarget as any).lvdata;
-        if (index == null || typeof index !== "number") return;
-        const rowData = getArrayData()?.[index];
-        if (!rowData) return;
-        const ret = props.button?.({ rowData, name: column.name, index });
-        if (ret?.disabled || ret?.hide) return;
-        props.onClick({ rowData, index });
-      });
-      if (props.text) btn.elem.textContent = props.text;
-      cell.addChild(btn);
-      return {
-        elems: [btn.elem],
-      };
-    },
-    cell: ({ rowData, column, wElems, index }) => {
-      if (!rowData) return;
-      const ret = props.button?.({ rowData, name: column.name, index });
-      const elem = wElems[0];
-      if (ret) {
-        if (ret.disabled) {
-          if (elem.getAttribute("aria-disabled") !== "true") elem.setAttribute("aria-disabled", String(elem.inert = true));
-        } else {
-          if (elem.getAttribute("aria-disabled") === "true") elem.setAttribute("aria-disabled", String(elem.inert = false));
-        }
-        if (ret.hide) {
-          if (elem.style.display !== "none") elem.style.display = "none";
-        } else {
-          if (elem.style.display === "none") elem.style.removeProperty("display");
-        }
-        if (ret.color) {
-          if (elem.getAttribute("data-color") !== ret.color) elem.setAttribute("data-color", ret.color);
-        } else {
-          if (elem.getAttribute("data-color")) elem.removeAttribute("data-color");
-        }
-      }
-      if (ret?.disabled || ret?.hide) {
-        delete (elem as any).lvdata;
-      } else {
-        (elem as any).lvdata = index;
-      }
-      elem.textContent = ret?.text || (props.name ? get(rowData, props.name)[0] : "") || props.text || "";
     },
   };
 };
