@@ -1,6 +1,6 @@
 "use client";
 
-import { ListViewColumn } from "@/dom/elements/list-view";
+import { ListViewColumn, listViewLinkColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
 import { generateArray } from "@/objects/array";
 import { Button } from "@/react/elements/button";
 import { ListView } from "@/react/elements/list-view";
@@ -32,34 +32,54 @@ const Page = () => {
 
   const columns = useMemo<Array<ListViewColumn<Data>>>(() => {
     return [
-      {
-        name: "id",
-        sticky: true,
-        align: "center",
-        width: 40,
-      },
+      listViewRowNumColumn(),
+      listViewLinkColumn({
+        target: "_blank",
+        width: 60,
+        link: ({ rowData }) => {
+          const idStr = String(rowData.id).padStart(4, "0");
+          return {
+            href: `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            text: idStr,
+          };
+        },
+      }),
+      listViewLinkColumn({
+        role: "button",
+        link: ({ rowData }) => {
+          const idStr = String(rowData.id).padStart(4, "0");
+          return {
+            href: `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            text: idStr,
+          };
+        },
+        interceptor: (href) => {
+          // eslint-disable-next-line no-console
+          console.log("intercept (use next router)", href);
+        },
+      }),
       {
         name: "img",
         width: 40,
         sticky: true,
         align: "center",
         headerCell: "IMG",
-        initializeCell: ({ cellElem }) => {
+        initializeCell: ({ cell }) => {
           const imgElem = document.createElement("img");
           imgElem.loading = "eager";
           imgElem.style.width = "30px";
           imgElem.style.height = "30px";
-          cellElem.appendChild(imgElem);
+          cell.elem.appendChild(imgElem);
           return {
             elems: [imgElem],
           };
         },
-        cell: ({ rowData, column }) => {
+        cell: ({ rowData, wElems }) => {
           if (!rowData) return;
-          const img = column.wElems[0] as HTMLImageElement;
-          img.src = "";
-          img.src = rowData.img;
-          img.alt = `pokemon-${rowData.id}`;
+          const elem = wElems[0] as HTMLImageElement;
+          elem.src = "";
+          elem.src = rowData.img;
+          elem.alt = `pokemon-${rowData.id}`;
         },
       },
       { name: "col1", headerCell: "Col1" },

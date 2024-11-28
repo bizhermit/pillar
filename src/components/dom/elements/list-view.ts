@@ -1,6 +1,7 @@
 "use client";
 
 import { get } from "../../objects/struct";
+import { type UrlPath } from "../../objects/url";
 import "../../styles/elements/list-view.scss";
 import { cloneDomElement, DomElement } from "../element";
 
@@ -18,14 +19,13 @@ type ListViewRow<D extends Data> = {
   data: D | null | undefined;
 };
 
-type RenderParams<D extends Data> = {
+type RenderParams<D extends Data> = ListViewCol<D> & {
   arrayData: Array<D> | null | undefined;
-  column: ListViewCol<D>;
 };
 
 type InitializeCellParams<D extends Data> = {
   column: ListViewColumn<D>;
-  cellElem: HTMLDivElement;
+  cell: DomElement<HTMLDivElement>;
 };
 type InitializeCellResponse<CellElems extends Array<HTMLElement>> = {
   elems: CellElems;
@@ -184,8 +184,8 @@ export class ListViewClass<D extends Data> {
 
   protected generateRowColsImpl(props: {
     dom: DomElement<HTMLDivElement>;
-    align?: (col: ListViewColumn<D>) => (ListViewCellAlign | undefined);
-    initialize?: (params: { col: ListViewColumn<D>; cell: DomElement<HTMLDivElement>; }) => (InitializeCellResponse<Array<HTMLElement>> | void);
+    align?: (column: ListViewColumn<D>) => (ListViewCellAlign | undefined);
+    initialize?: (params: { column: ListViewColumn<D>; cell: DomElement<HTMLDivElement>; }) => (InitializeCellResponse<Array<HTMLElement>> | void);
   }) {
     let left = "";
     return this.columns.map(c => {
@@ -211,7 +211,7 @@ export class ListViewClass<D extends Data> {
         column: c,
         elem: cell,
         wElems: (() => {
-          const init = props.initialize?.({ col: c, cell });
+          const init = props.initialize?.({ column: c, cell });
           if (init) return init.elems;
           const sElem = this.cloneBase.span.cloneNode() as HTMLSpanElement;
           sElem.classList.add("lv-span");
@@ -229,12 +229,7 @@ export class ListViewClass<D extends Data> {
     const cols = this.generateRowColsImpl({
       dom,
       align: c => c.align || "center",
-      initialize: ({ col, cell }) => {
-        return col.initializeHeaderCell?.({
-          column: col,
-          cellElem: cell.elem,
-        });
-      }
+      initialize: ({ column, cell }) => column.initializeHeaderCell?.({ column, cell }),
     });
     this.headerRow = { dom, cols, data: null };
     this.header.addChild(dom);
@@ -245,12 +240,7 @@ export class ListViewClass<D extends Data> {
     const cols = this.generateRowColsImpl({
       dom,
       align: c => c.footerAlign,
-      initialize: ({ col, cell }) => {
-        return col.initializeFooterCell?.({
-          column: col,
-          cellElem: cell.elem,
-        });
-      },
+      initialize: ({ column, cell }) => column.initializeFooterCell?.({ column, cell }),
     });
     if (this.columns.find(c => c.footerCell != null)) {
       this.footerRow = {
@@ -280,12 +270,7 @@ export class ListViewClass<D extends Data> {
       const cols = this.generateRowColsImpl({
         dom,
         align: c => c.align,
-        initialize: ({ col, cell }) => {
-          return col.initializeCell?.({
-            column: col,
-            cellElem: cell.elem,
-          });
-        },
+        initialize: ({ column, cell }) => column.initializeCell?.({ column, cell }),
       });
       this.body.addChild(dom);
       this.rows.push({ dom, cols, data: null });
@@ -300,7 +285,7 @@ export class ListViewClass<D extends Data> {
         if (typeof c.column.headerCell === "function") {
           c.column.headerCell({
             arrayData: this.value,
-            column: c,
+            ...c,
           });
         } else {
           c.wElems[0].textContent = c.column.headerCell;
@@ -316,7 +301,7 @@ export class ListViewClass<D extends Data> {
         if (typeof c.column.footerCell === "function") {
           c.column.footerCell({
             arrayData: this.value,
-            column: c,
+            ...c,
           });
         } else {
           c.wElems[0].textContent = c.column.footerCell;
@@ -344,7 +329,7 @@ export class ListViewClass<D extends Data> {
           if (typeof c.column.cell === "function") {
             c.column.cell({
               arrayData: this.value,
-              column: c,
+              ...c,
               index: idx,
               rowData: data,
             });
@@ -405,3 +390,63 @@ export class ListViewClass<D extends Data> {
   }
 
 }
+
+export const listViewRowNumColumn = <D extends Data>(props?: Partial<Omit<ListViewColumn<D>, "cell" | "initializeCell">>): ListViewColumn<D> => {
+  return {
+    name: "_rownum",
+    align: "center",
+    sticky: true,
+    width: 50,
+    ...props,
+    cell: ({ index, wElems }) => {
+      wElems[0].textContent = `${index + 1}`;
+    },
+  };
+};
+
+export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
+  text?: string;
+  role?: "button";
+  target?: HTMLAnchorElement["target"];
+  link: (params: {
+    rowData: D;
+    column: ListViewColumn<D>;
+    index: number;
+  }) => {
+    text?: string;
+    href: UrlPath;
+    target?: HTMLAnchorElement["target"];
+  };
+  interceptor?: (href: string) => void,
+}): ListViewColumn<D> => {
+  let anchorDom: DomElement<HTMLAnchorElement> | undefined;
+  return {
+    name: "_link",
+    align: props.role === "button" ? "center" : undefined,
+    ...props,
+    initializeCell: ({ cell }) => {
+      const anchor = anchorDom?.clone() ?? (anchorDom = new DomElement(document.createElement("a")));
+      if (props.role) anchor.elem.role = props.role;
+      else anchor.addClass("lv-span");
+      if (props?.target) anchor.elem.target = props.target;
+      if (props.interceptor) {
+        anchor.addEvent("click", (e) => {
+          e.preventDefault();
+          props.interceptor!((e.currentTarget as HTMLAnchorElement).href);
+        });
+      }
+      cell.addChild(anchor);
+      return {
+        elems: [anchor.elem],
+      };
+    },
+    cell: ({ rowData, wElems, column, index }) => {
+      if (!rowData) return;
+      const elem = wElems[0] as HTMLAnchorElement;
+      const ret = props.link({ rowData, column, index });
+      elem.href = ret.href;
+      if ("target" in ret) elem.target = ret.target || "";
+      elem.textContent = ret.text || props.text || (props.name ? get(rowData, props.name)[0] : elem.href) || "";
+    },
+  };
+};
