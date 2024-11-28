@@ -2,6 +2,7 @@
 
 import { ListViewColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
 import { listViewButtonColumn } from "@/dom/elements/list-view/button-column";
+import { listViewImageColumn } from "@/dom/elements/list-view/image-column";
 import { listViewLinkColumn } from "@/dom/elements/list-view/link-column";
 import { useLang } from "@/i18n/react-hook";
 import { generateArray } from "@/objects/array";
@@ -77,30 +78,11 @@ const Page = () => {
           console.log("click", params);
         },
       }),
-      {
+      listViewImageColumn({
         name: "img",
-        width: 40,
+        altName: "id",
         sticky: true,
-        align: "center",
-        headerCell: "IMG",
-        initializeCell: ({ cell }) => {
-          const imgElem = document.createElement("img");
-          imgElem.loading = "eager";
-          imgElem.style.width = "30px";
-          imgElem.style.height = "30px";
-          cell.elem.appendChild(imgElem);
-          return {
-            elems: [imgElem],
-          };
-        },
-        cell: ({ rowData, wElems }) => {
-          if (!rowData) return;
-          const elem = wElems[0] as HTMLImageElement;
-          elem.src = "";
-          elem.src = rowData.img;
-          elem.alt = `pokemon-${rowData.id}`;
-        },
-      },
+      }),
       { name: "col1", headerCell: "Col1" },
       { name: "col2", headerCell: "Col2", sticky: true },
       { name: "col3", headerCell: "Col3" },

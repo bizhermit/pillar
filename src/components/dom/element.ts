@@ -100,6 +100,20 @@ export class DomElement<E extends HTMLElement> {
     return this.children.length;
   }
 
+  public scope(func: (dom: this) => void) {
+    func(this);
+    return this;
+  }
+
+  public setStyleSize(key: "width" | "height" | "minWidth" | "maxWidth" | "minHeight" | "maxHeight", size: number | string | null | undefined) {
+    if (size == null) {
+      this.elem.style.removeProperty(key);
+      return this;
+    }
+    this.elem.style[key] = typeof size === "string" ? size : `${size}px`;
+    return this;
+  }
+
 }
 
 export const cloneDomElement = <E extends HTMLElement>(baseElem: E) => {

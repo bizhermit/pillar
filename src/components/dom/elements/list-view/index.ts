@@ -193,9 +193,9 @@ export class ListViewClass<D extends Data> {
       const align = props.align?.(c);
       if (align) cell.setAttr("data-align", align);
       const parseStrNum = (w: number | string) => typeof w === "string" ? w : `${w}px`;
-      if (c.width) cell.elem.style.width = parseStrNum(c.width);
-      if (c.minWidth) cell.elem.style.minWidth = parseStrNum(c.minWidth);
-      if (c.maxWidth) cell.elem.style.maxWidth = parseStrNum(c.maxWidth);
+      if (c.width) cell.setStyleSize("width", c.width);
+      if (c.minWidth) cell.setStyleSize("minWidth", c.minWidth);
+      if (c.maxWidth) cell.setStyleSize("maxWidth", c.maxWidth);
       if (c.sticky) {
         cell.setAttr("data-sticky");
         if (left) {
