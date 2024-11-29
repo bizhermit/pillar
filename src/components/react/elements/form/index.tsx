@@ -278,7 +278,7 @@ export const Form = <T extends { [v: string]: any } = { [v: string]: any }>({
   };
 
   const keydown = (e: KeyboardEvent<HTMLFormElement>) => {
-    if (!enterSubmit && e.key === "Enter" && (e.target as HTMLElement).tagName !== "BUTTON") {
+    if (!enterSubmit && e.key === "Enter" && !["BUTTON", "TEXTAREA"].includes((e.target as HTMLElement).tagName)) {
       e.preventDefault();
       if (e.ctrlKey) {
         e.currentTarget.dispatchEvent(
