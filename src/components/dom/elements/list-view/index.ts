@@ -10,7 +10,7 @@ type Data = { [v: string | number | symbol]: any };
 type Node = string | null | undefined;
 
 type ListViewCol<D extends Data> = {
-  column: ListViewColumn<D>;
+  column: ListViewColumnImpl<D>;
   elem: DomElement<HTMLDivElement>;
   wElems: Array<HTMLElement>;
   resizedWidth?: string;
@@ -128,6 +128,7 @@ export class ListViewClass<D extends Data> {
     this.firstIndex = 0;
     this.rowHeight = LIST_VIEW_DEFAULT_ROW_HEIGHT;
     this.root.elem.style.setProperty("--row-height", `${this.rowHeight}px`);
+    this.root.elem.style.setProperty("--cell-width", `${LIST_VIEW_DEFAULT_CELL_WIDTH}px`);
 
     this.generateHeader();
     this.generateBody();
@@ -154,7 +155,6 @@ export class ListViewClass<D extends Data> {
       const inheritWidth = c.resize !== false && col && w != null && equals(col.resetResize, c.resetResize);
       return {
         ...c,
-        width: inheritWidth ? w : c.width,
         _width: inheritWidth ? w : undefined,
       };
     });
@@ -192,16 +192,17 @@ export class ListViewClass<D extends Data> {
       const align = props.align?.(c);
       if (align) cell.setAttr("data-align", align);
       const parseStrNum = (w: number | string) => typeof w === "string" ? w : `${w}px`;
-      if (c.width) cell.setStyleSize("width", c.width);
+      if (c._width || c.width) cell.setStyleSize("width", c._width || c.width);
       if (c.minWidth) cell.setStyleSize("minWidth", c.minWidth);
       if (c.maxWidth) cell.setStyleSize("maxWidth", c.maxWidth);
       if (c.sticky) {
         cell.setAttr("data-sticky");
+        const w = parseStrNum(c._width || c.width || LIST_VIEW_DEFAULT_CELL_WIDTH);
         if (left) {
           cell.elem.style.setProperty("left", left.indexOf("+") > 0 ? `calc(${left})` : left);
-          left += ` + ${parseStrNum(c.width || LIST_VIEW_DEFAULT_CELL_WIDTH)}`;
+          left += ` + ${w}`;
         } else {
-          left = parseStrNum(c.width || LIST_VIEW_DEFAULT_CELL_WIDTH);
+          left = w;
         }
       }
       if (c.fill) cell.setAttr("data-fill");
@@ -251,6 +252,7 @@ export class ListViewClass<D extends Data> {
             if (!resizeCtx) return;
             const w = resizeCtx.w + (e.clientX - resizeCtx.x);
             resizeCtx.cells.forEach(cell => cell.setStyleSize("width", w));
+            if (column.sticky) this.calcStickyPosition({ name: column.name, width: w });
           };
           const end = () => {
             releaseCursor();
@@ -474,8 +476,24 @@ export class ListViewClass<D extends Data> {
     this.footer.elem.style.paddingRight = `${w}px`;
   }
 
-  protected calcStickyPosition() {
-
+  protected calcStickyPosition(target?: { name: string; width: number; }) {
+    const parseStrNum = (w: number | string) => typeof w === "string" ? w : `${w}px`;
+    const impl = (cols: Array<ListViewCol<D>>) => {
+      let left = "";
+      cols.forEach(({ column, elem }) => {
+        if (!column.sticky) return;
+        const w = target?.name === column.name ? `${target.width}px` : parseStrNum(column._width || column.width || LIST_VIEW_DEFAULT_CELL_WIDTH);
+        if (left) {
+          elem.elem.style.setProperty("left", left.indexOf("+") > 0 ? `calc(${left})` : left);
+          left += ` + ${w}`;
+        } else {
+          left = w;
+        }
+      });
+    };
+    if (this.headerRow) impl(this.headerRow.cols);
+    if (this.footerRow) impl(this.footerRow.cols);
+    this.rows.forEach(row => impl(row.cols));
   }
 
 }
@@ -486,6 +504,7 @@ export const listViewRowNumColumn = <D extends Data>(props?: Partial<Omit<ListVi
     align: "center",
     sticky: true,
     width: 50,
+    resize: false,
     ...props,
     cell: ({ index, wElems }) => {
       wElems[0].textContent = `${index + 1}`;

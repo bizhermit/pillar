@@ -4,6 +4,7 @@
 
   .lv-main {
     --row-height: 30px;
+    --cell-width: 100px;
     position: relative;
     display: flex;
     flex-flow: column nowrap;
@@ -160,7 +161,7 @@
     justify-content: flex-start;
     align-items: center;
     overflow: hidden;
-    width: 100px;
+    width: var(--cell-width);
     z-index: 0;
     background: inherit;
     color: inherit;
