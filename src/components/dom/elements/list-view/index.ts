@@ -144,6 +144,7 @@ export class ListViewClass<D extends Data> {
     this.generateBody();
     this.generateFooter();
     this.render();
+    this.scrollY();
     return this;
   }
 
