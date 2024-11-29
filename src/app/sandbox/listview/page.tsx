@@ -39,6 +39,7 @@ const Page = () => {
     return [
       listViewRowNumColumn(),
       listViewLinkColumn({
+        name: "link",
         target: "_blank",
         width: 60,
         link: ({ rowData }) => {
@@ -51,6 +52,7 @@ const Page = () => {
         },
       }),
       listViewLinkColumn({
+        name: "btn-link",
         role: "button",
         link: ({ rowData }) => {
           const idStr = String(rowData.id).padStart(4, "0");
@@ -66,6 +68,7 @@ const Page = () => {
         },
       }),
       listViewButtonColumn({
+        name: "button",
         text: lang("common.detail"),
         button: ({ rowData }) => {
           return {
@@ -83,10 +86,10 @@ const Page = () => {
         altName: "id",
         sticky: true,
       }),
-      { name: "col1", headerCell: "Col1" },
-      { name: "col2", headerCell: "Col2", sticky: true },
-      { name: "col3", headerCell: "Col3" },
-      { name: "col4", headerCell: "Col4" },
+      { name: "col1", headerCell: "Col1", resize: false, },
+      { name: "col2", headerCell: "Col2" },
+      { name: "col3", headerCell: "Col3", resetResize: count },
+      { name: "col4", headerCell: "Col4", resize: count % 2 === 1 },
       { name: "col5", headerCell: "Col5" },
       { name: "col6", headerCell: "Col6" },
       { name: "col7", headerCell: "Col7" },

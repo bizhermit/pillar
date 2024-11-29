@@ -45,6 +45,12 @@
     font-weight: bold;
     background: var(--list-header-bg);
     color: var(--list-header-fg);
+
+    @include mixins.hover {
+      .lv-resizer {
+        opacity: 0.5;
+      }
+    }
   }
 
   .lv-footer {
@@ -148,6 +154,7 @@
   }
 
   .lv-cell {
+    position: relative;
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
@@ -183,6 +190,25 @@
     text-overflow: ellipsis;
     max-width: 100%;
     padding: 0 0.8rem;
+  }
+
+  .lv-resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    border-right: 1px solid var(--fg);
+    border-left: 1px solid var(--fg);
+    opacity: 0;
+    transition: opacity 0.2s;
+    cursor: ew-resize;
+
+    &:active {
+      opacity: 0.5;
+    }
+
+
   }
 
 }

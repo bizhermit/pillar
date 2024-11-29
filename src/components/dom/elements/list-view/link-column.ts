@@ -26,6 +26,7 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
   return {
     name: "_link",
     align: props.role === "button" ? "center" : undefined,
+    resize: false,
     ...props,
     initializeCell: ({ cell }) => {
       const anchor = anchorBase?.clone() ?? (anchorBase = new DomElement(document.createElement("a")));

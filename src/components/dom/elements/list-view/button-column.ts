@@ -27,6 +27,7 @@ export const listViewButtonColumn = <D extends Data>(props: Partial<Omit<ListVie
   return {
     name: "_button",
     align: "center",
+    resize: false,
     ...props,
     initializeCell: ({ cell, getArrayData, column }) => {
       const btn = buttonBase?.clone() ?? (buttonBase = new DomElement(document.createElement("button")));

@@ -22,6 +22,7 @@ export const listViewImageColumn = <D extends Data>(props: Partial<Omit<ListView
     name: "_img",
     width: LIST_VIEW_DEFAULT_ROW_HEIGHT,
     align: "center",
+    resize: false,
     ...props,
     initializeCell: ({ cell }) => {
       const img = imgBase?.clone() ?? (imgBase = new DomElement(document.createElement("img")).scope(dom => {

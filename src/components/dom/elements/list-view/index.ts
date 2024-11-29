@@ -1,5 +1,7 @@
 "use client";
 
+import { releaseCursor, setCursor } from "@/dom/cursor";
+import { equals } from "@/objects";
 import { get } from "../../../objects/struct";
 import "../../../styles/elements/list-view.scss";
 import { cloneDomElement, DomElement } from "../../element";
@@ -11,6 +13,7 @@ type ListViewCol<D extends Data> = {
   column: ListViewColumn<D>;
   elem: DomElement<HTMLDivElement>;
   wElems: Array<HTMLElement>;
+  resizedWidth?: string;
 };
 type ListViewRow<D extends Data> = {
   dom: DomElement<HTMLDivElement>;
@@ -51,10 +54,16 @@ export type ListViewColumn<
   align?: ListViewCellAlign;
   sticky?: boolean;
   fill?: boolean;
+  resize?: boolean;
+  resetResize?: any;
   width?: number | string;
   minWidth?: number | string;
   maxWidth?: number | string;
 };
+
+type ListViewColumnImpl<D extends Data> = ListViewColumn<D> & {
+  _width?: string;
+}
 
 type ListViewProps<D extends Data> = {
   root: HTMLElement;
@@ -89,7 +98,7 @@ export class ListViewClass<D extends Data> {
   protected footerRow: ListViewRow<D> | undefined;
   protected rows: Array<ListViewRow<D>>;
 
-  protected columns: Array<ListViewColumn<D>>;
+  protected columns: Array<ListViewColumnImpl<D>>;
   protected value: Array<D> | null | undefined;
 
   protected firstIndex: number;
@@ -139,7 +148,16 @@ export class ListViewClass<D extends Data> {
   }
 
   public setColumns(columns: Array<ListViewColumn<D>>) {
-    this.columns = columns;
+    this.columns = columns.map(c => {
+      const col = this.columns.find(col => col.name === c.name);
+      const w = col?._width;
+      const inheritWidth = c.resize !== false && col && w != null && equals(col.resetResize, c.resetResize);
+      return {
+        ...c,
+        width: inheritWidth ? w : c.width,
+        _width: inheritWidth ? w : undefined,
+      };
+    });
     this.generateHeader();
     this.generateBody();
     this.generateFooter();
@@ -166,7 +184,7 @@ export class ListViewClass<D extends Data> {
   protected generateRowColsImpl(props: {
     dom: DomElement<HTMLDivElement>;
     align?: (column: ListViewColumn<D>) => (ListViewCellAlign | undefined);
-    initialize?: (params: { column: ListViewColumn<D>; cell: DomElement<HTMLDivElement>; }) => (InitializeCellResponse<Array<HTMLElement>> | void);
+    initialize?: (params: { column: ListViewColumnImpl<D>; cell: DomElement<HTMLDivElement>; }) => (InitializeCellResponse<Array<HTMLElement>> | void);
   }) {
     let left = "";
     return this.columns.map(c => {
@@ -222,10 +240,40 @@ export class ListViewClass<D extends Data> {
     if (!this.header) return;
 
     const dom = this.cloneBase.row.clone().rmAttr("data-none");
+    const resizeDom = cloneDomElement(this.cloneBase.div);
     const cols = this.generateRowColsImpl({
       dom,
       align: c => c.align || "center",
       initialize: ({ column, cell }) => {
+        if (column.resize !== false && !column.fill) {
+          let resizeCtx: { x: number; w: number; cells: Array<DomElement<HTMLDivElement>>; } | null = null;
+          const move = (e: MouseEvent) => {
+            if (!resizeCtx) return;
+            const w = resizeCtx.w + (e.clientX - resizeCtx.x);
+            resizeCtx.cells.forEach(cell => cell.setStyleSize("width", w));
+          };
+          const end = () => {
+            releaseCursor();
+            column._width = resizeCtx?.cells[0].elem.style.width;
+            resizeCtx = null;
+            this.calcStickyPosition();
+            window.removeEventListener("mousemove", move);
+            window.removeEventListener("mouseup", end);
+          };
+          const resizer = resizeDom.clone().addClass("lv-resizer").addEvent("mousedown", (e) => {
+            resizeCtx = {
+              w: cell.elem.offsetWidth,
+              x: e.clientX,
+              cells: [cell, ...this.rows.map(row => {
+                return row.cols.find(c => c.column.name === column.name)?.elem;
+              })].filter(c => c != null),
+            };
+            setCursor(getComputedStyle((e.currentTarget as HTMLDivElement)).cursor);
+            window.addEventListener("mousemove", move);
+            window.addEventListener("mouseup", end);
+          });
+          cell.addChild(resizer);
+        }
         return column.initializeHeaderCell?.({
           column,
           cell,
@@ -424,6 +472,10 @@ export class ListViewClass<D extends Data> {
     const w = this.bodyWrap.elem.offsetWidth - this.bodyWrap.elem.clientWidth;
     if (this.header) this.header.elem.style.paddingRight = `${w}px`;
     this.footer.elem.style.paddingRight = `${w}px`;
+  }
+
+  protected calcStickyPosition() {
+
   }
 
 }
