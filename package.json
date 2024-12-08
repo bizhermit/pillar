@@ -21,17 +21,17 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.4.2",
     "@prisma/client": "^5.19.1",
-    "next": "^15.0.2",
+    "next": "^15.0.4",
     "next-auth": "^5.0.0-beta.25",
-    "react": "^19.0.0-rc-33c7bd9a-20241104",
-    "react-dom": "^19.0.0-rc-33c7bd9a-20241104"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.1",
     "@types/jest": "^29.5.13",
     "@types/node": "^22",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
     "cross-env": "^7.0.3",
