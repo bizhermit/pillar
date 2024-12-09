@@ -16,10 +16,20 @@ type ListViewCol<D extends Data> = {
   wElems: Array<HTMLElement>;
   resizedWidth?: string;
 };
-type ListViewRow<D extends Data> = {
+type ListViewDataRow<D extends Data> = {
   dom: DomElement<HTMLDivElement>;
   cols: Array<ListViewCol<D>>;
   data: D | null | undefined;
+};
+
+type ListViewHeaderRow<D extends Data> = {
+  dom: DomElement<HTMLDivElement>;
+  cols: Array<ListViewCol<D>>;
+};
+
+type ListViewFooterRow<D extends Data> = {
+  dom: DomElement<HTMLDivElement>;
+  cols: Array<ListViewCol<D>>;
 };
 
 type RenderParams<D extends Data> = ListViewCol<D> & {
@@ -60,11 +70,27 @@ export type ListViewColumn<
   width?: number | string;
   minWidth?: number | string;
   maxWidth?: number | string;
+  sort?: boolean;
 };
 
 type ListViewColumnImpl<D extends Data> = ListViewColumn<D> & {
-  _width?: string;
+  _width?: string; // NOTE: headerのみ
+  _sortElem?: HTMLDivElement; // NOTE: headerのみ
 };
+
+type SortDirection = "asc" | "desc" | "none";
+
+export type ListViewSortOrder = Array<{
+  name: string;
+  direction: SortDirection;
+}>;
+
+export type ListViewSortClickEvent = (props: {
+  columnName: string;
+  currentDirection: SortDirection;
+  nextDirection: SortDirection;
+  currentSortOrder: ListViewSortOrder | null | undefined;
+}) => void;
 
 export type ListViewOptions<D extends Data> = {
   rowHeight?: number;
@@ -75,8 +101,10 @@ type ListViewProps<D extends Data> = {
   root: HTMLElement;
   value: Array<D> | null | undefined;
   columns: Array<ListViewColumn<D>>;
+  sortOrder?: ListViewSortOrder;
   options?: ListViewOptions<D>;
   lang: LangAccessor;
+  onClickSort?: ListViewSortClickEvent;
 };
 
 export const LIST_VIEW_DEFAULT_ROW_HEIGHT = 40;
@@ -106,22 +134,26 @@ export class ListViewClass<D extends Data> {
   protected dummy: HTMLDivElement;
   protected emptyMsg: DomElement<HTMLDivElement>;
 
-  protected headerRow: ListViewRow<D> | undefined;
-  protected footerRow: ListViewRow<D> | undefined;
-  protected rows: Array<ListViewRow<D>>;
+  protected headerRow: ListViewHeaderRow<D> | undefined;
+  protected footerRow: ListViewFooterRow<D> | undefined;
+  protected rows: Array<ListViewDataRow<D>>;
 
   protected columns: Array<ListViewColumnImpl<D>>;
   protected value: Array<D> | null | undefined;
+  protected sortOrder: ListViewSortOrder | null | undefined;
 
   protected firstIndex: number;
   protected rowHeight: number;
   protected cellWidth: number | string;
+
+  protected onClickSort: ListViewSortClickEvent | null | undefined;
 
   constructor(props: ListViewProps<D>) {
     this.lang = props.lang;
     this.root = new DomElement(props.root);
     this.columns = props.columns;
     this.value = props.value;
+    this.sortOrder = props.sortOrder;
     this.rows = [];
 
     this.root.elem.classList.add("lv-main");
@@ -150,6 +182,8 @@ export class ListViewClass<D extends Data> {
       this.resize();
     });
     this.observer.observe(this.root.elem);
+    this.onClickSort = props.onClickSort;
+
     this.render();
   }
 
@@ -175,6 +209,12 @@ export class ListViewClass<D extends Data> {
     this.generateFooter();
     this.render();
     this.scrollY();
+    return this;
+  }
+
+  public setOrder(order: ListViewSortOrder | undefined) {
+    this.sortOrder = order;
+    this.renderSortOrder();
     return this;
   }
 
@@ -285,7 +325,21 @@ export class ListViewClass<D extends Data> {
             window.addEventListener("mousemove", move);
             window.addEventListener("mouseup", end);
           });
+          if (column.sort) {
+            resizer.addEvent("click", (e) => {
+              e.stopPropagation();
+            });
+          }
           cell.addChild(resizer);
+          cell.setAttr("data-resize");
+        }
+        if (column.sort) {
+          const elem = this.cloneBase.div.cloneNode() as HTMLDivElement;
+          elem.classList.add("lv-sort");
+          column._sortElem = elem;
+          cell.setAttr("data-sort").addEvent("click", () => {
+            this.sortClick(column);
+          }).elem.appendChild(elem);
         }
         return column.initializeHeaderCell?.({
           column,
@@ -294,7 +348,7 @@ export class ListViewClass<D extends Data> {
         });
       },
     });
-    this.headerRow = { dom, cols, data: null };
+    this.headerRow = { dom, cols };
     this.header.addChild(dom);
   }
 
@@ -344,7 +398,6 @@ export class ListViewClass<D extends Data> {
       this.footerRow = {
         dom: dom.rmAttr("data-none"),
         cols,
-        data: null,
       };
     }
     this.footer.addChild(dom);
@@ -442,10 +495,34 @@ export class ListViewClass<D extends Data> {
     return this;
   }
 
+  protected renderSortOrder() {
+    if (this.headerRow == null) return this;
+    const showOrderTitle = (this.sortOrder ?? []).filter(o => o.direction !== "none").length > 1;
+    this.columns.forEach(column => {
+      if (!column.sort) return;
+      const sortElem = column._sortElem;
+      if (sortElem == null) return;
+      let orderIndex = 0;
+      const order = this.sortOrder?.find(o => {
+        if (o.direction !== "none") orderIndex++;
+        return o.name === column.name;
+      });
+      const direction = order?.direction || "none";
+      sortElem.setAttribute("data-direction", direction);
+      if (direction === "none" || !showOrderTitle) {
+        if (sortElem.title) sortElem.removeAttribute("title");
+      } else {
+        sortElem.title = ` ${orderIndex} `;
+      }
+    });
+    return this;
+  }
+
   public render() {
     if (this.rows.length === 0) this.generateRows();
     this.renderHeader();
     this.renderFooter();
+    this.renderSortOrder();
     this.renderBindData();
     return this;
   }
@@ -504,6 +581,33 @@ export class ListViewClass<D extends Data> {
     if (this.headerRow) impl(this.headerRow.cols);
     if (this.footerRow) impl(this.footerRow.cols);
     this.rows.forEach(row => impl(row.cols));
+  }
+
+  public setOnSortClick(fn: ListViewSortClickEvent | null | undefined) {
+    this.onClickSort = fn;
+    return this;
+  }
+
+  protected sortClick(column: ListViewColumnImpl<D>) {
+    if (!column.sort || !this.onClickSort) return this;
+    const cur = this.sortOrder?.find(o => o.name === column.name)?.direction || "none";
+    const next = (() => {
+      switch (cur) {
+        case "asc":
+          return "desc";
+        case "desc":
+          return "none";
+        default:
+          return "asc";
+      }
+    })();
+    this.onClickSort({
+      columnName: column.name,
+      currentSortOrder: this.sortOrder,
+      currentDirection: cur,
+      nextDirection: next,
+    });
+    return this;
   }
 
 }

@@ -157,7 +157,7 @@
   .lv-cell {
     position: relative;
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     justify-content: flex-start;
     align-items: center;
     overflow: hidden;
@@ -183,6 +183,23 @@
     &[data-align="right"] {
       justify-content: flex-end;
     }
+
+    &[data-sort] {
+      cursor: pointer;
+      user-select: none;
+
+      @include mixins.hover {
+        >.lv-sort {
+          opacity: 1;
+        }
+      }
+
+      &[data-resize] {
+        >.lv-sort {
+          margin-right: 4px;
+        }
+      }
+    }
   }
 
   .lv-span {
@@ -204,12 +221,64 @@
     opacity: 0;
     transition: opacity 0.2s;
     cursor: ew-resize;
+    z-index: 1;
 
     &:active {
       opacity: 0.5;
     }
+  }
 
+  .lv-sort {
+    $sortSize: 16px;
+    position: relative;
+    margin-left: auto;
+    height: 100%;
+    width: #{$sortSize};
+    z-index: 0;
+    order: 9;
+    opacity: 0.4;
+    transition: opacity .2s;
 
+    &::before,
+    &::after {
+      position: absolute;
+      content: "";
+      right: calc($sortSize / 4);
+      height: calc($sortSize / 2);
+      width: calc($sortSize / 2);
+      border-top: 2px solid #fff;
+      border-left: 2px solid #fff;
+    }
+
+    &::before {
+      top: 30%;
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      bottom: 30%;
+      transform: rotate(225deg);
+    }
+
+    &[data-direction="asc"] {
+      &::before {
+        top: calc(50% - calc($sortSize / 6));
+      }
+
+      &::after {
+        display: none;
+      }
+    }
+
+    &[data-direction="desc"] {
+      &::before {
+        display: none;
+      }
+
+      &::after {
+        bottom: calc(50% - calc($sortSize / 6));
+      }
+    }
   }
 
 }

@@ -1,11 +1,13 @@
 "use client";
 
-import { ListViewColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
+import { ListViewColumn, listViewRowNumColumn, ListViewSortClickEvent, ListViewSortOrder } from "@/dom/elements/list-view";
 import { listViewButtonColumn } from "@/dom/elements/list-view/button-column";
 import { listViewImageColumn } from "@/dom/elements/list-view/image-column";
 import { listViewLinkColumn } from "@/dom/elements/list-view/link-column";
 import { useLang } from "@/i18n/react-hook";
+import { equals } from "@/objects";
 import { generateArray } from "@/objects/array";
+import { get } from "@/objects/struct";
 import { Button } from "@/react/elements/button";
 import { ListView } from "@/react/elements/list-view";
 import { useMemo, useReducer, useState } from "react";
@@ -23,9 +25,10 @@ type Data = {
 const Page = () => {
   const lang = useLang();
   const [count, setCount] = useState(0);
-  const [value, setValue] = useReducer((_: null | Array<Data>, action: number | null) => {
+  const [value, setValue] = useReducer((_: null | Array<Data>, action: number | Array<Data> | null) => {
     if (action == null) return null;
-    return generateArray(action, (i) => {
+    if (Array.isArray(action)) return action;
+    const newValue = generateArray(action, (i) => {
       return {
         id: i + 1,
         img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${i + 1}.png`,
@@ -33,7 +36,31 @@ const Page = () => {
         col2: `value-abcdefghijklmnopqrstuvwxyz-${i * 9}`
       };
     });
+    return newValue;
   }, null);
+
+  const [order, setOrder] = useReducer((state: ListViewSortOrder, action: Parameters<ListViewSortClickEvent>[0]) => {
+    const newOrder = [...state];
+    const i = newOrder.findIndex(o => o.name === action.columnName);
+    if (i >= 0) newOrder.splice(i, 1);
+    newOrder.push({ name: action.columnName, direction: action.nextDirection });
+    return newOrder;
+  }, []);
+
+  const sortedValue = useMemo(() => {
+    if (value == null || value.length === 0) return value;
+    return [...value].sort((d1, d2) => {
+      for (let i = 0, il = order.length; i < il; i++) {
+        const { name, direction } = order[i];
+        if (direction === "none") continue;
+        const v1 = get(d1, name)[0];
+        const v2 = get(d2, name)[0];
+        if (equals(v1, v2)) continue;
+        return (v1 < v2 ? -1 : 1) * (direction === "asc" ? 1 : -1);
+      }
+      return 0;
+    });
+  }, [value, order]);
 
   const columns = useMemo<Array<ListViewColumn<Data>>>(() => {
     return [
@@ -86,9 +113,9 @@ const Page = () => {
         altName: "id",
         sticky: true,
       }),
-      { name: "col1", headerCell: "Col1", sticky: true },
-      { name: "col2", headerCell: "Col2", sticky: true, resize: false },
-      { name: "col3", headerCell: "Col3", resetResize: count },
+      { name: "col1", headerCell: "Col1", sticky: true, sort: true },
+      { name: "col2", headerCell: "Col2", sticky: true, sort: true },
+      { name: "col3", headerCell: "Col3", resetResize: count, sort: true },
       { name: "col4", headerCell: "Col4", resize: count % 2 === 1 },
       { name: "col5", headerCell: "Col5" },
       { name: "col6", headerCell: "Col6" },
@@ -126,7 +153,11 @@ const Page = () => {
         <ListView
           className={css.listview}
           columns={columns}
-          value={value}
+          value={sortedValue}
+          sortOrder={order}
+          onClickSort={(props) => {
+            setOrder(props);
+          }}
         />
       </div>
     </>
