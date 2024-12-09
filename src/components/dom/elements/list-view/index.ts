@@ -223,13 +223,16 @@ export class ListViewClass<D extends Data> {
   }
 
   public setValue(value: Array<D> | null | undefined) {
+    const dif = this.value?.length !== value?.length;
     this.value = value;
-    this.bodyWrap.elem.scrollTop = 0;
-    this.dummy.style.height = `${(this.value?.length ?? 0) * this.rowHeight}px`;
     if (this.value?.length === 0) this.emptyMsg.setAttr("data-vis");
     else this.emptyMsg.rmAttr("data-vis");
+    this.dummy.style.height = `${(this.value?.length ?? 0) * this.rowHeight}px`;
     this.calcScrollBarWidth();
+    if (dif) this.body.elem.style.visibility = "hidden";
+    this.scrollY();
     this.render();
+    if (dif) this.body.elem.style.removeProperty("visibility");
     return this;
   }
 
