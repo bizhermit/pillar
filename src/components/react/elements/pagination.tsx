@@ -96,6 +96,7 @@ export const Pagination = ({
         hideClearButton
         disabled={disabled}
         textAlign="center"
+        preventEditText
         onEdit={(v) => {
           if (v?.value == null) return;
           onChange?.({ currentPage: p, page: v.value });

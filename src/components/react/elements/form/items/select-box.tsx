@@ -34,6 +34,7 @@ type SelectBoxOptions<D extends DataItem.$str | DataItem.$num | DataItem.$boolAn
     tieInNames?: Array<{ dataName: string; hiddenName?: string }>;
     placeholder?: string;
     textAlign?: (DataItem.$str | DataItem.$num | DataItem.$boolAny)["textAlign"];
+    preventEditText?: boolean;
   };
 
 type SelectBoxProps<D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData> =
@@ -52,6 +53,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   tieInNames,
   placeholder,
   textAlign,
+  preventEditText,
   ...props
 }: SelectBoxProps<D, S>) => {
   const iref = useRef<HTMLInputElement>(null!);
@@ -346,7 +348,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           type="text"
           placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
-          readOnly={fi.readOnly || loading}
+          readOnly={fi.readOnly || loading || preventEditText}
           tabIndex={fi.tabIndex}
           autoFocus={fi.autoFocus}
           autoComplete="off"
