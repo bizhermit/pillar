@@ -42,12 +42,12 @@ type TabContainerOptions = {
   keepMount?: boolean;
   onChange?: (key: string) => void;
   ref?: TabContainerRef;
-  children: JSX.Element | Array<JSX.Element>;
+  children: React.JSX.Element | Array<React.JSX.Element>;
 };
 
 export type TabContainerProps = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TabContainerOptions>;
 
-export const getDefaultTabKey = (children: Array<JSX.Element>, defaultKey: TabContainerProps["defaultKey"]): string => {
+export const getDefaultTabKey = (children: Array<React.JSX.Element>, defaultKey: TabContainerProps["defaultKey"]): string => {
   if (defaultKey) {
     if (children.find(c => c.key === defaultKey)) return defaultKey;
   }
