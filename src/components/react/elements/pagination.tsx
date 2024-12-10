@@ -44,7 +44,7 @@ export const Pagination = ({
   const selector = useFormItemRef<typeof p, typeof source[number]>();
 
   useEffect(() => {
-    selector.setValue(Math.min(mp, p), false);
+    selector.setValue(Math.min(p, mp), false);
   }, [p, mp]);
 
   return (
