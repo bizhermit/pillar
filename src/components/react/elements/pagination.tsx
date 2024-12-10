@@ -93,7 +93,7 @@ export const Pagination = ({
         source={source}
         emptyItem={{ value: 1, label: "1" }}
         preventSourceMemorize
-        // hideMessage
+        hideMessage
         hideClearButton
         disabled={disabled}
         readOnly={maxPage === 1}
