@@ -1,23 +1,23 @@
 type FormItemValue<V extends any = any, D extends DataItem.$objec | undefined> =
   D extends DataItem.$object ? DataItem.ValueType<D> : V;
 
-type FormItemRefConnectionParams<IV extends any> = {
+type FormItemRefConnectionParams<V extends any, IV extends any> = {
   get: () => (IV | DataItem.NullValue);
-  set: (params: { value: IV | DataItem.NullValue; edit?: boolean; effect?: boolean; }) => void;
+  set: (params: { value: V | DataItem.NullValue; edit?: boolean; effect?: boolean; }) => void;
   reset: (edit?: boolean) => void;
   clear: (edit?: boolean) => void;
   focus: () => void;
 };
 
-type FormItemRef<IV extends any> = {
+type FormItemRef<V extends any, IV extends any = V> = {
   value: IV | DataItem.NullValue;
-  setValue: (value: IV | DataItem.NullValue, edit: boolean) => void;
+  setValue: (value: V | DataItem.NullValue, edit: boolean) => void;
   message: DataItem.ValidationResult | null | undefined;
   focus: () => void;
 };
 
-interface FormItemRefConnector<IV extends any> extends FormItemRef<IV> {
-  (params: FormItemRefConnectionParams<IV>): ((params: [
+interface FormItemRefConnector<V extends any, IV extends any = V> extends FormItemRef<V, IV> {
+  (params: FormItemRefConnectionParams<V, IV>): ((params: [
     value: IV | DataItem.NullValue,
     result?: DataItem.ValidationResult | null | undefined,
   ]) => void);
@@ -49,7 +49,7 @@ type FormItemOptions<
   onEdit?: (value: IV | DataItem.NullValue, params: {
     before: IV | DataItem.NullValue;
   }) => void;
-  ref?: FormItemRef<IV>;
+  ref?: FormItemRef<Exclude<V, DataItem.NullValue>, Exclude<IV, DataItem.NullValue>>;
 };
 
 type FormItemSetArg<T extends any = any> = {

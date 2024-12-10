@@ -62,7 +62,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   onChange,
   onEdit,
   ...props
-}: FormItemOptions<D, V, any, DV>,
+}: FormItemOptions<D, any, any, any>,
   cp: FormItemCoreArgs<SD, D, V, IV>
 ) => {
   const lang = useLang();

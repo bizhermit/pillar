@@ -41,7 +41,7 @@ export const Pagination = ({
       return { value: p, label: p };
     });
   }, [mp]);
-  const selector = useFormItemRef();
+  const selector = useFormItemRef<typeof p, typeof source[number]>();
 
   useEffect(() => {
     selector.setValue(p, false);
@@ -85,7 +85,7 @@ export const Pagination = ({
           return nodes;
         })()}
       </ul>
-      <SelectBox<undefined, { value: number; label: any; }>
+      <SelectBox
         className="pagination-selector"
         ref={selector}
         name={n}
