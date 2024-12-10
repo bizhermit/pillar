@@ -7,7 +7,7 @@ import { useFormItemRef } from "./form/item-ref";
 import { SelectBox } from "./form/items/select-box";
 import { joinClassNames } from "./utilities";
 
-type PaginationOptions = {
+export type PaginationOptions = {
   name?: string;
   page: number;
   maxPage: number;
@@ -95,6 +95,7 @@ export const Pagination = ({
         hideMessage
         hideClearButton
         disabled={disabled}
+        readOnly={maxPage === 1}
         textAlign="center"
         preventEditText
         onEdit={(v) => {
