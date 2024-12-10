@@ -26,7 +26,6 @@ type Data = {
 
 const Page = () => {
   const lang = useLang();
-  // const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [value, setValue] = useReducer((_: null | Array<Data>, action: number | Array<Data> | null) => {
     if (action == null) return null;
