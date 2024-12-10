@@ -19,6 +19,7 @@ type NumberBoxOptions<D extends DataItem.$num | undefined> = FormItemOptions<D, 
   step?: number;
   hideSpinButtons?: boolean;
   placeholder?: string;
+  textAlign?: DataItem.$num["textAlign"];
 };
 
 type NumberBoxProps<D extends DataItem.$num | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, NumberBoxOptions<D>>;
@@ -33,13 +34,14 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
   step,
   hideSpinButtons,
   placeholder,
+  textAlign,
   ...props
 }: NumberBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
   const focusInput = () => iref.current?.focus();
 
   const fi = useFormItemCore<DataItem.$num, D, number, number>(props, {
-    dataItemDeps: [min, max, maxLength, float, requiredIsNotZero],
+    dataItemDeps: [min, max, maxLength, float, requiredIsNotZero, textAlign],
     getDataItem: ({ dataItem }) => {
       return {
         type: "num",
@@ -48,6 +50,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
         maxLength: maxLength ?? dataItem?.maxLength,
         float: float ?? dataItem?.float,
         requiredIsNotZero: requiredIsNotZero ?? dataItem?.requiredIsNotZero,
+        textAlign: textAlign ?? dataItem?.textAlign,
       };
     },
     parse: () => (p) => $numParse(p, true),
@@ -188,6 +191,7 @@ export const NumberBox = <D extends DataItem.$num | undefined>({
           maxLength={fi.dataItem.maxLength}
           autoComplete="off"
           inputMode="decimal"
+          data-align={fi.dataItem.textAlign}
           onChange={change}
           onKeyDown={keydown}
           onFocus={focus}

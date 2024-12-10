@@ -322,7 +322,7 @@ export class ListViewClass<D extends Data> {
               x: e.clientX,
               cells: [cell, ...this.rows.map(row => {
                 return row.cols.find(c => c.column.name === column.name)?.elem;
-              })].filter(c => c != null),
+              })].filter(c => c != null) as Array<DomElement<HTMLDivElement>>,
             };
             setCursor(getComputedStyle((e.currentTarget as HTMLDivElement)).cursor);
             window.addEventListener("mousemove", move);

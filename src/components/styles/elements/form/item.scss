@@ -189,6 +189,14 @@
     flex: 1 1 0;
     min-height: var(--ipt-size);
     min-width: var(--ipt-size);
+
+    &[data-align="center"] {
+      text-align: center;
+    }
+
+    &[data-align="right"] {
+      text-align: right;
+    }
   }
 
   .ipt-txt-area {

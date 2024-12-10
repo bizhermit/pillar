@@ -10,6 +10,7 @@ import { generateArray } from "@/objects/array";
 import { get } from "@/objects/struct";
 import { Button } from "@/react/elements/button";
 import { ListView } from "@/react/elements/list-view";
+import { Pagination } from "@/react/elements/pagination";
 import { useMemo, useReducer, useState } from "react";
 import css from "./page.module.scss";
 
@@ -125,6 +126,8 @@ const Page = () => {
     ];
   }, [count]);
 
+  const [page, setPage] = useState(3);
+
   return (
     <>
       <h1>ListView</h1>
@@ -160,6 +163,11 @@ const Page = () => {
           }}
         />
       </div>
+      <Pagination
+        page={page}
+        maxPage={10}
+        onChange={(ctx) => setPage(ctx.page)}
+      />
     </>
   );
 };
