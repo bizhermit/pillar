@@ -246,8 +246,8 @@
       right: calc($sortSize / 4);
       height: calc($sortSize / 2);
       width: calc($sortSize / 2);
-      border-top: 2px solid #fff;
-      border-left: 2px solid #fff;
+      border-top: 2px solid var(--fg);
+      border-left: 2px solid var(--fg);
     }
 
     &::before {
