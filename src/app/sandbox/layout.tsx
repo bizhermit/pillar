@@ -1,4 +1,4 @@
-import { CalendarIcon, CloudIcon, ExLinkIcon, HomeIcon, TextBoxIcon } from "@/react/elements/icon";
+import { CalendarIcon, CloudIcon, ExLinkIcon, HomeIcon, ListIcon, TextBoxIcon } from "@/react/elements/icon";
 import Link from "@/react/elements/link";
 import { Navigation } from "@/react/elements/navigation";
 import { NavigationMenu, NavMenuLink, NavMenuNest } from "@/react/elements/navigation/menu";
@@ -106,6 +106,12 @@ const Layout = async (props: { children: ReactNode; }) => {
             icon={<TextBoxIcon />}
           >
             MailAddress
+          </NavMenuLink>
+          <NavMenuLink
+            url="/sandbox/listview"
+            icon={<ListIcon />}
+          >
+            ListView
           </NavMenuLink>
         </NavigationMenu>
         <LnagSwitch />

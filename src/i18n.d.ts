@@ -21,6 +21,7 @@ interface I18N_Langs {
     cancel: string;
     save: string;
     detail: string;
+    noData: string;
   };
   form: {
     /**

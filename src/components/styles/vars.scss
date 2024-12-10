@@ -37,6 +37,20 @@ $darkFg: #f8f8f8;
   --c-danger_: #{$lightBg};
   --c-subdued: #bbb;
   --c-subdued_: #{$lightBg};
+  --list-bg: #fff;
+  --list-fg: #{$lightFg};
+  --list-header-bg: #e8e8ef;
+  --list-header-fg: #{$lightFg};
+  --list-footer-bg: #f8f8f8;
+  --list-footer-fg: #{$lightFg};
+  --list-cell-bg: #fff;
+  --list-cell-fg: #{$lightFg};
+  --list-cell1-bg: #f6f6ff;
+  --list-cell1-fg: #{$lightFg};
+  --list-row-hover-bg: #e8e8f8;
+  --list-row-hover-fg: #{$lightFg};
+  --list-cell-hover-bg: #c0e0ff;
+  --list-cell-hover-fg: #{$lightFg};
 }
 
 @mixin darkTheme {
@@ -69,6 +83,20 @@ $darkFg: #f8f8f8;
   --c-danger_: #{$darkFg};
   --c-subdued: #555;
   --c-subdued_: #{$darkFg};
+  --list-bg: #000;
+  --list-fg: #{$darkFg};
+  --list-header-bg: #202020;
+  --list-header-fg: #{$darkFg};
+  --list-footer-bg: #202020;
+  --list-footer-fg: #{$darkFg};
+  --list-cell-bg: #303030;
+  --list-cell-fg: #{$darkFg};
+  --list-cell1-bg: #383838;
+  --list-cell1-fg: #{$darkFg};
+  --list-row-hover-bg: #40404b;
+  --list-row-hover-fg: #{$darkFg};
+  --list-cell-hover-bg: #102830;
+  --list-cell-hover-fg: #{$darkFg};
 }
 
 @layer default {
@@ -84,7 +112,7 @@ $darkFg: #f8f8f8;
       @include darkTheme();
     }
   }
-  
+
   @media (prefers-color-scheme: dark) {
     :root {
       &[data-theme="auto"] {

@@ -19,6 +19,7 @@ const Langs = {
   close: "Close",
   cancel: "Cancel",
   save: "Save",
+  noData: "no data",
 } as const satisfies Partial<I18N_Langs[typeof kind]>;
 
 export default Langs;
