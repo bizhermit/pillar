@@ -33,6 +33,8 @@ type SelectBoxOptions<D extends DataItem.$str | DataItem.$num | DataItem.$boolAn
     emptyItem?: boolean | string | { value: (D extends DataItem.$object ? DataItem.ValueType<D> : string | number | boolean) | null | undefined; label: string; };
     tieInNames?: Array<{ dataName: string; hiddenName?: string }>;
     placeholder?: string;
+    textAlign?: (DataItem.$str | DataItem.$num | DataItem.$boolAny)["textAlign"];
+    preventEditText?: boolean;
   };
 
 type SelectBoxProps<D extends DataItem.$str | DataItem.$num | DataItem.$boolAny | undefined, S extends SourceData> =
@@ -50,6 +52,8 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   emptyItem,
   tieInNames,
   placeholder,
+  textAlign,
+  preventEditText,
   ...props
 }: SelectBoxProps<D, S>) => {
   const iref = useRef<HTMLInputElement>(null!);
@@ -102,10 +106,11 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
   };
 
   const fi = useFormItemCore<DataItem.$str | DataItem.$num | DataItem.$boolAny, D, string | number | boolean, { [P in typeof vdn]: string | number | boolean; } & { [P in typeof ldn]: any }>(props, {
-    dataItemDeps: [vdn, ldn, origin, ...(tieInNames ?? [])],
+    dataItemDeps: [textAlign, vdn, ldn, origin, ...(tieInNames ?? [])],
     getDataItem: ({ dataItem }) => {
       return {
         type: dataItem?.type!,
+        textAlign: textAlign ?? dataItem?.textAlign,
         source: origin as DataItem.Source<any>,
       };
     },
@@ -343,7 +348,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           type="text"
           placeholder={fi.editable ? placeholder : ""}
           disabled={fi.disabled}
-          readOnly={fi.readOnly || loading}
+          readOnly={fi.readOnly || loading || preventEditText}
           tabIndex={fi.tabIndex}
           autoFocus={fi.autoFocus}
           autoComplete="off"
@@ -351,6 +356,7 @@ export const SelectBox = <D extends DataItem.$str | DataItem.$num | DataItem.$bo
           onKeyDown={keydown}
           onChange={change}
           aria-haspopup="listbox"
+          data-align={fi.dataItem.textAlign}
           {...fi.iptAria}
         />
         {fi.mountValue &&

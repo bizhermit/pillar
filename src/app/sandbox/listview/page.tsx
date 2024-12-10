@@ -10,6 +10,8 @@ import { generateArray } from "@/objects/array";
 import { get } from "@/objects/struct";
 import { Button } from "@/react/elements/button";
 import { ListView } from "@/react/elements/list-view";
+import { Pagination } from "@/react/elements/pagination";
+import { usePagingArray } from "@/react/hooks/paging-array";
 import { useMemo, useReducer, useState } from "react";
 import css from "./page.module.scss";
 
@@ -61,6 +63,11 @@ const Page = () => {
       return 0;
     });
   }, [value, order]);
+
+  const list = usePagingArray({
+    value: sortedValue,
+    limit: 10,
+  });
 
   const columns = useMemo<Array<ListViewColumn<Data>>>(() => {
     return [
@@ -140,6 +147,7 @@ const Page = () => {
         <Button onClick={() => setValue(0)}>0</Button>
         <Button onClick={() => setValue(1)}>1</Button>
         <Button onClick={() => setValue(10)}>10</Button>
+        <Button onClick={() => setValue(11)}>11</Button>
         <Button onClick={() => setValue(15)}>15</Button>
         <Button onClick={() => setValue(20)}>20</Button>
         <Button onClick={() => setValue(50)}>50</Button>
@@ -153,13 +161,20 @@ const Page = () => {
         <ListView
           className={css.listview}
           columns={columns}
-          value={sortedValue}
+          value={list.value}
           sortOrder={order}
           onClickSort={(props) => {
             setOrder(props);
           }}
         />
       </div>
+      {list.showPagination &&
+        <Pagination
+          page={list.page}
+          maxPage={list.maxPage}
+          onChange={list.setPage}
+        />
+      }
     </>
   );
 };

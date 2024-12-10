@@ -27,6 +27,9 @@ const nextConfig = {
   images: {
     unoptimized: isExport,
   },
+  sassOptions: {
+    silenceDeprecations: ['legacy-js-api'],
+  },
 };
 
 export default nextConfig;

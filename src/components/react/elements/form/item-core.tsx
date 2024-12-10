@@ -62,7 +62,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   onChange,
   onEdit,
   ...props
-}: FormItemOptions<D, V, any, DV>,
+}: FormItemOptions<D, any, any, any>,
   cp: FormItemCoreArgs<SD, D, V, IV>
 ) => {
   const lang = useLang();
@@ -300,7 +300,7 @@ export const useFormItemCore = <SD extends DataItem.$object, D extends SD | unde
   $.current.getTieInNames = cp.getTieInNames;
   $.current.ref = (ref as unknown as FormItemRefConnector<any>)?.({
     get: () => valRef.current,
-    set: (p) => form.setValue(name!, p.value, true),
+    set: (p) => setValue({ value: p.value, edit: p.edit, effect: p.effect, parse: true }),
     clear,
     reset,
     focus: cp.focus,

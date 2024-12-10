@@ -84,6 +84,7 @@ declare namespace DataItem {
     labelAsIs?: string;
     required?: boolean | ((params: DataItem.ValidationProps<any>) => boolean);
     refs?: Array<string>;
+    textAlign?: "left" | "center" | "right";
   };
 
   type $any<V extends any = any> = $ & {

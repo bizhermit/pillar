@@ -18,6 +18,7 @@ type TextBoxOptions<D extends DataItem.$str | undefined> = FormItemOptions<D, D 
   type?: DataItem.$str["inputType"];
   autoComplete?: string;
   placeholder?: string;
+  textAlign?: DataItem.$str["textAlign"];
 };
 
 export type TextBoxProps<D extends DataItem.$str | undefined> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, TextBoxOptions<D>>;
@@ -31,13 +32,14 @@ export const TextBox = <D extends DataItem.$str | undefined>({
   type,
   autoComplete,
   placeholder,
+  textAlign,
   ...props
 }: TextBoxProps<D>) => {
   const iref = useRef<HTMLInputElement>(null!);
   const focusInput = () => iref.current?.focus();
 
   const fi = useFormItemCore<DataItem.$str, D, string, string>(props, {
-    dataItemDeps: [length, minLength, maxLength, charType],
+    dataItemDeps: [length, minLength, maxLength, charType, textAlign],
     getDataItem: ({ dataItem }) => {
       const ct = charType ?? dataItem?.charType;
       return {
@@ -45,6 +47,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
         length: length ?? dataItem?.length,
         minLength: minLength ?? dataItem?.minLength,
         maxLength: maxLength ?? dataItem?.maxLength,
+        textAlign: textAlign ?? dataItem?.textAlign,
         charType: ct,
         inputMode: inputMode ?? dataItem?.inputMode ?? (() => {
           switch (ct) {
@@ -174,6 +177,7 @@ export const TextBox = <D extends DataItem.$str | undefined>({
           maxLength={fi.dataItem.length ?? fi.dataItem.maxLength}
           autoComplete={autoComplete ?? "off"}
           inputMode={fi.dataItem.inputMode}
+          data-align={fi.dataItem.textAlign}
           onChange={e => fi.set({ value: e.target.value, edit: true })}
           onBlur={blur}
           onKeyDown={keydown}
