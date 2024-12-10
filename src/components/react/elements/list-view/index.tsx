@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, type HTMLAttributes } from "react";
-import { ListViewClass, type ListViewColumn, type ListViewOptions, type ListViewSortClickEvent, type ListViewSortOrder } from "../../dom/elements/list-view";
-import { useLang } from "../../i18n/react-hook";
+import { ListViewClass, type ListViewColumn, type ListViewOptions, type ListViewSortClickEvent, type ListViewSortOrder } from "../../../dom/elements/list-view";
+import { useLang } from "../../../i18n/react-hook";
 
 type Data = { [v: string | number | symbol]: any };
 

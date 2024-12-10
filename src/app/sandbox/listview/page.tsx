@@ -1,15 +1,14 @@
 "use client";
 
-import { ListViewColumn, listViewRowNumColumn, ListViewSortClickEvent, ListViewSortOrder } from "@/dom/elements/list-view";
+import { ListViewColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
 import { listViewButtonColumn } from "@/dom/elements/list-view/button-column";
 import { listViewImageColumn } from "@/dom/elements/list-view/image-column";
 import { listViewLinkColumn } from "@/dom/elements/list-view/link-column";
 import { useLang } from "@/i18n/react-hook";
-import { equals } from "@/objects";
 import { generateArray } from "@/objects/array";
-import { get } from "@/objects/struct";
 import { Button } from "@/react/elements/button";
 import { ListView } from "@/react/elements/list-view";
+import { useListViewSortedValue } from "@/react/elements/list-view/hooks";
 import { Pagination } from "@/react/elements/pagination";
 import { usePagingArray } from "@/react/hooks/paging-array";
 import { useMemo, useReducer, useState } from "react";
@@ -41,29 +40,9 @@ const Page = () => {
     return newValue;
   }, null);
 
-  const [order, setOrder] = useReducer((state: ListViewSortOrder, action: Parameters<ListViewSortClickEvent>[0]) => {
-    const newOrder = [...state];
-    const i = newOrder.findIndex(o => o.name === action.columnName);
-    if (i >= 0) newOrder.splice(i, 1);
-    newOrder.push({ name: action.columnName, direction: action.nextDirection });
-    return newOrder;
-  }, []);
-
-  const sortedValue = useMemo(() => {
-    if (value == null || value.length === 0) return value;
-    return [...value].sort((d1, d2) => {
-      for (let i = 0, il = order.length; i < il; i++) {
-        const { name, direction } = order[i];
-        if (direction === "none") continue;
-        const v1 = get(d1, name)[0];
-        const v2 = get(d2, name)[0];
-        if (equals(v1, v2)) continue;
-        return (v1 < v2 ? -1 : 1) * (direction === "asc" ? 1 : -1);
-      }
-      return 0;
-    });
-  }, [value, order]);
-
+  // const [order, setOrder] = useListViewSortOrder();
+  // const sortedValue = useListViewSortedMemorizedValue(value, order);
+  const { value: sortedValue, sortOrder, setSortOrder } = useListViewSortedValue(value);
   const list = usePagingArray({
     value: sortedValue,
     limit: 10,
@@ -162,9 +141,9 @@ const Page = () => {
           className={css.listview}
           columns={columns}
           value={list.value}
-          sortOrder={order}
+          sortOrder={sortOrder}
           onClickSort={(props) => {
-            setOrder(props);
+            setSortOrder(props);
           }}
         />
       </div>

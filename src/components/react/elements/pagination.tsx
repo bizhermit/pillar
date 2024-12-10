@@ -36,8 +36,8 @@ export const Pagination = ({
   const ml = linkLength ?? PAGINATION_LINK_LENGTH;
 
   const source = useMemo(() => {
-    return generateArray(mp, (i) => {
-      const p = i + 1;
+    return generateArray(mp - 1, (i) => {
+      const p = i + 2;
       return { value: p, label: p };
     });
   }, [mp]);
@@ -91,6 +91,7 @@ export const Pagination = ({
         name={n}
         defaultValue={page}
         source={source}
+        emptyItem={{ value: 1, label: "1" }}
         preventSourceMemorize
         hideMessage
         hideClearButton
