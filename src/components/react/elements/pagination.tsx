@@ -31,8 +31,8 @@ export const Pagination = ({
   ...props
 }: PaginationProps) => {
   const n = (name ?? "page") || undefined;
-  const p = Math.max(1, page);
-  const mp = Math.max(p, maxPage);
+  const mp = Math.max(1, maxPage);
+  const p = Math.min(mp, Math.max(1, page));
   const ml = linkLength ?? PAGINATION_LINK_LENGTH;
 
   const source = useMemo(() => {
@@ -44,8 +44,8 @@ export const Pagination = ({
   const selector = useFormItemRef<typeof p, typeof source[number]>();
 
   useEffect(() => {
-    selector.setValue(p, false);
-  }, [p]);
+    selector.setValue(Math.min(p, mp), false);
+  }, [p, mp]);
 
   return (
     <div
