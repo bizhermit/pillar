@@ -107,9 +107,7 @@ export const Pagination = ({
       <ul className="pagination-after">
         {(() => {
           const over = mp - p > ml;
-
           const base = over ? ml - 2 : mp - p - 1;
-
           const nodes = generateArray(base, (i) => {
             const ap = i + p + 1;
             return (
