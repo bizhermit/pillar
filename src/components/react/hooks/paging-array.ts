@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { type PaginationOptions } from "../../elements/pagination";
+import { type PaginationOptions } from "../elements/pagination";
 
 type Props<D extends any> = {
   value: Array<D> | null | undefined;

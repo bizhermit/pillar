@@ -11,7 +11,7 @@ import { get } from "@/objects/struct";
 import { Button } from "@/react/elements/button";
 import { ListView } from "@/react/elements/list-view";
 import { Pagination } from "@/react/elements/pagination";
-import { usePagingArray } from "@/react/hooks/pagination";
+import { usePagingArray } from "@/react/hooks/paging-array";
 import { useMemo, useReducer, useState } from "react";
 import css from "./page.module.scss";
 
@@ -26,7 +26,7 @@ type Data = {
 
 const Page = () => {
   const lang = useLang();
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [value, setValue] = useReducer((_: null | Array<Data>, action: number | Array<Data> | null) => {
     if (action == null) return null;
