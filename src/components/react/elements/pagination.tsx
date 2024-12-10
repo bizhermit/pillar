@@ -30,7 +30,7 @@ export const Pagination = ({
   onChange,
   ...props
 }: PaginationProps) => {
-  const n = name ?? "page";
+  const n = (name ?? "page") || undefined;
   const p = Math.max(1, page);
   const mp = Math.max(p, maxPage);
   const ml = linkLength ?? PAGINATION_LINK_LENGTH;
