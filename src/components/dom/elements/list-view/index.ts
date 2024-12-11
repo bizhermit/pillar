@@ -272,30 +272,25 @@ export class ListViewClass<D extends ListData> {
       align: c => c.align || "center",
       initialize: ({ column, cell }) => {
         if (column.resize !== false && !column.fill) {
-          let resizeCtx: { x: number; w: number; cells: Array<DomElement<HTMLDivElement>>; } | null = null;
-          const move = throttle((e: MouseEvent) => {
-            if (!resizeCtx) return;
-            const w = resizeCtx.w + (e.clientX - resizeCtx.x);
-            resizeCtx.cells.forEach(cell => cell.setStyleSize("width", w));
-            if (column.sticky) this.calcStickyPosition({ name: column.name, width: w });
-          }, COL_RESIZE_THROTTLE_TIMEOUT);
-          const end = () => {
-            releaseCursor();
-            column._width = resizeCtx?.cells[0].elem.style.width;
-            resizeCtx = null;
-            this.calcStickyPosition();
-            window.removeEventListener("mousemove", move);
-            window.removeEventListener("mouseup", end);
-          };
           const resizer = resizeDom.clone().addClass("list-resizer").addEvent("mousedown", (e) => {
-            resizeCtx = {
-              w: cell.elem.offsetWidth,
-              x: e.clientX,
-              cells: [cell, ...this.rows.map(row => {
-                return row.cols.find(c => c.column.name === column.name)?.elem;
-              })].filter(c => c != null) as Array<DomElement<HTMLDivElement>>,
-            };
+            const baseW = cell.elem.offsetWidth;
+            const baseX = e.clientX;
+            const cells = [cell, ...this.rows.map(row => {
+              return row.cols.find(c => c.column.name === column.name)?.elem;
+            })].filter(c => c != null) as Array<DomElement<HTMLDivElement>>;
             setCursor(getComputedStyle((e.currentTarget as HTMLDivElement)).cursor);
+            const move = throttle((e: MouseEvent) => {
+              const w = baseW + (e.clientX - baseX);
+              cells.forEach(cell => cell.setStyleSize("width", w));
+              if (column.sticky) this.calcStickyPosition({ name: column.name, width: w });
+            }, COL_RESIZE_THROTTLE_TIMEOUT);
+            const end = () => {
+              releaseCursor();
+              column._width = cells[0].elem.style.width;
+              this.calcStickyPosition();
+              window.removeEventListener("mousemove", move);
+              window.removeEventListener("mouseup", end);
+            };
             window.addEventListener("mousemove", move);
             window.addEventListener("mouseup", end);
           });

@@ -1,8 +1,10 @@
 "use client";
 
+import { releaseCursor, setCursor } from "@/dom/cursor";
 import { useLang } from "@/i18n/react-hook";
 import { equals } from "@/objects";
 import { get } from "@/objects/struct";
+import useRender from "@/react/hooks/render";
 import { throttle } from "@/utilities/throttle";
 import { CSSProperties, HTMLAttributes, useEffect, useMemo, useRef, type ReactNode } from "react";
 import "../../../styles/elements/list.scss";
@@ -37,7 +39,7 @@ type ListGridProps<D extends ListData> = OverwriteAttrs<HTMLAttributes<HTMLDivEl
 
 export const LIST_GRID_DEFAULT_CELL_WIDTH = 80;
 export const LIST_GRID_DEFAULT_ROW_HEIGHT = 40;
-const SCROLL_Y_THROTTLE_TIMEOUT = 10;
+const SCROLL_X_THROTTLE_TIMEOUT = 0;
 const COL_RESIZE_THROTTLE_TIMEOUT = 20;
 
 const parseStrNum = (w: number | string) => typeof w === "string" ? w : `${w}px`;
@@ -58,6 +60,7 @@ export const ListGrid = <D extends ListData>({
   const idName = _idName || "id";
   const defaultCellWidth = _cellWidth || LIST_GRID_DEFAULT_CELL_WIDTH;
   const defaultRowHeight = _rowHeight || LIST_GRID_DEFAULT_ROW_HEIGHT;
+  const render = useRender();
 
   const ref = useRef<HTMLDivElement>(null!);
   const href = useRef<HTMLDivElement | null>(null);
@@ -65,7 +68,10 @@ export const ListGrid = <D extends ListData>({
   const fref = useRef<HTMLDivElement>(null!);
 
   const columns = useRef<Array<ListGridColumnImpl<D>>>([]);
-  useMemo(() => {
+  const {
+    hasHeader,
+    hasFooter,
+  } = useMemo(() => {
     let left = "";
     columns.current = _columns.map(c => {
       const col = columns.current.find(col => col.name === c.name);
@@ -88,10 +94,11 @@ export const ListGrid = <D extends ListData>({
         _stickyLeft,
       } as const;
     });
+    return {
+      hasHeader: columns.current.find(c => "header" in c),
+      hasFooter: columns.current.find(c => "footer" in c),
+    }
   }, [_columns]);
-
-  const hasHeader = columns.current.find(c => "header" in c);
-  const hasFooter = columns.current.find(c => "footer" in c);
 
   const calcScrollBarWidth = () => {
     const bodyWrapElem = bref.current.parentElement as HTMLDivElement;
@@ -134,11 +141,9 @@ export const ListGrid = <D extends ListData>({
             const sl = href.current!.scrollLeft;
             bref.current.scrollLeft = sl;
             fref.current.scrollLeft = sl;
-          }, SCROLL_Y_THROTTLE_TIMEOUT)}
+          }, SCROLL_X_THROTTLE_TIMEOUT)}
         >
-          <div
-            className="list-row"
-          >
+          <div className="list-row">
             {columns.current.map(col => {
               return (
                 <ListGridHeaderCell
@@ -147,6 +152,10 @@ export const ListGrid = <D extends ListData>({
                   value={value}
                   sortOrder={sortOrder}
                   onClickSort={onClickSort}
+                  onResize={(target) => {
+                    render();
+                    if (!target) calcScrollBarWidth();
+                  }}
                 />
               );
             })}
@@ -161,7 +170,7 @@ export const ListGrid = <D extends ListData>({
             const sl = bref.current.scrollLeft;
             if (href.current) href.current.scrollLeft = sl;
             fref.current.scrollLeft = sl;
-          }, SCROLL_Y_THROTTLE_TIMEOUT)}
+          }, SCROLL_X_THROTTLE_TIMEOUT)}
         >
           {value?.map((v, i) => {
             const id = get(v, idName)[0];
@@ -178,7 +187,6 @@ export const ListGrid = <D extends ListData>({
                     index={i}
                     rowValue={v}
                     value={value}
-                    defaultCellWidth={defaultCellWidth}
                   />
                 ))}
               </div>
@@ -193,7 +201,7 @@ export const ListGrid = <D extends ListData>({
           const sl = fref.current.scrollLeft;
           if (href.current) href.current.scrollLeft = sl;
           bref.current.scrollLeft = sl;
-        }, SCROLL_Y_THROTTLE_TIMEOUT)}
+        }, SCROLL_X_THROTTLE_TIMEOUT)}
       >
         <div
           className="list-row"
@@ -230,16 +238,23 @@ type ListGridHeaderCellProps<D extends ListData> = {
   column: ListGridColumnImpl<D>;
   sortOrder: ListSortOrder | null | undefined;
   onClickSort: ListSortClickEvent | null | undefined;
+  onResize: (target?: { name: string; width: number; }) => void;
 };
 
-const ListGridHeaderCell = <D extends ListData>({ value, column, sortOrder, onClickSort }: ListGridHeaderCellProps<D>) => {
+const ListGridHeaderCell = <D extends ListData>({
+  value,
+  column,
+  sortOrder,
+  onClickSort,
+  onResize,
+}: ListGridHeaderCellProps<D>) => {
   const node = typeof column.header === "function" ? column.header({ value }) : column.header;
 
   return (
     <div
       className="list-cell"
       data-align={column.headerAlign || "center"}
-      data-resize={column.resize ? "" : undefined}
+      data-resize={column.resize !== false ? "" : undefined}
       data-sort={column.sort ? "" : undefined}
       {...parseCommonCellProps(column)}
       onClick={() => {
@@ -284,9 +299,30 @@ const ListGridHeaderCell = <D extends ListData>({ value, column, sortOrder, onCl
           })()}
         />
       }
-      {column.resize &&
+      {column.resize !== false &&
         <div
           className="list-resizer"
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={((e) => {
+            const cellElem = e.currentTarget.parentElement!;
+            const baseW = cellElem.offsetWidth;
+            const baseX = e.clientX;
+            setCursor(getComputedStyle(e.currentTarget as HTMLDivElement).cursor);
+            const move = throttle((e: MouseEvent) => {
+              const w = baseW + (e.clientX - baseX);
+              column._width = parseStrNum(w);
+              onResize({ name: column.name, width: w });
+            }, COL_RESIZE_THROTTLE_TIMEOUT);
+            const end = () => {
+              releaseCursor();
+              column._width = cellElem.style.width;
+              onResize();
+              window.removeEventListener("mousemove", move);
+              window.removeEventListener("mouseup", end);
+            };
+            window.addEventListener("mousemove", move);
+            window.addEventListener("mouseup", end);
+          })}
         >
 
         </div>
@@ -300,7 +336,10 @@ type ListGridFooterCellProps<D extends ListData> = {
   column: ListGridColumnImpl<D>;
 };
 
-const ListGridFooterCell = <D extends ListData>({ value, column }: ListGridFooterCellProps<D>) => {
+const ListGridFooterCell = <D extends ListData>({
+  value,
+  column,
+}: ListGridFooterCellProps<D>) => {
   const node = typeof column.footer === "function" ? column.footer({ value }) : column.footer;
 
   return (
@@ -322,11 +361,13 @@ type ListGridCellProps<D extends ListData> = {
   column: ListGridColumnImpl<D>;
   index: number;
   rowValue: D;
-  defaultCellWidth: number | string;
 };
 
 const ListGridCell = <D extends ListData>({
-  value, column, index, rowValue, defaultCellWidth
+  value,
+  column,
+  index,
+  rowValue,
 }: ListGridCellProps<D>) => {
   const node = "cell" in column ?
     (typeof column.cell === "function" ?
