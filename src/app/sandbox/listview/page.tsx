@@ -1,6 +1,6 @@
 "use client";
 
-import { LIST_VIEW_DEFAULT_ROW_HEIGHT, ListViewColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
+import { ListViewColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
 import { listViewButtonColumn } from "@/dom/elements/list-view/button-column";
 import { listViewImageColumn } from "@/dom/elements/list-view/image-column";
 import { listViewLinkColumn } from "@/dom/elements/list-view/link-column";
@@ -12,6 +12,9 @@ import { SelectBox } from "@/react/elements/form/items/select-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
 import Link from "@/react/elements/link";
 import { ListGrid, ListGridColumn, listGridRowNumColumn } from "@/react/elements/list/grid";
+import { listGridButtonColumn } from "@/react/elements/list/grid-button-column";
+import { listGridImageColumn } from "@/react/elements/list/grid-image-column";
+import { listGridLinkColumn } from "@/react/elements/list/grid-link-column";
 import { useListSortedValue } from "@/react/elements/list/hooks";
 import { ListView } from "@/react/elements/list/view";
 import { Pagination } from "@/react/elements/pagination";
@@ -34,6 +37,7 @@ const Page = () => {
   const lang = useLang();
   const paging = useFormItemRef<boolean>();
   const listType = useFormItemRef<ListType, { value: ListType; label: string; }>();
+  const scroll = useFormItemRef<boolean>();
 
   const [count, setCount] = useState(0);
   const [value, setValue] = useReducer((_: null | Array<Data>, action: number | Array<Data> | null) => {
@@ -124,25 +128,18 @@ const Page = () => {
   const listGridColumns = useMemo<Array<ListGridColumn<Data>>>(() => {
     return [
       listGridRowNumColumn(),
-      {
-        name: "link",
+      listGridLinkColumn({
         width: 60,
-        resize: false,
-        cell: ({ rowValue }) => {
-          if (rowValue.id === 3) return null;
+        target: "_blank",
+        link: ({ rowValue }) => {
           const idStr = String(rowValue.id).padStart(4, "0");
-          return (
-            <Link
-              className="list-span"
-              href={`https://zukan.pokemon.co.jp/detail/${idStr}`}
-              target="_blank"
-              disabled={rowValue.id === 9}
-            >
-              {idStr}
-            </Link>
-          );
+          return {
+            href: rowValue.id === 3 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            text: idStr,
+            disabled: rowValue.id === 9,
+          };
         },
-      },
+      }),
       {
         name: "btn-link",
         align: "center",
@@ -162,42 +159,28 @@ const Page = () => {
           );
         },
       },
-      {
-        name: "button",
-        align: "center",
-        resize: false,
-        cell: ({ rowValue }) => {
-          if (rowValue.id === 2) return null;
-          return (
-            <Button
-              onClick={() => {
-                console.log(rowValue);
-              }}
-              disabled={rowValue.id === 1}
-            >
-              {lang("common.detail")}
-            </Button>
-          );
+      listGridButtonColumn({
+        text: lang("common.detail"),
+        button: ({ rowValue }) => {
+          return {
+            color: "subdued",
+            disabled: rowValue.id === 1,
+            hide: rowValue.id === 2,
+          };
         },
-      },
-      {
-        name: "img",
-        align: "center",
+        onClick: (args) => {
+          console.log(args);
+        },
+      }),
+      listGridImageColumn({
         sticky: true,
-        resize: false,
-        width: LIST_VIEW_DEFAULT_ROW_HEIGHT,
-        cell: ({ rowValue }) => {
-          return (
-            <img
-              src={rowValue.img}
-              alt={String(rowValue.id)}
-              loading="eager"
-              width={LIST_VIEW_DEFAULT_ROW_HEIGHT * 0.8}
-              height={LIST_VIEW_DEFAULT_ROW_HEIGHT * 0.8}
-            />
-          );
+        altName: "id",
+        image: ({ rowValue }) => {
+          return {
+            src: rowValue.img,
+          };
         },
-      },
+      }),
       { name: "col1", header: "Col1", sort: true },
       { name: "col2", header: "Col2", sticky: true, sort: true },
       { name: "col3", header: "Col3", resetResize: count, sort: true },
@@ -229,6 +212,12 @@ const Page = () => {
         <ToggleSwitch ref={paging}>
           Paging
         </ToggleSwitch>
+        <ToggleSwitch
+          ref={scroll}
+          disabled={listType.value?.value === "view"}
+        >
+          Wrap Scroll
+        </ToggleSwitch>
         <Button
           onClick={() => {
             setCount(c => c + 1);
@@ -252,7 +241,10 @@ const Page = () => {
         <Button onClick={() => setValue(100000)}>100,000</Button>
         <Button onClick={() => setValue(1000000)}>1,000,000</Button>
       </div>
-      <div className={css.main}>
+      <div
+        className={css.main}
+        data-scroll={listType.value?.value === "view" ? "no" : scroll.value}
+      >
         {listType.value?.value === "view" ?
           <ListView
             className={css.listview}

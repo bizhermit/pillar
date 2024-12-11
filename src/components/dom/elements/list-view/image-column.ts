@@ -6,6 +6,7 @@ export const listViewImageColumn = <D extends ListData>(props: Partial<Omit<List
   imgWidth?: string | number;
   imgHeight?: string | number;
   altName?: string;
+  noSrcUrl?: string;
   image?: (params: {
     rowValue: D;
     name: string;
@@ -13,9 +14,11 @@ export const listViewImageColumn = <D extends ListData>(props: Partial<Omit<List
   }) => {
     src: string | null | undefined;
     alt?: string | null | undefined;
+    hide?: boolean;
   },
 }): ListViewColumn<D> => {
   let imgBase: DomElement<HTMLImageElement> | undefined;
+  const noSrcUrl = props.noSrcUrl || "";
   return {
     name: "_img",
     width: LIST_VIEW_DEFAULT_ROW_HEIGHT,
@@ -39,8 +42,14 @@ export const listViewImageColumn = <D extends ListData>(props: Partial<Omit<List
       const elem = wElems[0] as HTMLImageElement;
       const ret = props.image?.({ rowValue, name: column.name, index });
       elem.src = "";
-      elem.src = ret?.src ?? (get(rowValue, column.name)[0] || "");
-      elem.alt = ret?.alt ?? ((props.altName ? get(rowValue, props.altName)[0] : "") || "");
+      if (ret?.hide) {
+        if (elem.style.display !== "none") elem.style.display = "none";
+        elem.alt = "";
+      } else {
+        if (elem.style.display === "none") elem.style.removeProperty("display");
+        elem.src = ret?.src || (props.name ? (get(rowValue, column.name)[0] || noSrcUrl) : noSrcUrl);
+        elem.alt = ret?.alt || (props.altName ? (get(rowValue, props.altName)[0] || "") : "");
+      }
     },
   };
 };

@@ -13,13 +13,14 @@ import { joinClassNames } from "../utilities";
 type Node = ReactNode | null | undefined;
 
 type RenderParams<D extends ListData> = {
+  name: string;
   value: Array<D> | null | undefined;
 };
 
 export type ListGridColumn<D extends ListData> = ListColumn<D> & {
   header?: Node | ((params: RenderParams<D>) => Node);
   footer?: Node | ((params: RenderParams<D>) => Node);
-  cell?: Node | ((params: RenderParams<D> & { index: number; rowValue: D; }) => Node);
+  cell?: Node | ((params: Omit<RenderParams<D>, "value"> & { index: number; rowValue: D; value: Array<D> }) => Node);
 };
 
 type ListGridColumnImpl<D extends ListData> = ListGridColumn<D> & {
@@ -253,7 +254,7 @@ const ListGridHeaderCell = <D extends ListData>({
   onClickSort,
   onResize,
 }: ListGridHeaderCellProps<D>) => {
-  const node = typeof column.header === "function" ? column.header({ value }) : column.header;
+  const node = typeof column.header === "function" ? column.header({ name: column.name, value }) : column.header;
 
   return (
     <div
@@ -345,7 +346,7 @@ const ListGridFooterCell = <D extends ListData>({
   value,
   column,
 }: ListGridFooterCellProps<D>) => {
-  const node = typeof column.footer === "function" ? column.footer({ value }) : column.footer;
+  const node = typeof column.footer === "function" ? column.footer({ name: column.name, value }) : column.footer;
 
   return (
     <div
@@ -376,7 +377,7 @@ const ListGridCell = <D extends ListData>({
 }: ListGridCellProps<D>) => {
   const node = "cell" in column ?
     (typeof column.cell === "function" ?
-      column.cell({ value, index, rowValue }) :
+      column.cell({ name: column.name, value, index, rowValue }) :
       column.cell
     ) :
     get(rowValue, column.name)[0];
