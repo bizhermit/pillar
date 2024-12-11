@@ -44,8 +44,6 @@ type InitializeCellResponse<CellElems extends Array<HTMLElement>> = {
   elems: CellElems;
 };
 
-type ListViewCellAlign = "left" | "center" | "right";
-
 export type ListViewColumn<
   D extends ListData,
   CellElems extends Array<HTMLElement> = Array<HTMLElement>,
@@ -61,8 +59,9 @@ export type ListViewColumn<
 };
 
 type ListViewColumnImpl<D extends ListData> = ListViewColumn<D> & {
-  _width?: string; // NOTE: headerのみ
-  _sortElem?: HTMLDivElement; // NOTE: headerのみ
+  _width?: string;
+  _stickyLeft?: string | undefined;
+  _sortElem?: HTMLDivElement;
 };
 
 export type ListViewOptions<D extends ListData> = ListOptions<D> & {
@@ -122,7 +121,12 @@ export class ListViewClass<D extends ListData> {
   constructor(props: ListViewProps<D>) {
     this.lang = props.lang;
     this.root = new DomElement(props.root);
-    this.columns = props.columns;
+    this.firstIndex = 0;
+    this.root.elem.style.setProperty("--row-height", `${this.rowHeight = props.options?.rowHeight ?? LIST_VIEW_DEFAULT_ROW_HEIGHT}px`);
+    this.root.elem.style.setProperty("--cell-width", this.cellWidth = parseStrNum(props.options?.cellWidth ?? LIST_VIEW_DEFAULT_CELL_WIDTH));
+
+    this.columns = [];
+    this.setOptimizeColumns(props.columns);
     this.value = props.value;
     this.sortOrder = props.sortOrder;
     this.rows = [];
@@ -140,10 +144,6 @@ export class ListViewClass<D extends ListData> {
     this.footer = null!;
     this.virtualBody = null!;
     this.emptyMsg = null!;
-
-    this.firstIndex = 0;
-    this.root.elem.style.setProperty("--row-height", `${this.rowHeight = props.options?.rowHeight ?? LIST_VIEW_DEFAULT_ROW_HEIGHT}px`);
-    this.root.elem.style.setProperty("--cell-width", this.cellWidth = parseStrNum(props.options?.cellWidth ?? LIST_VIEW_DEFAULT_CELL_WIDTH));
 
     this.generateHeader();
     this.generateBody();
@@ -165,16 +165,34 @@ export class ListViewClass<D extends ListData> {
     return;
   }
 
-  public setColumns(columns: Array<ListViewColumn<D>>) {
+  protected setOptimizeColumns = (columns: Array<ListViewColumn<D>>) => {
+    let left = "";
     this.columns = columns.map(c => {
       const col = this.columns.find(col => col.name === c.name);
       const w = col?._width;
       const inheritWidth = c.resize !== false && col && w != null && equals(col.resetResize, c.resetResize);
+      const _width = inheritWidth ? w : undefined;
+      let _stickyLeft: string | undefined;
+      if (c.sticky) {
+        const sw = parseStrNum(_width || c.width || this.cellWidth);
+        if (left) {
+          _stickyLeft = left.indexOf("+") > 0 ? `calc(${left})` : left;
+          left += ` + ${sw}`;
+        } else {
+          left = sw;
+        }
+      }
       return {
         ...c,
-        _width: inheritWidth ? w : undefined,
+        _width,
+        _stickyLeft,
       };
     });
+    return this;
+  }
+
+  public setColumns(columns: Array<ListViewColumn<D>>) {
+    this.setOptimizeColumns(columns);
     this.generateHeader();
     this.generateBody();
     this.generateFooter();
@@ -209,10 +227,9 @@ export class ListViewClass<D extends ListData> {
 
   protected generateRowColsImpl(props: {
     dom: DomElement<HTMLDivElement>;
-    align?: (column: ListViewColumn<D>) => (ListViewCellAlign | undefined);
+    align?: (column: ListViewColumn<D>) => (ListCellAlign | undefined);
     initialize?: (params: { column: ListViewColumnImpl<D>; cell: DomElement<HTMLDivElement>; }) => (InitializeCellResponse<Array<HTMLElement>> | void);
   }) {
-    let left = "";
     return this.columns.map(c => {
       const cell = this.cloneBase.cell.clone();
       const align = props.align?.(c);
@@ -222,13 +239,7 @@ export class ListViewClass<D extends ListData> {
       if (c.maxWidth) cell.setStyleSize("maxWidth", c.maxWidth);
       if (c.sticky) {
         cell.setAttr("data-sticky");
-        const w = parseStrNum(c._width || c.width || this.cellWidth);
-        if (left) {
-          cell.elem.style.setProperty("left", left.indexOf("+") > 0 ? `calc(${left})` : left);
-          left += ` + ${w}`;
-        } else {
-          left = w;
-        }
+        if (c._stickyLeft) cell.elem.style.setProperty("left", c._stickyLeft);
       }
       if (c.fill) cell.setAttr("data-fill");
       props.dom.addChild(cell);

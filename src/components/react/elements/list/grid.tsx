@@ -78,7 +78,7 @@ export const ListGrid = <D extends ListData>({
       const w = col?._width;
       const inheritWidth = c.resize !== false && col && w != null && equals(col.resetResize, c.resetResize);
       const _width = inheritWidth ? w : undefined;
-      let _stickyLeft: string | undefined = undefined;
+      let _stickyLeft: string | undefined;
       if (c.sticky) {
         const sw = parseStrNum(_width || c.width || defaultCellWidth);
         if (left) {
@@ -92,7 +92,7 @@ export const ListGrid = <D extends ListData>({
         ...c,
         _width,
         _stickyLeft,
-      } as const;
+      };
     });
     return {
       hasHeader: columns.current.find(c => "header" in c),
