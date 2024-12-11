@@ -2,8 +2,9 @@
 
 @layer base {
 
-  .lv-main {
-    --row-height: 30px;
+  .list-view,
+  .list-grid {
+    --row-height: 40px;
     --cell-width: 100px;
     position: relative;
     display: flex;
@@ -19,7 +20,7 @@
     border-radius: 0.2rem;
   }
 
-  :is(.lv-header, .lv-footer, .lv-body) {
+  :is(.list-header, .list-footer, .list-body) {
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
@@ -28,19 +29,19 @@
     min-height: 0;
   }
 
-  :is(.lv-header, .lv-footer) {
+  :is(.list-header, .list-footer) {
     flex: none;
     overflow: hidden;
     max-width: 100%;
     height: fit-content;
 
-    >.lv-row {
+    >.list-row {
       background: inherit;
       color: inherit;
     }
   }
 
-  .lv-header {
+  .list-header {
     overflow: auto;
     scrollbar-width: none;
     font-weight: bold;
@@ -48,19 +49,19 @@
     color: var(--list-header-fg);
 
     @include mixins.hover {
-      .lv-resizer {
+      .list-resizer {
         opacity: 0.5;
       }
     }
   }
 
-  .lv-footer {
+  .list-footer {
     overflow-x: auto;
     overflow-y: hidden;
     background: var(--list-footer-bg);
     color: var(--list-footer-fg);
 
-    >.lv-row {
+    >.list-row {
       min-height: 1px;
 
       &[data-none] {
@@ -71,7 +72,7 @@
     }
   }
 
-  .lv-body-wrap {
+  .list-view-body-wrap {
     position: relative;
     flex: 1 1 0rem;
     min-width: 100%;
@@ -82,18 +83,18 @@
     overscroll-behavior-y: none;
   }
 
-  .lv-body {
-    position: sticky;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    overflow-x: visible;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    z-index: 1;
+  .list-grid-body-wrap {
+    position: relative;
+    flex: 1 1 0rem;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 
-    >.lv-row {
+  .list-body {
+    >.list-row {
       background: var(--list-cell-bg);
       color: var(--list-cell-fg);
 
@@ -106,7 +107,7 @@
         background: var(--list-row-hover-bg);
         color: var(--list-row-hover-fg);
 
-        .lv-cell {
+        .list-cell {
           @include mixins.hover {
             background: var(--list-cell-hover-bg);
             color: var(--list-cell-hover-fg);
@@ -116,7 +117,29 @@
     }
   }
 
-  .lv-dummy {
+  .list-view-body {
+    position: sticky;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: visible;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    z-index: 1;
+  }
+
+  .list-grid-body {
+    flex: 1 1 0rem;
+    width: 100%;
+    height: fit-content;
+    min-height: 0;
+    overflow-x: visible;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .list-view-vbody {
     position: absolute;
     visibility: hidden;
     user-select: none;
@@ -125,7 +148,7 @@
     z-index: 0;
   }
 
-  .lv-empty-msg {
+  .list-empty-msg {
     position: absolute;
     z-index: 2;
     inset: 0;
@@ -138,7 +161,7 @@
     }
   }
 
-  .lv-row {
+  .list-row {
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
@@ -154,7 +177,7 @@
     }
   }
 
-  .lv-cell {
+  .list-cell {
     position: relative;
     display: flex;
     flex-flow: row nowrap;
@@ -189,20 +212,20 @@
       user-select: none;
 
       @include mixins.hover {
-        >.lv-sort {
+        >.list-sort {
           opacity: 1;
         }
       }
 
       &[data-resize] {
-        >.lv-sort {
+        >.list-sort {
           margin-right: 4px;
         }
       }
     }
   }
 
-  .lv-span {
+  .list-span {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -210,7 +233,7 @@
     padding: 0 0.8rem;
   }
 
-  .lv-resizer {
+  .list-resizer {
     position: absolute;
     top: 0;
     right: 0;
@@ -228,7 +251,7 @@
     }
   }
 
-  .lv-sort {
+  .list-sort {
     $sortSize: 16px;
     position: relative;
     margin-left: auto;

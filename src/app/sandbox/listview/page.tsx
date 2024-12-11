@@ -7,8 +7,12 @@ import { listViewLinkColumn } from "@/dom/elements/list-view/link-column";
 import { useLang } from "@/i18n/react-hook";
 import { generateArray } from "@/objects/array";
 import { Button } from "@/react/elements/button";
-import { ListView } from "@/react/elements/list-view";
-import { useListViewSortedValue } from "@/react/elements/list-view/hooks";
+import { useFormItemRef } from "@/react/elements/form/item-ref";
+import { SelectBox } from "@/react/elements/form/items/select-box";
+import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
+import { ListGrid, ListGridColumn, ListGridRowNumColumn } from "@/react/elements/list/grid";
+import { useListSortedValue } from "@/react/elements/list/hooks";
+import { ListView } from "@/react/elements/list/view";
 import { Pagination } from "@/react/elements/pagination";
 import { usePagingArray } from "@/react/hooks/paging-array";
 import { useMemo, useReducer, useState } from "react";
@@ -21,10 +25,15 @@ type Data = {
   col2?: string;
   col3?: string;
   col4?: string;
-}
+};
+
+type ListType = "view" | "grid";
 
 const Page = () => {
   const lang = useLang();
+  const paging = useFormItemRef<boolean>();
+  const listType = useFormItemRef<ListType, { value: ListType; label: string; }>();
+
   const [count, setCount] = useState(0);
   const [value, setValue] = useReducer((_: null | Array<Data>, action: number | Array<Data> | null) => {
     if (action == null) return null;
@@ -42,13 +51,13 @@ const Page = () => {
 
   // const [order, setOrder] = useListViewSortOrder();
   // const sortedValue = useListViewSortedMemorizedValue(value, order);
-  const { value: sortedValue, sortOrder, setSortOrder } = useListViewSortedValue(value);
+  const { value: sortedValue, sortOrder, setSortOrder } = useListSortedValue(value);
   const list = usePagingArray({
     value: sortedValue,
     limit: 10,
   });
 
-  const columns = useMemo<Array<ListViewColumn<Data>>>(() => {
+  const listViewColumns = useMemo<Array<ListViewColumn<Data>>>(() => {
     return [
       listViewRowNumColumn(),
       listViewLinkColumn({
@@ -111,17 +120,49 @@ const Page = () => {
     ];
   }, [count]);
 
+  const listGridColumns = useMemo<Array<ListGridColumn<Data>>>(() => {
+    return [
+      ListGridRowNumColumn(),
+      { name: "col1", header: "Col1", sort: true },
+      { name: "col2", header: "Col2", sticky: true, sort: true },
+      { name: "col3", header: "Col3", resetResize: count, sort: true },
+      { name: "col4", header: "Col4", resize: count % 2 === 1 },
+      { name: "col5", header: "Col5" },
+      { name: "col6", header: "Col6" },
+      { name: "col7", header: "Col7" },
+      { name: "col8", header: "Col8" },
+      { name: "col9", header: "Col9", fill: true },
+    ];
+  }, [count]);
+
+  const listValue = paging.value ? list.value : value;
+
   return (
     <>
       <h1>ListView</h1>
       <div className={css.row}>
+        <SelectBox
+          ref={listType}
+          style={{ width: 100 }}
+          hideClearButton
+          source={[
+            { value: "view", label: "View" },
+            { value: "grid", label: "Grid" },
+          ]}
+          defaultValue="grid"
+        />
+        <ToggleSwitch ref={paging}>
+          Paging
+        </ToggleSwitch>
         <Button
           onClick={() => {
             setCount(c => c + 1);
           }}
         >
-          state: {count}
+          col memorize dep: {count}
         </Button>
+      </div>
+      <div className={css.row}>
         <Button onClick={() => setValue(null)}>clear</Button>
         <Button onClick={() => setValue(0)}>0</Button>
         <Button onClick={() => setValue(1)}>1</Button>
@@ -137,17 +178,25 @@ const Page = () => {
         <Button onClick={() => setValue(1000000)}>1,000,000</Button>
       </div>
       <div className={css.main}>
-        <ListView
-          className={css.listview}
-          columns={columns}
-          value={list.value}
-          sortOrder={sortOrder}
-          onClickSort={(props) => {
-            setSortOrder(props);
-          }}
-        />
+        {listType.value?.value === "view" ?
+          <ListView
+            className={css.listview}
+            columns={listViewColumns}
+            value={listValue}
+            sortOrder={sortOrder}
+            onClickSort={setSortOrder}
+          />
+          :
+          <ListGrid
+            className={css.listview}
+            columns={listGridColumns}
+            value={listValue}
+            sortOrder={sortOrder}
+            onClickSort={setSortOrder}
+          />
+        }
       </div>
-      {list.showPagination &&
+      {paging.value && list.showPagination &&
         <Pagination
           page={list.page}
           maxPage={list.maxPage}

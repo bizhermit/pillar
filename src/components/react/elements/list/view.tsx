@@ -1,20 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useRef, type HTMLAttributes } from "react";
-import { ListViewClass, type ListViewColumn, type ListViewOptions, type ListViewSortClickEvent, type ListViewSortOrder } from "../../../dom/elements/list-view";
+import { ListViewClass, type ListViewColumn, type ListViewOptions } from "../../../dom/elements/list-view";
 import { useLang } from "../../../i18n/react-hook";
 
-type Data = { [v: string | number | symbol]: any };
-
-type ListViewProps<D extends Data> = OverwriteAttrs<Omit<HTMLAttributes<HTMLDivElement>, "children">, {
+type ListViewProps<D extends ListData> = OverwriteAttrs<Omit<HTMLAttributes<HTMLDivElement>, "children">, {
   columns: Array<ListViewColumn<D>>;
   value: Array<D> | null | undefined;
-  sortOrder?: ListViewSortOrder;
+  sortOrder?: ListSortOrder;
   options?: ListViewOptions<D>;
-  onClickSort?: ListViewSortClickEvent;
+  onClickSort?: ListSortClickEvent;
 }>;
 
-export const ListView = <D extends Data>({
+export const ListView = <D extends ListData>({
   columns,
   value,
   sortOrder,
