@@ -18,7 +18,7 @@ type ListViewCol<D extends ListData> = {
 type ListViewDataRow<D extends ListData> = {
   dom: DomElement<HTMLDivElement>;
   cols: Array<ListViewCol<D>>;
-  data: D | null | undefined;
+  value: D | null | undefined;
 };
 
 type ListViewHeaderRow<D extends ListData> = {
@@ -55,7 +55,7 @@ export type ListViewColumn<
   initializeFooterCell?: (params: InitializeCellParams<D>) => (InitializeCellResponse<FCellElems> | void);
   footerCell?: Node | ((params: RenderParams<D>) => void);
   initializeCell?: (params: InitializeCellParams<D>) => (InitializeCellResponse<CellElems> | void);
-  cell?: Node | ((params: RenderParams<D> & { index: number; rowData: D | null | undefined; }) => void);
+  cell?: Node | ((params: RenderParams<D> & { index: number; rowValue: D | null | undefined; }) => void);
 };
 
 type ListViewColumnImpl<D extends ListData> = ListViewColumn<D> & {
@@ -404,7 +404,7 @@ export class ListViewClass<D extends ListData> {
         initialize: ({ column, cell }) => column.initializeCell?.({ column, cell, getArrayData: () => this.value }),
       });
       this.body.addChild(dom);
-      this.rows.push({ dom, cols, data: null });
+      this.rows.push({ dom, cols, value: null });
     }
     return diff;
   }
@@ -445,15 +445,15 @@ export class ListViewClass<D extends ListData> {
     for (let i = 0, il = this.rows.length; i < il; i++) {
       const idx = this.firstIndex + i;
       const row = this.rows[i];
-      const data = this.value?.[idx];
-      if (data == null) {
-        if (row.data) row.dom.setAttr("data-none");
-        row.data = null;
+      const rv = this.value?.[idx];
+      if (rv == null) {
+        if (row.value) row.dom.setAttr("data-none");
+        row.value = null;
         continue;
       }
-      if (!row.data) row.dom.rmAttr("data-none");
-      if (row.data === data) continue;
-      row.data = data;
+      if (!row.value) row.dom.rmAttr("data-none");
+      if (row.value === rv) continue;
+      row.value = rv;
       row.dom.setAttr("data-nth", idx % 2 === 1 ? "odd" : "even");
       row.cols.forEach(c => {
         if (c.column.cell) {
@@ -462,13 +462,13 @@ export class ListViewClass<D extends ListData> {
               arrayData: this.value,
               ...c,
               index: idx,
-              rowData: data,
+              rowValue: rv,
             });
           } else {
             c.wElems[0].textContent = c.column.cell;
           }
         } else {
-          c.wElems[0].textContent = get(data, c.column.name)[0] ?? "";
+          c.wElems[0].textContent = get(rv, c.column.name)[0] ?? "";
         }
       });
     }

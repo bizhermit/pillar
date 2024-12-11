@@ -4,14 +4,12 @@ import { get } from "../../../objects/struct";
 import { type UrlPath } from "../../../objects/url";
 import "../../../styles/elements/button.scss";
 
-type Data = { [v: string | number | symbol]: any };
-
-export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
+export const listViewLinkColumn = <D extends ListData>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
   text?: string;
   role?: "button";
   target?: HTMLAnchorElement["target"];
   link: (params: {
-    rowData: D;
+    rowValue: D;
     name: string;
     index: number;
   }) => {
@@ -48,10 +46,10 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
         elems: [anchor.elem],
       };
     },
-    cell: ({ rowData, wElems, column, index }) => {
-      if (!rowData) return;
+    cell: ({ rowValue, wElems, column, index }) => {
+      if (!rowValue) return;
       const elem = wElems[0] as HTMLAnchorElement;
-      const ret = props.link({ rowData, name: column.name, index });
+      const ret = props.link({ rowValue, name: column.name, index });
       if (ret.disabled) {
         if (elem.getAttribute("aria-disabled") !== "true") elem.setAttribute("aria-disabled", String(elem.inert = true));
       } else {
@@ -64,7 +62,7 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
       }
       elem.href = ret.href || "";
       if ("target" in ret) elem.target = ret.target || "";
-      elem.textContent = ret.text || (props.name ? get(rowData, props.name)[0] : "") || props.text || elem.href || "";
+      elem.textContent = ret.text || (props.name ? get(rowValue, props.name)[0] : "") || props.text || elem.href || "";
     },
   };
 };

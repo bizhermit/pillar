@@ -65,24 +65,24 @@ const Page = () => {
         name: "link",
         target: "_blank",
         width: 60,
-        link: ({ rowData }) => {
-          const idStr = String(rowData.id).padStart(4, "0");
+        link: ({ rowValue }) => {
+          const idStr = String(rowValue.id).padStart(4, "0");
           return {
-            href: rowData.id === 3 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            href: rowValue.id === 3 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
             text: idStr,
-            disabled: rowData.id === 9,
+            disabled: rowValue.id === 9,
           };
         },
       }),
       listViewLinkColumn({
         name: "btn-link",
         role: "button",
-        link: ({ rowData }) => {
-          const idStr = String(rowData.id).padStart(4, "0");
+        link: ({ rowValue }) => {
+          const idStr = String(rowValue.id).padStart(4, "0");
           return {
-            href: rowData.id === 6 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            href: rowValue.id === 6 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
             text: idStr,
-            disabled: rowData.id === 12,
+            disabled: rowValue.id === 12,
           };
         },
         interceptor: (href) => {
@@ -93,10 +93,10 @@ const Page = () => {
       listViewButtonColumn({
         name: "button",
         text: lang("common.detail"),
-        button: ({ rowData }) => {
+        button: ({ rowValue }) => {
           return {
-            disabled: rowData.id === 1,
-            hide: rowData.id === 2,
+            disabled: rowValue.id === 1,
+            hide: rowValue.id === 2,
           };
         },
         onClick: (params) => {
@@ -167,11 +167,13 @@ const Page = () => {
         align: "center",
         resize: false,
         cell: ({ rowValue }) => {
+          if (rowValue.id === 2) return null;
           return (
             <Button
               onClick={() => {
                 console.log(rowValue);
               }}
+              disabled={rowValue.id === 1}
             >
               {lang("common.detail")}
             </Button>
@@ -181,6 +183,7 @@ const Page = () => {
       {
         name: "img",
         align: "center",
+        sticky: true,
         resize: false,
         width: LIST_VIEW_DEFAULT_ROW_HEIGHT,
         cell: ({ rowValue }) => {

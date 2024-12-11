@@ -7,7 +7,7 @@ export const listViewImageColumn = <D extends ListData>(props: Partial<Omit<List
   imgHeight?: string | number;
   altName?: string;
   image?: (params: {
-    rowData: D;
+    rowValue: D;
     name: string;
     index: number;
   }) => {
@@ -34,13 +34,13 @@ export const listViewImageColumn = <D extends ListData>(props: Partial<Omit<List
         elems: [img.elem],
       };
     },
-    cell: ({ rowData, wElems, column, index }) => {
-      if (!rowData) return;
+    cell: ({ rowValue, wElems, column, index }) => {
+      if (!rowValue) return;
       const elem = wElems[0] as HTMLImageElement;
-      const ret = props.image?.({ rowData, name: column.name, index });
+      const ret = props.image?.({ rowValue, name: column.name, index });
       elem.src = "";
-      elem.src = ret?.src ?? (get(rowData, column.name)[0] || "");
-      elem.alt = ret?.alt ?? ((props.altName ? get(rowData, props.altName)[0] : "") || "");
+      elem.src = ret?.src ?? (get(rowValue, column.name)[0] || "");
+      elem.alt = ret?.alt ?? ((props.altName ? get(rowValue, props.altName)[0] : "") || "");
     },
   };
 };
