@@ -2,9 +2,7 @@ import { LIST_VIEW_DEFAULT_ROW_HEIGHT, type ListViewColumn } from ".";
 import { DomElement } from "../../../dom/element";
 import { get } from "../../../objects/struct";
 
-type Data = { [v: string | number | symbol]: any };
-
-export const listViewImageColumn = <D extends Data>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
+export const listViewImageColumn = <D extends ListData>(props: Partial<Omit<ListViewColumn<D>, "initializeCell" | "cell">> & {
   imgWidth?: string | number;
   imgHeight?: string | number;
   altName?: string;
