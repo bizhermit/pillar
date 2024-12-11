@@ -69,6 +69,7 @@ export const ListGrid = <D extends ListData>({
   const href = useRef<HTMLDivElement | null>(null);
   const bref = useRef<HTMLDivElement>(null!);
   const fref = useRef<HTMLDivElement>(null!);
+  const lastScrollX = useRef<number | null>(null);
 
   const columns = useRef<Array<ListGridColumnImpl<D>>>([]);
   const {
@@ -100,7 +101,7 @@ export const ListGrid = <D extends ListData>({
     return {
       hasHeader: columns.current.find(c => "header" in c),
       hasFooter: columns.current.find(c => "footer" in c),
-    }
+    };
   }, [_columns]);
 
   const calcScrollBarWidth = () => {
@@ -142,9 +143,10 @@ export const ListGrid = <D extends ListData>({
           ref={href}
           className="list-header"
           onScroll={throttle(() => {
-            const sl = href.current!.scrollLeft;
-            bref.current.scrollLeft = sl;
-            fref.current.scrollLeft = sl;
+            if (lastScrollX.current === href.current!.scrollLeft) return;
+            lastScrollX.current = href.current!.scrollLeft;
+            bref.current.scrollLeft = lastScrollX.current;
+            fref.current.scrollLeft = lastScrollX.current;
           }, SCROLL_X_THROTTLE_TIMEOUT)}
         >
           <div className="list-row">
@@ -176,9 +178,10 @@ export const ListGrid = <D extends ListData>({
           ref={bref}
           className="list-body list-grid-body"
           onScroll={throttle(() => {
-            const sl = bref.current.scrollLeft;
-            if (href.current) href.current.scrollLeft = sl;
-            fref.current.scrollLeft = sl;
+            if (lastScrollX.current === bref.current.scrollLeft) return;
+            lastScrollX.current = bref.current.scrollLeft;
+            if (href.current) href.current.scrollLeft = lastScrollX.current;
+            fref.current.scrollLeft = lastScrollX.current;
           }, SCROLL_X_THROTTLE_TIMEOUT)}
         >
           {value?.map((v, i) => {
@@ -207,9 +210,10 @@ export const ListGrid = <D extends ListData>({
         ref={fref}
         className="list-footer"
         onScroll={throttle(() => {
-          const sl = fref.current.scrollLeft;
-          if (href.current) href.current.scrollLeft = sl;
-          bref.current.scrollLeft = sl;
+          if (lastScrollX.current === fref.current.scrollLeft) return;
+          lastScrollX.current = fref.current.scrollLeft;
+          if (href.current) href.current.scrollLeft = lastScrollX.current;
+          bref.current.scrollLeft = lastScrollX.current;
         }, SCROLL_X_THROTTLE_TIMEOUT)}
       >
         <div

@@ -115,6 +115,7 @@ export class ListViewClass<D extends ListData> {
   protected firstIndex: number;
   protected rowHeight: number;
   protected cellWidth: number | string;
+  protected lastScrollX: number | undefined;
 
   protected onClickSort: ListSortClickEvent | null | undefined;
 
@@ -189,7 +190,7 @@ export class ListViewClass<D extends ListData> {
       };
     });
     return this;
-  }
+  };
 
   public setColumns(columns: Array<ListViewColumn<D>>) {
     this.setOptimizeColumns(columns);
@@ -264,6 +265,7 @@ export class ListViewClass<D extends ListData> {
         this.header = cloneDomElement(this.cloneBase.div)
           .addClass("list-header")
           .addEvent("scroll", throttle(() => {
+            if (this.header!.elem.scrollLeft === this.lastScrollX) return;
             this.scrollX("h");
           }, SCROLL_X_THROTTLE_TIMEOUT));
         this.root.addChild(this.header);
@@ -345,6 +347,7 @@ export class ListViewClass<D extends ListData> {
       this.body = cloneDomElement(this.cloneBase.div)
         .addClass("list-body", "list-view-body")
         .addEvent("scroll", throttle(() => {
+          if (this.body.elem.scrollLeft === this.lastScrollX) return;
           this.scrollX("b");
         }, SCROLL_X_THROTTLE_TIMEOUT));
       this.bodyWrap.addChild(this.body);
@@ -362,6 +365,7 @@ export class ListViewClass<D extends ListData> {
       this.footer = cloneDomElement(this.cloneBase.div)// NOTE: 横スクロールバーUIを担うため追加必須
         .addClass("list-footer")
         .addEvent("scroll", throttle(() => {
+          if (this.footer.elem.scrollLeft === this.lastScrollX) return;
           this.scrollX("f");
         }, SCROLL_X_THROTTLE_TIMEOUT));
       this.root.addChild(this.footer);
@@ -522,15 +526,15 @@ export class ListViewClass<D extends ListData> {
   protected scrollX(triger: "h" | "b" | "f") {
     switch (triger) {
       case "b":
-        this.footer.elem.scrollLeft = this.body.elem.scrollLeft;
+        this.lastScrollX = this.footer.elem.scrollLeft = this.body.elem.scrollLeft;
         if (this.header) this.header.elem.scrollLeft = this.body.elem.scrollLeft;
         break;
       case "f":
-        this.body.elem.scrollLeft = this.footer.elem.scrollLeft;
+        this.lastScrollX = this.body.elem.scrollLeft = this.footer.elem.scrollLeft;
         if (this.header) this.header.elem.scrollLeft = this.footer.elem.scrollLeft;
         break;
       case "h":
-        this.body.elem.scrollLeft = this.header!.elem.scrollLeft;
+        this.lastScrollX = this.body.elem.scrollLeft = this.header!.elem.scrollLeft;
         this.footer.elem.scrollLeft = this.header!.elem.scrollLeft;
         break;
       default:
