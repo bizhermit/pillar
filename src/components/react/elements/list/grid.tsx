@@ -19,7 +19,7 @@ type RenderParams<D extends ListData> = {
 export type ListGridColumn<D extends ListData> = ListColumn<D> & {
   header?: Node | ((params: RenderParams<D>) => Node);
   footer?: Node | ((params: RenderParams<D>) => Node);
-  cell?: Node | ((params: RenderParams<D> & { index: number; rowValue: D | null | undefined; }) => Node);
+  cell?: Node | ((params: RenderParams<D> & { index: number; rowValue: D; }) => Node);
 };
 
 type ListGridColumnImpl<D extends ListData> = ListGridColumn<D> & {
@@ -395,7 +395,7 @@ const ListGridCell = <D extends ListData>({
   );
 };
 
-export const ListGridRowNumColumn = <D extends ListData>(props?: Partial<Omit<ListGridColumn<D>, "cell">>): ListGridColumn<D> => {
+export const listGridRowNumColumn = <D extends ListData>(props?: Partial<Omit<ListGridColumn<D>, "cell">>): ListGridColumn<D> => {
   return {
     name: "_rownum",
     align: "center",
@@ -403,6 +403,6 @@ export const ListGridRowNumColumn = <D extends ListData>(props?: Partial<Omit<Li
     width: 50,
     resize: false,
     ...props,
-    cell: ({ index }) => index,
+    cell: ({ index }) => index + 1,
   };
 };
