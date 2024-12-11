@@ -145,7 +145,8 @@ export const ListGrid = <D extends ListData>({
                   key={col.name}
                   column={col}
                   value={value}
-                  defaultCellWidth={defaultCellWidth}
+                  sortOrder={sortOrder}
+                  onClickSort={onClickSort}
                 />
               );
             })}
@@ -203,7 +204,6 @@ export const ListGrid = <D extends ListData>({
               key={col.name}
               column={col}
               value={value}
-              defaultCellWidth={defaultCellWidth}
             />
           ))}
         </div>
@@ -225,30 +225,82 @@ const parseCommonCellProps = <D extends ListData>(column: ListGridColumnImpl<D>)
   };
 };
 
-type ListGridHeaderFooterCellProps<D extends ListData> = {
+type ListGridHeaderCellProps<D extends ListData> = {
   value: Array<D> | null | undefined;
   column: ListGridColumnImpl<D>;
-  defaultCellWidth: number | string;
+  sortOrder: ListSortOrder | null | undefined;
+  onClickSort: ListSortClickEvent | null | undefined;
 };
 
-const ListGridHeaderCell = <D extends ListData>({ value, column, defaultCellWidth }: ListGridHeaderFooterCellProps<D>) => {
+const ListGridHeaderCell = <D extends ListData>({ value, column, sortOrder, onClickSort }: ListGridHeaderCellProps<D>) => {
   const node = typeof column.header === "function" ? column.header({ value }) : column.header;
 
   return (
     <div
       className="list-cell"
       data-align={column.headerAlign || "center"}
+      data-resize={column.resize ? "" : undefined}
+      data-sort={column.sort ? "" : undefined}
       {...parseCommonCellProps(column)}
+      onClick={() => {
+        if (!column.sort || !onClickSort) return;
+        const cur = sortOrder?.find(o => o.name === column.name)?.direction || "none";
+        const next = (() => {
+          switch (cur) {
+            case "asc":
+              return "desc";
+            case "desc":
+              return "none";
+            default:
+              return "asc";
+          }
+        })();
+        onClickSort({
+          columnName: column.name,
+          currentSortOrder: sortOrder,
+          currentDirection: cur,
+          nextDirection: next,
+        });
+      }}
     >
       {
         ["string", "number", "boolean"].includes(typeof node) ?
           <span className="list-span">{String(node)}</span> : node
       }
+      {column.sort &&
+        <div
+          className="list-sort"
+          {...(() => {
+            const showOrderTitle = (sortOrder ?? []).filter(o => o.direction !== "none").length > 1;
+            let orderIndex = 0;
+            const order = sortOrder?.find(o => {
+              if (o.direction !== "none") orderIndex++;
+              return o.name === column.name;
+            });
+            return {
+              "data-direction": order?.direction || "none",
+              title: showOrderTitle ? ` ${orderIndex} ` : undefined,
+            };
+          })()}
+        />
+      }
+      {column.resize &&
+        <div
+          className="list-resizer"
+        >
+
+        </div>
+      }
     </div>
   );
 };
 
-const ListGridFooterCell = <D extends ListData>({ value, column, defaultCellWidth }: ListGridHeaderFooterCellProps<D>) => {
+type ListGridFooterCellProps<D extends ListData> = {
+  value: Array<D> | null | undefined;
+  column: ListGridColumnImpl<D>;
+};
+
+const ListGridFooterCell = <D extends ListData>({ value, column }: ListGridFooterCellProps<D>) => {
   const node = typeof column.footer === "function" ? column.footer({ value }) : column.footer;
 
   return (

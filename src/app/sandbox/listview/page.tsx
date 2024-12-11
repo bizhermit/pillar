@@ -135,7 +135,7 @@ const Page = () => {
     ];
   }, [count]);
 
-  const listValue = paging.value ? list.value : value;
+  const listValue = paging.value ? list.value : sortedValue;
 
   return (
     <>
@@ -192,7 +192,10 @@ const Page = () => {
             columns={listGridColumns}
             value={listValue}
             sortOrder={sortOrder}
-            onClickSort={setSortOrder}
+            onClickSort={(p) => {
+              console.log(p);
+              setSortOrder(p);
+            }}
           />
         }
       </div>
