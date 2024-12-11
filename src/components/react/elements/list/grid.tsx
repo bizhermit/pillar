@@ -1,13 +1,13 @@
 "use client";
 
-import { releaseCursor, setCursor } from "@/dom/cursor";
-import { useLang } from "@/i18n/react-hook";
-import { equals } from "@/objects";
-import { get } from "@/objects/struct";
-import useRender from "@/react/hooks/render";
-import { throttle } from "@/utilities/throttle";
-import { CSSProperties, HTMLAttributes, useEffect, useMemo, useRef, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
+import { releaseCursor, setCursor } from "../../../dom/cursor";
+import { useLang } from "../../../i18n/react-hook";
+import { equals } from "../../../objects";
+import { get } from "../../../objects/struct";
+import useRender from "../../../react/hooks/render";
 import "../../../styles/elements/list.scss";
+import { throttle } from "../../../utilities/throttle";
 import { joinClassNames } from "../utilities";
 
 type Node = ReactNode | null | undefined;
