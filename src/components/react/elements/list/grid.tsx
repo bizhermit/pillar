@@ -34,6 +34,7 @@ type ListGridOptions<D extends ListData> = ListOptions<D> & {
   value: Array<D> | null | undefined;
   sortOrder?: ListSortOrder;
   onClickSort?: ListSortClickEvent;
+  noScroll?: boolean;
 };
 
 type ListGridProps<D extends ListData> = OverwriteAttrs<HTMLAttributes<HTMLDivElement>, ListGridOptions<D>>;
@@ -55,6 +56,7 @@ export const ListGrid = <D extends ListData>({
   onClickSort,
   cellWidth: _cellWidth,
   rowHeight: _rowHeight,
+  noScroll,
   ...props
 }: ListGridProps<D>) => {
   const lang = useLang();
@@ -133,6 +135,7 @@ export const ListGrid = <D extends ListData>({
         "--cell-width": parseStrNum(defaultCellWidth),
       } as CSSProperties}
       className={joinClassNames("list-grid", className)}
+      data-noscroll={noScroll}
     >
       {hasHeader &&
         <div

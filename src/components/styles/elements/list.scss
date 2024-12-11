@@ -20,6 +20,16 @@
     border-radius: 0.2rem;
   }
 
+  .list-grid {
+    &[data-noscroll="true"] {
+      max-height: unset;
+
+      >.list-grid-body-wrap {
+        flex: unset;
+      }
+    }
+  }
+
   :is(.list-header, .list-footer, .list-body) {
     display: flex;
     flex-flow: column nowrap;

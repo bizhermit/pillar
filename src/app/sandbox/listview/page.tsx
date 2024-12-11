@@ -37,7 +37,7 @@ const Page = () => {
   const lang = useLang();
   const paging = useFormItemRef<boolean>();
   const listType = useFormItemRef<ListType, { value: ListType; label: string; }>();
-  const scroll = useFormItemRef<boolean>();
+  const bodyScroll = useFormItemRef<boolean>();
 
   const [count, setCount] = useState(0);
   const [value, setValue] = useReducer((_: null | Array<Data>, action: number | Array<Data> | null) => {
@@ -213,10 +213,10 @@ const Page = () => {
           Paging
         </ToggleSwitch>
         <ToggleSwitch
-          ref={scroll}
+          ref={bodyScroll}
           disabled={listType.value?.value === "view"}
         >
-          Wrap Scroll
+          Body Scroll
         </ToggleSwitch>
         <Button
           onClick={() => {
@@ -243,7 +243,7 @@ const Page = () => {
       </div>
       <div
         className={css.main}
-        data-scroll={listType.value?.value === "view" ? "no" : scroll.value}
+        data-scroll={listType.value?.value === "view" ? "no" : bodyScroll.value}
       >
         {listType.value?.value === "view" ?
           <ListView
@@ -259,10 +259,8 @@ const Page = () => {
             columns={listGridColumns}
             value={listValue}
             sortOrder={sortOrder}
-            onClickSort={(p) => {
-              console.log(p);
-              setSortOrder(p);
-            }}
+            onClickSort={setSortOrder}
+            noScroll={bodyScroll.value ?? false}
           />
         }
       </div>
