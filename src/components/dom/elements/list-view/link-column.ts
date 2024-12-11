@@ -33,7 +33,7 @@ export const listViewLinkColumn = <D extends Data>(props: Partial<Omit<ListViewC
       if (props.role) {
         anchor.setAttr("data-noanimation").elem.role = props.role;
       } else {
-        anchor.addClass("lv-span");
+        anchor.addClass("list-span");
       }
       if (props?.target) anchor.elem.target = props.target;
       if (props.text) anchor.elem.textContent = props.text;
