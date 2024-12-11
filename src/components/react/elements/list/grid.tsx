@@ -163,6 +163,11 @@ export const ListGrid = <D extends ListData>({
         </div>
       }
       <div className="list-grid-body-wrap">
+        {value?.length === 0 &&
+          <div className="list-empty-msg" data-vis>
+            {lang("common.noData")}
+          </div>
+        }
         <div
           ref={bref}
           className="list-body list-grid-body"
