@@ -1,6 +1,6 @@
 "use client";
 
-import { ListViewColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
+import { LIST_VIEW_DEFAULT_ROW_HEIGHT, ListViewColumn, listViewRowNumColumn } from "@/dom/elements/list-view";
 import { listViewButtonColumn } from "@/dom/elements/list-view/button-column";
 import { listViewImageColumn } from "@/dom/elements/list-view/image-column";
 import { listViewLinkColumn } from "@/dom/elements/list-view/link-column";
@@ -10,7 +10,8 @@ import { Button } from "@/react/elements/button";
 import { useFormItemRef } from "@/react/elements/form/item-ref";
 import { SelectBox } from "@/react/elements/form/items/select-box";
 import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
-import { ListGrid, ListGridColumn, ListGridRowNumColumn } from "@/react/elements/list/grid";
+import Link from "@/react/elements/link";
+import { ListGrid, ListGridColumn, listGridRowNumColumn } from "@/react/elements/list/grid";
 import { useListSortedValue } from "@/react/elements/list/hooks";
 import { ListView } from "@/react/elements/list/view";
 import { Pagination } from "@/react/elements/pagination";
@@ -122,7 +123,78 @@ const Page = () => {
 
   const listGridColumns = useMemo<Array<ListGridColumn<Data>>>(() => {
     return [
-      ListGridRowNumColumn(),
+      listGridRowNumColumn(),
+      {
+        name: "link",
+        width: 60,
+        resize: false,
+        cell: ({ rowValue }) => {
+          if (rowValue.id === 3) return null;
+          const idStr = String(rowValue.id).padStart(4, "0");
+          return (
+            <Link
+              className="list-span"
+              href={`https://zukan.pokemon.co.jp/detail/${idStr}`}
+              target="_blank"
+              disabled={rowValue.id === 9}
+            >
+              {idStr}
+            </Link>
+          );
+        },
+      },
+      {
+        name: "btn-link",
+        align: "center",
+        resize: false,
+        cell: ({ rowValue }) => {
+          if (rowValue.id === 6) return null;
+          const idStr = String(rowValue.id).padStart(4, "0");
+          return (
+            <Link
+              href={`https://zukan.pokemon.co.jp/detail/${idStr}`}
+              target="_blank"
+              button
+              disabled={rowValue.id === 12}
+            >
+              {idStr}
+            </Link>
+          );
+        },
+      },
+      {
+        name: "button",
+        align: "center",
+        resize: false,
+        cell: ({ rowValue }) => {
+          return (
+            <Button
+              onClick={() => {
+                console.log(rowValue);
+              }}
+            >
+              {lang("common.detail")}
+            </Button>
+          );
+        },
+      },
+      {
+        name: "img",
+        align: "center",
+        resize: false,
+        width: LIST_VIEW_DEFAULT_ROW_HEIGHT,
+        cell: ({ rowValue }) => {
+          return (
+            <img
+              src={rowValue.img}
+              alt={String(rowValue.id)}
+              loading="eager"
+              width={LIST_VIEW_DEFAULT_ROW_HEIGHT * 0.8}
+              height={LIST_VIEW_DEFAULT_ROW_HEIGHT * 0.8}
+            />
+          );
+        },
+      },
       { name: "col1", header: "Col1", sort: true },
       { name: "col2", header: "Col2", sticky: true, sort: true },
       { name: "col3", header: "Col3", resetResize: count, sort: true },

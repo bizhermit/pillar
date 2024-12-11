@@ -127,7 +127,7 @@ export class ListViewClass<D extends ListData> {
 
     this.columns = [];
     this.setOptimizeColumns(props.columns);
-    this.value = props.value;
+    this.value = null;
     this.sortOrder = props.sortOrder;
     this.rows = [];
 
@@ -155,7 +155,7 @@ export class ListViewClass<D extends ListData> {
     this.observer.observe(this.root.elem);
     this.onClickSort = props.onClickSort;
 
-    this.render();
+    this.setValue(props.value);
   }
 
   public dispose() {
