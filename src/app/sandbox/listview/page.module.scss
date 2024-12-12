@@ -7,6 +7,10 @@
   min-height: 0;
   flex: 1 1 0rem;
   padding: 0.8rem;
+
+  &[data-scroll="true"] {
+    flex: unset;
+  }
 }
 
 .row {
@@ -20,4 +24,8 @@
 .listview {
   width: 100%;
   height: 100%;
+
+  &[data-noscroll="true"] {
+    height: unset;
+  }
 }

@@ -1,42 +1,41 @@
 "use client";
 
-import { throttle } from "@/utilities/throttle";
 import { equals } from "../../../objects";
 import { get } from "../../../objects/struct";
-import "../../../styles/elements/list-view.scss";
+import "../../../styles/elements/list.scss";
+import { throttle } from "../../../utilities/throttle";
 import { releaseCursor, setCursor } from "../../cursor";
 import { cloneDomElement, DomElement } from "../../element";
 
-type Data = { [v: string | number | symbol]: any };
 type Node = string | null | undefined;
 
-type ListViewCol<D extends Data> = {
+type ListViewCol<D extends ListData> = {
   column: ListViewColumnImpl<D>;
   elem: DomElement<HTMLDivElement>;
   wElems: Array<HTMLElement>;
   resizedWidth?: string;
 };
-type ListViewDataRow<D extends Data> = {
+type ListViewDataRow<D extends ListData> = {
   dom: DomElement<HTMLDivElement>;
   cols: Array<ListViewCol<D>>;
-  data: D | null | undefined;
+  value: D | null | undefined;
 };
 
-type ListViewHeaderRow<D extends Data> = {
-  dom: DomElement<HTMLDivElement>;
-  cols: Array<ListViewCol<D>>;
-};
-
-type ListViewFooterRow<D extends Data> = {
+type ListViewHeaderRow<D extends ListData> = {
   dom: DomElement<HTMLDivElement>;
   cols: Array<ListViewCol<D>>;
 };
 
-type RenderParams<D extends Data> = ListViewCol<D> & {
+type ListViewFooterRow<D extends ListData> = {
+  dom: DomElement<HTMLDivElement>;
+  cols: Array<ListViewCol<D>>;
+};
+
+type RenderParams<D extends ListData> = ListViewCol<D> & {
   arrayData: Array<D> | null | undefined;
 };
 
-type InitializeCellParams<D extends Data> = {
+type InitializeCellParams<D extends ListData> = {
   column: ListViewColumn<D>;
   cell: DomElement<HTMLDivElement>;
   getArrayData: () => (Array<D> | null | undefined);
@@ -45,66 +44,37 @@ type InitializeCellResponse<CellElems extends Array<HTMLElement>> = {
   elems: CellElems;
 };
 
-type ListViewCellAlign = "left" | "center" | "right";
-
 export type ListViewColumn<
-  D extends Data,
+  D extends ListData,
   CellElems extends Array<HTMLElement> = Array<HTMLElement>,
   HCellElems extends Array<HTMLElement> = Array<HTMLElement>,
   FCellElems extends Array<HTMLElement> = Array<HTMLElement>,
-> = {
-  name: string;
+> = ListColumn<D> & {
   initializeHeaderCell?: (params: InitializeCellParams<D>) => (InitializeCellResponse<HCellElems> | void);
   headerCell?: Node | ((params: RenderParams<D>) => void);
-  headerAlign?: ListViewCellAlign;
   initializeFooterCell?: (params: InitializeCellParams<D>) => (InitializeCellResponse<FCellElems> | void);
   footerCell?: Node | ((params: RenderParams<D>) => void);
-  footerAlign?: ListViewCellAlign;
   initializeCell?: (params: InitializeCellParams<D>) => (InitializeCellResponse<CellElems> | void);
-  cell?: Node | ((params: RenderParams<D> & { index: number; rowData: D | null | undefined; }) => void);
-  align?: ListViewCellAlign;
-  sticky?: boolean;
-  fill?: boolean;
-  resize?: boolean;
-  resetResize?: any;
-  width?: number | string;
-  minWidth?: number | string;
-  maxWidth?: number | string;
-  sort?: boolean;
+  cell?: Node | ((params: RenderParams<D> & { index: number; rowValue: D | null | undefined; }) => void);
 };
 
-type ListViewColumnImpl<D extends Data> = ListViewColumn<D> & {
-  _width?: string; // NOTE: headerのみ
-  _sortElem?: HTMLDivElement; // NOTE: headerのみ
+type ListViewColumnImpl<D extends ListData> = ListViewColumn<D> & {
+  _width?: string;
+  _stickyLeft?: string | undefined;
+  _sortElem?: HTMLDivElement;
 };
 
-type SortDirection = "asc" | "desc" | "none";
-
-export type ListViewSortOrder = Array<{
-  name: string;
-  direction: SortDirection;
-}>;
-
-export type ListViewSortClickEvent = (props: {
-  columnName: string;
-  currentDirection: SortDirection;
-  nextDirection: SortDirection;
-  currentSortOrder: ListViewSortOrder | null | undefined;
-}) => void;
-
-export type ListViewOptions<D extends Data> = {
-  rowHeight?: number;
-  cellWidth?: number | string;
+export type ListViewOptions<D extends ListData> = ListOptions<D> & {
 };
 
-type ListViewProps<D extends Data> = {
+type ListViewProps<D extends ListData> = {
+  lang: LangAccessor;
   root: HTMLElement;
   value: Array<D> | null | undefined;
   columns: Array<ListViewColumn<D>>;
-  sortOrder?: ListViewSortOrder;
+  sortOrder?: ListSortOrder;
   options?: ListViewOptions<D>;
-  lang: LangAccessor;
-  onClickSort?: ListViewSortClickEvent;
+  onClickSort?: ListSortClickEvent;
 };
 
 export const LIST_VIEW_DEFAULT_ROW_HEIGHT = 40;
@@ -115,7 +85,7 @@ const COL_RESIZE_THROTTLE_TIMEOUT = 20;
 
 const parseStrNum = (w: number | string) => typeof w === "string" ? w : `${w}px`;
 
-export class ListViewClass<D extends Data> {
+export class ListViewClass<D extends ListData> {
 
   protected lang: LangAccessor;
   protected root: DomElement<HTMLElement>;
@@ -131,7 +101,7 @@ export class ListViewClass<D extends Data> {
   protected footer: DomElement<HTMLDivElement>;
   protected bodyWrap: DomElement<HTMLDivElement>;
   protected body: DomElement<HTMLDivElement>;
-  protected dummy: HTMLDivElement;
+  protected virtualBody: HTMLDivElement;
   protected emptyMsg: DomElement<HTMLDivElement>;
 
   protected headerRow: ListViewHeaderRow<D> | undefined;
@@ -140,39 +110,41 @@ export class ListViewClass<D extends Data> {
 
   protected columns: Array<ListViewColumnImpl<D>>;
   protected value: Array<D> | null | undefined;
-  protected sortOrder: ListViewSortOrder | null | undefined;
+  protected sortOrder: ListSortOrder | null | undefined;
 
   protected firstIndex: number;
   protected rowHeight: number;
   protected cellWidth: number | string;
+  protected lastScrollX: number | undefined;
 
-  protected onClickSort: ListViewSortClickEvent | null | undefined;
+  protected onClickSort: ListSortClickEvent | null | undefined;
 
   constructor(props: ListViewProps<D>) {
     this.lang = props.lang;
     this.root = new DomElement(props.root);
-    this.columns = props.columns;
-    this.value = props.value;
+    this.firstIndex = 0;
+    this.root.elem.style.setProperty("--row-height", `${this.rowHeight = props.options?.rowHeight ?? LIST_VIEW_DEFAULT_ROW_HEIGHT}px`);
+    this.root.elem.style.setProperty("--cell-width", this.cellWidth = parseStrNum(props.options?.cellWidth ?? LIST_VIEW_DEFAULT_CELL_WIDTH));
+
+    this.columns = [];
+    this.setOptimizeColumns(props.columns);
+    this.value = null;
     this.sortOrder = props.sortOrder;
     this.rows = [];
 
-    this.root.elem.classList.add("lv-main");
+    this.root.elem.classList.add("list-view");
     const div = document.createElement("div");
     this.cloneBase = {
       div,
       span: document.createElement("span"),
-      row: cloneDomElement(div).addClass("lv-row").setAttr("data-none", ""),
-      cell: cloneDomElement(div).addClass("lv-cell"),
+      row: cloneDomElement(div).addClass("list-row").setAttr("data-none", ""),
+      cell: cloneDomElement(div).addClass("list-cell"),
     };
     this.bodyWrap = null!;
     this.body = null!;
     this.footer = null!;
-    this.dummy = null!;
+    this.virtualBody = null!;
     this.emptyMsg = null!;
-
-    this.firstIndex = 0;
-    this.root.elem.style.setProperty("--row-height", `${this.rowHeight = props.options?.rowHeight ?? LIST_VIEW_DEFAULT_ROW_HEIGHT}px`);
-    this.root.elem.style.setProperty("--cell-width", this.cellWidth = parseStrNum(props.options?.cellWidth ?? LIST_VIEW_DEFAULT_CELL_WIDTH));
 
     this.generateHeader();
     this.generateBody();
@@ -184,7 +156,7 @@ export class ListViewClass<D extends Data> {
     this.observer.observe(this.root.elem);
     this.onClickSort = props.onClickSort;
 
-    this.render();
+    this.setValue(props.value);
   }
 
   public dispose() {
@@ -194,16 +166,34 @@ export class ListViewClass<D extends Data> {
     return;
   }
 
-  public setColumns(columns: Array<ListViewColumn<D>>) {
+  protected setOptimizeColumns = (columns: Array<ListViewColumn<D>>) => {
+    let left = "";
     this.columns = columns.map(c => {
       const col = this.columns.find(col => col.name === c.name);
       const w = col?._width;
       const inheritWidth = c.resize !== false && col && w != null && equals(col.resetResize, c.resetResize);
+      const _width = inheritWidth ? w : undefined;
+      let _stickyLeft: string | undefined;
+      if (c.sticky) {
+        const sw = parseStrNum(_width || c.width || this.cellWidth);
+        if (left) {
+          _stickyLeft = left.indexOf("+") > 0 ? `calc(${left})` : left;
+          left += ` + ${sw}`;
+        } else {
+          left = sw;
+        }
+      }
       return {
         ...c,
-        _width: inheritWidth ? w : undefined,
+        _width,
+        _stickyLeft,
       };
     });
+    return this;
+  };
+
+  public setColumns(columns: Array<ListViewColumn<D>>) {
+    this.setOptimizeColumns(columns);
     this.generateHeader();
     this.generateBody();
     this.generateFooter();
@@ -212,7 +202,7 @@ export class ListViewClass<D extends Data> {
     return this;
   }
 
-  public setOrder(order: ListViewSortOrder | undefined) {
+  public setOrder(order: ListSortOrder | undefined) {
     this.sortOrder = order;
     this.renderSortOrder();
     return this;
@@ -227,7 +217,7 @@ export class ListViewClass<D extends Data> {
     this.value = value;
     if (this.value?.length === 0) this.emptyMsg.setAttr("data-vis");
     else this.emptyMsg.rmAttr("data-vis");
-    this.dummy.style.height = `${(this.value?.length ?? 0) * this.rowHeight}px`;
+    this.virtualBody.style.height = `${(this.value?.length ?? 0) * this.rowHeight}px`;
     this.calcScrollBarWidth();
     if (dif) this.body.elem.style.visibility = "hidden";
     this.scrollY();
@@ -238,10 +228,9 @@ export class ListViewClass<D extends Data> {
 
   protected generateRowColsImpl(props: {
     dom: DomElement<HTMLDivElement>;
-    align?: (column: ListViewColumn<D>) => (ListViewCellAlign | undefined);
+    align?: (column: ListViewColumn<D>) => (ListCellAlign | undefined);
     initialize?: (params: { column: ListViewColumnImpl<D>; cell: DomElement<HTMLDivElement>; }) => (InitializeCellResponse<Array<HTMLElement>> | void);
   }) {
-    let left = "";
     return this.columns.map(c => {
       const cell = this.cloneBase.cell.clone();
       const align = props.align?.(c);
@@ -251,13 +240,7 @@ export class ListViewClass<D extends Data> {
       if (c.maxWidth) cell.setStyleSize("maxWidth", c.maxWidth);
       if (c.sticky) {
         cell.setAttr("data-sticky");
-        const w = parseStrNum(c._width || c.width || this.cellWidth);
-        if (left) {
-          cell.elem.style.setProperty("left", left.indexOf("+") > 0 ? `calc(${left})` : left);
-          left += ` + ${w}`;
-        } else {
-          left = w;
-        }
+        if (c._stickyLeft) cell.elem.style.setProperty("left", c._stickyLeft);
       }
       if (c.fill) cell.setAttr("data-fill");
       props.dom.addChild(cell);
@@ -268,7 +251,7 @@ export class ListViewClass<D extends Data> {
           const init = props.initialize?.({ column: c, cell });
           if (init) return init.elems;
           const sElem = this.cloneBase.span.cloneNode() as HTMLSpanElement;
-          sElem.classList.add("lv-span");
+          sElem.classList.add("list-span");
           cell.elem.appendChild(sElem);
           return [sElem];
         })(),
@@ -280,8 +263,9 @@ export class ListViewClass<D extends Data> {
     if (this.columns.find(c => c.headerCell != null)) {
       if (!this.header) {
         this.header = cloneDomElement(this.cloneBase.div)
-          .addClass("lv-header")
+          .addClass("list-header")
           .addEvent("scroll", throttle(() => {
+            if (this.header!.elem.scrollLeft === this.lastScrollX) return;
             this.scrollX("h");
           }, SCROLL_X_THROTTLE_TIMEOUT));
         this.root.addChild(this.header);
@@ -301,30 +285,25 @@ export class ListViewClass<D extends Data> {
       align: c => c.align || "center",
       initialize: ({ column, cell }) => {
         if (column.resize !== false && !column.fill) {
-          let resizeCtx: { x: number; w: number; cells: Array<DomElement<HTMLDivElement>>; } | null = null;
-          const move = throttle((e: MouseEvent) => {
-            if (!resizeCtx) return;
-            const w = resizeCtx.w + (e.clientX - resizeCtx.x);
-            resizeCtx.cells.forEach(cell => cell.setStyleSize("width", w));
-            if (column.sticky) this.calcStickyPosition({ name: column.name, width: w });
-          }, COL_RESIZE_THROTTLE_TIMEOUT);
-          const end = () => {
-            releaseCursor();
-            column._width = resizeCtx?.cells[0].elem.style.width;
-            resizeCtx = null;
-            this.calcStickyPosition();
-            window.removeEventListener("mousemove", move);
-            window.removeEventListener("mouseup", end);
-          };
-          const resizer = resizeDom.clone().addClass("lv-resizer").addEvent("mousedown", (e) => {
-            resizeCtx = {
-              w: cell.elem.offsetWidth,
-              x: e.clientX,
-              cells: [cell, ...this.rows.map(row => {
-                return row.cols.find(c => c.column.name === column.name)?.elem;
-              })].filter(c => c != null) as Array<DomElement<HTMLDivElement>>,
-            };
+          const resizer = resizeDom.clone().addClass("list-resizer").addEvent("mousedown", (e) => {
+            const baseW = cell.elem.offsetWidth;
+            const baseX = e.clientX;
+            const cells = [cell, ...this.rows.map(row => {
+              return row.cols.find(c => c.column.name === column.name)?.elem;
+            })].filter(c => c != null) as Array<DomElement<HTMLDivElement>>;
             setCursor(getComputedStyle((e.currentTarget as HTMLDivElement)).cursor);
+            const move = throttle((e: MouseEvent) => {
+              const w = baseW + (e.clientX - baseX);
+              cells.forEach(cell => cell.setStyleSize("width", w));
+              if (column.sticky) this.calcStickyPosition({ name: column.name, width: w });
+            }, COL_RESIZE_THROTTLE_TIMEOUT);
+            const end = () => {
+              releaseCursor();
+              column._width = cells[0].elem.style.width;
+              this.calcStickyPosition();
+              window.removeEventListener("mousemove", move);
+              window.removeEventListener("mouseup", end);
+            };
             window.addEventListener("mousemove", move);
             window.addEventListener("mouseup", end);
           });
@@ -338,7 +317,7 @@ export class ListViewClass<D extends Data> {
         }
         if (column.sort) {
           const elem = this.cloneBase.div.cloneNode() as HTMLDivElement;
-          elem.classList.add("lv-sort");
+          elem.classList.add("list-sort");
           column._sortElem = elem;
           cell.setAttr("data-sort").addEvent("click", () => {
             this.sortClick(column);
@@ -358,20 +337,21 @@ export class ListViewClass<D extends Data> {
   protected generateBody() {
     if (!this.bodyWrap) {
       this.bodyWrap = cloneDomElement(this.cloneBase.div)
-        .addClass("lv-body-wrap")
+        .addClass("list-view-body-wrap")
         .addEvent("scroll", throttle(() => {
           this.scrollY();
         }, SCROLL_Y_THROTTLE_TIMEOUT));
-      this.dummy = this.cloneBase.div.cloneNode() as HTMLDivElement;
-      this.dummy.classList.add("lv-dummy");
-      this.bodyWrap.elem.appendChild(this.dummy);
+      this.virtualBody = this.cloneBase.div.cloneNode() as HTMLDivElement;
+      this.virtualBody.classList.add("list-view-vbody");
+      this.bodyWrap.elem.appendChild(this.virtualBody);
       this.body = cloneDomElement(this.cloneBase.div)
-        .addClass("lv-body")
+        .addClass("list-body", "list-view-body")
         .addEvent("scroll", throttle(() => {
+          if (this.body.elem.scrollLeft === this.lastScrollX) return;
           this.scrollX("b");
         }, SCROLL_X_THROTTLE_TIMEOUT));
       this.bodyWrap.addChild(this.body);
-      this.emptyMsg = cloneDomElement(this.cloneBase.div).addClass("lv-empty-msg");
+      this.emptyMsg = cloneDomElement(this.cloneBase.div).addClass("list-empty-msg");
       this.emptyMsg.elem.textContent = this.lang("common.noData");
       this.bodyWrap.addChild(this.emptyMsg);
       this.root.addChild(this.bodyWrap);
@@ -383,8 +363,9 @@ export class ListViewClass<D extends Data> {
   protected generateFooter() {
     if (!this.footer) {
       this.footer = cloneDomElement(this.cloneBase.div)// NOTE: 横スクロールバーUIを担うため追加必須
-        .addClass("lv-footer")
+        .addClass("list-footer")
         .addEvent("scroll", throttle(() => {
+          if (this.footer.elem.scrollLeft === this.lastScrollX) return;
           this.scrollX("f");
         }, SCROLL_X_THROTTLE_TIMEOUT));
       this.root.addChild(this.footer);
@@ -427,7 +408,7 @@ export class ListViewClass<D extends Data> {
         initialize: ({ column, cell }) => column.initializeCell?.({ column, cell, getArrayData: () => this.value }),
       });
       this.body.addChild(dom);
-      this.rows.push({ dom, cols, data: null });
+      this.rows.push({ dom, cols, value: null });
     }
     return diff;
   }
@@ -468,15 +449,15 @@ export class ListViewClass<D extends Data> {
     for (let i = 0, il = this.rows.length; i < il; i++) {
       const idx = this.firstIndex + i;
       const row = this.rows[i];
-      const data = this.value?.[idx];
-      if (data == null) {
-        if (row.data) row.dom.setAttr("data-none");
-        row.data = null;
+      const rv = this.value?.[idx];
+      if (rv == null) {
+        if (row.value) row.dom.setAttr("data-none");
+        row.value = null;
         continue;
       }
-      if (!row.data) row.dom.rmAttr("data-none");
-      if (row.data === data) continue;
-      row.data = data;
+      if (!row.value) row.dom.rmAttr("data-none");
+      if (row.value === rv) continue;
+      row.value = rv;
       row.dom.setAttr("data-nth", idx % 2 === 1 ? "odd" : "even");
       row.cols.forEach(c => {
         if (c.column.cell) {
@@ -485,13 +466,13 @@ export class ListViewClass<D extends Data> {
               arrayData: this.value,
               ...c,
               index: idx,
-              rowData: data,
+              rowValue: rv,
             });
           } else {
             c.wElems[0].textContent = c.column.cell;
           }
         } else {
-          c.wElems[0].textContent = get(data, c.column.name)[0] ?? "";
+          c.wElems[0].textContent = get(rv, c.column.name)[0] ?? "";
         }
       });
     }
@@ -545,15 +526,15 @@ export class ListViewClass<D extends Data> {
   protected scrollX(triger: "h" | "b" | "f") {
     switch (triger) {
       case "b":
-        this.footer.elem.scrollLeft = this.body.elem.scrollLeft;
+        this.lastScrollX = this.footer.elem.scrollLeft = this.body.elem.scrollLeft;
         if (this.header) this.header.elem.scrollLeft = this.body.elem.scrollLeft;
         break;
       case "f":
-        this.body.elem.scrollLeft = this.footer.elem.scrollLeft;
+        this.lastScrollX = this.body.elem.scrollLeft = this.footer.elem.scrollLeft;
         if (this.header) this.header.elem.scrollLeft = this.footer.elem.scrollLeft;
         break;
       case "h":
-        this.body.elem.scrollLeft = this.header!.elem.scrollLeft;
+        this.lastScrollX = this.body.elem.scrollLeft = this.header!.elem.scrollLeft;
         this.footer.elem.scrollLeft = this.header!.elem.scrollLeft;
         break;
       default:
@@ -586,7 +567,7 @@ export class ListViewClass<D extends Data> {
     this.rows.forEach(row => impl(row.cols));
   }
 
-  public setOnSortClick(fn: ListViewSortClickEvent | null | undefined) {
+  public setOnSortClick(fn: ListSortClickEvent | null | undefined) {
     this.onClickSort = fn;
     return this;
   }
@@ -615,7 +596,7 @@ export class ListViewClass<D extends Data> {
 
 }
 
-export const listViewRowNumColumn = <D extends Data>(props?: Partial<Omit<ListViewColumn<D>, "cell" | "initializeCell">>): ListViewColumn<D> => {
+export const listViewRowNumColumn = <D extends ListData>(props?: Partial<Omit<ListViewColumn<D>, "cell" | "initializeCell">>): ListViewColumn<D> => {
   return {
     name: "_rownum",
     align: "center",

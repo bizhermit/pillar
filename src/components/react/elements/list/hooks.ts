@@ -1,14 +1,13 @@
 "use client";
 
 import { useMemo, useReducer } from "react";
-import type { ListViewSortClickEvent, ListViewSortOrder } from "../../../dom/elements/list-view";
 import { equals } from "../../../objects";
 import { get } from "../../../objects/struct";
 
 type Data = { [v: string | number | symbol]: any };
 
-export const useListViewSortOrder = () => {
-  return useReducer((state: ListViewSortOrder, action: Parameters<ListViewSortClickEvent>[0]) => {
+export const useListSortOrder = () => {
+  return useReducer((state: ListSortOrder, action: Parameters<ListSortClickEvent>[0]) => {
     const newOrder = [...state];
     const i = newOrder.findIndex(o => o.name === action.columnName);
     if (i >= 0) newOrder.splice(i, 1);
@@ -17,7 +16,7 @@ export const useListViewSortOrder = () => {
   }, []);
 };
 
-export const useListViewSortedMemorizedValue = <D extends Data>(value: Array<D> | null | undefined, order: ListViewSortOrder) => {
+export const useListSortedMemorizedValue = <D extends Data>(value: Array<D> | null | undefined, order: ListSortOrder) => {
   return useMemo(() => {
     if (value == null || value.length === 0) return value;
     return [...value].sort((d1, d2) => {
@@ -34,8 +33,8 @@ export const useListViewSortedMemorizedValue = <D extends Data>(value: Array<D> 
   }, [value, order]);
 };
 
-export const useListViewSortedValue = <D extends Data>(value: Array<D> | null | undefined) => {
-  const [sortOrder, setSortOrder] = useListViewSortOrder();
-  const v = useListViewSortedMemorizedValue(value, sortOrder);
+export const useListSortedValue = <D extends Data>(value: Array<D> | null | undefined) => {
+  const [sortOrder, setSortOrder] = useListSortOrder();
+  const v = useListSortedMemorizedValue(value, sortOrder);
   return { value: v, sortOrder, setSortOrder } as const;
 };

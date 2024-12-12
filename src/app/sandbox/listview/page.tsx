@@ -7,8 +7,16 @@ import { listViewLinkColumn } from "@/dom/elements/list-view/link-column";
 import { useLang } from "@/i18n/react-hook";
 import { generateArray } from "@/objects/array";
 import { Button } from "@/react/elements/button";
-import { ListView } from "@/react/elements/list-view";
-import { useListViewSortedValue } from "@/react/elements/list-view/hooks";
+import { useFormItemRef } from "@/react/elements/form/item-ref";
+import { SelectBox } from "@/react/elements/form/items/select-box";
+import { ToggleSwitch } from "@/react/elements/form/items/toggle-switch";
+import Link from "@/react/elements/link";
+import { ListGrid, ListGridColumn, listGridRowNumColumn } from "@/react/elements/list/grid";
+import { listGridButtonColumn } from "@/react/elements/list/grid-button-column";
+import { listGridImageColumn } from "@/react/elements/list/grid-image-column";
+import { listGridLinkColumn } from "@/react/elements/list/grid-link-column";
+import { useListSortedValue } from "@/react/elements/list/hooks";
+import { ListView } from "@/react/elements/list/view";
 import { Pagination } from "@/react/elements/pagination";
 import { usePagingArray } from "@/react/hooks/paging-array";
 import { useMemo, useReducer, useState } from "react";
@@ -21,10 +29,16 @@ type Data = {
   col2?: string;
   col3?: string;
   col4?: string;
-}
+};
+
+type ListType = "view" | "grid";
 
 const Page = () => {
   const lang = useLang();
+  const paging = useFormItemRef<boolean>();
+  const listType = useFormItemRef<ListType, { value: ListType; label: string; }>();
+  const bodyScroll = useFormItemRef<boolean>();
+
   const [count, setCount] = useState(0);
   const [value, setValue] = useReducer((_: null | Array<Data>, action: number | Array<Data> | null) => {
     if (action == null) return null;
@@ -42,37 +56,37 @@ const Page = () => {
 
   // const [order, setOrder] = useListViewSortOrder();
   // const sortedValue = useListViewSortedMemorizedValue(value, order);
-  const { value: sortedValue, sortOrder, setSortOrder } = useListViewSortedValue(value);
+  const { value: sortedValue, sortOrder, setSortOrder } = useListSortedValue(value);
   const list = usePagingArray({
     value: sortedValue,
     limit: 10,
   });
 
-  const columns = useMemo<Array<ListViewColumn<Data>>>(() => {
+  const listViewColumns = useMemo<Array<ListViewColumn<Data>>>(() => {
     return [
       listViewRowNumColumn(),
       listViewLinkColumn({
         name: "link",
         target: "_blank",
         width: 60,
-        link: ({ rowData }) => {
-          const idStr = String(rowData.id).padStart(4, "0");
+        link: ({ rowValue }) => {
+          const idStr = String(rowValue.id).padStart(4, "0");
           return {
-            href: rowData.id === 3 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            href: rowValue.id === 3 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
             text: idStr,
-            disabled: rowData.id === 9,
+            disabled: rowValue.id === 9,
           };
         },
       }),
       listViewLinkColumn({
         name: "btn-link",
         role: "button",
-        link: ({ rowData }) => {
-          const idStr = String(rowData.id).padStart(4, "0");
+        link: ({ rowValue }) => {
+          const idStr = String(rowValue.id).padStart(4, "0");
           return {
-            href: rowData.id === 6 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            href: rowValue.id === 6 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
             text: idStr,
-            disabled: rowData.id === 12,
+            disabled: rowValue.id === 12,
           };
         },
         interceptor: (href) => {
@@ -83,10 +97,10 @@ const Page = () => {
       listViewButtonColumn({
         name: "button",
         text: lang("common.detail"),
-        button: ({ rowData }) => {
+        button: ({ rowValue }) => {
           return {
-            disabled: rowData.id === 1,
-            hide: rowData.id === 2,
+            disabled: rowValue.id === 1,
+            hide: rowValue.id === 2,
           };
         },
         onClick: (params) => {
@@ -111,17 +125,108 @@ const Page = () => {
     ];
   }, [count]);
 
+  const listGridColumns = useMemo<Array<ListGridColumn<Data>>>(() => {
+    return [
+      listGridRowNumColumn(),
+      listGridLinkColumn({
+        width: 60,
+        target: "_blank",
+        link: ({ rowValue }) => {
+          const idStr = String(rowValue.id).padStart(4, "0");
+          return {
+            href: rowValue.id === 3 ? null : `https://zukan.pokemon.co.jp/detail/${idStr}`,
+            text: idStr,
+            disabled: rowValue.id === 9,
+          };
+        },
+      }),
+      {
+        name: "btn-link",
+        align: "center",
+        resize: false,
+        cell: ({ rowValue }) => {
+          if (rowValue.id === 6) return null;
+          const idStr = String(rowValue.id).padStart(4, "0");
+          return (
+            <Link
+              href={`https://zukan.pokemon.co.jp/detail/${idStr}`}
+              target="_blank"
+              button
+              disabled={rowValue.id === 12}
+            >
+              {idStr}
+            </Link>
+          );
+        },
+      },
+      listGridButtonColumn({
+        text: lang("common.detail"),
+        button: ({ rowValue }) => {
+          return {
+            color: "subdued",
+            disabled: rowValue.id === 1,
+            hide: rowValue.id === 2,
+          };
+        },
+        onClick: (args) => {
+          console.log(args);
+        },
+      }),
+      listGridImageColumn({
+        sticky: true,
+        altName: "id",
+        image: ({ rowValue }) => {
+          return {
+            src: rowValue.img,
+          };
+        },
+      }),
+      { name: "col1", header: "Col1", sort: true },
+      { name: "col2", header: "Col2", sticky: true, sort: true },
+      { name: "col3", header: "Col3", resetResize: count, sort: true },
+      { name: "col4", header: "Col4", resize: count % 2 === 1 },
+      { name: "col5", header: "Col5" },
+      { name: "col6", header: "Col6" },
+      { name: "col7", header: "Col7" },
+      { name: "col8", header: "Col8" },
+      { name: "col9", header: "Col9", fill: true },
+    ];
+  }, [count]);
+
+  const listValue = paging.value ? list.value : sortedValue;
+
   return (
     <>
       <h1>ListView</h1>
       <div className={css.row}>
+        <SelectBox
+          ref={listType}
+          style={{ width: 100 }}
+          hideClearButton
+          source={[
+            { value: "view", label: "View" },
+            { value: "grid", label: "Grid" },
+          ]}
+          defaultValue="grid"
+        />
+        <ToggleSwitch ref={paging}>
+          Paging
+        </ToggleSwitch>
+        <ToggleSwitch
+          ref={bodyScroll}
+          disabled={listType.value?.value === "view"}
+        >
+          Body Scroll
+        </ToggleSwitch>
         <Button
           onClick={() => {
             setCount(c => c + 1);
           }}
         >
-          state: {count}
+          col memorize dep: {count}
         </Button>
+      </div>
+      <div className={css.row}>
         <Button onClick={() => setValue(null)}>clear</Button>
         <Button onClick={() => setValue(0)}>0</Button>
         <Button onClick={() => setValue(1)}>1</Button>
@@ -136,18 +241,30 @@ const Page = () => {
         <Button onClick={() => setValue(100000)}>100,000</Button>
         <Button onClick={() => setValue(1000000)}>1,000,000</Button>
       </div>
-      <div className={css.main}>
-        <ListView
-          className={css.listview}
-          columns={columns}
-          value={list.value}
-          sortOrder={sortOrder}
-          onClickSort={(props) => {
-            setSortOrder(props);
-          }}
-        />
+      <div
+        className={css.main}
+        data-scroll={listType.value?.value === "view" ? "no" : bodyScroll.value}
+      >
+        {listType.value?.value === "view" ?
+          <ListView
+            className={css.listview}
+            columns={listViewColumns}
+            value={listValue}
+            sortOrder={sortOrder}
+            onClickSort={setSortOrder}
+          />
+          :
+          <ListGrid
+            className={css.listview}
+            columns={listGridColumns}
+            value={listValue}
+            sortOrder={sortOrder}
+            onClickSort={setSortOrder}
+            noScroll={bodyScroll.value ?? false}
+          />
+        }
       </div>
-      {list.showPagination &&
+      {paging.value && list.showPagination &&
         <Pagination
           page={list.page}
           maxPage={list.maxPage}
