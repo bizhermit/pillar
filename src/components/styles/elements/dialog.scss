@@ -39,6 +39,7 @@
     &[popover] {
       &::backdrop {
         display: none;
+        backdrop-filter: none;
       }
     }
   }

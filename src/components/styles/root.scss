@@ -55,6 +55,7 @@
 
   ::backdrop {
     background: var(--mask);
+    backdrop-filter: blur(1px);
   }
 
   ::placeholder {
