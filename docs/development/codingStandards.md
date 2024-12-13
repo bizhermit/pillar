@@ -21,27 +21,27 @@
 | ----------------- | ---------------------------------- |
 | `src/components/` | 機能要件を含まないコンポーネント群 |
 | `src/features/`   | 機能要件を含むコンポーネント群     |
-| `src/app/`        | App Router                         |
+| `src/app/`        | Next.js App Router                 |
 | `src/i18n/`       | 国際化用言語定義                   |
 | `public/imgs/`    | 画像ファイル                       |
-| `prisma/`         | Prisma                             |
-| `playwright/`     | Playwright                         |
+| `prisma/`         | Prisma定義ファイル群               |
+| `playwright/`     | Playwrightコードファイル群         |
 | `docs/`           | ドキュメント                       |
 
 ### 機能要件を含まない汎用コンポーネント群（`src/components/*`）
 
 | フォルダ       | 説明                   |
 | -------------- | ---------------------- |
-| `/data-items/` | 項目定義               |
-| `/dom/`        | DOM操作                |
-| `/i18n/`       | 国際化                 |
+| `/data-items/` | 項目定義コアモジュール |
+| `/dom/`        | DOM操作関連            |
+| `/i18n/`       | 国際化コアモジュール   |
 | `/objects/`    | 基底クラスオブジェクト |
 | `/react/`      | Reactコンポーネント    |
 | `/server/`     | サーバー処理           |
 | `/styles/`     | スタイルシート         |
 | `/utilities/`  | その他                 |
 
-※ `src/features/`および`src/app/`からのインポートは禁止
+※ `src/features/*`および`src/app/*`からのインポートは禁止
 
 ### 機能要件を含む汎用／共通コンポーネント群（`src/features/*`）
 
@@ -55,21 +55,21 @@
 | `/react/modules/`   | 項目単位コンポーネント（element）やレイアウトコンポーネント（template）を使用し、チャンク（フォーム等）データ構造に対応したコンポーネント |
 | `/utilities/`       | その他                                                                                                                                    |
 
-※ `src/app/`からのインポートは禁止
+※ `src/app/*`からのインポートは禁止
 
-### App Router（`src/app/*`）
+### Next.js App Router（`src/app/*`）
 
 ファイルルーティングはNext.jsの[App Router](https://nextjs.org/docs/app/building-your-application/routing)を参照。
 
 | ファイル             | 説明                                                                                                                                                                                     |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `page.tsx`           | パスルートに対して一意となるサーバー（またはクライアント）コンポーネント                                                                                                                 |
-| `page-client.tsx`    | `page.tsx`で使用するクライアントコンポーネント群<br>※ `page.tsx`をクライアントコンポーネントとする場合は不要                                                                             |
+| `page-client.tsx`    | `page.tsx`で使用するクライアントコンポーネント群<br>※ `page.tsx`をクライアントコンポーネントとする場合、およびクライアントコンポーネント不要の場合は作成しない                           |
 | `layout.tsx`         | パスルート間で共有されるサーバー（またはクライアント）コンポーネント                                                                                                                     |
-| `layout-client.tsx`  | `layout.tsx`で使用するクライアントコンポーネント群<br>※ `layout.tsx`をクライアントコンポーネントとする場合は不要                                                                         |
-| `page.module.scss`   | 同階層に存在する`page.tsx`および`page-client.tsx`で使用するスタイルシート。必要に応じて作成する。<br>使用する際は`page.tsx`で`import css from "./page.module.scss";`と記述する。         |
-| `layout.module.scss` | 同階層に存在する`layout.tsx`および`layout-client.tsx`で使用するスタイルシート。必要に応じて作成する。<br>使用する際は`layout.tsx`で`import css from "./layout.module.scss";`と記述する。 |
-| `api/**/route.ts`    | WebAPIエンドポイント。必要に応じて作成する。<br/>認証チェックロジックの複雑化を避けるため、認証が必要なエンドポイントはページパス付近に作成する。                                        |
+| `layout-client.tsx`  | `layout.tsx`で使用するクライアントコンポーネント群<br>※ `layout.tsx`をクライアントコンポーネントとする場合、およびクライアントコンポーネント不要の場合は作成しない                       |
+| `page.module.scss`   | 同階層に存在する`page.tsx`および`page-client.tsx`で使用するスタイルシート。必要に応じて作成する。<br>使用する際は該当ファイルで`import css from "./page.module.scss";`と記述する。       |
+| `layout.module.scss` | 同階層に存在する`layout.tsx`および`layout-client.tsx`で使用するスタイルシート。必要に応じて作成する。<br>使用する際は該当ファイルで`import css from "./layout.module.scss";`と記述する。 |
+| `route.ts`           | WebAPIエンドポイント。必要に応じて作成する。<br/>認証チェックロジックの複雑化を避けるため、認証が必要なエンドポイントはページパス付近に作成する。                                        |
 
 ## スタイリング
 
