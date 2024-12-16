@@ -1,0 +1,78 @@
+@use "../mixins" as mixins;
+
+@layer base {
+
+  .dialog,
+  .dialog::backdrop {
+    opacity: 0;
+    transition: opacity .2s, display .2s allow-discrete, overlay .2s allow-discrete;
+  }
+
+  .dialog[open],
+  .dialog[open]::backdrop,
+  .dialog:popover-open,
+  .dialog:popover-open::backdrop {
+    opacity: 1;
+    z-index: 99999;
+  }
+
+  .dialog {
+    border: none;
+    overflow: auto;
+    filter: drop-shadow(0 0 3px var(--sdw));
+    max-width: 100dvw;
+    max-height: 100dvh;
+    outline: none;
+    position: fixed;
+    overscroll-behavior: contain;
+    --header-height: 0;
+
+    &:not([data-pos="true"]) {
+      inset: 0;
+      margin: auto;
+    }
+
+    &[data-transparent] {
+      background: transparent;
+    }
+
+    &[popover] {
+      &::backdrop {
+        display: none;
+        backdrop-filter: none;
+      }
+    }
+  }
+
+  @starting-style {
+
+    .dialog[open],
+    .dialog:popover-open,
+    .dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  @include mixins.sp {
+    html {
+      &:has(.dialog:popover-open) {
+        &::before {
+          position: fixed;
+          content: "";
+          width: 100dvw;
+          height: 100dvh;
+          inset: 0;
+          background: transparent;
+          z-index: 99998;
+          overscroll-behavior: contain;
+        }
+      }
+    }
+
+    .dialog[data-mobile] {
+      inset: 0 !important;
+      margin: auto;
+    }
+  }
+
+}

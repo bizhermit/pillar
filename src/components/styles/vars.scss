@@ -1,0 +1,130 @@
+@use "./mixins" as mixins;
+
+@layer default, base, feat;
+
+$lightBg: #f8f8f8;
+$lightFg: #171717;
+$darkBg: #0a0a0a;
+$darkFg: #f8f8f8;
+
+@mixin lightTheme {
+  --bg: #{$lightBg};
+  --fg: #{$lightFg};
+  --fg-placeholder: #888;
+  --fg-err: #f00;
+  --fg-warn: #f92;
+  --fg-info: #393;
+  --mask: rgba(0, 0, 0, 0.2);
+  --sdw: rgba(0, 0, 0, 0.4);
+  --msg-bg: rgba(255, 255, 255, 0.9);
+  --msg-fg: #{$lightFg};
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --nav-fg: #{$lightFg};
+  --week-sun: rgb(255, 210, 210);
+  --week-sat: rgb(210, 220, 255);
+  --btn-bg: #fff;
+  --ipt-bg: #fff;
+  --ipt-fg: #{$lightFg};
+  --ipt-bd: rgba(0, 0, 0, 0.4);
+  --ipt-bg-err: #ffcccc;
+  --ipt-fg-err: #{$lightFg};
+  --ipt-bd-err: rgba(255, 0, 0, 0.4);
+  --c-primary: #5fafff;
+  --c-primary_: #{$lightBg};
+  --c-secondary: #7fbf7f;
+  --c-secondary_: #{$lightBg};
+  --c-danger: #f66;
+  --c-danger_: #{$lightBg};
+  --c-subdued: #bbb;
+  --c-subdued_: #{$lightBg};
+  --list-bg: #fff;
+  --list-fg: #{$lightFg};
+  --list-header-bg: #e8e8ef;
+  --list-header-fg: #{$lightFg};
+  --list-footer-bg: #f8f8f8;
+  --list-footer-fg: #{$lightFg};
+  --list-cell-bg: #fff;
+  --list-cell-fg: #{$lightFg};
+  --list-cell1-bg: #f6f6ff;
+  --list-cell1-fg: #{$lightFg};
+  --list-row-hover-bg: #e8e8f8;
+  --list-row-hover-fg: #{$lightFg};
+  --list-cell-hover-bg: #c0e0ff;
+  --list-cell-hover-fg: #{$lightFg};
+}
+
+@mixin darkTheme {
+  --bg: #{$darkBg};
+  --fg: #{$darkFg};
+  --fg-placeholder: #888;
+  --fg-err: #f40;
+  --fg-warn: #ff0;
+  --fg-info: #3d3;
+  --mask: rgba(192, 192, 192, 0.2);
+  --sdw: rgba(255, 255, 255, 0.4);
+  --msg-bg: rgba(0, 0, 0, 0.9);
+  --msg-fg: #{$darkFg};
+  --nav-bg: rgba(0, 0, 0, 0.95);
+  --nav-fg: #{$darkFg};
+  --week-sun: rgb(70, 20, 20);
+  --week-sat: rgb(20, 30, 70);
+  --btn-bg: #000;
+  --ipt-bg: #222;
+  --ipt-fg: #{$darkFg};
+  --ipt-bd: rgba(255, 255, 255, 0.4);
+  --ipt-bg-err: #422;
+  --ipt-fg-err: #{$darkFg};
+  --ipt-bd-err: rgba(255, 0, 0, 0.4);
+  --c-primary: #0f4f8f;
+  --c-primary_: #{$darkFg};
+  --c-secondary: #2f6f2f;
+  --c-secondary_: #{$darkFg};
+  --c-danger: #a32;
+  --c-danger_: #{$darkFg};
+  --c-subdued: #555;
+  --c-subdued_: #{$darkFg};
+  --list-bg: #000;
+  --list-fg: #{$darkFg};
+  --list-header-bg: #202020;
+  --list-header-fg: #{$darkFg};
+  --list-footer-bg: #202020;
+  --list-footer-fg: #{$darkFg};
+  --list-cell-bg: #303030;
+  --list-cell-fg: #{$darkFg};
+  --list-cell1-bg: #383838;
+  --list-cell1-fg: #{$darkFg};
+  --list-row-hover-bg: #40404b;
+  --list-row-hover-fg: #{$darkFg};
+  --list-cell-hover-bg: #102830;
+  --list-cell-hover-fg: #{$darkFg};
+}
+
+@layer default {
+  :root {
+    /* size */
+    --font-size: 1.6rem;
+    --btn-size: 3.2rem;
+    --ipt-size: 3.2rem;
+
+    @include lightTheme();
+
+    &[data-theme="dark"] {
+      @include darkTheme();
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      &[data-theme="auto"] {
+        @include darkTheme();
+      }
+    }
+  }
+
+  @include mixins.sp {
+    :root {
+      --btn-size: 4.8rem;
+      --ipt-size: 4.8rem;
+    }
+  }
+}

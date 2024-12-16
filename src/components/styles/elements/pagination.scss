@@ -1,0 +1,43 @@
+@layer base {
+
+  .pagination {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .pagination-before,
+  .pagination-after {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    flex: 1 1 0rem;
+    gap: .6rem;
+    padding: 0 .6rem;
+    list-style: none;
+    overflow: hidden;
+  }
+
+  .pagination-before {
+    justify-content: flex-end;
+  }
+
+  .pagination-after {
+    justify-content: flex-start;
+  }
+
+  .pagination-link,
+  .pagination-omit {
+    min-width: 1.6rem;
+    text-align: center;
+    user-select: none;
+  }
+
+  .pagination-link {
+    padding: 0 .2rem;
+    cursor: pointer;
+  }
+
+}

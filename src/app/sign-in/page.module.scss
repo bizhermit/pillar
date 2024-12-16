@@ -1,0 +1,15 @@
+.wrap {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+}
+
+.form {
+  display: grid;
+  place-items: center;
+  gap: 1.2rem;
+}
+
+.input {
+  width: 30rem;
+}

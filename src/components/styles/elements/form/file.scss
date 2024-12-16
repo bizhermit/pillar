@@ -1,0 +1,87 @@
+@use "../../mixins" as mixins;
+
+@layer base {
+
+  .ipt-file {
+    display: none !important;
+    visibility: hidden;
+    max-height: 0;
+    max-width: 0;
+    opacity: 0;
+    z-index: -2;
+  }
+
+  .ipt-file-name {
+    height: var(--btn-size);
+    display: grid;
+    place-items: center start;
+  }
+
+  .ipt-file-drop {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .ipt-clear {
+      height: var(--ipt-size);
+    }
+
+    .ipt-file-name {
+      padding: 0.4rem 0.8rem;
+      flex: 1 1 0rem;
+    }
+
+    &:not([aria-disabled="true"], [aria-readonly="true"]) {
+      .ipt-file-drop-area {
+        &[data-click="true"] {
+          cursor: pointer;
+
+          @include mixins.hover {
+            opacity: 0.8;
+
+            &:active {
+              opacity: 1;
+            }
+          }
+        }
+
+        &[data-dragover] {
+          opacity: 0.8;
+        }
+      }
+    }
+
+    &[aria-disabled="true"] {
+      opacity: 0.6;
+    }
+
+    &[aria-invalid="true"] {
+      .ipt-file-drop-area {
+        background: var(--ipt-bg-err);
+        border-color: var(--ipt-bd-err);
+      }
+    }
+  }
+
+  .ipt-file-drop-area {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: calc(var(--ipt-size) * 3);
+    max-height: 100%;
+    padding: 0 0.8rem;
+    border-radius: 2px;
+    border: 1px solid var(--ipt-bd);
+    background: var(--ipt-bg);
+    color: var(--fg-placeholder);
+    user-select: none;
+    transition: color 0.1s, background-color 0.1s, border-color 0.1s, opacity 0.1s;
+
+    &:focus-within {
+      outline-style: solid;
+    }
+  }
+
+}

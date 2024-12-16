@@ -1,0 +1,77 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // {
+    //   "label": "fetch & merge next-app-template/main (allow unrelated histories)",
+    //   "group": "none",
+    //   "type": "shell",
+    //   "command": "git fetch next-app-template && git merge --allow-unrelated-histories next-app-template/main"
+    // },
+    // {
+    //   "label": "fetch & merge next-app-template/main",
+    //   "group": "none",
+    //   "type": "shell",
+    //   "command": "git fetch next-app-template && git merge next-app-template/main"
+    // },
+    {
+      "label": "cleanup branch",
+      "group": "none",
+      "type": "shell",
+      "command": "bash ./scripts/cleanup-branches.sh"
+    },
+    {
+      "label": "delete devcontainer docker",
+      "group": "none",
+      "type": "shell",
+      "command": "bash ./.devcontainer/deleteAssets.sh",
+    },
+    {
+      "label": "next dev",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run dev"
+    },
+    {
+      "label": "build next route",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run route"
+    },
+    {
+      "label": "type-check",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run type-check"
+    },
+    {
+      "label": "jest",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run jest"
+    },
+    {
+      "label": "test",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run test"
+    },
+    {
+      "label": "playwright",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run playwright"
+    },
+    {
+      "label": "database migrate",
+      "group": "none",
+      "type": "shell",
+      "command": "npm run migrate"
+    },
+    {
+      "label": "Prisma studio",
+      "group": "none",
+      "type": "shell",
+      "command": "npx prisma studio"
+    }
+  ]
+}

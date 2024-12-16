@@ -1,0 +1,474 @@
+@use "../mixins" as mixins;
+
+$L: 1080px;
+$S: 800px;
+$transDuration: 0.3s;
+$opacityTransDuration: 0.2s;
+$nestPadding: calc(var(--nav-min-width) * 0.25);
+
+@mixin minNavScreen {
+  @media screen and (max-width: $L) and (min-width: $S) {
+    @content;
+  }
+}
+
+@mixin visNavScreen {
+  @media screen and (min-width: $L) {
+    @content;
+  }
+}
+
+@mixin hideNavScreen {
+  @media screen and (max-width: $S) {
+    @content;
+  }
+}
+
+@mixin toggleNavScreen {
+  @media screen and (min-width: $S) {
+    @content;
+  }
+}
+
+@mixin btnDisable($width: true) {
+  @if $width==true {
+    width: 0;
+  }
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+@layer base {
+
+  .wrap {
+    --nav-min-width: 5rem;
+    --nav-width: 26rem;
+    --header-height: var(--nav-min-width);
+    ---nav-width: var(--nav-width);
+    ---nav-menu-nest: #{$nestPadding};
+
+    width: 100%;
+    min-height: 100dvh;
+    padding-left: var(---nav-width);
+    transition: padding-left #{$transDuration};
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    @include mixins.sp {
+      --nav-min-width: 6rem;
+    }
+
+    &:not(:has(#navToggleVis:checked, #navToggleMin:checked)) {
+      .nav-auto {
+        @include btnDisable();
+      }
+
+      @include visNavScreen() {
+        .nav-vis {
+          @include btnDisable();
+        }
+
+        .nav-contents {
+          overflow: auto;
+        }
+      }
+
+      @include minNavScreen() {
+        ---nav-width: var(--nav-min-width);
+        ---nav-menu-nest: 0;
+
+        .nav-min {
+          @include btnDisable();
+        }
+
+        .nav-wrap {
+          @include mixins.hover {
+            ---nav-width: var(--nav-width);
+            ---nav-menu-nest: #{$nestPadding};
+
+            .nav-contents {
+              overflow: auto;
+            }
+          }
+        }
+      }
+    }
+
+    @include hideNavScreen() {
+      ---nav-width: 0;
+    }
+  }
+
+  .nav-check {
+    display: none;
+  }
+
+  .header-wrap {
+    z-index: 1;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    background: var(--nav-bg);
+    color: var(--nav-fg);
+    height: var(--header-height);
+    box-shadow: -0.1px 1px 1px -1px var(--sdw);
+  }
+
+  .header {
+    flex: 1 1 0rem;
+    min-width: 0;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .footer {
+    z-index: 0;
+    font-size: 1.2rem;
+    text-align: center;
+    background: var(--nav-bg);
+    color: var(--nav-fg);
+    box-shadow: 0 -1px 1px -1px var(--sdw);
+  }
+
+  .main {
+    z-index: 0;
+    flex: 1 0 0rem;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 100%;
+    min-height: auto;
+    overflow-x: clip;
+  }
+
+  .nav-wrap {
+    z-index: 2;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(---nav-width);
+    height: 100%;
+    transition: width #{$transDuration};
+    overflow: hidden;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    pointer-events: none;
+
+    >.nav-btn-wrap {
+      background: var(--nav-bg);
+      color: var(--nav-fg);
+    }
+
+    @include hideNavScreen() {
+      >.nav-close {
+        visibility: visible;
+      }
+    }
+  }
+
+  .nav-mask {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: 100dvw;
+    height: calc(100dvh - var(--header-height));
+    background: var(--mask);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity #{$transDuration},
+    display #{$transDuration} allow-discrete,
+    overlay #{$transDuration} allow-discrete;
+    display: none;
+  }
+
+  .nav {
+    flex: 1 0 0rem;
+    min-height: 0;
+    width: calc(100% - 1px);
+    overflow: visible;
+    background: var(--nav-bg);
+    color: var(--nav-fg);
+    box-shadow: 0 1.1px 1px -1px var(--sdw) inset, 1px 0px 1px -1px var(--sdw);
+    z-index: 1;
+    pointer-events: all;
+  }
+
+  .nav-contents {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
+  .nav-btn-wrap {
+    position: relative;
+    height: var(--header-height);
+    overflow: hidden;
+    background: var(--nav-bg);
+    color: var(--nav-fg);
+    transition: width #{$transDuration},
+    opacity #{$opacityTransDuration};
+    user-select: none;
+    z-index: 0;
+    pointer-events: all;
+  }
+
+  .nav-open {
+    width: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .nav-toggle {
+    width: calc(100% - 1px);
+    box-shadow: 1px 1.1px 1px -1px var(--sdw);
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 calc(var(--nav-min-width) * .15);
+  }
+
+  .nav-btn {
+    width: calc(var(--nav-min-width) * 0.7);
+    height: calc(var(--nav-min-width) * 0.7);
+    border: 1px solid var(--sdw);
+    border-radius: 0.2rem;
+    display: grid;
+    place-items: center;
+    grid-auto-flow: column;
+    cursor: pointer;
+    transition: width #{$transDuration},
+    opacity #{$opacityTransDuration};
+    overflow: hidden;
+    background: transparent;
+
+    @include mixins.hover {
+      opacity: .6;
+    }
+  }
+
+  .nav-min {
+    margin-left: auto;
+  }
+
+  .nav-close {
+    transition-delay: #{$transDuration};
+  }
+
+  @include toggleNavScreen() {
+    .nav-close {
+      width: 0;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .nav {
+      box-shadow: 1px 0 1px -1px var(--sdw);
+    }
+
+    .wrap {
+      &:has(#navToggleVis:checked) {
+        ---nav-width: var(--nav-width);
+
+        .nav-vis {
+          @include btnDisable();
+        }
+
+        .nav-contents {
+          overflow: auto;
+        }
+      }
+
+      &:has(#navToggleMin:checked) {
+        ---nav-width: var(--nav-min-width);
+        ---nav-menu-nest: 0;
+
+        :is(.nav-min, .nav-auto) {
+          @include btnDisable();
+        }
+      }
+    }
+  }
+
+  @include hideNavScreen() {
+    .nav-open {
+      width: var(--nav-min-width);
+    }
+
+    .nav-toggle {
+      width: var(--nav-min-width);
+      box-shadow: none;
+    }
+
+    .nav-vis,
+    .nav-min,
+    .nav-auto {
+      @include btnDisable();
+      display: none;
+    }
+
+    #navOpen {
+      &:checked {
+        &~.header-wrap {
+          >.nav-open {
+            @include btnDisable(false);
+          }
+        }
+
+        &~.nav-mask {
+          display: unset;
+          opacity: 1;
+          pointer-events: unset;
+        }
+
+        &~.nav-wrap {
+          ---nav-width: var(--nav-width);
+
+          .nav-close {
+            transition-delay: 0s;
+          }
+
+          .nav-contents {
+            overflow: auto;
+          }
+        }
+      }
+    }
+
+    @starting-style {
+      #navOpen:checked~.nav-mask {
+        opacity: 0;
+        display: unset;
+      }
+    }
+  }
+
+  .nav-menu-list {
+    padding: 0;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: hidden;
+  }
+
+  .nav-menu-toggle {
+    display: grid;
+    place-items: center;
+    margin-left: auto;
+    height: 100%;
+    width: var(--nav-min-width);
+    transform: rotate(0deg);
+    transition: transform 0.2s;
+  }
+
+  .nav-menu-close {
+    display: none;
+  }
+
+  .nav-menu-children {
+    width: 100%;
+    grid-template-rows: 0fr;
+    display: none;
+    overflow: hidden;
+    padding-left: var(---nav-menu-nest, 0);
+    transition: grid-template-rows #{$transDuration},
+    padding-left #{$transDuration},
+    display #{$transDuration} allow-discrete,
+    overlay #{$transDuration} allow-discrete;
+  }
+
+  .nav-menu-check {
+    display: none;
+
+    &:checked {
+      &~.nav-menu-item {
+        .nav-menu-toggle {
+          transform: rotate(180deg);
+        }
+      }
+
+      &~.nav-menu-children {
+        display: grid;
+        grid-template-rows: 1fr;
+        padding-left: var(---nav-menu-nest, 0);
+      }
+    }
+  }
+
+  .nav-menu-item-wrap {
+    list-style: none;
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  .nav-menu-item {
+    width: 100%;
+    height: calc(var(--nav-min-width) * 0.8);
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: center;
+    overflow: hidden;
+    word-break: keep-all;
+    white-space: nowrap;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 1px;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity .2s, background-color .2s, color .2s;
+
+    &[aria-current="true"] {
+      background: var(--c-primary);
+      color: var(--c-primary_);
+    }
+
+    @include mixins.hover {
+      opacity: 0.7;
+    }
+  }
+
+  .nav-menu-icon {
+    height: 100%;
+    width: var(--nav-min-width);
+    display: grid;
+    place-items: center;
+  }
+
+  @starting-style {
+    .nav-menu-check {
+      &:checked {
+        &~.nav-menu-children {
+          display: grid;
+          grid-template-rows: 0fr;
+          padding-left: var(---nav-menu-nest, 0);
+        }
+      }
+    }
+  }
+
+}

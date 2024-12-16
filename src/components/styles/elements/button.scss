@@ -1,0 +1,89 @@
+@use "../mixins" as mixins;
+
+@layer base {
+
+  :is(.btn, a[role="button"], label[role="button"]) {
+    ---btn-bg: var(--c-primary);
+    ---btn-fg: var(--c-primary_);
+
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: .8rem;
+    font-size: inherit;
+    font-family: inherit;
+    border: none;
+    height: var(--btn-size);
+    padding: 0 calc(var(--btn-size) / 2);
+    border-radius: .2rem;
+    background: var(---btn-bg);
+    color: var(---btn-fg);
+    box-shadow: 0 0 0 1.2px var(---btn-bg) inset;
+    user-select: none;
+    text-decoration: none;
+    min-width: 0;
+    transition: opacity .2s;
+    font-weight: 500;
+
+    &[data-color="secondary"] {
+      ---btn-bg: var(--c-secondary, var(--c-primary));
+      ---btn-fg: var(--c-secondary_, var(--c-primary_));
+    }
+
+    &[data-color="danger"] {
+      ---btn-bg: var(--c-danger, var(--c-primary));
+      ---btn-fg: var(--c-danger_, var(--c-primary_));
+    }
+
+    &[data-color="subdued"] {
+      ---btn-bg: var(--c-subdued, var(--c-primary));
+      ---btn-fg: var(--c-subdued_, var(--c-primary_));
+    }
+
+    &[data-outline="true"] {
+      background: var(--btn-bg);
+      color: var(---btn-bg);
+    }
+
+    &[data-round="true"] {
+      border-radius: 9999px;
+    }
+
+    &[data-noanimation] {
+      transition: none;
+    }
+
+    &:is(:disabled, [aria-disabled="true"]) {
+      cursor: not-allowed;
+      opacity: .6;
+
+      &[data-processing="true"] {
+        cursor: wait;
+      }
+    }
+
+    &:not(:is(:disabled, [aria-disabled="true"])) {
+      cursor: pointer;
+
+      @include mixins.hover {
+        opacity: .8;
+
+        &:active {
+          opacity: 1;
+        }
+      }
+    }
+
+    >.icon {
+      width: calc(var(--btn-size) * .5);
+      overflow: hidden;
+
+      &:only-child {
+        position: absolute;
+      }
+    }
+  }
+
+}

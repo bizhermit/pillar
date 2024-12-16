@@ -1,0 +1,65 @@
+@use "./mixins" as mixins;
+
+@layer default {
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    flex: none;
+  }
+
+  html {
+    position: relative;
+    font-size: 62.5%;
+    background: var(--bg);
+    color: var(--fg);
+
+    @media (prefers-color-scheme: dark) {
+      &[data-theme="auto"] {
+        color-scheme: dark;
+      }
+    }
+
+    &[data-theme="dark"] {
+      color-scheme: dark;
+    }
+  }
+
+  body {
+    font-family: "Yu Gothic", sans-serif;
+    font-size: var(--font-size);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-block: unset;
+  }
+
+  a {
+
+    &[aria-disabled="true"],
+    &[data-nodecoration="true"] {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
+  ul {
+    padding-left: calc(var(--font-size) * 2);
+  }
+
+  ::backdrop {
+    background: var(--mask);
+    backdrop-filter: blur(1px);
+  }
+
+  ::placeholder {
+    color: var(--fg-placeholder);
+  }
+
+}

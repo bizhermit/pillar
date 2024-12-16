@@ -1,0 +1,5 @@
+next.config.mjs
+scripts/*
+jest.config.js
+playwright.config.ts
+playwright/*
