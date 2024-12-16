@@ -198,9 +198,7 @@ type PagePath = AppRoutePath | PagesRoutePath;
 
 type TypeofApi = TypeofAppApi & TypeofPagesApi;
 `;
-const typesDir = path.join(srcRoot, "types");
-if (!fs.existsSync(typesDir)) fs.mkdirSync(typesDir, { recursive: true });
-fs.writeFileSync(path.join(srcRoot, "types/route.d.mts"), contents);
+fs.writeFileSync(path.join(srcRoot, "route.d.mts"), contents);
 
 const duplicatedRoutes = [];
 appRoutes.forEach(appRoute => {
