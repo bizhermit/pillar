@@ -10,6 +10,7 @@ type AppRoutePath = "/"
   | "/sandbox/intercepting-routes"
   | "/sandbox/intercepting-routes/task/[[...id]]"
   | "/sandbox/intercepting-routes/tasks"
+  | "/sandbox/listview"
   | "/sandbox/mailaddress"
   | "/sandbox/page-transition/csr"
   | "/sandbox/page-transition/csr/path-param"
@@ -40,7 +41,7 @@ type TypeofAppApi = {
   "/api": typeof import("src/app/api/route.ts");
   "/api/auth/[...nextauth]": typeof import("src/app/api/auth/[...nextauth]/route.ts");
   "/sandbox/datetime/api": typeof import("src/app/sandbox/datetime/api/route.ts");
-  "/sandbox/fetch/api": typeof import("src/app/sandbox/fetch/api/route.ts");
+  "/sandbox/fetch/api": typeof import("src/app/sandbox/fetch/api/route.mock.ts");
 };
 
 type PagesRoutePath = "";
