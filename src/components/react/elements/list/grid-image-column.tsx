@@ -48,6 +48,7 @@ export const listGridImageColumn = <D extends ListData>({
       if (ret?.hide) return null;
       const src = ret?.src || (props.name ? (get(rowValue, name)[0] || noSrcUrl) : noSrcUrl);
       return (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={src}
           alt={ret?.alt || (altName ? (get(rowValue, altName)[0] || "") : "")}
