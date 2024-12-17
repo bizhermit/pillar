@@ -5,7 +5,7 @@
     //   "label": "fetch & merge next-app-template/main (allow unrelated histories)",
     //   "group": "none",
     //   "type": "shell",
-    //   "command": "git remote add next-app-template git@github.com:bizhermit/next-app-template.git && git fetch next-app-template && git merge --allow-unrelated-histories --squash next-app-template/main"
+    //   "command": "git remote add next-app-template git@github.com:bizhermit/next-app-template.git && git fetch next-app-template && git merge --allow-unrelated-histories next-app-template/main"
     // },
     // {
     //   "label": "fetch & merge next-app-template/main",
