@@ -7,12 +7,12 @@
     //   "type": "shell",
     //   "command": "git remote add next-app-template git@github.com:bizhermit/next-app-template.git && git fetch next-app-template && git merge --allow-unrelated-histories next-app-template/main"
     // },
-    // {
-    //   "label": "fetch & merge next-app-template/main",
-    //   "group": "none",
-    //   "type": "shell",
-    //   "command": "git fetch next-app-template && git merge --squash next-app-template/main"
-    // },
+    {
+      "label": "fetch & merge next-app-template/main",
+      "group": "none",
+      "type": "shell",
+      "command": "git fetch next-app-template && git merge --squash next-app-template/main"
+    },
     {
       "label": "cleanup branch",
       "group": "none",
