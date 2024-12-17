@@ -1,7 +1,7 @@
 {
-  "name": "next-app-template",
+  "name": "pillar",
   "version": "0.0.0",
-  "description": "next-app templates",
+  "description": "team manager",
   "private": true,
   "scripts": {
     "clean": "node scripts/clean.mjs",

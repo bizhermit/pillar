@@ -1,5 +1,5 @@
 {
-  "name": "next-app-template",
+  "name": "pillar",
   "dockerComposeFile": "docker-compose.yml",
   "service": "node",
   "workspaceFolder": "/workspace",
