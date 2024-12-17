@@ -2,10 +2,27 @@ import { getRedirectError as _getRedirectError } from "next/dist/client/componen
 import { redirect as _redirect, RedirectType } from "next/navigation";
 import { DynamicUrlOptions, getDynamicPathname } from "../../objects/url";
 
-export const redirect: ((pathname: PagePath, params?: { [v: string | number]: any }, opts?: DynamicUrlOptions & { type?: keyof typeof RedirectType }) => never) = (pn, p?, o?) => {
-  _redirect(getDynamicPathname(pn, p, o), o?.type ? RedirectType[o.type] : undefined);
+type Params = { [v: string | number | symbol]: any };
+
+type Options = DynamicUrlOptions & {
+  type?: keyof typeof RedirectType;
 };
 
-export const getRedirectError = (pathname: PagePath, params?: { [v: string | number]: any }, opts?: DynamicUrlOptions & { type?: keyof typeof RedirectType; statusCode?: Parameters<typeof _getRedirectError>[2]; }) => {
-  return _getRedirectError(getDynamicPathname(pathname, params, opts), RedirectType[opts?.type || "replace"], opts?.statusCode);
+type StatusCodeOption = {
+  statusCode?: Parameters<typeof _getRedirectError>[2];
+};
+
+export const redirect: ((pathname: PagePath, params?: Params, opts?: Options) => never) = (pn, p?, o?) => {
+  _redirect(
+    getDynamicPathname(pn, p, o),
+    o?.type ? RedirectType[o.type] : undefined
+  );
+};
+
+export const getRedirectError = (pathname: PagePath, params?: Params, opts?: Options & StatusCodeOption) => {
+  return _getRedirectError(
+    getDynamicPathname(pathname, params, opts),
+    RedirectType[opts?.type || "replace"],
+    opts?.statusCode
+  );
 };
