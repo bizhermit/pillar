@@ -1,13 +1,14 @@
-import { redirect } from "next/navigation";
+import { redirect } from "@/server/next/navigation";
 import { auth } from "~/auth";
-import { SignInForm } from "./sign-in-form";
+import { SignInForm } from "./page-client";
 
 const userHomeUrl: PagePath = "/home";
 
 const Page = async () => {
   const session = await auth();
   if (session?.user != null) {
-    return redirect(userHomeUrl);
+    redirect(userHomeUrl);
+    return null;
   }
   return <SignInForm redirectUrl={userHomeUrl} />;
 };
