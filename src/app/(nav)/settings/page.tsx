@@ -1,7 +1,7 @@
-const Page = async () => {
+const Page = () => {
   return (
     <>
-      home
+      settings
     </>
   );
 };

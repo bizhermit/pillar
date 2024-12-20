@@ -10,6 +10,7 @@ export const SignOutButton = () => {
 
   return (
     <Button
+      title={lang("auth.signOutBtn")}
       onClick={async () => {
         await signOut({
           callbackUrl: signInPageUrl,

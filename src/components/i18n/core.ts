@@ -1,15 +1,26 @@
 import { DEFAULT_LANG } from "./consts";
 
+type Cache = { [v: string | number | symbol]: any };
+const isDev = (process.env.NODE_ENV || "").startsWith("dev");
+
 const importFile = (l: Lang, s: LangSection) => require(`src/i18n/${l}/${s}`)?.default;
 
 const D_L = DEFAULT_LANG; // NOTE: ここで代入定義しないと、フォールバックでデフォルト参照時に`DEFAULT_LANG is not defined`となる
 
-export const langFactoryCore = (langs: Array<Lang>, cache?: { [v: string | number | symbol]: any }) => {
-  const $cache: Partial<LangCache> = (() => {
+const getCache = isDev ?
+  ((cache?: Cache) => {
+    if (cache) return cache;
+    if ((global as any).i18n == null) (global as any).i18n = {};
+    return (global as any).i18n = {}; // NOTE: 開発時はサーバー側でのキャッシュを無効化する。（サーバー再起動は必要ないが、クライアントのホットリロードは失敗するのでリロードは必要）。クライアント側のキャッシュはリロードすれば消えるため特に何もしない。
+  }) :
+  ((cache?: Cache) => {
     if (cache) return cache;
     if ((global as any).i18n == null) (global as any).i18n = {};
     return (global as any).i18n;
-  })();
+  });
+
+export const langFactoryCore = (langs: Array<Lang>, cache?: Cache) => {
+  const $cache: Partial<LangCache> = getCache(cache);
 
   const lang = ((key, arg) => {
     const [s, k] = key.split(/\./) as [LangSection, LangSectionKey<LangSection>];
