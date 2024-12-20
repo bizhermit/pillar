@@ -3,16 +3,11 @@ import { HomeIcon, ListIcon, TodayIcon } from "@/react/elements/icon";
 import Link from "@/react/elements/link";
 import { Navigation } from "@/react/elements/navigation";
 import { NavMenuLink } from "@/react/elements/navigation/menu";
-import { ReactNode } from "react";
 import { auth } from "~/auth";
 import { SignOutButton } from "./layout-client";
 import css from "./layout.module.scss";
 
-type Props = {
-  children: ReactNode;
-};
-
-const Layout = async ({ children }: Props) => {
+const Layout: ServerLayout = async ({ children }) => {
   const session = await auth();
   const lang = await langFactory();
 

@@ -5,12 +5,7 @@ import { ReloadIcon } from "@/react/elements/icon";
 import Link from "@/react/elements/link";
 import css from "./error.module.scss";
 
-type Props = {
-  error: Error & { digest?: string };
-  reset: () => void;
-};
-
-const ErrorPage = ({ error, reset }: Props) => {
+const ErrorPage: ErrorFC = ({ error, reset }) => {
   // eslint-disable-next-line no-console
   console.log(error);
 

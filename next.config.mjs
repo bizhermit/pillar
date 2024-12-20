@@ -21,7 +21,7 @@ const nextConfig = {
     distDir: '.renderer',
   } : {}),
   pageExtensions: [
-    ...(appMode === 'mock' ? ['mock.tsx', 'mock.ts'] : []),
+    ...(!isExport && appMode === 'mock' ? ['mock.tsx', 'mock.ts'] : []),
     'tsx', 'ts',
   ],
   images: {
