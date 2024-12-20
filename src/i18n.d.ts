@@ -288,4 +288,10 @@ interface I18N_Langs {
     signInBtn: LangValue;
     signOutBtn: LangValue;
   };
+  menu: {
+    home: string;
+    userSettings: string;
+    calendar: string;
+    project: string;
+  };
 }

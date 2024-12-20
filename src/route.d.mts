@@ -2,7 +2,10 @@
 // do not edit
 
 type AppRoutePath = "/"
+  | "/calendar"
   | "/home"
+  | "/project"
+  | "/settings"
   | "/sign-in";
 
 type AppApiPath = "/api/auth/[...nextauth]";
